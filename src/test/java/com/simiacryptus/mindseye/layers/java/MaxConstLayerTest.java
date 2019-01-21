@@ -20,6 +20,8 @@
 package com.simiacryptus.mindseye.layers.java;
 
 
+import com.simiacryptus.mindseye.lang.Layer;
+import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 
 /**
  * The type Max const key apply.
@@ -31,7 +33,10 @@ public abstract class MaxConstLayerTest extends ActivationLayerTestBase {
   public MaxConstLayerTest() {
     super(new MaxConstLayer());
   }
-
+  @Override
+  protected Layer lossLayer() {
+    return new MeanSqLossLayer();
+  }
   /**
    * Basic Test
    */

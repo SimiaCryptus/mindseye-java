@@ -21,6 +21,8 @@ package com.simiacryptus.mindseye.layers.java;
 
 
 
+import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
+
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 

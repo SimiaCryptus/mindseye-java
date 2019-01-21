@@ -21,6 +21,7 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
 
+import com.simiacryptus.mindseye.layers.MetaLayerTestBase;
 import com.simiacryptus.mindseye.test.ToleranceStatistics;
 import com.simiacryptus.mindseye.test.unit.ComponentTest;
 
@@ -31,7 +32,10 @@ import java.util.Random;
  * The type Normalization meta key apply.
  */
 public abstract class NormalizationMetaLayerTest extends MetaLayerTestBase {
-
+  @Override
+  protected Layer lossLayer() {
+    return new MeanSqLossLayer();
+  }
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {

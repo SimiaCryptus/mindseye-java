@@ -20,6 +20,7 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
+import com.simiacryptus.mindseye.layers.MetaLayerTestBase;
 
 
 import javax.annotation.Nonnull;
@@ -64,6 +65,10 @@ public abstract class AutoEntropyLayerTest extends MetaLayerTestBase {
    * Basic Test
    */
   public static class Basic extends AutoEntropyLayerTest {
+    @Override
+    protected Layer lossLayer() {
+      return null;
+    }
   }
 
 }

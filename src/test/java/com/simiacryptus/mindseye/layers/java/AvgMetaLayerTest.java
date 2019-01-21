@@ -20,6 +20,7 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
+import com.simiacryptus.mindseye.layers.MetaLayerTestBase;
 
 
 import javax.annotation.Nonnull;
@@ -29,7 +30,10 @@ import java.util.Random;
  * The type Avg meta key apply.
  */
 public abstract class AvgMetaLayerTest extends MetaLayerTestBase {
-
+  @Override
+  protected Layer lossLayer() {
+    return new MeanSqLossLayer();
+  }
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
@@ -57,6 +61,10 @@ public abstract class AvgMetaLayerTest extends MetaLayerTestBase {
    */
   public static class Basic extends AvgMetaLayerTest {
 
+    @Override
+    protected Layer lossLayer() {
+      return null;
+    }
   }
 
 }

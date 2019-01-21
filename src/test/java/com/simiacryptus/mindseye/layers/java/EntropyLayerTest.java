@@ -20,6 +20,8 @@
 package com.simiacryptus.mindseye.layers.java;
 
 
+import com.simiacryptus.mindseye.lang.Layer;
+import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 import com.simiacryptus.mindseye.test.ToleranceStatistics;
 import com.simiacryptus.mindseye.test.unit.ComponentTest;
 import com.simiacryptus.mindseye.test.unit.SingleDerivativeTester;
@@ -45,6 +47,10 @@ public abstract class EntropyLayerTest extends ActivationLayerTestBase {
    * Basic Test
    */
   public static class Basic extends EntropyLayerTest {
+    @Override
+    protected Layer lossLayer() {
+      return null;
+    }
   }
 
 }

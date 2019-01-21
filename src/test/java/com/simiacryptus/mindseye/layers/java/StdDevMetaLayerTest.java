@@ -20,6 +20,7 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
+import com.simiacryptus.mindseye.layers.MetaLayerTestBase;
 
 
 import javax.annotation.Nonnull;
@@ -29,6 +30,10 @@ import java.util.Random;
  * The type Std dev meta key apply.
  */
 public abstract class StdDevMetaLayerTest extends MetaLayerTestBase {
+  @Override
+  protected Layer lossLayer() {
+    return new MeanSqLossLayer();
+  }
 
   /**
    * Instantiates a new Std dev meta key apply.

@@ -20,6 +20,8 @@
 package com.simiacryptus.mindseye.layers.java;
 
 
+import com.simiacryptus.mindseye.lang.Layer;
+import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 import com.simiacryptus.mindseye.test.unit.SingleDerivativeTester;
 
 /**
@@ -42,6 +44,10 @@ public abstract class LogActivationLayerTest extends ActivationLayerTestBase {
    * Basic Test
    */
   public static class Basic extends LogActivationLayerTest {
+    @Override
+    protected Layer lossLayer() {
+      return new MeanSqLossLayer();
+    }
   }
 
 }

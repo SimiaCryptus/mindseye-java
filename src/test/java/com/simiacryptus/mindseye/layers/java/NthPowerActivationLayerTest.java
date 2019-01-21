@@ -20,6 +20,8 @@
 package com.simiacryptus.mindseye.layers.java;
 
 
+import com.simiacryptus.mindseye.lang.Layer;
+import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 import com.simiacryptus.mindseye.test.unit.SingleDerivativeTester;
 
 /**
@@ -31,6 +33,10 @@ public class NthPowerActivationLayerTest {
    * Tests x^-1 aka 1/x
    */
   public static class InvPowerTest extends ActivationLayerTestBase {
+    @Override
+    protected Layer lossLayer() {
+      return new MeanSqLossLayer();
+    }
     /**
      * Instantiates a new Inv power apply.
      */
@@ -55,7 +61,10 @@ public class NthPowerActivationLayerTest {
    * Tests x^-1/2 aka 1/sqrt(x)
    */
   public static class InvSqrtPowerTest extends ActivationLayerTestBase {
-    /**
+    @Override
+    protected Layer lossLayer() {
+      return new MeanSqLossLayer();
+    }    /**
      * Instantiates a new Inv sqrt power apply.
      */
     public InvSqrtPowerTest() {
@@ -79,6 +88,10 @@ public class NthPowerActivationLayerTest {
    * Tests an irregular power
    */
   public static class NthPowerTest extends ActivationLayerTestBase {
+    @Override
+    protected Layer lossLayer() {
+      return new MeanSqLossLayer();
+    }
     /**
      * Instantiates a new Nth power apply.
      */
@@ -103,6 +116,10 @@ public class NthPowerActivationLayerTest {
    * Tests x^2
    */
   public static class SquarePowerTest extends ActivationLayerTestBase {
+    @Override
+    protected Layer lossLayer() {
+      return new MeanSqLossLayer();
+    }
     /**
      * Instantiates a new Square power apply.
      */
@@ -115,6 +132,10 @@ public class NthPowerActivationLayerTest {
    * Tests x^0 aka 1
    */
   public static class ZeroPowerTest extends ActivationLayerTestBase {
+    @Override
+    protected Layer lossLayer() {
+      return new MeanSqLossLayer();
+    }
     /**
      * Instantiates a new Zero power apply.
      */

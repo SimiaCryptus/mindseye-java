@@ -20,6 +20,7 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
+import com.simiacryptus.mindseye.layers.MetaLayerTestBase;
 
 
 import javax.annotation.Nonnull;
@@ -29,6 +30,10 @@ import java.util.Random;
  * The type Sum meta key apply.
  */
 public abstract class SumMetaLayerTest extends MetaLayerTestBase {
+  @Override
+  protected Layer lossLayer() {
+    return new MeanSqLossLayer();
+  }
 
   /**
    * Instantiates a new Sum meta key apply.

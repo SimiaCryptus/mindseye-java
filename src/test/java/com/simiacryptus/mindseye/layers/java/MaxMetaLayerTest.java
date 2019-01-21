@@ -20,6 +20,7 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
+import com.simiacryptus.mindseye.layers.MetaLayerTestBase;
 
 
 import javax.annotation.Nonnull;
@@ -29,7 +30,10 @@ import java.util.Random;
  * The type Max meta key apply.
  */
 public abstract class MaxMetaLayerTest extends MetaLayerTestBase {
-
+  @Override
+  protected Layer lossLayer() {
+    return new MeanSqLossLayer();
+  }
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
