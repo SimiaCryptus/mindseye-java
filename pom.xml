@@ -104,33 +104,6 @@
             <groupId>org.jblas</groupId>
             <artifactId>jblas</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.simiacryptus</groupId>
-            <artifactId>java-analysis</artifactId>
-            <version>${project.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>com.github.haifengl</groupId>
-            <artifactId>smile-plot</artifactId>
-            <scope>compile</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>guru.nidi</groupId>
-            <artifactId>graphviz-java</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-math3</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-compress</artifactId>
-            <optional>true</optional>
-        </dependency>
     </dependencies>
 
     <build>

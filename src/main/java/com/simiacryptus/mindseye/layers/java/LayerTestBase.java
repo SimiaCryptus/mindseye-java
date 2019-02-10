@@ -38,10 +38,9 @@ public abstract class LayerTestBase extends StandardLayerTests {
   /**
    * Test.
    *
-   * @throws Throwable the throwable
    */
   @Test(timeout = 15 * 60 * 1000)
-  public void test() throws Throwable {
+  public void test() {
     run(this::run);
   }
 
