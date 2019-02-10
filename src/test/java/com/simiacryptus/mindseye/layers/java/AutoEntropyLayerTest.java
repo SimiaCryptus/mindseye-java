@@ -22,7 +22,6 @@ package com.simiacryptus.mindseye.layers.java;
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.MetaLayerTestBase;
 
-
 import javax.annotation.Nonnull;
 import java.util.Random;
 
