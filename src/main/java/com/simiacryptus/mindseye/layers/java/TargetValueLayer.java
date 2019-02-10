@@ -80,6 +80,7 @@ public class TargetValueLayer extends DAGNetwork {
 
   @Override
   public DAGNode getHead() {
+    head.addRef();
     return head;
   }
 

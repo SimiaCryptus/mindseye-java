@@ -22,9 +22,11 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.DataSerializer;
 import com.simiacryptus.mindseye.lang.Layer;
+import com.simiacryptus.mindseye.lang.Result;
 import com.simiacryptus.mindseye.layers.WrapperLayer;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 
@@ -67,26 +69,6 @@ public class VariableLayer extends WrapperLayer {
   @Override
   public List<Layer> getChildren() {
     return super.getChildren();
-  }
-
-  @Nonnull
-  @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull final JsonObject json = super.getJson(resources, dataSerializer);
-    json.add("heapCopy", getInner().getJson(resources, dataSerializer));
-    return json;
-  }
-
-  /**
-   * Sets heapCopy.
-   *
-   * @param inner the heapCopy
-   */
-  public final WrapperLayer setInner(final Layer inner) {
-    if (this.getInner() != null) this.getInner().freeRef();
-    super.setInner(inner);
-    this.getInner().addRef();
-    return null;
   }
 
 }

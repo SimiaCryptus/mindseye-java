@@ -81,6 +81,7 @@ public class SignReducerLayer extends DAGNetwork {
 
   @Override
   public DAGNode getHead() {
+    head.addRef();
     return head;
   }
 }

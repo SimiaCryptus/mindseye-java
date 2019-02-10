@@ -57,7 +57,7 @@ public abstract class LayerTestBase extends StandardLayerTests {
   @Before
   public void setup() {
     reportingFolder = "reports/_reports";
-    //GpuController.reset();
+    //GpuController.remove();
   }
 
   /**
@@ -66,7 +66,7 @@ public abstract class LayerTestBase extends StandardLayerTests {
   @After
   public void cleanup() {
     System.gc();
-    //GpuController.reset();
+    //GpuController.remove();
   }
 
 }

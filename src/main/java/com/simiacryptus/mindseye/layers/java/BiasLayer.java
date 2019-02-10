@@ -48,7 +48,7 @@ public class BiasLayer extends LayerBase {
    * The Bias.
    */
   @Nullable
-  public final double[] bias;
+  public final Tensor bias;
 
   /**
    * Instantiates a new Bias key.
@@ -64,7 +64,7 @@ public class BiasLayer extends LayerBase {
    * @param dims the dims
    */
   public BiasLayer(final int... dims) {
-    bias = new double[Tensor.length(dims)];
+    bias = new Tensor(dims);
   }
 
 
@@ -72,10 +72,11 @@ public class BiasLayer extends LayerBase {
    * Instantiates a new Bias key.
    *
    * @param json the json
+   * @param rs
    */
-  protected BiasLayer(@Nonnull final JsonObject json) {
+  protected BiasLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json);
-    bias = JsonUtil.getDoubleArray(json.getAsJsonArray("bias"));
+    bias = Tensor.fromJson(json.get("bias"),rs);
   }
 
   /**
@@ -86,7 +87,7 @@ public class BiasLayer extends LayerBase {
    * @return the bias key
    */
   public static BiasLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
-    return new BiasLayer(json);
+    return new BiasLayer(json,rs);
   }
 
   /**
@@ -97,6 +98,7 @@ public class BiasLayer extends LayerBase {
    */
   public double[] add(@Nonnull final double[] input) {
     final double[] array = RecycleBin.DOUBLES.obtain(input.length);
+    double[] bias = this.bias.getData();
     if (1 == bias.length) {
       for (int i = 0; i < array.length; i++) {
         array[i] = input[i] + bias[0];
@@ -117,6 +119,7 @@ public class BiasLayer extends LayerBase {
    */
   @Nonnull
   public BiasLayer addWeights(@Nonnull final DoubleSupplier f) {
+    double[] bias = this.bias.getData();
     Util.add(f, bias);
     return this;
   }
@@ -140,7 +143,7 @@ public class BiasLayer extends LayerBase {
         (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
           if (!isFrozen()) {
             final Delta<UUID> deltaBuffer = buffer.get(BiasLayer.this.getId(), bias);
-            if (1 == bias.length) {
+            if (1 == bias.length()) {
               delta.stream().parallel().forEach(d -> {
                 @Nullable final double[] array = d.getData();
                 deltaBuffer.addInPlace(1 == array.length ? array : new double[]{Arrays.stream(array).sum()});
@@ -177,7 +180,7 @@ public class BiasLayer extends LayerBase {
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
     @Nonnull final JsonObject json = super.getJsonStub();
-    json.add("bias", JsonUtil.getJson(bias));
+    json.add("bias", bias.toJson(resources, dataSerializer));
     return json;
   }
 
@@ -190,6 +193,7 @@ public class BiasLayer extends LayerBase {
    */
   @Nonnull
   public Layer set(@Nonnull final double[] ds) {
+    double[] bias = this.bias.getData();
     for (int i = 0; i < ds.length; i++) {
       bias[i] = ds[i];
     }
@@ -204,6 +208,7 @@ public class BiasLayer extends LayerBase {
    */
   @Nonnull
   public BiasLayer setWeights(@Nonnull final IntToDoubleFunction f) {
+    double[] bias = this.bias.getData();
     for (int i = 0; i < bias.length; i++) {
       bias[i] = f.applyAsDouble(i);
     }
@@ -218,6 +223,7 @@ public class BiasLayer extends LayerBase {
    */
   @Nonnull
   public BiasLayer setWeightsLog(final double value) {
+    double[] bias = this.bias.getData();
     for (int i = 0; i < bias.length; i++) {
       bias[i] = (FastRandom.INSTANCE.random() - 0.5) * Math.pow(10, value);
     }
@@ -227,7 +233,7 @@ public class BiasLayer extends LayerBase {
   @Nonnull
   @Override
   public List<double[]> state() {
-    return Arrays.asList(bias);
+    return Arrays.asList(bias.getData());
   }
 
   /**
@@ -238,6 +244,7 @@ public class BiasLayer extends LayerBase {
    */
   @Nonnull
   public BiasLayer set(@Nonnull Tensor tensor) {
+    double[] bias = this.bias.getData();
     assert bias.length == tensor.length();
     for (int i = 0; i < bias.length; i++) {
       bias[i] = tensor.get(i);

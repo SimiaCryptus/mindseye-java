@@ -27,7 +27,7 @@ import java.util.Random;
 /**
  * The type Softmax activation key apply.
  */
-public abstract class SoftmaxActivationLayerTest extends LayerTestBase {
+public abstract class SoftmaxLayerTest extends LayerTestBase {
 
   @Nonnull
   @Override
@@ -38,13 +38,13 @@ public abstract class SoftmaxActivationLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
-    return new SoftmaxActivationLayer();
+    return new SoftmaxLayer();
   }
 
   /**
    * Basic Test
    */
-  public static class Basic extends SoftmaxActivationLayerTest {
+  public static class Basic extends SoftmaxLayerTest {
   }
 
 }

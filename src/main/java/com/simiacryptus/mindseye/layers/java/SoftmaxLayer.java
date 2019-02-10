@@ -34,10 +34,10 @@ import java.util.stream.IntStream;
  * The classic "softmax" key. All outputs will sum to 1 and be proportional to the log of the input.
  */
 @SuppressWarnings("serial")
-public class SoftmaxActivationLayer extends LayerBase {
+public class SoftmaxLayer extends LayerBase {
 
   @SuppressWarnings("unused")
-  private static final Logger log = LoggerFactory.getLogger(SoftmaxActivationLayer.class);
+  private static final Logger log = LoggerFactory.getLogger(SoftmaxLayer.class);
   /**
    * The Max input.
    */
@@ -46,7 +46,7 @@ public class SoftmaxActivationLayer extends LayerBase {
   /**
    * Instantiates a new Softmax activation key.
    */
-  public SoftmaxActivationLayer() {
+  public SoftmaxLayer() {
   }
 
   /**
@@ -54,7 +54,7 @@ public class SoftmaxActivationLayer extends LayerBase {
    *
    * @param id the id
    */
-  protected SoftmaxActivationLayer(@Nonnull final JsonObject id) {
+  protected SoftmaxLayer(@Nonnull final JsonObject id) {
     super(id);
   }
 
@@ -65,8 +65,8 @@ public class SoftmaxActivationLayer extends LayerBase {
    * @param rs   the rs
    * @return the softmax activation key
    */
-  public static SoftmaxActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
-    return new SoftmaxActivationLayer(json);
+  public static SoftmaxLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+    return new SoftmaxLayer(json);
   }
 
   @Nonnull
