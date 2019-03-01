@@ -66,7 +66,7 @@ public abstract class AutoEntropyLayerTest extends MetaLayerTestBase {
   public static class Basic extends AutoEntropyLayerTest {
     @Override
     protected Layer lossLayer() {
-      return null;
+      return new EntropyLossLayer();
     }
   }
 

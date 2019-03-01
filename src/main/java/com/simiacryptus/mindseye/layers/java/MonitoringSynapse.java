@@ -122,6 +122,7 @@ public final class MonitoringSynapse extends LayerBase implements MonitoredItem 
         backpropStatistics.add(t.getData());
         t.freeRef();
       });
+      data.freeRef();
     }) {
 
 

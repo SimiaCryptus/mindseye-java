@@ -95,6 +95,7 @@ public class StaticScalarLossLayer extends LayerBase {
         }).toArray(i -> new Tensor[i]));
         in0.accumulate(buffer, tensorArray);
       }
+      data.freeRef();
     }) {
 
       @Override

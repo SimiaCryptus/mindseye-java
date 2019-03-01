@@ -114,7 +114,7 @@ public class AvgMetaLayer extends LayerBase {
     } else {
       passback = false;
       thisResult = lastResult;
-      thisResult.freeRef();
+      thisResult.addRef();
     }
     return new Result(TensorArray.create(thisResult), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList data) -> {
       if (passback && input.isAlive()) {
@@ -130,6 +130,7 @@ public class AvgMetaLayer extends LayerBase {
         @Nonnull TensorArray tensorArray = TensorArray.wrap(feedback);
         input.accumulate(buffer, tensorArray);
       }
+      data.freeRef();
     }) {
 
 

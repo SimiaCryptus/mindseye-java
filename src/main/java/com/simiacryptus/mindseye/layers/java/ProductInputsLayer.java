@@ -20,6 +20,8 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
+import com.simiacryptus.lang.ref.ReferenceCounting;
+import com.simiacryptus.lang.ref.ReferenceCountingBase;
 import com.simiacryptus.mindseye.lang.*;
 
 import javax.annotation.Nonnull;
@@ -64,10 +66,8 @@ public class ProductInputsLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public Result eval(@Nonnull final Result... inObj) {
+  public Result evalAndFree(@Nonnull final Result... inObj) {
     assert inObj.length > 1;
-    Arrays.stream(inObj).forEach(x -> x.getData().addRef());
-    Arrays.stream(inObj).forEach(nnResult -> nnResult.addRef());
     for (int i = 1; i < inObj.length; i++) {
       final int dim0 = Tensor.length(inObj[0].getData().getDimensions());
       final int dimI = Tensor.length(inObj[i].getData().getDimensions());
@@ -75,11 +75,7 @@ public class ProductInputsLayer extends LayerBase {
         throw new IllegalArgumentException(Arrays.toString(inObj[0].getData().getDimensions()) + " != " + Arrays.toString(inObj[i].getData().getDimensions()));
       }
     }
-    return new Result(Arrays.stream(inObj).parallel().map(x -> {
-      TensorList data = x.getData();
-      data.addRef();
-      return data;
-    }).reduce((l, r) -> {
+    return new Result(Arrays.stream(inObj).parallel().map(x -> x.getData().addRef()).reduce((l, r) -> {
       TensorArray productArray = TensorArray.wrap(IntStream.range(0, Math.max(l.length(), r.length())).parallel()
           .mapToObj(i1 -> {
             @Nullable final Tensor left = l.get(1 == l.length() ? 0 : i1);
@@ -136,6 +132,7 @@ public class ProductInputsLayer extends LayerBase {
           input.accumulate(buffer, passback);
         }
       }
+      delta.freeRef();
     }) {
 
 
@@ -150,8 +147,8 @@ public class ProductInputsLayer extends LayerBase {
 
       @Override
       protected void _free() {
-        Arrays.stream(inObj).forEach(nnResult -> nnResult.freeRef());
-        Arrays.stream(inObj).forEach(x -> x.getData().freeRef());
+        Arrays.stream(inObj).map(Result::getData).forEach(ReferenceCounting::freeRef);
+        Arrays.stream(inObj).forEach(ReferenceCounting::freeRef);
       }
 
     };

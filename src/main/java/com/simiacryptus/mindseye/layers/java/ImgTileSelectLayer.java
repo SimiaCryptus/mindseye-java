@@ -20,6 +20,7 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.notebook.NotebookOutput;
 
@@ -89,7 +90,8 @@ public class ImgTileSelectLayer extends LayerBase {
     sizeY = json.getAsJsonPrimitive("sizeY").getAsInt();
     positionX = json.getAsJsonPrimitive("positionX").getAsInt();
     positionY = json.getAsJsonPrimitive("positionY").getAsInt();
-    toroidal = json.getAsJsonPrimitive("toroidal").getAsBoolean();
+    JsonPrimitive toroidal = json.getAsJsonPrimitive("toroidal");
+    this.toroidal = null==toroidal?false:toroidal.getAsBoolean();
   }
 
   /**
@@ -239,6 +241,7 @@ public class ImgTileSelectLayer extends LayerBase {
             }).toArray(i -> new Tensor[i]));
         input.accumulate(buffer, tensorArray);
       }
+      error.freeRef();
     }) {
 
       @Override

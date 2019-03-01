@@ -40,20 +40,20 @@ public abstract class BinaryNoiseLayerTest extends LayerTestBase {
   @Override
   public int[][] getSmallDims(Random random) {
     return new int[][]{
-        {3}
+        {5}
     };
   }
 
   @Nonnull
   @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
-    return new BinaryNoiseLayer();
+    return StochasticSamplingSubnetLayer.wrap(BinaryNoiseLayer.maskLayer(0.5), 3);
   }
 
-//  /**
-//   * Basic Test
-//   */
-//  public static class Basic extends BinaryNoiseLayerTest {
-//  }
+  /**
+   * Basic Test
+   */
+  public static class Basic extends BinaryNoiseLayerTest {
+  }
 
 }

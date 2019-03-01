@@ -33,7 +33,7 @@ public abstract class ProductLayerTest extends LayerTestBase {
   @Override
   public int[][] getSmallDims(Random random) {
     return new int[][]{
-        {3}
+        {3}, {3}
     };
   }
 

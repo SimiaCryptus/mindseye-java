@@ -21,6 +21,7 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.network.DAGNode;
+import com.simiacryptus.mindseye.network.InnerNode;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,12 +55,11 @@ public class StdDevMetaLayer extends PipelineNetwork {
     super(1);
     wrap(new AvgMetaLayer().setMinBatchCount(minBatchCount)).freeRef();
     wrap(new AvgReducerLayer()).freeRef();
-    wrap(new SqActivationLayer()).freeRef();
-    @Nullable final DAGNode a = wrap(new LinearActivationLayer().setScale(-1).freeze());
-    wrap(new SqActivationLayer(), getInput(0)).freeRef();
+    InnerNode square = wrap(new SqActivationLayer());
+    wrap(new SqActivationLayer(), getInput(0), square.addRef()).freeRef();
     wrap(new AvgMetaLayer().setMinBatchCount(minBatchCount)).freeRef();
     wrap(new AvgReducerLayer()).freeRef();
-    wrap(new SumInputsLayer(), getHead(), a).freeRef();
+    wrap(new SumInputsLayer(), getHead(), wrap(new LinearActivationLayer().setScale(-1).freeze(), square)).freeRef();
     wrap(new NthPowerActivationLayer().setPower(0.5)).freeRef();
   }
 

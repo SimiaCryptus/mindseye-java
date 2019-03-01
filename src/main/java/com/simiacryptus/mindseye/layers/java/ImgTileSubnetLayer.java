@@ -133,10 +133,12 @@ public class ImgTileSubnetLayer extends WrapperLayer {
             passbacks.set(0);
             ImgTileAssemblyLayer imgTileAssemblyLayer = new ImgTileAssemblyLayer(cols, rows);
             TensorList reassembled = imgTileAssemblyLayer.evalAndFree(Arrays.stream(passback).map(t -> new Result(t, (c2, d2) -> {
+              d2.freeRef();
             })).toArray(i -> new Result[i])).getDataAndFree();
             imgTileAssemblyLayer.freeRef();
             input.accumulate(ctx, reassembled);
           }
+          delta.freeRef();
         }) {
           @Override
           protected void _free() {

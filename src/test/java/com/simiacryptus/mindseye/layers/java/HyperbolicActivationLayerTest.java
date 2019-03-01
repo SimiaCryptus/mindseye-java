@@ -62,7 +62,7 @@ public abstract class HyperbolicActivationLayerTest extends ActivationLayerTestB
   public static class Basic extends HyperbolicActivationLayerTest {
     @Override
     protected Layer lossLayer() {
-      return null;
+      return new EntropyLossLayer();
     }
   }
 

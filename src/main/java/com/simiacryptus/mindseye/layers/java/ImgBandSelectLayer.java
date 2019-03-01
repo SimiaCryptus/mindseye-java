@@ -107,6 +107,7 @@ public class ImgBandSelectLayer extends LayerBase {
             }).toArray(i -> new Tensor[i]));
         input.accumulate(buffer, tensorArray);
       }
+      error.freeRef();
     }) {
 
       @Override

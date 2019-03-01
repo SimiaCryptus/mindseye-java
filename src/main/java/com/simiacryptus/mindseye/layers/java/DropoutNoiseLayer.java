@@ -20,6 +20,7 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
+import com.simiacryptus.lang.ref.*;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.mindseye.layers.StochasticComponent;
 import org.slf4j.Logger;
@@ -126,6 +127,7 @@ public class DropoutNoiseLayer extends LayerBase implements StochasticComponent 
         }).toArray(i -> new Tensor[i]));
         inputResult.accumulate(buffer, tensorArray);
       }
+      delta.freeRef();
     }) {
 
       @Override

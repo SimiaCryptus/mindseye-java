@@ -40,7 +40,10 @@ public abstract class RescaledSubnetLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
-    return new RescaledSubnetLayer(2, new SigmoidActivationLayer());
+    SigmoidActivationLayer subnetwork = new SigmoidActivationLayer();
+    RescaledSubnetLayer rescaledSubnetLayer = new RescaledSubnetLayer(2, subnetwork);
+    subnetwork.freeRef();
+    return rescaledSubnetLayer;
   }
 
   /**

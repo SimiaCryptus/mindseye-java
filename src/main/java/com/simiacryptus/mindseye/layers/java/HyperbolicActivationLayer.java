@@ -144,6 +144,7 @@ public class HyperbolicActivationLayer extends LayerBase {
         }).toArray(i -> new Tensor[i]));
         inObj[0].accumulate(buffer, tensorArray);
       }
+      delta.freeRef();
     }) {
 
       @Override

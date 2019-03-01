@@ -20,6 +20,7 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
+import com.simiacryptus.lang.ref.*;
 import com.simiacryptus.mindseye.lang.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -132,6 +133,7 @@ public class MeanSqLossLayer extends LayerBase {
         }).toArray(i -> new Tensor[i]));
         inObj[1].accumulate(buffer, array);
       }
+      data.freeRef();
     }) {
 
       @Override

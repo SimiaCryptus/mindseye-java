@@ -46,15 +46,14 @@ public class SignReducerLayer extends DAGNetwork {
   public SignReducerLayer() {
     super(1);
     final DAGNode avgInput = wrap(new AvgReducerLayer(), getInput(0));
-    final DAGNode stdDevInput = wrap(new NthPowerActivationLayer().setPower(0.5),
-        wrap(new SumInputsLayer(),
-            wrap(new AvgReducerLayer(), wrap(new SqActivationLayer(), getInput(0))),
-            wrap(new LinearActivationLayer().setScale(-1), wrap(new SqActivationLayer(), avgInput))
-        ));
     head = wrap(new SigmoidActivationLayer().setBalanced(false),
         wrap(new ProductInputsLayer(),
-            avgInput,
-            wrap(new NthPowerActivationLayer().setPower(-1), stdDevInput)));
+            avgInput.addRef(),
+            wrap(new NthPowerActivationLayer().setPower(-1), (DAGNode) wrap(new NthPowerActivationLayer().setPower(0.5),
+                wrap(new SumInputsLayer(),
+                    wrap(new AvgReducerLayer(), wrap(new SqActivationLayer(), getInput(0))),
+                    wrap(new LinearActivationLayer().setScale(-1), wrap(new SqActivationLayer(), avgInput))
+                )))));
   }
 
   /**
@@ -83,5 +82,11 @@ public class SignReducerLayer extends DAGNetwork {
   public DAGNode getHead() {
     head.addRef();
     return head;
+  }
+
+  @Override
+  protected void _free() {
+    head.freeRef();
+    super._free();
   }
 }

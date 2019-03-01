@@ -20,6 +20,7 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
+import com.simiacryptus.lang.ref.*;
 import com.simiacryptus.mindseye.lang.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,8 +74,7 @@ public class EntropyLossLayer extends LayerBase {
   public Result eval(@Nonnull final Result... inObj) {
     Arrays.stream(inObj).forEach(nnResult -> nnResult.addRef());
     final double zero_tol = 1e-12;
-    final Result in0 = inObj[0];
-    TensorList indata = in0.getData();
+    TensorList indata = inObj[0].getData();
     indata.addRef();
     @Nonnull final Tensor gradient[] = new Tensor[indata.length()];
     final double max_prob = 1.;
@@ -120,7 +120,7 @@ public class EntropyLossLayer extends LayerBase {
         }).toArray(i -> new Tensor[i]));
         inObj[1].accumulate(buffer, tensorArray);
       }
-      if (in0.isAlive()) {
+      if (inObj[0].isAlive()) {
         @Nonnull TensorArray tensorArray = TensorArray.wrap(IntStream.range(0, delta.length()).mapToObj(dataIndex -> {
           Tensor tensor = delta.get(dataIndex);
           @Nonnull final Tensor passback = new Tensor(gradient[dataIndex].getDimensions());
@@ -130,8 +130,9 @@ public class EntropyLossLayer extends LayerBase {
           tensor.freeRef();
           return passback;
         }).toArray(i -> new Tensor[i]));
-        in0.accumulate(buffer, tensorArray);
+        inObj[0].accumulate(buffer, tensorArray);
       }
+      delta.freeRef();
     }) {
 
       @Override
@@ -143,7 +144,7 @@ public class EntropyLossLayer extends LayerBase {
 
       @Override
       public boolean isAlive() {
-        return in0.isAlive() || in0.isAlive();
+        return inObj[0].isAlive() || inObj[0].isAlive();
       }
 
     };

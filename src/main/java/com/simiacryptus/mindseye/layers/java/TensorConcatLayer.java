@@ -21,6 +21,8 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.simiacryptus.lang.ref.ReferenceCounting;
+import com.simiacryptus.lang.ref.ReferenceCountingBase;
 import com.simiacryptus.mindseye.lang.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -122,9 +124,13 @@ public class TensorConcatLayer extends LayerBase {
       }
 
       for (int i = 0; i < inObj.length; i++) {
-        @Nonnull TensorArray tensorArray = TensorArray.wrap(splitData[i]);
-        inObj[i].accumulate(buffer, tensorArray);
+        TensorArray wrap = TensorArray.wrap(splitData[i]);
+        inObj[i].accumulate(buffer, wrap);
+        if(0 < wrap.currentRefCount()) {
+          throw new RuntimeException(inObj[i].getClass() + " leak: " + wrap.currentRefCount());
+        }
       }
+      data.freeRef();
     }) {
 
       @Override

@@ -101,6 +101,7 @@ public class MaxMetaLayer extends LayerBase {
         input.accumulate(buffer, tensorArray);
         delta.freeRef();
       }
+      data.freeRef();
     }) {
 
       @Override

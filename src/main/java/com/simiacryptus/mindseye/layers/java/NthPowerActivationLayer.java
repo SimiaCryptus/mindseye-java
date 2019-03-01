@@ -20,6 +20,7 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
+import com.simiacryptus.lang.ref.*;
 import com.simiacryptus.mindseye.lang.*;
 
 import javax.annotation.Nonnull;
@@ -160,6 +161,7 @@ public final class NthPowerActivationLayer extends LayerBase {
         }).toArray(i -> new Tensor[i]));
         inObj[0].accumulate(buffer, tensorArray);
       }
+      data.freeRef();
     }) {
 
       @Override

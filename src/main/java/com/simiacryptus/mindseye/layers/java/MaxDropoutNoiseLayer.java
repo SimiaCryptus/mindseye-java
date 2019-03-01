@@ -20,6 +20,7 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
+import com.simiacryptus.lang.ref.*;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.util.JsonUtil;
 import com.simiacryptus.util.Util;
@@ -130,6 +131,7 @@ public class MaxDropoutNoiseLayer extends LayerBase {
         }).toArray(i -> new Tensor[i]));
         in0.accumulate(buffer, tensorArray);
       }
+      delta.freeRef();
     }) {
 
       @Override

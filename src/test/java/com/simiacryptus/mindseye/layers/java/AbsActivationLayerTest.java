@@ -41,7 +41,7 @@ public abstract class AbsActivationLayerTest extends ActivationLayerTestBase {
 
     @Override
     protected Layer lossLayer() {
-      return null;
+      return new EntropyLossLayer();
     }
   }
 }

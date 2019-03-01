@@ -81,12 +81,10 @@ public class GaussianNoiseLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public Result eval(final Result... inObj) {
+  public Result evalAndFree(final Result... inObj) {
     final Result in0 = inObj[0];
     final TensorList inputData = in0.getData();
     final int itemCnt = inputData.length();
-    in0.addRef();
-    inputData.addRef();
     final Tensor[] outputA = IntStream.range(0, itemCnt).mapToObj(dataIndex -> {
       @Nonnull final Random random = new Random(seed);
       @Nullable final Tensor input = inputData.get(dataIndex);
@@ -96,12 +94,14 @@ public class GaussianNoiseLayer extends LayerBase {
       input.freeRef();
       return output;
     }).toArray(i -> new Tensor[i]);
+    int[] dimensions = inputData.getDimensions();
+    inputData.freeRef();
     return new Result(TensorArray.wrap(outputA), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
       if (in0.isAlive()) {
         @Nonnull TensorArray tensorArray = TensorArray.wrap(IntStream.range(0, delta.length()).mapToObj(dataIndex -> {
           Tensor tensor = delta.get(dataIndex);
           @Nullable final double[] deltaData = tensor.getData();
-          @Nonnull final Tensor passback = new Tensor(inputData.getDimensions());
+          @Nonnull final Tensor passback = new Tensor(dimensions);
           for (int i = 0; i < passback.length(); i++) {
             passback.set(i, deltaData[i]);
           }
@@ -114,7 +114,6 @@ public class GaussianNoiseLayer extends LayerBase {
 
       @Override
       protected void _free() {
-        inputData.freeRef();
         in0.freeRef();
       }
 

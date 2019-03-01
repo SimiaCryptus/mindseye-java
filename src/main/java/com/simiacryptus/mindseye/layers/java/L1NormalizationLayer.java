@@ -116,6 +116,7 @@ public class L1NormalizationLayer extends LayerBase {
         @Nonnull TensorArray tensorArray = TensorArray.wrap(passbackArray);
         in.accumulate(buffer, tensorArray);
       }
+      outDelta.freeRef();
     }) {
 
       @Override

@@ -98,6 +98,9 @@
   "com.simiacryptus.mindseye.layers.java.BinaryNoiseLayerTest" : {
     ":class" : "The type Binary noise key apply."
   },
+  "com.simiacryptus.mindseye.layers.java.BinaryNoiseLayerTest.Basic" : {
+    ":class" : "Basic Test"
+  },
   "com.simiacryptus.mindseye.layers.java.CrossDifferenceLayer" : {
     ":class" : "The type Cross difference key."
   },
@@ -632,18 +635,6 @@
     ":class" : "The type Std dev meta key apply."
   },
   "com.simiacryptus.mindseye.layers.java.StdDevMetaLayerTest.Basic" : {
-    ":class" : "Basic Test"
-  },
-  "com.simiacryptus.mindseye.layers.java.StochasticBinaryNoiseLayer" : {
-    ":class" : "The type Binary noise key.",
-    "density" : "Sets value.",
-    "dimensions" : "The Dimensions.",
-    "masks" : "The Mask list."
-  },
-  "com.simiacryptus.mindseye.layers.java.StochasticBinaryNoiseLayerTest" : {
-    ":class" : "The type Product key apply."
-  },
-  "com.simiacryptus.mindseye.layers.java.StochasticBinaryNoiseLayerTest.Basic" : {
     ":class" : "Basic Test"
   },
   "com.simiacryptus.mindseye.layers.java.StochasticSamplingSubnetLayer" : {

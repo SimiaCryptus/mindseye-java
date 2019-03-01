@@ -51,8 +51,7 @@ public class RescaledSubnetLayer extends LayerBase {
   public RescaledSubnetLayer(final int scale, final Layer subnetwork) {
     super();
     this.scale = scale;
-    this.subnetwork = subnetwork;
-    this.subnetwork.addRef();
+    this.subnetwork = subnetwork.addRef();
   }
 
   /**
@@ -87,12 +86,11 @@ public class RescaledSubnetLayer extends LayerBase {
 
   @Nullable
   @Override
-  public Result eval(@Nonnull final Result... inObj) {
+  public Result evalAndFree(@Nonnull final Result... inObj) {
     assert 1 == inObj.length;
-    final TensorList batch = inObj[0].getData();
-    @Nonnull final int[] inputDims = batch.getDimensions();
+    @Nonnull final int[] inputDims = inObj[0].getData().getDimensions();
     assert 3 == inputDims.length;
-    if (1 == scale) return subnetwork.eval(inObj);
+    if (1 == scale) return subnetwork.evalAndFree(inObj);
 
     @Nonnull final PipelineNetwork network = new PipelineNetwork();
     @Nullable final DAGNode condensed = network.wrap(new ImgReshapeLayer(scale, scale, false));
@@ -101,11 +99,11 @@ public class RescaledSubnetLayer extends LayerBase {
       for (int i = 0; i < inputDims[2]; i++) {
         select[i] = subband * inputDims[2] + i;
       }
-      return network.add(subnetwork, network.wrap(new ImgBandSelectLayer(select), condensed));
+      return network.add(subnetwork, network.wrap(new ImgBandSelectLayer(select), condensed.addRef()));
     }).toArray(i -> new DAGNode[i])).freeRef();
+    condensed.freeRef();
     network.wrap(new ImgReshapeLayer(scale, scale, true)).freeRef();
-
-    Result eval = network.eval(inObj);
+    Result eval = network.evalAndFree(inObj);
     network.freeRef();
     return eval;
   }

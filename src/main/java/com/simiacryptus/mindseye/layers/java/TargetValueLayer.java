@@ -51,8 +51,15 @@ public class TargetValueLayer extends DAGNetwork {
    */
   public TargetValueLayer(final double... values) {
     super(1);
-    target = add(new ValueLayer(new Tensor(values)));
-    head = add(new MeanSqLossLayer(), getInput(0), target);
+    target = wrap(ValueLayer.wrap(new Tensor(values)));
+    head = wrap(new MeanSqLossLayer(), getInput(0), target.addRef());
+  }
+
+  @Override
+  protected void _free() {
+    head.freeRef();
+    target.freeRef();
+    super._free();
   }
 
   /**

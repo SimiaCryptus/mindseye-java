@@ -145,6 +145,7 @@ public class AvgPoolingLayer extends LayerBase {
         @Nonnull TensorArray tensorArray = TensorArray.wrap(passback);
         inObj[0].accumulate(buffer, tensorArray);
       }
+      delta.freeRef();
     }) {
 
       @Override

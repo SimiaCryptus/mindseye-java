@@ -94,6 +94,7 @@ public class ReshapeLayer extends LayerBase {
     return new Result(reshapedTensorList, (DeltaSet<UUID> buffer, TensorList delta) -> {
       @Nonnull ReshapedTensorList tensorList = new ReshapedTensorList(delta, inputDims);
       inObj[0].accumulate(buffer, tensorList);
+      delta.freeRef();
     }) {
 
       @Override

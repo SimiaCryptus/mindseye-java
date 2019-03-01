@@ -105,9 +105,11 @@ public class SumMetaLayer extends LayerBase {
             feedback[inputItem].add(inputCoord, delta.get(inputCoord));
           }
         });
+        delta.freeRef();
         @Nonnull TensorArray tensorArray = TensorArray.wrap(feedback);
         input.accumulate(buffer, tensorArray);
       }
+      data.freeRef();
     }) {
 
       @Override
@@ -133,6 +135,14 @@ public class SumMetaLayer extends LayerBase {
     }
     json.addProperty("minBatches", minBatches);
     return json;
+  }
+
+  @Override
+  protected void _free() {
+    if(null != lastResult) {
+      lastResult.freeRef();
+    }
+    super._free();
   }
 
   /**

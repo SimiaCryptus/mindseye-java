@@ -40,7 +40,7 @@ public abstract class GaussianNoiseLayerTest extends ActivationLayerTestBase {
   public static class Basic extends GaussianNoiseLayerTest {
     @Override
     protected Layer lossLayer() {
-      return null;
+      return new MeanSqLossLayer();
     }
   }
 

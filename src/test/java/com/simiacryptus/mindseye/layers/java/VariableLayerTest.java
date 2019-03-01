@@ -40,7 +40,10 @@ public abstract class VariableLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
-    return new VariableLayer(new MonitoringSynapse());
+    MonitoringSynapse inner = new MonitoringSynapse();
+    VariableLayer variableLayer = new VariableLayer(inner);
+    inner.freeRef();
+    return variableLayer;
   }
 
   /**

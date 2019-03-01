@@ -40,7 +40,7 @@ public abstract class LinearActivationLayerTest extends ActivationLayerTestBase 
   public static class Basic extends LinearActivationLayerTest {
     @Override
     protected Layer lossLayer() {
-      return null;
+      return new EntropyLossLayer();
     }
   }
 

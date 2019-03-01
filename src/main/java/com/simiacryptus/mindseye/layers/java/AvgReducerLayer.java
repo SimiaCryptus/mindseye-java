@@ -20,6 +20,7 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
+import com.simiacryptus.lang.ref.*;
 import com.simiacryptus.mindseye.lang.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -101,6 +102,7 @@ public class AvgReducerLayer extends LayerBase {
           in_l.accumulate(buffer, tensorList);
         }
       }
+      delta.freeRef();
     }) {
 
       @Override

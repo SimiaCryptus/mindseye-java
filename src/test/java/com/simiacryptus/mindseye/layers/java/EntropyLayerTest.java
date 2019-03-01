@@ -49,7 +49,7 @@ public abstract class EntropyLayerTest extends ActivationLayerTestBase {
   public static class Basic extends EntropyLayerTest {
     @Override
     protected Layer lossLayer() {
-      return null;
+      return new EntropyLossLayer();
     }
   }
 

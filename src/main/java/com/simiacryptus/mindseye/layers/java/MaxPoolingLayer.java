@@ -176,6 +176,7 @@ public class MaxPoolingLayer extends LayerBase {
         }).toArray(i -> new Tensor[i]));
         in.accumulate(buffer, tensorArray);
       }
+      data.freeRef();
     }) {
 
       @Override

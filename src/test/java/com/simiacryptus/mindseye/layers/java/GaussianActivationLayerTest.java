@@ -40,7 +40,7 @@ public abstract class GaussianActivationLayerTest extends ActivationLayerTestBas
   public static class Basic extends GaussianActivationLayerTest {
     @Override
     protected Layer lossLayer() {
-      return null;
+      return new EntropyLossLayer();
     }
   }
 

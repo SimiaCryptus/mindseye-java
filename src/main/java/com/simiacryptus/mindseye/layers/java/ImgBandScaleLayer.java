@@ -20,6 +20,7 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
+import com.simiacryptus.lang.ref.*;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.util.JsonUtil;
 import com.simiacryptus.util.Util;
@@ -167,6 +168,7 @@ public class ImgBandScaleLayer extends LayerBase {
         @Nonnull TensorArray tensorArray = TensorArray.wrap(tensors);
         input.accumulate(buffer, tensorArray);
       }
+      delta.freeRef();
     }) {
 
       @Override

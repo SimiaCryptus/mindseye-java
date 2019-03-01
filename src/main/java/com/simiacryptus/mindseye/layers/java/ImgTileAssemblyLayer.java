@@ -20,6 +20,7 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.simiacryptus.mindseye.lang.*;
 
 import javax.annotation.Nonnull;
@@ -62,12 +63,17 @@ public class ImgTileAssemblyLayer extends LayerBase {
    */
   protected ImgTileAssemblyLayer(@Nonnull final JsonObject json) {
     super(json);
-    columns = json.getAsJsonPrimitive("columns").getAsInt();
-    rows = json.getAsJsonPrimitive("rows").getAsInt();
-    setPaddingX(json.getAsJsonPrimitive("paddingX").getAsInt());
-    setPaddingY(json.getAsJsonPrimitive("paddingY").getAsInt());
-    setOffsetX(json.getAsJsonPrimitive("offsetX").getAsInt());
-    setOffsetY(json.getAsJsonPrimitive("offsetY").getAsInt());
+    columns = getInt(json, "columns", 1);
+    rows = getInt(json, "rows", 1);
+    setPaddingX(getInt(json, "paddingX", 0));
+    setPaddingY(getInt(json, "paddingY", 0));
+    setOffsetX(getInt(json, "offsetX", 0));
+    setOffsetY(getInt(json, "offsetY", 0));
+  }
+
+  private int getInt(@Nonnull JsonObject json, String paddingX, int defaultValue) {
+    JsonPrimitive asJsonPrimitive = json.getAsJsonPrimitive(paddingX);
+    return null==asJsonPrimitive? defaultValue :asJsonPrimitive.getAsInt();
   }
 
   /**
@@ -245,6 +251,7 @@ public class ImgTileAssemblyLayer extends LayerBase {
         }
         positionY.addAndGet(rowHeight - getPaddingY());
       }
+      delta.freeRef();
     }) {
 
       @Override

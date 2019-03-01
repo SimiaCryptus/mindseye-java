@@ -186,6 +186,7 @@ public class ImgPixelSoftmaxLayer extends LayerBase {
         input.accumulate(buffer, passback);
         dots.freeRef();
       }
+      delta.freeRef();
     }) {
 
       @Override

@@ -21,6 +21,7 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
+import com.simiacryptus.mindseye.network.CountingResult;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -92,26 +93,39 @@ public class SumInputsLayer extends LayerBase {
       r.freeRef();
       return sum;
     }).get(), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
-      for (@Nonnull final Result input : inObj) {
-        if (input.isAlive()) {
-          @Nonnull TensorList projectedDelta = delta;
-          if (1 < projectedDelta.length() && input.getData().length() == 1) {
-            projectedDelta = TensorArray.wrap(projectedDelta.stream().parallel().reduce((a, b) -> {
-              @Nullable Tensor c = a.addAndFree(b);
-              b.freeRef();
-              return c;
-            }).get());
-          } else {
-            projectedDelta.addRef();
+      try {
+        for (@Nonnull final Result input : inObj) {
+          if (input.isAlive()) {
+            delta.addRef();
+            @Nonnull TensorList projectedDelta = delta;
+            if (1 < projectedDelta.length() && input.getData().length() == 1) {
+              TensorArray new_projectedDelta = TensorArray.wrap(projectedDelta.stream().parallel().reduce((a, b) -> {
+                @Nullable Tensor c = a.addAndFree(b);
+                b.freeRef();
+                return c;
+              }).get());
+              projectedDelta.freeRef();
+              projectedDelta = new_projectedDelta;
+            }
+            if (1 < Tensor.length(projectedDelta.getDimensions()) && Tensor.length(input.getData().getDimensions()) == 1) {
+              @Nonnull TensorArray new_projectedDelta = TensorArray.wrap(projectedDelta.stream().map(t -> {
+                Tensor tensor = new Tensor(new double[]{t.sum()});
+                t.freeRef();
+                return tensor;
+              }).toArray(i -> new Tensor[i]));
+              projectedDelta.freeRef();
+              projectedDelta = new_projectedDelta;
+            }
+            int prevRefs = projectedDelta.currentRefCount();
+            input.accumulate(buffer, projectedDelta);
+            int refDeltas = prevRefs - projectedDelta.currentRefCount();
+            if (refDeltas != 1 && !input.getClass().equals(CountingResult.class)) {
+              throw new IllegalStateException(String.format("%s backprop finished with %s refs", input.getClass().toString(), refDeltas));
+            }
           }
-          if (1 < Tensor.length(projectedDelta.getDimensions()) && Tensor.length(input.getData().getDimensions()) == 1) {
-            Tensor[] data = projectedDelta.stream().map(t -> new Tensor(new double[]{t.sum()})).toArray(i -> new Tensor[i]);
-            @Nonnull TensorArray data2 = TensorArray.wrap(data);
-            projectedDelta.freeRef();
-            projectedDelta = data2;
-          }
-          input.accumulate(buffer, projectedDelta);
         }
+      } finally {
+        delta.freeRef();
       }
     }) {
 

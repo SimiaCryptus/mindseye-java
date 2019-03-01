@@ -119,6 +119,7 @@ public class CrossProductLayer extends LayerBase {
         }).toArray(i -> new Tensor[i]));
         in.accumulate(buffer, tensorArray);
       }
+      delta.freeRef();
     }) {
 
       @Override

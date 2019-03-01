@@ -20,6 +20,8 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
+import com.simiacryptus.lang.ref.ReferenceCounting;
+import com.simiacryptus.lang.ref.ReferenceCountingBase;
 import com.simiacryptus.mindseye.lang.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,46 +72,50 @@ public class ScaleMetaLayer extends LayerBase {
 
   @Nullable
   @Override
-  public Result eval(@Nonnull final Result... inObj) {
-    final int itemCnt = inObj[0].getData().length();
-    Arrays.stream(inObj).forEach(nnResult -> nnResult.addRef());
-    Arrays.stream(inObj).forEach(x -> x.getData().addRef());
-    final Tensor[] tensors = IntStream.range(0, itemCnt).mapToObj(dataIndex -> inObj[0].getData().get(dataIndex).mapIndex((v, c) -> v * inObj[1].getData().get(0).get(c))).toArray(i -> new Tensor[i]);
+  public Result evalAndFree(@Nonnull final Result... inObj) {
+    final Result in0 = inObj[0];
+    final Result in1 = inObj[1];
+    final TensorList data0 = in0.getData();
+    final TensorList data1 = in1.getData();
+    final int itemCnt = data0.length();
+    final Tensor data10 = data1.get(0);
+    final Tensor[] tensors = IntStream.range(0, itemCnt).mapToObj(dataIndex -> data0.get(dataIndex).mapIndex((v, c) -> v * data10.get(c))).toArray(i -> new Tensor[i]);
+    data1.freeRef();
+    data0.freeRef();
     Tensor tensor0 = tensors[0];
     tensor0.addRef();
     return new Result(TensorArray.wrap(tensors), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList data) -> {
-      if (inObj[0].isAlive()) {
+      if (in0.isAlive()) {
         @Nonnull TensorArray tensorArray = TensorArray.wrap(data.stream().map(t -> {
-          @Nullable Tensor t1 = inObj[1].getData().get(0);
           @Nullable Tensor tensor = t.mapIndex((v, c) -> {
-            return v * t1.get(c);
+            return v * data10.get(c);
           });
           t.freeRef();
-          t1.freeRef();
           return tensor;
         }).toArray(i -> new Tensor[i]));
-        inObj[0].accumulate(buffer, tensorArray);
+        in0.accumulate(buffer, tensorArray);
       }
-      if (inObj[1].isAlive()) {
+      if (in1.isAlive()) {
         @Nullable final Tensor passback = tensor0.mapIndex((v, c) -> {
-          return IntStream.range(0, itemCnt).mapToDouble(i -> data.get(i).get(c) * inObj[0].getData().get(i).get(c)).sum();
+          return IntStream.range(0, itemCnt).mapToDouble(i -> data.get(i).get(c) * data.get(i).get(c)).sum();
         });
         tensor0.freeRef();
-        @Nonnull TensorArray tensorArray = TensorArray.wrap(IntStream.range(0, inObj[1].getData().length())
+        @Nonnull TensorArray tensorArray = TensorArray.wrap(IntStream.range(0, data.length())
             .mapToObj(i -> i == 0 ? passback : passback.map(v -> 0)).toArray(i -> new Tensor[i]));
-        inObj[1].accumulate(buffer, tensorArray);
+        in1.accumulate(buffer, tensorArray);
       }
-      Arrays.stream(inObj).forEach(x -> x.getData().addRef());
+      data.freeRef();
     }) {
 
       @Override
       protected void _free() {
-        Arrays.stream(inObj).forEach(nnResult -> nnResult.freeRef());
+        data10.freeRef();
+        Arrays.stream(inObj).forEach(ReferenceCountingBase::freeRef);
       }
 
       @Override
       public boolean isAlive() {
-        return inObj[0].isAlive() || inObj[1].isAlive();
+        return in0.isAlive() || in1.isAlive();
       }
 
     };

@@ -41,11 +41,13 @@ public class ValueLayerTest {
       return new int[][]{};
     }
 
-
     @Nonnull
     @Override
     public Layer getLayer(final int[][] inputSize, Random random) {
-      return new ValueLayer(new Tensor(0.1));
+      Tensor tensor = new Tensor(0.1);
+      ValueLayer valueLayer = new ValueLayer(tensor);
+      tensor.freeRef();
+      return valueLayer;
     }
   }
 

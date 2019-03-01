@@ -135,6 +135,7 @@ public class ImgPixelGateLayer extends LayerBase {
         }).toArray(i -> new Tensor[i]));
         gate.accumulate(buffer, tensorArray);
       }
+      delta.freeRef();
     }) {
 
       @Override

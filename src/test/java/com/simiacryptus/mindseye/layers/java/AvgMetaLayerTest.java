@@ -62,7 +62,7 @@ public abstract class AvgMetaLayerTest extends MetaLayerTestBase {
 
     @Override
     protected Layer lossLayer() {
-      return null;
+      return new EntropyLossLayer();
     }
   }
 

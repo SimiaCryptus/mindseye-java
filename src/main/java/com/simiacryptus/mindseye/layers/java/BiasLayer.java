@@ -20,6 +20,7 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
+import com.simiacryptus.lang.ref.*;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.util.FastRandom;
 import com.simiacryptus.util.Util;
@@ -76,6 +77,12 @@ public class BiasLayer extends LayerBase {
   protected BiasLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json);
     bias = Tensor.fromJson(json.get("bias"),rs);
+  }
+
+  @Override
+  protected void _free() {
+    bias.freeRef();
+    super._free();
   }
 
   /**
@@ -160,6 +167,7 @@ public class BiasLayer extends LayerBase {
             delta.addRef();
             inObj[0].accumulate(buffer, delta);
           }
+          delta.freeRef();
         }) {
 
       @Override

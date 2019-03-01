@@ -43,6 +43,7 @@ public class AutoEntropyLayer extends PipelineNetwork {
   public AutoEntropyLayer() {
     super(1);
     DAGNode input = getInput(0);
+    input.addRef();
     wrap(new EntropyLossLayer(), input, input).freeRef();
   }
 

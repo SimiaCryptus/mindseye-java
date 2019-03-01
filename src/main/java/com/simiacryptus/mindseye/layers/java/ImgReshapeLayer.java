@@ -193,6 +193,7 @@ public class ImgReshapeLayer extends LayerBase {
             }).toArray(i -> new Tensor[i]));
         input.accumulate(buffer, tensorArray);
       }
+      error.freeRef();
     }) {
 
       @Override
