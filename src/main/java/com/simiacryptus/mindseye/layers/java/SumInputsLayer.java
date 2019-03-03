@@ -116,12 +116,7 @@ public class SumInputsLayer extends LayerBase {
               projectedDelta.freeRef();
               projectedDelta = new_projectedDelta;
             }
-            int prevRefs = projectedDelta.currentRefCount();
             input.accumulate(buffer, projectedDelta);
-            int refDeltas = prevRefs - projectedDelta.currentRefCount();
-            if (refDeltas != 1 && !input.getClass().equals(CountingResult.class)) {
-              throw new IllegalStateException(String.format("%s backprop finished with %s refs", input.getClass().toString(), refDeltas));
-            }
           }
         }
       } finally {
