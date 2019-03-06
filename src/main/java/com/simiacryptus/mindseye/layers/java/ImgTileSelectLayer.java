@@ -91,7 +91,7 @@ public class ImgTileSelectLayer extends LayerBase {
     positionX = json.getAsJsonPrimitive("positionX").getAsInt();
     positionY = json.getAsJsonPrimitive("positionY").getAsInt();
     JsonPrimitive toroidal = json.getAsJsonPrimitive("toroidal");
-    this.toroidal = null==toroidal?false:toroidal.getAsBoolean();
+    this.toroidal = null != toroidal && toroidal.getAsBoolean();
   }
 
   /**

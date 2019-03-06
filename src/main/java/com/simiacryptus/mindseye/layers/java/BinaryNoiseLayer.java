@@ -125,7 +125,7 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
         maskList.add(tensorPrototype.map(v -> amplitude, false));
       } else {
         Random random = new Random(seed * maskList.size());
-        maskList.add(tensorPrototype.map(v -> random.nextDouble() < getValue() ? 0 : amplitude, false));
+        maskList.add(tensorPrototype.map(v -> random.nextDouble() < getValue() ? amplitude : 0, false));
       }
     }
     tensorPrototype.freeRef();
