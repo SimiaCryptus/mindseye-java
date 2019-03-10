@@ -430,4 +430,8 @@ public class FullyConnectedLayer extends LayerBase {
   }
 
 
+  public FullyConnectedLayer randomize(double amplitude) {
+    getWeights().randomize(amplitude);
+    return this;
+  }
 }
