@@ -21,7 +21,7 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.simiacryptus.lang.ref.*;
+import com.simiacryptus.lang.ref.ReferenceCounting;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.mindseye.layers.StochasticComponent;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
@@ -121,7 +121,7 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
     @Nonnull final Tensor tensorPrototype = new Tensor(dimensions);
     double amplitude = 1.0 / getValue();
     while (length > maskList.size()) {
-      if(seed==0) {
+      if (seed == 0) {
         maskList.add(tensorPrototype.map(v -> amplitude, false));
       } else {
         Random random = new Random(seed * maskList.size());

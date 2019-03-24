@@ -19,41 +19,36 @@
 
 package com.simiacryptus.mindseye.layers.java;
 
-
 import com.simiacryptus.mindseye.lang.Layer;
-import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Random;
 
-/**
- * The type Max dropout noise key apply.
- */
-public abstract class MaxDropoutNoiseLayerTest extends ActivationLayerTestBase {
-  /**
-   * Instantiates a new Max dropout noise key apply.
-   */
-  public MaxDropoutNoiseLayerTest() {
-    super(new MaxDropoutNoiseLayer(2, 2, 1));
-  }
 
-  @Override
-  protected Layer lossLayer() {
-    return new MeanSqLossLayer();
-  }
+public class SubBatchLayerTest extends LayerTestBase {
+
+  private final Layer layer = SubBatchLayer.wrap(new SoftmaxLayer());
 
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
     return new int[][]{
-        {8, 8, 1}
+        {5}
     };
   }
 
-  /**
-   * Basic Test
-   */
-  public static class Basic extends MaxDropoutNoiseLayerTest {
+  @Nullable
+  @Override
+  public Class<? extends Layer> getReferenceLayerClass() {
+    return null;
   }
+
+  @Nonnull
+  @Override
+  public Layer getLayer(final int[][] inputSize, Random random) {
+    return layer.copy();
+  }
+
 
 }

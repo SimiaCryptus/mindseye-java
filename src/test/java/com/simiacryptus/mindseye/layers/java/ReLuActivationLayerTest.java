@@ -27,15 +27,16 @@ import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
  * The type Re lu activation key apply.
  */
 public abstract class ReLuActivationLayerTest extends ActivationLayerTestBase {
-  @Override
-  protected Layer lossLayer() {
-    return new MeanSqLossLayer();
-  }
   /**
    * Instantiates a new Re lu activation key apply.
    */
   public ReLuActivationLayerTest() {
     super(new ReLuActivationLayer());
+  }
+
+  @Override
+  protected Layer lossLayer() {
+    return new MeanSqLossLayer();
   }
 
   /**

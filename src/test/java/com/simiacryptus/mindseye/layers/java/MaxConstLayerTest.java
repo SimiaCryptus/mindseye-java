@@ -33,10 +33,12 @@ public abstract class MaxConstLayerTest extends ActivationLayerTestBase {
   public MaxConstLayerTest() {
     super(new MaxConstLayer());
   }
+
   @Override
   protected Layer lossLayer() {
     return new MeanSqLossLayer();
   }
+
   /**
    * Basic Test
    */

@@ -55,13 +55,6 @@ public class TargetValueLayer extends DAGNetwork {
     head = wrap(new MeanSqLossLayer(), getInput(0), target.addRef());
   }
 
-  @Override
-  protected void _free() {
-    head.freeRef();
-    target.freeRef();
-    super._free();
-  }
-
   /**
    * Instantiates a new Target value key.
    *
@@ -83,6 +76,13 @@ public class TargetValueLayer extends DAGNetwork {
    */
   public static Layer fromJson(@Nonnull final JsonObject inner, Map<CharSequence, byte[]> rs) {
     return new TargetValueLayer(inner, rs);
+  }
+
+  @Override
+  protected void _free() {
+    head.freeRef();
+    target.freeRef();
+    super._free();
   }
 
   @Override

@@ -29,17 +29,17 @@ import java.util.Random;
  * The type Std dev meta key apply.
  */
 public abstract class StdDevMetaLayerTest extends MetaLayerTestBase {
-  @Override
-  protected Layer lossLayer() {
-    return new MeanSqLossLayer();
-  }
-
   /**
    * Instantiates a new Std dev meta key apply.
    */
   public StdDevMetaLayerTest() {
     super();
     //validateDifferentials = false;
+  }
+
+  @Override
+  protected Layer lossLayer() {
+    return new MeanSqLossLayer();
   }
 
   @Nonnull

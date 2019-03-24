@@ -27,15 +27,16 @@ import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
  * The type Sq activation key apply.
  */
 public abstract class SqActivationLayerTest extends ActivationLayerTestBase {
-  @Override
-  protected Layer lossLayer() {
-    return new MeanSqLossLayer();
-  }
   /**
    * Instantiates a new Sq activation key apply.
    */
   public SqActivationLayerTest() {
     super(new SqActivationLayer());
+  }
+
+  @Override
+  protected Layer lossLayer() {
+    return new MeanSqLossLayer();
   }
 
   /**

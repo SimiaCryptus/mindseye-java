@@ -71,11 +71,6 @@ public class ImgTileAssemblyLayer extends LayerBase {
     setOffsetY(getInt(json, "offsetY", 0));
   }
 
-  private int getInt(@Nonnull JsonObject json, String paddingX, int defaultValue) {
-    JsonPrimitive asJsonPrimitive = json.getAsJsonPrimitive(paddingX);
-    return null==asJsonPrimitive? defaultValue :asJsonPrimitive.getAsInt();
-  }
-
   /**
    * Copy condense tensor.
    *
@@ -162,7 +157,6 @@ public class ImgTileAssemblyLayer extends LayerBase {
     return outputData;
   }
 
-
   /**
    * From json img crop key.
    *
@@ -172,6 +166,11 @@ public class ImgTileAssemblyLayer extends LayerBase {
    */
   public static ImgTileAssemblyLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ImgTileAssemblyLayer(json);
+  }
+
+  private int getInt(@Nonnull JsonObject json, String paddingX, int defaultValue) {
+    JsonPrimitive asJsonPrimitive = json.getAsJsonPrimitive(paddingX);
+    return null == asJsonPrimitive ? defaultValue : asJsonPrimitive.getAsInt();
   }
 
   @Nonnull

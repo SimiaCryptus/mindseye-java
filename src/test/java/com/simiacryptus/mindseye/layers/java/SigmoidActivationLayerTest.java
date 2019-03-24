@@ -27,15 +27,16 @@ import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
  * The type Sigmoid activation key apply.
  */
 public abstract class SigmoidActivationLayerTest extends ActivationLayerTestBase {
-  @Override
-  protected Layer lossLayer() {
-    return new MeanSqLossLayer();
-  }
   /**
    * Instantiates a new Sigmoid activation key apply.
    */
   public SigmoidActivationLayerTest() {
     super(new SigmoidActivationLayer());
+  }
+
+  @Override
+  protected Layer lossLayer() {
+    return new MeanSqLossLayer();
   }
 
   /**

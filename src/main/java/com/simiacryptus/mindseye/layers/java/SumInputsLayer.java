@@ -21,7 +21,6 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
-import com.simiacryptus.mindseye.network.CountingResult;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

@@ -21,8 +21,6 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.simiacryptus.lang.ref.ReferenceCounting;
-import com.simiacryptus.lang.ref.ReferenceCountingBase;
 import com.simiacryptus.mindseye.lang.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,7 +75,7 @@ public class TensorConcatLayer extends LayerBase {
     final int numBatches = inObj[0].getData().length();
     assert Arrays.stream(inObj).allMatch(x -> x.getData().length() == numBatches) : "All inputs must use same batch size";
     int[] outputDims = new int[]{
-        Arrays.stream(inObj).mapToInt(x->Tensor.length(x.getData().getDimensions())).sum()
+        Arrays.stream(inObj).mapToInt(x -> Tensor.length(x.getData().getDimensions())).sum()
     };
 
     @Nonnull final List<Tensor> outputTensors = new ArrayList<>();
@@ -126,7 +124,7 @@ public class TensorConcatLayer extends LayerBase {
       for (int i = 0; i < inObj.length; i++) {
         TensorArray wrap = TensorArray.wrap(splitData[i]);
         inObj[i].accumulate(buffer, wrap);
-        if(0 < wrap.currentRefCount()) {
+        if (0 < wrap.currentRefCount()) {
           throw new RuntimeException(inObj[i].getClass() + " leak: " + wrap.currentRefCount());
         }
       }

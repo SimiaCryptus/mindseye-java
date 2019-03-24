@@ -29,17 +29,17 @@ import java.util.Random;
  * The type Sum meta key apply.
  */
 public abstract class SumMetaLayerTest extends MetaLayerTestBase {
-  @Override
-  protected Layer lossLayer() {
-    return new MeanSqLossLayer();
-  }
-
   /**
    * Instantiates a new Sum meta key apply.
    */
   public SumMetaLayerTest() {
     super();
     validateBatchExecution = false;
+  }
+
+  @Override
+  protected Layer lossLayer() {
+    return new MeanSqLossLayer();
   }
 
   @Nonnull

@@ -33,6 +33,7 @@ public abstract class MaxMetaLayerTest extends MetaLayerTestBase {
   protected Layer lossLayer() {
     return new MeanSqLossLayer();
   }
+
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {

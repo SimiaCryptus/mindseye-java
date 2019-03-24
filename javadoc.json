@@ -1,718 +1,718 @@
 {
-  "com.simiacryptus.mindseye.layers.java.AbsActivationLayer" : {
-    ":class" : "The Absolute Value."
+  "com.simiacryptus.mindseye.layers.java.AbsActivationLayer": {
+    ":class": "The Absolute Value."
   },
-  "com.simiacryptus.mindseye.layers.java.AbsActivationLayerTest" : {
-    ":class" : "The type Abs activation key apply."
+  "com.simiacryptus.mindseye.layers.java.AbsActivationLayerTest": {
+    ":class": "The type Abs activation key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.AbsActivationLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.AbsActivationLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.AssertDimensionsLayer" : {
-    ":class" : "This key is a pass-thru except that it throws an error if the dimensions are not consistent apply its setting."
+  "com.simiacryptus.mindseye.layers.java.AssertDimensionsLayer": {
+    ":class": "This key is a pass-thru except that it throws an error if the dimensions are not consistent apply its setting."
   },
-  "com.simiacryptus.mindseye.layers.java.AssertDimensionsLayerTest" : {
-    ":class" : "The type Assert dimensions key apply."
+  "com.simiacryptus.mindseye.layers.java.AssertDimensionsLayerTest": {
+    ":class": "The type Assert dimensions key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.AssertDimensionsLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.AssertDimensionsLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.AutoEntropyLayer" : {
-    ":class" : "The type Std dev meta key."
+  "com.simiacryptus.mindseye.layers.java.AutoEntropyLayer": {
+    ":class": "The type Std dev meta key."
   },
-  "com.simiacryptus.mindseye.layers.java.AutoEntropyLayerTest" : {
-    ":class" : "The type Std dev meta key apply."
+  "com.simiacryptus.mindseye.layers.java.AutoEntropyLayerTest": {
+    ":class": "The type Std dev meta key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.AutoEntropyLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.AutoEntropyLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.AvgMetaLayer" : {
-    ":class" : "Computes the average value for each element across all elements of an execution batch. The output batch size will always be one.",
-    "lastResult" : "The Last result.",
-    "minBatchCount" : "Sets min batch count."
+  "com.simiacryptus.mindseye.layers.java.AvgMetaLayer": {
+    ":class": "Computes the average value for each element across all elements of an execution batch. The output batch size will always be one.",
+    "lastResult": "The Last result.",
+    "minBatchCount": "Sets min batch count."
   },
-  "com.simiacryptus.mindseye.layers.java.AvgMetaLayerTest" : {
-    ":class" : "The type Avg meta key apply."
+  "com.simiacryptus.mindseye.layers.java.AvgMetaLayerTest": {
+    ":class": "The type Avg meta key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.AvgMetaLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.AvgMetaLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.AvgPoolingLayer" : {
-    ":class" : "A local-pooling key which sets all elements to the average value."
+  "com.simiacryptus.mindseye.layers.java.AvgPoolingLayer": {
+    ":class": "A local-pooling key which sets all elements to the average value."
   },
-  "com.simiacryptus.mindseye.layers.java.AvgPoolingLayer.IndexMapKey" : {
-    ":class" : "The type Index buildMap key.",
-    "kernel" : "The Kernel.",
-    "output" : "The Output."
+  "com.simiacryptus.mindseye.layers.java.AvgPoolingLayer.IndexMapKey": {
+    ":class": "The type Index buildMap key.",
+    "kernel": "The Kernel.",
+    "output": "The Output."
   },
-  "com.simiacryptus.mindseye.layers.java.AvgPoolingLayer.LayerCacheLoader" : { },
-  "com.simiacryptus.mindseye.layers.java.AvgPoolingLayerTest" : {
-    ":class" : "The type Avg subsample key apply."
+  "com.simiacryptus.mindseye.layers.java.AvgPoolingLayer.LayerCacheLoader": {},
+  "com.simiacryptus.mindseye.layers.java.AvgPoolingLayerTest": {
+    ":class": "The type Avg subsample key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.AvgPoolingLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.AvgPoolingLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.AvgReducerLayer" : {
-    ":class" : "Computes the average value across all elements of each input tensor. The output dimensions are always 1x1x1."
+  "com.simiacryptus.mindseye.layers.java.AvgReducerLayer": {
+    ":class": "Computes the average value across all elements of each input tensor. The output dimensions are always 1x1x1."
   },
-  "com.simiacryptus.mindseye.layers.java.AvgReducerLayerTest" : {
-    ":class" : "The type Avg reducer key apply."
+  "com.simiacryptus.mindseye.layers.java.AvgReducerLayerTest": {
+    ":class": "The type Avg reducer key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.AvgReducerLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.AvgReducerLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.BiasLayer" : {
-    ":class" : "Adds a bias tensor to the input. Expects a single input of the same dimension as the bias tensor.",
-    "weights" : "Sets weights.",
-    "weightsLog" : "Sets weights log."
+  "com.simiacryptus.mindseye.layers.java.BiasLayer": {
+    ":class": "Adds a bias tensor to the input. Expects a single input of the same dimension as the bias tensor.",
+    "weights": "Sets weights.",
+    "weightsLog": "Sets weights log."
   },
-  "com.simiacryptus.mindseye.layers.java.BiasLayerTest" : {
-    ":class" : "The type Bias key apply."
+  "com.simiacryptus.mindseye.layers.java.BiasLayerTest": {
+    ":class": "The type Bias key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.BiasLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.BiasLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.BiasLayerTest.Reducing" : {
-    ":class" : "Tests applying a single bias value on all inputs."
+  "com.simiacryptus.mindseye.layers.java.BiasLayerTest.Reducing": {
+    ":class": "Tests applying a single bias value on all inputs."
   },
-  "com.simiacryptus.mindseye.layers.java.BiasMetaLayer" : {
-    ":class" : "The type Bias meta key."
+  "com.simiacryptus.mindseye.layers.java.BiasMetaLayer": {
+    ":class": "The type Bias meta key."
   },
-  "com.simiacryptus.mindseye.layers.java.BiasMetaLayerTest" : {
-    ":class" : "The type Bias meta key apply."
+  "com.simiacryptus.mindseye.layers.java.BiasMetaLayerTest": {
+    ":class": "The type Bias meta key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.BiasMetaLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.BiasMetaLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.BinaryEntropyActivationLayer" : {
-    ":class" : "The type Binary entropy activation key."
+  "com.simiacryptus.mindseye.layers.java.BinaryEntropyActivationLayer": {
+    ":class": "The type Binary entropy activation key."
   },
-  "com.simiacryptus.mindseye.layers.java.BinaryEntropyActivationLayerTest" : {
-    ":class" : "The type Binary entropy activation key apply."
+  "com.simiacryptus.mindseye.layers.java.BinaryEntropyActivationLayerTest": {
+    ":class": "The type Binary entropy activation key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.BinaryNoiseLayer" : {
-    ":class" : "The type Binary noise key.",
-    "maskList" : "The Mask list.",
-    "value" : "Sets value."
+  "com.simiacryptus.mindseye.layers.java.BinaryNoiseLayer": {
+    ":class": "The type Binary noise key.",
+    "maskList": "The Mask list.",
+    "value": "Sets value."
   },
-  "com.simiacryptus.mindseye.layers.java.BinaryNoiseLayerTest" : {
-    ":class" : "The type Binary noise key apply."
+  "com.simiacryptus.mindseye.layers.java.BinaryNoiseLayerTest": {
+    ":class": "The type Binary noise key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.BinaryNoiseLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.BinaryNoiseLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.CrossDifferenceLayer" : {
-    ":class" : "The type Cross difference key."
+  "com.simiacryptus.mindseye.layers.java.CrossDifferenceLayer": {
+    ":class": "The type Cross difference key."
   },
-  "com.simiacryptus.mindseye.layers.java.CrossDifferenceLayerTest" : {
-    ":class" : "The type Cross difference key apply."
+  "com.simiacryptus.mindseye.layers.java.CrossDifferenceLayerTest": {
+    ":class": "The type Cross difference key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.CrossDifferenceLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.CrossDifferenceLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.CrossDotMetaLayer" : {
-    ":class" : "The type Cross dot meta key."
+  "com.simiacryptus.mindseye.layers.java.CrossDotMetaLayer": {
+    ":class": "The type Cross dot meta key."
   },
-  "com.simiacryptus.mindseye.layers.java.CrossDotMetaLayerTest" : {
-    ":class" : "The type Cross dot meta key apply."
+  "com.simiacryptus.mindseye.layers.java.CrossDotMetaLayerTest": {
+    ":class": "The type Cross dot meta key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.CrossDotMetaLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.CrossDotMetaLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.CrossProductLayer" : {
-    ":class" : "The type Cross product key."
+  "com.simiacryptus.mindseye.layers.java.CrossProductLayer": {
+    ":class": "The type Cross product key."
   },
-  "com.simiacryptus.mindseye.layers.java.CrossProductLayerTest" : {
-    ":class" : "The type Cross product key apply."
+  "com.simiacryptus.mindseye.layers.java.CrossProductLayerTest": {
+    ":class": "The type Cross product key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.CrossProductLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.CrossProductLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.DropoutNoiseLayer" : {
-    ":class" : "Randomly selects a fraction of the inputs and sets all other elements to zero.",
-    "seed" : "The Seed.",
-    "value" : "Sets value."
+  "com.simiacryptus.mindseye.layers.java.DropoutNoiseLayer": {
+    ":class": "Randomly selects a fraction of the inputs and sets all other elements to zero.",
+    "seed": "The Seed.",
+    "value": "Sets value."
   },
-  "com.simiacryptus.mindseye.layers.java.DropoutNoiseLayerTest" : {
-    ":class" : "The type Dropout noise key apply."
+  "com.simiacryptus.mindseye.layers.java.DropoutNoiseLayerTest": {
+    ":class": "The type Dropout noise key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.DropoutNoiseLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.DropoutNoiseLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.EntropyLayer" : {
-    ":class" : "The type Entropy key."
+  "com.simiacryptus.mindseye.layers.java.EntropyLayer": {
+    ":class": "The type Entropy key."
   },
-  "com.simiacryptus.mindseye.layers.java.EntropyLayerTest" : {
-    ":class" : "The type Entropy key apply."
+  "com.simiacryptus.mindseye.layers.java.EntropyLayerTest": {
+    ":class": "The type Entropy key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.EntropyLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.EntropyLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.EntropyLossLayer" : {
-    ":class" : "An entropy-based cost function. The output value is the expected number of nats needed to encode a category chosen using the first input as a distribution, but using the second input distribution for the encoding scheme."
+  "com.simiacryptus.mindseye.layers.java.EntropyLossLayer": {
+    ":class": "An entropy-based cost function. The output value is the expected number of nats needed to encode a category chosen using the first input as a distribution, but using the second input distribution for the encoding scheme."
   },
-  "com.simiacryptus.mindseye.layers.java.EntropyLossLayerTest" : {
-    ":class" : "The type Entropy loss key apply."
+  "com.simiacryptus.mindseye.layers.java.EntropyLossLayerTest": {
+    ":class": "The type Entropy loss key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.EntropyLossLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.EntropyLossLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.FullyConnectedLayer" : {
-    ":class" : "A dense matrix operator using vector-matrix multiplication. Represents a fully connected key of synapses, where all inputs are connected to all outputs via seperate coefficients.",
-    "byCoord" : "Sets weights.",
-    "weightsLog" : "Sets weights log."
+  "com.simiacryptus.mindseye.layers.java.FullyConnectedLayer": {
+    ":class": "A dense matrix operator using vector-matrix multiplication. Represents a fully connected key of synapses, where all inputs are connected to all outputs via seperate coefficients.",
+    "byCoord": "Sets weights.",
+    "weightsLog": "Sets weights log."
   },
-  "com.simiacryptus.mindseye.layers.java.FullyConnectedLayerTest" : {
-    ":class" : "The type Fully connected key apply."
+  "com.simiacryptus.mindseye.layers.java.FullyConnectedLayerTest": {
+    ":class": "The type Fully connected key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.FullyConnectedLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.FullyConnectedLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.FullyConnectedReferenceLayer" : {
-    ":class" : "A dense matrix operator using vector-matrix multiplication. Represents a fully connected key of synapses, where all inputs are connected to all outputs via seperate coefficients.",
-    "byCoord" : "Sets weights.",
-    "weightsLog" : "Sets weights log."
+  "com.simiacryptus.mindseye.layers.java.FullyConnectedReferenceLayer": {
+    ":class": "A dense matrix operator using vector-matrix multiplication. Represents a fully connected key of synapses, where all inputs are connected to all outputs via seperate coefficients.",
+    "byCoord": "Sets weights.",
+    "weightsLog": "Sets weights log."
   },
-  "com.simiacryptus.mindseye.layers.java.FullyConnectedReferenceLayerTest" : {
-    ":class" : "The type Fully connected key apply."
+  "com.simiacryptus.mindseye.layers.java.FullyConnectedReferenceLayerTest": {
+    ":class": "The type Fully connected key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.FullyConnectedReferenceLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.FullyConnectedReferenceLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.FullyConnectedReferenceLayerTest.Image" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.FullyConnectedReferenceLayerTest.Image": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.GaussianActivationLayer" : {
-    ":class" : "This activation key uses the unit gaussian curve. The maximal response, at x=0, is y=1. At +/- infinity, the value is zero."
+  "com.simiacryptus.mindseye.layers.java.GaussianActivationLayer": {
+    ":class": "This activation key uses the unit gaussian curve. The maximal response, at x=0, is y=1. At +/- infinity, the value is zero."
   },
-  "com.simiacryptus.mindseye.layers.java.GaussianActivationLayerTest" : {
-    ":class" : "The type Gaussian activation key apply."
+  "com.simiacryptus.mindseye.layers.java.GaussianActivationLayerTest": {
+    ":class": "The type Gaussian activation key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.GaussianActivationLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.GaussianActivationLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.GaussianNoiseLayer" : {
-    ":class" : "Adds uniform random gaussian noise to all input elements.",
-    "value" : "Sets value."
+  "com.simiacryptus.mindseye.layers.java.GaussianNoiseLayer": {
+    ":class": "Adds uniform random gaussian noise to all input elements.",
+    "value": "Sets value."
   },
-  "com.simiacryptus.mindseye.layers.java.GaussianNoiseLayerTest" : {
-    ":class" : "The type Gaussian noise key apply."
+  "com.simiacryptus.mindseye.layers.java.GaussianNoiseLayerTest": {
+    ":class": "The type Gaussian noise key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.GaussianNoiseLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.GaussianNoiseLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.HyperbolicActivationLayer" : {
-    ":class" : "This activation key uses a parameterized hyperbolic function. This function, ion various parameterizations, can resemble: x^2, abs(x), x^3, x However, at high +/- x, the behavior is nearly linear.",
-    "scale" : "Sets scale."
+  "com.simiacryptus.mindseye.layers.java.HyperbolicActivationLayer": {
+    ":class": "This activation key uses a parameterized hyperbolic function. This function, ion various parameterizations, can resemble: x^2, abs(x), x^3, x However, at high +/- x, the behavior is nearly linear.",
+    "scale": "Sets scale."
   },
-  "com.simiacryptus.mindseye.layers.java.HyperbolicActivationLayerTest" : {
-    ":class" : "The type Hyperbolic activation key apply."
+  "com.simiacryptus.mindseye.layers.java.HyperbolicActivationLayerTest": {
+    ":class": "The type Hyperbolic activation key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.HyperbolicActivationLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.HyperbolicActivationLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.ImgBandBiasLayer" : {
-    ":class" : "Adds a per-color-band value offset to the single tensor input.",
-    "andFree" : "Sets and free.",
-    "weights" : "Sets weights.",
-    "weightsLog" : "Sets weights log."
+  "com.simiacryptus.mindseye.layers.java.ImgBandBiasLayer": {
+    ":class": "Adds a per-color-band value offset to the single tensor input.",
+    "andFree": "Sets and free.",
+    "weights": "Sets weights.",
+    "weightsLog": "Sets weights log."
   },
-  "com.simiacryptus.mindseye.layers.java.ImgBandBiasLayerTest" : {
-    ":class" : "The type Img band bias key apply."
+  "com.simiacryptus.mindseye.layers.java.ImgBandBiasLayerTest": {
+    ":class": "The type Img band bias key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.ImgBandBiasLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.ImgBandBiasLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.ImgBandScaleLayer" : {
-    ":class" : "Scales the input using per-color-band coefficients",
-    "weights" : "Sets weights."
+  "com.simiacryptus.mindseye.layers.java.ImgBandScaleLayer": {
+    ":class": "Scales the input using per-color-band coefficients",
+    "weights": "Sets weights."
   },
-  "com.simiacryptus.mindseye.layers.java.ImgBandScaleLayerTest" : {
-    ":class" : "The type Img band scale key apply."
+  "com.simiacryptus.mindseye.layers.java.ImgBandScaleLayerTest": {
+    ":class": "The type Img band scale key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.ImgBandScaleLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.ImgBandScaleLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.ImgBandSelectLayer" : {
-    ":class" : "Selects specific color bands from the input, producing an png apply the same resolution but fewer bands."
+  "com.simiacryptus.mindseye.layers.java.ImgBandSelectLayer": {
+    ":class": "Selects specific color bands from the input, producing an png apply the same resolution but fewer bands."
   },
-  "com.simiacryptus.mindseye.layers.java.ImgBandSelectLayerTest" : {
-    ":class" : "The type Img band select key apply."
+  "com.simiacryptus.mindseye.layers.java.ImgBandSelectLayerTest": {
+    ":class": "The type Img band select key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.ImgBandSelectLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.ImgBandSelectLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.ImgConcatLayer" : {
-    ":class" : "Concatenates two or more images apply the same resolution so the output contains all input color bands.",
-    "maxBands" : "Sets max bands."
+  "com.simiacryptus.mindseye.layers.java.ImgConcatLayer": {
+    ":class": "Concatenates two or more images apply the same resolution so the output contains all input color bands.",
+    "maxBands": "Sets max bands."
   },
-  "com.simiacryptus.mindseye.layers.java.ImgConcatLayerTest" : {
-    ":class" : "The type Img eval key apply."
+  "com.simiacryptus.mindseye.layers.java.ImgConcatLayerTest": {
+    ":class": "The type Img eval key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.ImgConcatLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.ImgConcatLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.ImgCropLayer" : {
-    ":class" : "Reduces the resolution of the input by selecting a centered window. The output png will have the same number of color bands."
+  "com.simiacryptus.mindseye.layers.java.ImgCropLayer": {
+    ":class": "Reduces the resolution of the input by selecting a centered window. The output png will have the same number of color bands."
   },
-  "com.simiacryptus.mindseye.layers.java.ImgCropLayerTest" : {
-    ":class" : "The type Img crop key apply."
+  "com.simiacryptus.mindseye.layers.java.ImgCropLayerTest": {
+    ":class": "The type Img crop key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.ImgCropLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.ImgCropLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.ImgPixelGateLayer" : {
-    ":class" : "Scales the input using per-color-band coefficients"
+  "com.simiacryptus.mindseye.layers.java.ImgPixelGateLayer": {
+    ":class": "Scales the input using per-color-band coefficients"
   },
-  "com.simiacryptus.mindseye.layers.java.ImgPixelGateLayerTest" : {
-    ":class" : "The type Img band select key apply."
+  "com.simiacryptus.mindseye.layers.java.ImgPixelGateLayerTest": {
+    ":class": "The type Img band select key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.ImgPixelGateLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.ImgPixelGateLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.ImgPixelSoftmaxLayer" : {
-    ":class" : "Scales the input using per-color-band coefficients"
+  "com.simiacryptus.mindseye.layers.java.ImgPixelSoftmaxLayer": {
+    ":class": "Scales the input using per-color-band coefficients"
   },
-  "com.simiacryptus.mindseye.layers.java.ImgPixelSoftmaxLayerTest" : {
-    ":class" : "The type Img band select key apply."
+  "com.simiacryptus.mindseye.layers.java.ImgPixelSoftmaxLayerTest": {
+    ":class": "The type Img band select key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.ImgPixelSoftmaxLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.ImgPixelSoftmaxLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.ImgPixelSumLayer" : {
-    ":class" : "Scales the input using per-color-band coefficients"
+  "com.simiacryptus.mindseye.layers.java.ImgPixelSumLayer": {
+    ":class": "Scales the input using per-color-band coefficients"
   },
-  "com.simiacryptus.mindseye.layers.java.ImgPixelSumLayerTest" : {
-    ":class" : "The type Img band select key apply."
+  "com.simiacryptus.mindseye.layers.java.ImgPixelSumLayerTest": {
+    ":class": "The type Img band select key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.ImgPixelSumLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.ImgPixelSumLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.ImgReshapeLayer" : {
-    ":class" : "Reduces or expands png resolution by rearranging the values in NxN tiles to effectively stripe the small-scale spacial dimension across N^2 color bands."
+  "com.simiacryptus.mindseye.layers.java.ImgReshapeLayer": {
+    ":class": "Reduces or expands png resolution by rearranging the values in NxN tiles to effectively stripe the small-scale spacial dimension across N^2 color bands."
   },
-  "com.simiacryptus.mindseye.layers.java.ImgReshapeLayerTest" : {
-    ":class" : "The type Img reshapeCast key apply."
+  "com.simiacryptus.mindseye.layers.java.ImgReshapeLayerTest": {
+    ":class": "The type Img reshapeCast key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.ImgReshapeLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.ImgReshapeLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.ImgTileAssemblyLayer" : {
-    ":class" : "Reduces the resolution of the input by selecting a centered window. The output png will have the same number of color bands.",
-    "offsetX" : "Sets offset x.",
-    "offsetY" : "Sets offset y.",
-    "paddingX" : "Sets padding x.",
-    "paddingY" : "Sets padding y."
+  "com.simiacryptus.mindseye.layers.java.ImgTileAssemblyLayer": {
+    ":class": "Reduces the resolution of the input by selecting a centered window. The output png will have the same number of color bands.",
+    "offsetX": "Sets offset x.",
+    "offsetY": "Sets offset y.",
+    "paddingX": "Sets padding x.",
+    "paddingY": "Sets padding y."
   },
-  "com.simiacryptus.mindseye.layers.java.ImgTileAssemblyLayerTest" : {
-    ":class" : "The type Img crop key apply."
+  "com.simiacryptus.mindseye.layers.java.ImgTileAssemblyLayerTest": {
+    ":class": "The type Img crop key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.ImgTileAssemblyLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.ImgTileAssemblyLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.ImgTileSelectLayer" : {
-    ":class" : "Reduces the resolution of the input by selecting a centered window. The output png will have the same number of color bands."
+  "com.simiacryptus.mindseye.layers.java.ImgTileSelectLayer": {
+    ":class": "Reduces the resolution of the input by selecting a centered window. The output png will have the same number of color bands."
   },
-  "com.simiacryptus.mindseye.layers.java.ImgTileSelectLayerTest" : {
-    ":class" : "The type Img crop key apply."
+  "com.simiacryptus.mindseye.layers.java.ImgTileSelectLayerTest": {
+    ":class": "The type Img crop key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.ImgTileSelectLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.ImgTileSelectLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.ImgTileSubnetLayer" : {
-    ":class" : "This key works as a scaling function, similar to a father wavelet. Allows convolutional and pooling layers to work across larger png regions."
+  "com.simiacryptus.mindseye.layers.java.ImgTileSubnetLayer": {
+    ":class": "This key works as a scaling function, similar to a father wavelet. Allows convolutional and pooling layers to work across larger png regions."
   },
-  "com.simiacryptus.mindseye.layers.java.ImgTileSubnetLayerTest" : {
-    ":class" : "The type Rascaled subnet key apply."
+  "com.simiacryptus.mindseye.layers.java.ImgTileSubnetLayerTest": {
+    ":class": "The type Rascaled subnet key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.ImgTileSubnetLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.ImgTileSubnetLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.ImgZeroPaddingLayer" : {
-    ":class" : "Increases the resolution of the input by selecting a larger centered window. The output png will have the same number of color bands, and the area outside the source png will be setWeights to 0."
+  "com.simiacryptus.mindseye.layers.java.ImgZeroPaddingLayer": {
+    ":class": "Increases the resolution of the input by selecting a larger centered window. The output png will have the same number of color bands, and the area outside the source png will be setWeights to 0."
   },
-  "com.simiacryptus.mindseye.layers.java.ImgZeroPaddingLayerTest" : {
-    ":class" : "The type Img crop key apply."
+  "com.simiacryptus.mindseye.layers.java.ImgZeroPaddingLayerTest": {
+    ":class": "The type Img crop key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.ImgZeroPaddingLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.ImgZeroPaddingLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.L1NormalizationLayer" : {
-    ":class" : "Normalizes the input so that the L1 magnitude (ie sum of abs) is 1.",
-    "maxInput" : "The Max input."
+  "com.simiacryptus.mindseye.layers.java.L1NormalizationLayer": {
+    ":class": "Normalizes the input so that the L1 magnitude (ie sum of abs) is 1.",
+    "maxInput": "The Max input."
   },
-  "com.simiacryptus.mindseye.layers.java.L1NormalizationLayerTest" : {
-    ":class" : "The type L 1 normalization key apply."
+  "com.simiacryptus.mindseye.layers.java.L1NormalizationLayerTest": {
+    ":class": "The type L 1 normalization key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.L1NormalizationLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.L1NormalizationLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.LayerTestBase" : {
-    ":class" : "The type LayerBase apply base."
+  "com.simiacryptus.mindseye.layers.java.LayerTestBase": {
+    ":class": "The type LayerBase apply base."
   },
-  "com.simiacryptus.mindseye.layers.java.LinearActivationLayer" : {
-    ":class" : "A tunable linear (y=A*x+B) function, whose parameters can participate in learning. Defaults to y=1*x+0, and is NOT frozen by default.",
-    "bias" : "Sets bias.",
-    "scale" : "Sets scale."
+  "com.simiacryptus.mindseye.layers.java.LinearActivationLayer": {
+    ":class": "A tunable linear (y=A*x+B) function, whose parameters can participate in learning. Defaults to y=1*x+0, and is NOT frozen by default.",
+    "bias": "Sets bias.",
+    "scale": "Sets scale."
   },
-  "com.simiacryptus.mindseye.layers.java.LinearActivationLayerTest" : {
-    ":class" : "The type Linear activation key apply."
+  "com.simiacryptus.mindseye.layers.java.LinearActivationLayerTest": {
+    ":class": "The type Linear activation key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.LinearActivationLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.LinearActivationLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.LogActivationLayer" : {
-    ":class" : "A y=log(abs(x)) activation function. Note the discontinuity at 0."
+  "com.simiacryptus.mindseye.layers.java.LogActivationLayer": {
+    ":class": "A y=log(abs(x)) activation function. Note the discontinuity at 0."
   },
-  "com.simiacryptus.mindseye.layers.java.LogActivationLayerTest" : {
-    ":class" : "The type Log activation key apply."
+  "com.simiacryptus.mindseye.layers.java.LogActivationLayerTest": {
+    ":class": "The type Log activation key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.LogActivationLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.LogActivationLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.LoggingWrapperLayerTest" : {
-    ":class" : "The type Logging wrapper key apply."
+  "com.simiacryptus.mindseye.layers.java.LoggingWrapperLayerTest": {
+    ":class": "The type Logging wrapper key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.LoggingWrapperLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.LoggingWrapperLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.MaxConstLayer" : {
-    ":class" : "Enforces a maximum-maxValue constraint on the input signal, rounding down any values exceeding a setByCoord threshold.",
-    "maxValue" : "Sets maxValue."
+  "com.simiacryptus.mindseye.layers.java.MaxConstLayer": {
+    ":class": "Enforces a maximum-maxValue constraint on the input signal, rounding down any values exceeding a setByCoord threshold.",
+    "maxValue": "Sets maxValue."
   },
-  "com.simiacryptus.mindseye.layers.java.MaxConstLayerTest" : {
-    ":class" : "The type Max const key apply."
+  "com.simiacryptus.mindseye.layers.java.MaxConstLayerTest": {
+    ":class": "The type Max const key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.MaxConstLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.MaxConstLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.MaxDropoutNoiseLayer" : {
-    ":class" : "Selects the maximum value in each NxN cell, setting all other values to zero. This introduces sparsity into the signal, but does not sumChannels resolution."
+  "com.simiacryptus.mindseye.layers.java.MaxDropoutNoiseLayer": {
+    ":class": "Selects the maximum value in each NxN cell, setting all other values to zero. This introduces sparsity into the signal, but does not sumChannels resolution."
   },
-  "com.simiacryptus.mindseye.layers.java.MaxDropoutNoiseLayerTest" : {
-    ":class" : "The type Max dropout noise key apply."
+  "com.simiacryptus.mindseye.layers.java.MaxDropoutNoiseLayerTest": {
+    ":class": "The type Max dropout noise key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.MaxDropoutNoiseLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.MaxDropoutNoiseLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.MaxImageBandLayer" : {
-    ":class" : "Selects the highest value in each color band, emitting a 1x1xN tensor."
+  "com.simiacryptus.mindseye.layers.java.MaxImageBandLayer": {
+    ":class": "Selects the highest value in each color band, emitting a 1x1xN tensor."
   },
-  "com.simiacryptus.mindseye.layers.java.MaxImageBandLayer.CalcRegionsParameter" : {
-    ":class" : "The type Calc regions parameter.",
-    "inputDims" : "The Input dims.",
-    "kernelDims" : "The Kernel dims."
+  "com.simiacryptus.mindseye.layers.java.MaxImageBandLayer.CalcRegionsParameter": {
+    ":class": "The type Calc regions parameter.",
+    "inputDims": "The Input dims.",
+    "kernelDims": "The Kernel dims."
   },
-  "com.simiacryptus.mindseye.layers.java.MaxImageBandLayerTest" : {
-    ":class" : "The type Max png band key apply."
+  "com.simiacryptus.mindseye.layers.java.MaxImageBandLayerTest": {
+    ":class": "The type Max png band key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.MaxImageBandLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.MaxImageBandLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.MaxMetaLayer" : {
-    ":class" : "The type Max meta key."
+  "com.simiacryptus.mindseye.layers.java.MaxMetaLayer": {
+    ":class": "The type Max meta key."
   },
-  "com.simiacryptus.mindseye.layers.java.MaxMetaLayerTest" : {
-    ":class" : "The type Max meta key apply."
+  "com.simiacryptus.mindseye.layers.java.MaxMetaLayerTest": {
+    ":class": "The type Max meta key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.MaxMetaLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.MaxMetaLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.MaxPoolingLayer" : {
-    ":class" : "The type Max subsample key."
+  "com.simiacryptus.mindseye.layers.java.MaxPoolingLayer": {
+    ":class": "The type Max subsample key."
   },
-  "com.simiacryptus.mindseye.layers.java.MaxPoolingLayer.CalcRegionsParameter" : {
-    ":class" : "The type Calc regions parameter.",
-    "inputDims" : "The Input dims.",
-    "kernelDims" : "The Kernel dims."
+  "com.simiacryptus.mindseye.layers.java.MaxPoolingLayer.CalcRegionsParameter": {
+    ":class": "The type Calc regions parameter.",
+    "inputDims": "The Input dims.",
+    "kernelDims": "The Kernel dims."
   },
-  "com.simiacryptus.mindseye.layers.java.MaxPoolingLayerTest" : {
-    ":class" : "The type Max subsample key apply."
+  "com.simiacryptus.mindseye.layers.java.MaxPoolingLayerTest": {
+    ":class": "The type Max subsample key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.MaxPoolingLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.MaxPoolingLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.MeanSqLossLayer" : {
-    ":class" : "An RMS-differencing loss function without the final square root."
+  "com.simiacryptus.mindseye.layers.java.MeanSqLossLayer": {
+    ":class": "An RMS-differencing loss function without the final square root."
   },
-  "com.simiacryptus.mindseye.layers.java.MeanSqLossLayerTest" : {
-    ":class" : "The type Mean sq loss key apply."
+  "com.simiacryptus.mindseye.layers.java.MeanSqLossLayerTest": {
+    ":class": "The type Mean sq loss key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.MeanSqLossLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.MeanSqLossLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.MonitoringSynapse" : {
-    ":class" : "A diagnostic pass-through key that collects value statistics of forward and backprop signals."
+  "com.simiacryptus.mindseye.layers.java.MonitoringSynapse": {
+    ":class": "A diagnostic pass-through key that collects value statistics of forward and backprop signals."
   },
-  "com.simiacryptus.mindseye.layers.java.MonitoringSynapseTest" : {
-    ":class" : "The type Monitoring synapse apply."
+  "com.simiacryptus.mindseye.layers.java.MonitoringSynapseTest": {
+    ":class": "The type Monitoring synapse apply."
   },
-  "com.simiacryptus.mindseye.layers.java.MonitoringSynapseTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.MonitoringSynapseTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.MonitoringWrapperTest" : {
-    ":class" : "The type Monitoring wrapper apply."
+  "com.simiacryptus.mindseye.layers.java.MonitoringWrapperTest": {
+    ":class": "The type Monitoring wrapper apply."
   },
-  "com.simiacryptus.mindseye.layers.java.MonitoringWrapperTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.MonitoringWrapperTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.NormalizationMetaLayer" : {
-    ":class" : "The type Normalization meta key."
+  "com.simiacryptus.mindseye.layers.java.NormalizationMetaLayer": {
+    ":class": "The type Normalization meta key."
   },
-  "com.simiacryptus.mindseye.layers.java.NormalizationMetaLayerTest" : {
-    ":class" : "The type Normalization meta key apply."
+  "com.simiacryptus.mindseye.layers.java.NormalizationMetaLayerTest": {
+    ":class": "The type Normalization meta key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.NormalizationMetaLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.NormalizationMetaLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.NthPowerActivationLayer" : {
-    ":class" : "A multi-purpose Nth-power exponential function. Has reasonably efficient specialized (pure java) implementations of many common signed rational values, such as +/-0.5, +/-1.0, 2.0, etc",
-    "power" : "Sets power."
+  "com.simiacryptus.mindseye.layers.java.NthPowerActivationLayer": {
+    ":class": "A multi-purpose Nth-power exponential function. Has reasonably efficient specialized (pure java) implementations of many common signed rational values, such as +/-0.5, +/-1.0, 2.0, etc",
+    "power": "Sets power."
   },
-  "com.simiacryptus.mindseye.layers.java.NthPowerActivationLayerTest" : {
-    ":class" : "The type Nth power activation key apply."
+  "com.simiacryptus.mindseye.layers.java.NthPowerActivationLayerTest": {
+    ":class": "The type Nth power activation key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.NthPowerActivationLayerTest.InvPowerTest" : {
-    ":class" : "Tests x^-1 aka 1/x"
+  "com.simiacryptus.mindseye.layers.java.NthPowerActivationLayerTest.InvPowerTest": {
+    ":class": "Tests x^-1 aka 1/x"
   },
-  "com.simiacryptus.mindseye.layers.java.NthPowerActivationLayerTest.InvSqrtPowerTest" : {
-    ":class" : "Tests x^-1/2 aka 1/sqrt(x)"
+  "com.simiacryptus.mindseye.layers.java.NthPowerActivationLayerTest.InvSqrtPowerTest": {
+    ":class": "Tests x^-1/2 aka 1/sqrt(x)"
   },
-  "com.simiacryptus.mindseye.layers.java.NthPowerActivationLayerTest.NthPowerTest" : {
-    ":class" : "Tests an irregular power"
+  "com.simiacryptus.mindseye.layers.java.NthPowerActivationLayerTest.NthPowerTest": {
+    ":class": "Tests an irregular power"
   },
-  "com.simiacryptus.mindseye.layers.java.NthPowerActivationLayerTest.SquarePowerTest" : {
-    ":class" : "Tests x^2"
+  "com.simiacryptus.mindseye.layers.java.NthPowerActivationLayerTest.SquarePowerTest": {
+    ":class": "Tests x^2"
   },
-  "com.simiacryptus.mindseye.layers.java.NthPowerActivationLayerTest.ZeroPowerTest" : {
-    ":class" : "Tests x^0 aka 1"
+  "com.simiacryptus.mindseye.layers.java.NthPowerActivationLayerTest.ZeroPowerTest": {
+    ":class": "Tests x^0 aka 1"
   },
-  "com.simiacryptus.mindseye.layers.java.ProductInputsLayer" : {
-    ":class" : "Multiplies all inputs together, element-by-element."
+  "com.simiacryptus.mindseye.layers.java.ProductInputsLayer": {
+    ":class": "Multiplies all inputs together, element-by-element."
   },
-  "com.simiacryptus.mindseye.layers.java.ProductInputsLayerTest" : {
-    ":class" : "The type Product inputs key apply."
+  "com.simiacryptus.mindseye.layers.java.ProductInputsLayerTest": {
+    ":class": "The type Product inputs key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.ProductInputsLayerTest.N1Test" : {
-    ":class" : "Multiply one multivariate input apply a univariate input"
+  "com.simiacryptus.mindseye.layers.java.ProductInputsLayerTest.N1Test": {
+    ":class": "Multiply one multivariate input apply a univariate input"
   },
-  "com.simiacryptus.mindseye.layers.java.ProductInputsLayerTest.NNNTest" : {
-    ":class" : "Multiply three multivariate inputs"
+  "com.simiacryptus.mindseye.layers.java.ProductInputsLayerTest.NNNTest": {
+    ":class": "Multiply three multivariate inputs"
   },
-  "com.simiacryptus.mindseye.layers.java.ProductInputsLayerTest.NNTest" : {
-    ":class" : "Multiply two multivariate inputs"
+  "com.simiacryptus.mindseye.layers.java.ProductInputsLayerTest.NNTest": {
+    ":class": "Multiply two multivariate inputs"
   },
-  "com.simiacryptus.mindseye.layers.java.ProductLayer" : {
-    ":class" : "The type Product key."
+  "com.simiacryptus.mindseye.layers.java.ProductLayer": {
+    ":class": "The type Product key."
   },
-  "com.simiacryptus.mindseye.layers.java.ProductLayerTest" : {
-    ":class" : "The type Product key apply."
+  "com.simiacryptus.mindseye.layers.java.ProductLayerTest": {
+    ":class": "The type Product key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.ProductLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.ProductLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.ReLuActivationLayer" : {
-    ":class" : "Rectified Linear Unit. y=(x&lt;0)?0:x",
-    "weight" : "Sets weight.",
-    "weights" : "Sets weights."
+  "com.simiacryptus.mindseye.layers.java.ReLuActivationLayer": {
+    ":class": "Rectified Linear Unit. y=(x&lt;0)?0:x",
+    "weight": "Sets weight.",
+    "weights": "Sets weights."
   },
-  "com.simiacryptus.mindseye.layers.java.ReLuActivationLayerTest" : {
-    ":class" : "The type Re lu activation key apply."
+  "com.simiacryptus.mindseye.layers.java.ReLuActivationLayerTest": {
+    ":class": "The type Re lu activation key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.ReLuActivationLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.ReLuActivationLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.RescaledSubnetLayer" : {
-    ":class" : "This key works as a scaling function, similar to a father wavelet. Allows convolutional and pooling layers to work across larger png regions."
+  "com.simiacryptus.mindseye.layers.java.RescaledSubnetLayer": {
+    ":class": "This key works as a scaling function, similar to a father wavelet. Allows convolutional and pooling layers to work across larger png regions."
   },
-  "com.simiacryptus.mindseye.layers.java.RescaledSubnetLayerTest" : {
-    ":class" : "The type Rascaled subnet key apply."
+  "com.simiacryptus.mindseye.layers.java.RescaledSubnetLayerTest": {
+    ":class": "The type Rascaled subnet key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.RescaledSubnetLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.RescaledSubnetLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.ReshapeLayer" : {
-    ":class" : "A dense matrix operator using vector-matrix multiplication. Represents a fully connected key of synapses, where all inputs are connected to all outputs via seperate coefficients."
+  "com.simiacryptus.mindseye.layers.java.ReshapeLayer": {
+    ":class": "A dense matrix operator using vector-matrix multiplication. Represents a fully connected key of synapses, where all inputs are connected to all outputs via seperate coefficients."
   },
-  "com.simiacryptus.mindseye.layers.java.ReshapeLayerTest" : {
-    ":class" : "The type Rascaled subnet key apply."
+  "com.simiacryptus.mindseye.layers.java.ReshapeLayerTest": {
+    ":class": "The type Rascaled subnet key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.ReshapeLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.ReshapeLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.ReshapeLayerTest.Basic1" : {
-    ":class" : "The type Basic 1."
+  "com.simiacryptus.mindseye.layers.java.ReshapeLayerTest.Basic1": {
+    ":class": "The type Basic 1."
   },
-  "com.simiacryptus.mindseye.layers.java.ReshapeLayerTest.Big" : {
-    ":class" : "The type BigTests."
+  "com.simiacryptus.mindseye.layers.java.ReshapeLayerTest.Big": {
+    ":class": "The type BigTests."
   },
-  "com.simiacryptus.mindseye.layers.java.ReshapeLayerTest.Big0" : {
-    ":class" : "The type BigTests 0."
+  "com.simiacryptus.mindseye.layers.java.ReshapeLayerTest.Big0": {
+    ":class": "The type BigTests 0."
   },
-  "com.simiacryptus.mindseye.layers.java.ReshapeLayerTest.Big1" : {
-    ":class" : "The type BigTests 1."
+  "com.simiacryptus.mindseye.layers.java.ReshapeLayerTest.Big1": {
+    ":class": "The type BigTests 1."
   },
-  "com.simiacryptus.mindseye.layers.java.ReshapeLayerTest.Big2" : {
-    ":class" : "The type BigTests 2."
+  "com.simiacryptus.mindseye.layers.java.ReshapeLayerTest.Big2": {
+    ":class": "The type BigTests 2."
   },
-  "com.simiacryptus.mindseye.layers.java.ScaleMetaLayer" : {
-    ":class" : "The type Scale meta key."
+  "com.simiacryptus.mindseye.layers.java.ScaleMetaLayer": {
+    ":class": "The type Scale meta key."
   },
-  "com.simiacryptus.mindseye.layers.java.ScaleMetaLayerTest" : {
-    ":class" : "The type Scale meta key apply."
+  "com.simiacryptus.mindseye.layers.java.ScaleMetaLayerTest": {
+    ":class": "The type Scale meta key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.ScaleMetaLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.ScaleMetaLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.SigmoidActivationLayer" : {
-    ":class" : "The classic activation function, either \"sigmoid\" or \"tanh\" dependiong on the setting of \"balanced\". If balanced==true, the function exhibits odd symmetry (f(x) == -f(-x)) If balanced==false, the function is bounded to (0,1)",
-    "balanced" : "Sets balanced."
+  "com.simiacryptus.mindseye.layers.java.SigmoidActivationLayer": {
+    ":class": "The classic activation function, either \"sigmoid\" or \"tanh\" dependiong on the setting of \"balanced\". If balanced==true, the function exhibits odd symmetry (f(x) == -f(-x)) If balanced==false, the function is bounded to (0,1)",
+    "balanced": "Sets balanced."
   },
-  "com.simiacryptus.mindseye.layers.java.SigmoidActivationLayerTest" : {
-    ":class" : "The type Sigmoid activation key apply."
+  "com.simiacryptus.mindseye.layers.java.SigmoidActivationLayerTest": {
+    ":class": "The type Sigmoid activation key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.SigmoidActivationLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.SigmoidActivationLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.SignReducerLayer" : {
-    ":class" : "The type Sign reducer key."
+  "com.simiacryptus.mindseye.layers.java.SignReducerLayer": {
+    ":class": "The type Sign reducer key."
   },
-  "com.simiacryptus.mindseye.layers.java.SignReducerLayerTest" : {
-    ":class" : "The type Sign reducer key apply."
+  "com.simiacryptus.mindseye.layers.java.SignReducerLayerTest": {
+    ":class": "The type Sign reducer key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.SignReducerLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.SignReducerLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.SignReducerLayerTest.Normal" : {
-    ":class" : "The type Normal."
+  "com.simiacryptus.mindseye.layers.java.SignReducerLayerTest.Normal": {
+    ":class": "The type Normal."
   },
-  "com.simiacryptus.mindseye.layers.java.SimpleActivationLayer" : {
-    ":class" : "A parent class for all stateless, univariate \"activation\" functions."
+  "com.simiacryptus.mindseye.layers.java.SimpleActivationLayer": {
+    ":class": "A parent class for all stateless, univariate \"activation\" functions."
   },
-  "com.simiacryptus.mindseye.layers.java.SinewaveActivationLayer" : {
-    ":class" : "Calculates y=sin(x) in radians apply signed unit amplitude.",
-    "balanced" : "Sets balanced."
+  "com.simiacryptus.mindseye.layers.java.SinewaveActivationLayer": {
+    ":class": "Calculates y=sin(x) in radians apply signed unit amplitude.",
+    "balanced": "Sets balanced."
   },
-  "com.simiacryptus.mindseye.layers.java.SinewaveActivationLayerTest" : {
-    ":class" : "The type Sinewave activation key apply."
+  "com.simiacryptus.mindseye.layers.java.SinewaveActivationLayerTest": {
+    ":class": "The type Sinewave activation key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.SinewaveActivationLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.SinewaveActivationLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.SoftmaxLayer" : {
-    ":class" : "The classic \"softmax\" key. All outputs will sum to 1 and be proportional to the log of the input.",
-    "maxInput" : "The Max input."
+  "com.simiacryptus.mindseye.layers.java.SoftmaxLayer": {
+    ":class": "The classic \"softmax\" key. All outputs will sum to 1 and be proportional to the log of the input.",
+    "maxInput": "The Max input."
   },
-  "com.simiacryptus.mindseye.layers.java.SoftmaxLayerTest" : {
-    ":class" : "The type Softmax activation key apply."
+  "com.simiacryptus.mindseye.layers.java.SoftmaxLayerTest": {
+    ":class": "The type Softmax activation key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.SoftmaxLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.SoftmaxLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.SqActivationLayer" : {
-    ":class" : "Specialized square activation function. Deprecated. Use NthPowerActivationLayer."
+  "com.simiacryptus.mindseye.layers.java.SqActivationLayer": {
+    ":class": "Specialized square activation function. Deprecated. Use NthPowerActivationLayer."
   },
-  "com.simiacryptus.mindseye.layers.java.SqActivationLayerTest" : {
-    ":class" : "The type Sq activation key apply."
+  "com.simiacryptus.mindseye.layers.java.SqActivationLayerTest": {
+    ":class": "The type Sq activation key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.SqActivationLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.SqActivationLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.StaticScalarLossLayer" : {
-    ":class" : "The type Static scalar loss key.",
-    "target" : "Sets target."
+  "com.simiacryptus.mindseye.layers.java.StaticScalarLossLayer": {
+    ":class": "The type Static scalar loss key.",
+    "target": "Sets target."
   },
-  "com.simiacryptus.mindseye.layers.java.StaticScalarLossLayerTest" : {
-    ":class" : "The type Static scalar loss key apply."
+  "com.simiacryptus.mindseye.layers.java.StaticScalarLossLayerTest": {
+    ":class": "The type Static scalar loss key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.StaticScalarLossLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.StaticScalarLossLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.StdDevMetaLayer" : {
-    ":class" : "The type Std dev meta key."
+  "com.simiacryptus.mindseye.layers.java.StdDevMetaLayer": {
+    ":class": "The type Std dev meta key."
   },
-  "com.simiacryptus.mindseye.layers.java.StdDevMetaLayerTest" : {
-    ":class" : "The type Std dev meta key apply."
+  "com.simiacryptus.mindseye.layers.java.StdDevMetaLayerTest": {
+    ":class": "The type Std dev meta key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.StdDevMetaLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.StdDevMetaLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.StochasticSamplingSubnetLayer" : {
-    ":class" : "This key works as a scaling function, similar to a father wavelet. Allows convolutional and pooling layers to work across larger png regions."
+  "com.simiacryptus.mindseye.layers.java.StochasticSamplingSubnetLayer": {
+    ":class": "This key works as a scaling function, similar to a father wavelet. Allows convolutional and pooling layers to work across larger png regions."
   },
-  "com.simiacryptus.mindseye.layers.java.StochasticSamplingSubnetLayerTest" : {
-    ":class" : "The type Rascaled subnet key apply."
+  "com.simiacryptus.mindseye.layers.java.StochasticSamplingSubnetLayerTest": {
+    ":class": "The type Rascaled subnet key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.StochasticSamplingSubnetLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.StochasticSamplingSubnetLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.SumInputsLayer" : {
-    ":class" : "Sums all inputs together, element-by-element, assuming they all have the same dimension."
+  "com.simiacryptus.mindseye.layers.java.SumInputsLayer": {
+    ":class": "Sums all inputs together, element-by-element, assuming they all have the same dimension."
   },
-  "com.simiacryptus.mindseye.layers.java.SumInputsLayerTest" : {
-    ":class" : "The type Sum inputs key apply."
+  "com.simiacryptus.mindseye.layers.java.SumInputsLayerTest": {
+    ":class": "The type Sum inputs key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.SumInputsLayerTest.N1Test" : {
-    ":class" : "The type N 1 apply."
+  "com.simiacryptus.mindseye.layers.java.SumInputsLayerTest.N1Test": {
+    ":class": "The type N 1 apply."
   },
-  "com.simiacryptus.mindseye.layers.java.SumInputsLayerTest.NNTest" : {
-    ":class" : "The type Nn apply."
+  "com.simiacryptus.mindseye.layers.java.SumInputsLayerTest.NNTest": {
+    ":class": "The type Nn apply."
   },
-  "com.simiacryptus.mindseye.layers.java.SumInputsLayerTest.OnePlusOne" : {
-    ":class" : "Ensures addition can be used to implement a doubling (x2) function"
+  "com.simiacryptus.mindseye.layers.java.SumInputsLayerTest.OnePlusOne": {
+    ":class": "Ensures addition can be used to implement a doubling (x2) function"
   },
-  "com.simiacryptus.mindseye.layers.java.SumMetaLayer" : {
-    ":class" : "The type Sum meta key.",
-    "minBatches" : "Sets min batches."
+  "com.simiacryptus.mindseye.layers.java.SumMetaLayer": {
+    ":class": "The type Sum meta key.",
+    "minBatches": "Sets min batches."
   },
-  "com.simiacryptus.mindseye.layers.java.SumMetaLayerTest" : {
-    ":class" : "The type Sum meta key apply."
+  "com.simiacryptus.mindseye.layers.java.SumMetaLayerTest": {
+    ":class": "The type Sum meta key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.SumMetaLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.SumMetaLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.SumReducerLayer" : {
-    ":class" : "Sums all input values to produce a single-element output."
+  "com.simiacryptus.mindseye.layers.java.SumReducerLayer": {
+    ":class": "Sums all input values to produce a single-element output."
   },
-  "com.simiacryptus.mindseye.layers.java.SumReducerLayerTest" : {
-    ":class" : "The type Sum reducer key apply."
+  "com.simiacryptus.mindseye.layers.java.SumReducerLayerTest": {
+    ":class": "The type Sum reducer key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.SumReducerLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.SumReducerLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.TargetValueLayer" : {
-    ":class" : "Works as a single-input terminal loss function which compares the input apply a preset constant target tensor.",
-    "target" : "Sets target."
+  "com.simiacryptus.mindseye.layers.java.TargetValueLayer": {
+    ":class": "Works as a single-input terminal loss function which compares the input apply a preset constant target tensor.",
+    "target": "Sets target."
   },
-  "com.simiacryptus.mindseye.layers.java.TargetValueLayerTest" : {
-    ":class" : "The type Target value key apply."
+  "com.simiacryptus.mindseye.layers.java.TargetValueLayerTest": {
+    ":class": "The type Target value key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.TargetValueLayerTest.Normal" : {
-    ":class" : "Basic apply."
+  "com.simiacryptus.mindseye.layers.java.TargetValueLayerTest.Normal": {
+    ":class": "Basic apply."
   },
-  "com.simiacryptus.mindseye.layers.java.TensorConcatLayer" : {
-    ":class" : "Concatenates two or more images apply the same resolution so the output contains all input color bands.",
-    "maxBands" : "Sets max bands."
+  "com.simiacryptus.mindseye.layers.java.TensorConcatLayer": {
+    ":class": "Concatenates two or more images apply the same resolution so the output contains all input color bands.",
+    "maxBands": "Sets max bands."
   },
-  "com.simiacryptus.mindseye.layers.java.TensorConcatLayerTest" : {
-    ":class" : "The type Img eval key apply."
+  "com.simiacryptus.mindseye.layers.java.TensorConcatLayerTest": {
+    ":class": "The type Img eval key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.TensorConcatLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.TensorConcatLayerTest.Basic": {
+    ":class": "Basic Test"
   },
-  "com.simiacryptus.mindseye.layers.java.ValueLayerTest" : {
-    ":class" : "The type Target value key apply."
+  "com.simiacryptus.mindseye.layers.java.ValueLayerTest": {
+    ":class": "The type Target value key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.ValueLayerTest.Normal" : {
-    ":class" : "Basic apply."
+  "com.simiacryptus.mindseye.layers.java.ValueLayerTest.Normal": {
+    ":class": "Basic apply."
   },
-  "com.simiacryptus.mindseye.layers.java.VariableLayer" : {
-    ":class" : "Acts as a mutable placeholder key, whose heapCopy implementation can be setByCoord and changed."
+  "com.simiacryptus.mindseye.layers.java.VariableLayer": {
+    ":class": "Acts as a mutable placeholder key, whose heapCopy implementation can be setByCoord and changed."
   },
-  "com.simiacryptus.mindseye.layers.java.VariableLayerTest" : {
-    ":class" : "The type Variable key apply."
+  "com.simiacryptus.mindseye.layers.java.VariableLayerTest": {
+    ":class": "The type Variable key apply."
   },
-  "com.simiacryptus.mindseye.layers.java.VariableLayerTest.Basic" : {
-    ":class" : "Basic Test"
+  "com.simiacryptus.mindseye.layers.java.VariableLayerTest.Basic": {
+    ":class": "Basic Test"
   }
 }

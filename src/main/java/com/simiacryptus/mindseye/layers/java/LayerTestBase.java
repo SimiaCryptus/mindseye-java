@@ -37,7 +37,6 @@ public abstract class LayerTestBase extends StandardLayerTests {
 
   /**
    * Test.
-   *
    */
   @Test(timeout = 15 * 60 * 1000)
   public void test() {

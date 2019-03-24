@@ -27,15 +27,16 @@ import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
  * The type Sinewave activation key apply.
  */
 public abstract class SinewaveActivationLayerTest extends ActivationLayerTestBase {
-  @Override
-  protected Layer lossLayer() {
-    return new MeanSqLossLayer();
-  }
   /**
    * Instantiates a new Sinewave activation key apply.
    */
   public SinewaveActivationLayerTest() {
     super(new SinewaveActivationLayer());
+  }
+
+  @Override
+  protected Layer lossLayer() {
+    return new MeanSqLossLayer();
   }
 
   /**

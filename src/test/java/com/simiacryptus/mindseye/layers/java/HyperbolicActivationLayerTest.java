@@ -47,7 +47,7 @@ public abstract class HyperbolicActivationLayerTest extends ActivationLayerTestB
 
   @Override
   public ComponentTest<TrainingTester.ComponentResult> getTrainingTester() {
-    return new TrainingTester(){
+    return new TrainingTester() {
 
       @Override
       protected Layer lossLayer() {

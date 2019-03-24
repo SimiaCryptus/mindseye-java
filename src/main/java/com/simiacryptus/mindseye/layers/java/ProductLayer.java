@@ -73,7 +73,7 @@ public class ProductLayer extends LayerBase {
   @Override
   public Result evalAndFree(@Nonnull final Result... inObj) {
     final Result in0 = inObj[0];
-    assert Arrays.stream(inObj).mapToInt(x->x.getData().length()).distinct().count() == 1 : Arrays.toString(Arrays.stream(inObj).mapToInt(x->x.getData().length()).toArray());
+    assert Arrays.stream(inObj).mapToInt(x -> x.getData().length()).distinct().count() == 1 : Arrays.toString(Arrays.stream(inObj).mapToInt(x -> x.getData().length()).toArray());
     @Nonnull final double[] sum_A = new double[in0.getData().length()];
     final Tensor[] outputA = IntStream.range(0, in0.getData().length()).mapToObj(dataIndex -> {
       double sum = 1;
@@ -99,7 +99,7 @@ public class ProductLayer extends LayerBase {
             for (int i = 0; i < lTensor.length(); i++) {
               double d = lTensor.getData()[i];
               double deltaV = dataTensor.get(0);
-              passback.set(i, d==0?0:(deltaV * sum_A[dataIndex] / d));
+              passback.set(i, d == 0 ? 0 : (deltaV * sum_A[dataIndex] / d));
             }
             dataTensor.freeRef();
             lTensor.freeRef();

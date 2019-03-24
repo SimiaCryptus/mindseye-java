@@ -33,15 +33,16 @@ public class NthPowerActivationLayerTest {
    * Tests x^-1 aka 1/x
    */
   public static class InvPowerTest extends ActivationLayerTestBase {
-    @Override
-    protected Layer lossLayer() {
-      return new MeanSqLossLayer();
-    }
     /**
      * Instantiates a new Inv power apply.
      */
     public InvPowerTest() {
       super(new NthPowerActivationLayer().setPower(-1));
+    }
+
+    @Override
+    protected Layer lossLayer() {
+      return new MeanSqLossLayer();
     }
 
     @Override
@@ -61,14 +62,16 @@ public class NthPowerActivationLayerTest {
    * Tests x^-1/2 aka 1/sqrt(x)
    */
   public static class InvSqrtPowerTest extends ActivationLayerTestBase {
-    @Override
-    protected Layer lossLayer() {
-      return new MeanSqLossLayer();
-    }    /**
+    /**
      * Instantiates a new Inv sqrt power apply.
      */
     public InvSqrtPowerTest() {
       super(new NthPowerActivationLayer().setPower(-0.5));
+    }
+
+    @Override
+    protected Layer lossLayer() {
+      return new MeanSqLossLayer();
     }
 
     @Override
@@ -88,15 +91,16 @@ public class NthPowerActivationLayerTest {
    * Tests an irregular power
    */
   public static class NthPowerTest extends ActivationLayerTestBase {
-    @Override
-    protected Layer lossLayer() {
-      return new MeanSqLossLayer();
-    }
     /**
      * Instantiates a new Nth power apply.
      */
     public NthPowerTest() {
       super(new NthPowerActivationLayer().setPower(Math.PI));
+    }
+
+    @Override
+    protected Layer lossLayer() {
+      return new MeanSqLossLayer();
     }
   }
 
@@ -116,15 +120,16 @@ public class NthPowerActivationLayerTest {
    * Tests x^2
    */
   public static class SquarePowerTest extends ActivationLayerTestBase {
-    @Override
-    protected Layer lossLayer() {
-      return new MeanSqLossLayer();
-    }
     /**
      * Instantiates a new Square power apply.
      */
     public SquarePowerTest() {
       super(new NthPowerActivationLayer().setPower(2));
+    }
+
+    @Override
+    protected Layer lossLayer() {
+      return new MeanSqLossLayer();
     }
   }
 
@@ -132,15 +137,16 @@ public class NthPowerActivationLayerTest {
    * Tests x^0 aka 1
    */
   public static class ZeroPowerTest extends ActivationLayerTestBase {
-    @Override
-    protected Layer lossLayer() {
-      return new MeanSqLossLayer();
-    }
     /**
      * Instantiates a new Zero power apply.
      */
     public ZeroPowerTest() {
       super(new NthPowerActivationLayer().setPower(0));
+    }
+
+    @Override
+    protected Layer lossLayer() {
+      return new MeanSqLossLayer();
     }
   }
 

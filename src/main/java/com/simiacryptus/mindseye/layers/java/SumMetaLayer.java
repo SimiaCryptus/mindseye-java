@@ -83,7 +83,7 @@ public class SumMetaLayer extends LayerBase {
     TensorList inputData = input.getData();
     final int itemCnt = inputData.length();
     if (null == lastResult || minBatches < itemCnt) {
-      if(null != lastResult) lastResult.freeRef();
+      if (null != lastResult) lastResult.freeRef();
       @Nonnull final ToDoubleFunction<Coordinate> f = (c) ->
           IntStream.range(0, itemCnt)
               .mapToDouble(dataIndex -> {
@@ -139,7 +139,7 @@ public class SumMetaLayer extends LayerBase {
 
   @Override
   protected void _free() {
-    if(null != lastResult) {
+    if (null != lastResult) {
       lastResult.freeRef();
     }
     super._free();

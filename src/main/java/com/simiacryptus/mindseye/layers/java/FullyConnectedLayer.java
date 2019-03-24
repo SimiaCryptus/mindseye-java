@@ -20,7 +20,7 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
-import com.simiacryptus.lang.ref.*;
+import com.simiacryptus.lang.ref.RecycleBin;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.util.FastRandom;
 import com.simiacryptus.util.JsonUtil;
