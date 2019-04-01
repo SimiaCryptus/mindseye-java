@@ -55,6 +55,18 @@ public class LinearActivationLayer extends LayerBase {
     weights.set(1, 0.);
   }
 
+  @Nullable
+  @Override
+  public String getName() {
+    if(weights.get(0) == 1.0) {
+      return String.format("= x + %.1E", weights.get(1)).toLowerCase() + (isFrozen()?"":"!");
+    } else if(weights.get(1) == 0.0) {
+      return String.format("= %.1E x", weights.get(0)).toLowerCase() + (isFrozen()?"":"!");
+    } else {
+      return String.format("= %.1E x + %.1E", weights.get(0), weights.get(1)).toLowerCase() + (isFrozen()?"":"!");
+    }
+  }
+
   /**
    * Instantiates a new Linear activation key.
    *
