@@ -55,18 +55,6 @@ public class LinearActivationLayer extends LayerBase {
     weights.set(1, 0.);
   }
 
-  @Nullable
-  @Override
-  public String getName() {
-    if(weights.get(0) == 1.0) {
-      return String.format("= x + %.1E", weights.get(1)).toLowerCase() + (isFrozen()?"":"!");
-    } else if(weights.get(1) == 0.0) {
-      return String.format("= %.1E x", weights.get(0)).toLowerCase() + (isFrozen()?"":"!");
-    } else {
-      return String.format("= %.1E x + %.1E", weights.get(0), weights.get(1)).toLowerCase() + (isFrozen()?"":"!");
-    }
-  }
-
   /**
    * Instantiates a new Linear activation key.
    *
@@ -87,6 +75,19 @@ public class LinearActivationLayer extends LayerBase {
    */
   public static LinearActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new LinearActivationLayer(json, rs);
+  }
+
+  @Nullable
+  @Override
+  public String getName() {
+    String eqStr = isFrozen() ? "== " : "=> ";
+    if (weights.get(0) == 1.0) {
+      return eqStr + String.format("x + %.1e", weights.get(1)) + (isFrozen() ? "" : "!");
+    } else if (weights.get(1) == 0.0) {
+      return eqStr + String.format("%.1e x", weights.get(0)) + (isFrozen() ? "" : "!");
+    } else {
+      return eqStr + String.format("%.1e x + %.1e", weights.get(0), weights.get(1));
+    }
   }
 
   @Override
