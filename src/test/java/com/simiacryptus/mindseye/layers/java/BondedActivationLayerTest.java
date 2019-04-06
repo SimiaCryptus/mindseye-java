@@ -26,12 +26,12 @@ import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 /**
  * The type Max const key apply.
  */
-public abstract class MaxConstLayerTest extends ActivationLayerTestBase {
+public abstract class BondedActivationLayerTest extends ActivationLayerTestBase {
   /**
    * Instantiates a new Max const key apply.
    */
-  public MaxConstLayerTest() {
-    super(new MaxConstLayer());
+  public BondedActivationLayerTest() {
+    super(new BondedActivationLayer());
   }
 
   @Override
@@ -42,7 +42,7 @@ public abstract class MaxConstLayerTest extends ActivationLayerTestBase {
   /**
    * Basic Test
    */
-  public static class Basic extends MaxConstLayerTest {
+  public static class Basic extends BondedActivationLayerTest {
   }
 
 }

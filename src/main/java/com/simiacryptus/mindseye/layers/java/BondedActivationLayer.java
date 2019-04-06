@@ -29,14 +29,15 @@ import java.util.Map;
  * Enforces a maximum-maxValue constraint on the input signal, rounding down any values exceeding a setByCoord threshold.
  */
 @SuppressWarnings("serial")
-public class MaxConstLayer extends SimpleActivationLayer<MaxConstLayer> {
+public class BondedActivationLayer extends SimpleActivationLayer<BondedActivationLayer> {
 
-  private double maxValue = 0;
+  private double maxValue = Double.POSITIVE_INFINITY;
+  private double minValue = Double.NEGATIVE_INFINITY;
 
   /**
    * Instantiates a new Max const key.
    */
-  public MaxConstLayer() {
+  public BondedActivationLayer() {
     super();
   }
 
@@ -45,7 +46,7 @@ public class MaxConstLayer extends SimpleActivationLayer<MaxConstLayer> {
    *
    * @param id the id
    */
-  protected MaxConstLayer(@Nonnull final JsonObject id) {
+  protected BondedActivationLayer(@Nonnull final JsonObject id) {
     super(id);
   }
 
@@ -57,16 +58,16 @@ public class MaxConstLayer extends SimpleActivationLayer<MaxConstLayer> {
    * @return the max const key
    */
   @Nonnull
-  public static MaxConstLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
-    @Nonnull final MaxConstLayer obj = new MaxConstLayer(json);
+  public static BondedActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+    @Nonnull final BondedActivationLayer obj = new BondedActivationLayer(json);
     obj.maxValue = json.get("maxValue").getAsDouble();
     return obj;
   }
 
   @Override
   protected void eval(final double x, final double[] results) {
-    final double d = x > maxValue ? 0 : 1;
-    final double f = x > maxValue ? maxValue : x;
+    final double d = x > maxValue || x < getMinValue() ? 0 : 1;
+    final double f = x > maxValue ? maxValue : x < getMinValue() ? getMinValue() : x;
     assert Double.isFinite(d);
     results[0] = f;
     results[1] = d;
@@ -96,8 +97,17 @@ public class MaxConstLayer extends SimpleActivationLayer<MaxConstLayer> {
    * @return the maxValue
    */
   @Nonnull
-  public MaxConstLayer setMaxValue(final double maxValue) {
+  public BondedActivationLayer setMaxValue(final double maxValue) {
     this.maxValue = maxValue;
+    return this;
+  }
+
+  public double getMinValue() {
+    return minValue;
+  }
+
+  public BondedActivationLayer setMinValue(double minValue) {
+    this.minValue = minValue;
     return this;
   }
 }
