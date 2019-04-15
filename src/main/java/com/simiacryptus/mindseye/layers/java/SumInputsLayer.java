@@ -71,32 +71,11 @@ public class SumInputsLayer extends LayerBase {
     if (1 == networks.length) return networks[0];
     PipelineNetwork pipelineNetwork = new PipelineNetwork(1);
     pipelineNetwork.wrap(new SumInputsLayer(), Arrays.stream(networks).map(network -> {
-      InnerNode node = transferNode(pipelineNetwork, network.getHead());
+      InnerNode node = PipelineNetwork.transferNode(pipelineNetwork, network.getHead());
       network.freeRef();
       return node;
     }).toArray(i -> new DAGNode[i])).freeRef();
     return pipelineNetwork;
-  }
-
-  public static InnerNode transferNode(PipelineNetwork pipelineNetwork, DAGNode head) {
-    try {
-      return pipelineNetwork.add(head.getLayer(), Arrays.stream(head.getInputs()).map(input -> {
-        if (input.getNetwork().inputNodes.containsKey(input.getId())) {
-          return pipelineNetwork.getInput(input.getNetwork().inputHandles.indexOf(input.getId()));
-        } else {
-          Layer inputLayer = input.getLayer();
-          if (inputLayer == null) throw new IllegalArgumentException(input.getClass().toString());
-          return pipelineNetwork.getNodes().stream().filter(dagNode -> {
-            Layer layer = dagNode.getLayer();
-            return null != layer && layer.getId().equals(inputLayer.getId());
-          }).findFirst().map(DAGNode::addRef).orElseGet(() -> {
-            return transferNode(pipelineNetwork, input.addRef());
-          });
-        }
-      }).toArray(i -> new DAGNode[i]));
-    } finally {
-      head.freeRef();
-    }
   }
 
   @Nonnull

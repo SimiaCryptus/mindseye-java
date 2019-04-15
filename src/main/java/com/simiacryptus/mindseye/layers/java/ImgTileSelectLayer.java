@@ -117,7 +117,7 @@ public class ImgTileSelectLayer extends LayerBase {
     assert 3 == inDim.length;
     assert 3 == outDim.length;
     assert inDim[2] == outDim[2] : Arrays.toString(inDim) + "; " + Arrays.toString(outDim);
-    outputData.coordStream(false).forEach((c) -> {
+    outputData.coordStream(true).forEach((c) -> {
       int x = c.getCoords()[0] + posX;
       int y = c.getCoords()[1] + posY;
       int z = c.getCoords()[2];
@@ -250,7 +250,7 @@ public class ImgTileSelectLayer extends LayerBase {
     @Nonnull final int[] inputDims = batch.getDimensions();
     assert 3 == inputDims.length;
     @Nonnull final int[] dimOut = getViewDimensions(inputDims, new int[]{sizeX, sizeY, inputDims[2]}, new int[]{positionX, positionY, 0});
-    return new Result(TensorArray.wrap(IntStream.range(0, batch.length()).parallel()
+    return new Result(TensorArray.wrap(IntStream.range(0, batch.length())
         .mapToObj(dataIndex -> {
           @Nonnull final Tensor outputData = new Tensor(dimOut);
           Tensor inputData = batch.get(dataIndex);
@@ -260,7 +260,7 @@ public class ImgTileSelectLayer extends LayerBase {
         })
         .toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList error) -> {
       if (input.isAlive()) {
-        @Nonnull TensorArray tensorArray = TensorArray.wrap(IntStream.range(0, error.length()).parallel()
+        @Nonnull TensorArray tensorArray = TensorArray.wrap(IntStream.range(0, error.length())
             .mapToObj(dataIndex -> {
               @Nullable final Tensor err = error.get(dataIndex);
               @Nonnull final Tensor passback = new Tensor(inputDims);
