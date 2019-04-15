@@ -29,7 +29,7 @@ import java.util.Map;
  * Enforces a maximum-maxValue constraint on the input signal, rounding down any values exceeding a setByCoord threshold.
  */
 @SuppressWarnings("serial")
-public class BondedActivationLayer extends SimpleActivationLayer<BondedActivationLayer> {
+public class BoundedActivationLayer extends SimpleActivationLayer<BoundedActivationLayer> {
 
   private double maxValue = Double.POSITIVE_INFINITY;
   private double minValue = Double.NEGATIVE_INFINITY;
@@ -37,7 +37,7 @@ public class BondedActivationLayer extends SimpleActivationLayer<BondedActivatio
   /**
    * Instantiates a new Max const key.
    */
-  public BondedActivationLayer() {
+  public BoundedActivationLayer() {
     super();
   }
 
@@ -46,7 +46,7 @@ public class BondedActivationLayer extends SimpleActivationLayer<BondedActivatio
    *
    * @param id the id
    */
-  protected BondedActivationLayer(@Nonnull final JsonObject id) {
+  protected BoundedActivationLayer(@Nonnull final JsonObject id) {
     super(id);
   }
 
@@ -58,8 +58,8 @@ public class BondedActivationLayer extends SimpleActivationLayer<BondedActivatio
    * @return the max const key
    */
   @Nonnull
-  public static BondedActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
-    @Nonnull final BondedActivationLayer obj = new BondedActivationLayer(json);
+  public static BoundedActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+    @Nonnull final BoundedActivationLayer obj = new BoundedActivationLayer(json);
     obj.maxValue = json.get("maxValue").getAsDouble();
     return obj;
   }
@@ -97,7 +97,7 @@ public class BondedActivationLayer extends SimpleActivationLayer<BondedActivatio
    * @return the maxValue
    */
   @Nonnull
-  public BondedActivationLayer setMaxValue(final double maxValue) {
+  public BoundedActivationLayer setMaxValue(final double maxValue) {
     this.maxValue = maxValue;
     return this;
   }
@@ -106,7 +106,7 @@ public class BondedActivationLayer extends SimpleActivationLayer<BondedActivatio
     return minValue;
   }
 
-  public BondedActivationLayer setMinValue(double minValue) {
+  public BoundedActivationLayer setMinValue(double minValue) {
     this.minValue = minValue;
     return this;
   }
