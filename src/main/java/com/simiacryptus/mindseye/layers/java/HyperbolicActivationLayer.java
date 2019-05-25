@@ -168,7 +168,7 @@ public class HyperbolicActivationLayer extends LayerBase {
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, @Nonnull DataSerializer dataSerializer) {
     @Nonnull final JsonObject json = super.getJsonStub();
-    json.add("weights", weights.toJson(resources, dataSerializer));
+    json.add("weights", weights.getJson(resources, dataSerializer));
     json.addProperty("negativeMode", negativeMode);
     return json;
   }

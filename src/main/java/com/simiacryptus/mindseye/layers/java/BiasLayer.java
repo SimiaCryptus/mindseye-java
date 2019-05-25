@@ -187,7 +187,7 @@ public class BiasLayer extends LayerBase {
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
     @Nonnull final JsonObject json = super.getJsonStub();
-    json.add("bias", bias.toJson(resources, dataSerializer));
+    json.add("bias", bias.getJson(resources, dataSerializer));
     return json;
   }
 

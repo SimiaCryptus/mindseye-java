@@ -284,7 +284,7 @@ public class FullyConnectedLayer extends LayerBase {
     @Nonnull final JsonObject json = super.getJsonStub();
     json.add("outputDims", JsonUtil.getJson(outputDims));
     json.add("inputDims", JsonUtil.getJson(inputDims));
-    json.add("weights", getWeights().toJson(resources, dataSerializer));
+    json.add("weights", getWeights().getJson(resources, dataSerializer));
     return json;
   }
 
@@ -420,6 +420,12 @@ public class FullyConnectedLayer extends LayerBase {
     getWeights().coordStream(false).forEach(c -> {
       getWeights().set(c, (FastRandom.INSTANCE.random() - 0.5) * Math.pow(10, value));
     });
+    return this;
+  }
+
+  @Nonnull
+  public FullyConnectedLayer scale(final double value) {
+    getWeights().scaleInPlace(value);
     return this;
   }
 

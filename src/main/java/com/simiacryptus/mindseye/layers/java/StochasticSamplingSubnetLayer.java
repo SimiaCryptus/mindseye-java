@@ -31,6 +31,8 @@ import com.simiacryptus.mindseye.network.DAGNetwork;
 import com.simiacryptus.mindseye.network.DAGNode;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -43,6 +45,9 @@ import java.util.stream.IntStream;
  */
 @SuppressWarnings("serial")
 public class StochasticSamplingSubnetLayer extends LayerBase implements StochasticComponent {
+
+  @SuppressWarnings("unused")
+  private static final Logger log = LoggerFactory.getLogger(StochasticSamplingSubnetLayer.class);
 
   private final int samples;
   @Nullable
@@ -120,6 +125,9 @@ public class StochasticSamplingSubnetLayer extends LayerBase implements Stochast
   @Nullable
   @Override
   public Result evalAndFree(@Nonnull final Result... inObj) {
+    if(0 == seed) {
+      return subnetwork.evalAndFree(inObj);
+    }
     Result[] counting = Arrays.stream(inObj).map(r -> {
       return new CountingResult(r, samples);
     }).toArray(i -> new Result[i]);
@@ -183,11 +191,13 @@ public class StochasticSamplingSubnetLayer extends LayerBase implements Stochast
 
   @Override
   public void shuffle(final long seed) {
+    log.info(String.format("Set %s to random seed %s", getName(), seed));
     this.seed = seed;
   }
 
   @Override
   public void clearNoise() {
+    log.info(String.format("Set %s to random null seed", getName()));
     seed = 0;
   }
 

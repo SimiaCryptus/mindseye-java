@@ -20,10 +20,7 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
-import com.simiacryptus.lang.ref.ReferenceCountingBase;
 import com.simiacryptus.mindseye.lang.*;
-import com.simiacryptus.mindseye.network.DAGNode;
-import com.simiacryptus.mindseye.network.InnerNode;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
 
 import javax.annotation.Nonnull;
@@ -67,15 +64,7 @@ public class SumInputsLayer extends LayerBase {
   }
 
   public static PipelineNetwork combine(PipelineNetwork... networks) {
-    Arrays.stream(networks).forEach(ReferenceCountingBase::assertAlive);
-    if (1 == networks.length) return networks[0];
-    PipelineNetwork pipelineNetwork = new PipelineNetwork(1);
-    pipelineNetwork.wrap(new SumInputsLayer(), Arrays.stream(networks).map(network -> {
-      InnerNode node = PipelineNetwork.transferNode(pipelineNetwork, network.getHead());
-      network.freeRef();
-      return node;
-    }).toArray(i -> new DAGNode[i])).freeRef();
-    return pipelineNetwork;
+    return PipelineNetwork.combine(new SumInputsLayer(), networks);
   }
 
   @Nonnull

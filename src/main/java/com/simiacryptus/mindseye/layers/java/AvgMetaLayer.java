@@ -153,7 +153,7 @@ public class AvgMetaLayer extends LayerBase {
   public JsonObject getJson(Map<CharSequence, byte[]> resources, @Nonnull DataSerializer dataSerializer) {
     @Nonnull final JsonObject json = super.getJsonStub();
     if (null != lastResult) {
-      json.add("lastResult", lastResult.toJson(resources, dataSerializer));
+      json.add("lastResult", lastResult.getJson(resources, dataSerializer));
     }
     json.addProperty("minBatchCount", minBatchCount);
     return json;

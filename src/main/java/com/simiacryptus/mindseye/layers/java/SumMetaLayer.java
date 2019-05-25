@@ -131,7 +131,7 @@ public class SumMetaLayer extends LayerBase {
   public JsonObject getJson(Map<CharSequence, byte[]> resources, @Nonnull DataSerializer dataSerializer) {
     @Nonnull final JsonObject json = super.getJsonStub();
     if (null != lastResult) {
-      json.add("lastResult", lastResult.toJson(resources, dataSerializer));
+      json.add("lastResult", lastResult.getJson(resources, dataSerializer));
     }
     json.addProperty("minBatches", minBatches);
     return json;

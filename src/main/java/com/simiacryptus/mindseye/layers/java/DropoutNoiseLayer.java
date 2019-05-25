@@ -175,11 +175,13 @@ public class DropoutNoiseLayer extends LayerBase implements StochasticComponent 
 
   @Override
   public void shuffle(final long seed) {
+    //log.info(String.format("Set %s to random seed %s", getName(), seed));
     this.seed = StochasticComponent.random.get().nextLong();
   }
 
   @Override
   public void clearNoise() {
+    //log.info(String.format("Set %s to random null seed", getName()));
     seed = -1;
   }
 

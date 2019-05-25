@@ -205,7 +205,7 @@ public class FullyConnectedReferenceLayer extends LayerBase {
     @Nonnull final JsonObject json = super.getJsonStub();
     json.add("outputDims", JsonUtil.getJson(outputDims));
     json.add("inputDims", JsonUtil.getJson(inputDims));
-    json.add("weights", weights.toJson(resources, dataSerializer));
+    json.add("weights", weights.getJson(resources, dataSerializer));
     return json;
   }
 
