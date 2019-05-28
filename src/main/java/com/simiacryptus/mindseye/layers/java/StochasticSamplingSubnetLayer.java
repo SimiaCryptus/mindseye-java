@@ -125,7 +125,7 @@ public class StochasticSamplingSubnetLayer extends LayerBase implements Stochast
   @Nullable
   @Override
   public Result evalAndFree(@Nonnull final Result... inObj) {
-    if(0 == seed) {
+    if (0 == seed) {
       return subnetwork.evalAndFree(inObj);
     }
     Result[] counting = Arrays.stream(inObj).map(r -> {
