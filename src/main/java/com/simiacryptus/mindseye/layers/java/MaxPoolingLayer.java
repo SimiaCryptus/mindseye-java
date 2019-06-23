@@ -38,9 +38,6 @@ import java.util.function.IntToDoubleFunction;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-/**
- * The type Max subsample key.
- */
 @SuppressWarnings("serial")
 public class MaxPoolingLayer extends LayerBase {
 
@@ -50,29 +47,15 @@ public class MaxPoolingLayer extends LayerBase {
   private int[] kernelDims;
 
 
-  /**
-   * Instantiates a new Max subsample key.
-   */
   protected MaxPoolingLayer() {
     super();
   }
 
-  /**
-   * Instantiates a new Max subsample key.
-   *
-   * @param kernelDims the kernel dims
-   */
   public MaxPoolingLayer(@Nonnull final int... kernelDims) {
 
     this.kernelDims = Arrays.copyOf(kernelDims, kernelDims.length);
   }
 
-  /**
-   * Instantiates a new Max subsample key.
-   *
-   * @param id         the id
-   * @param kernelDims the kernel dims
-   */
   protected MaxPoolingLayer(@Nonnull final JsonObject id, @Nonnull final int... kernelDims) {
     super(id);
     this.kernelDims = Arrays.copyOf(kernelDims, kernelDims.length);
@@ -107,13 +90,6 @@ public class MaxPoolingLayer extends LayerBase {
     return tuple2s;
   }
 
-  /**
-   * From json max subsample key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the max subsample key
-   */
   public static MaxPoolingLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new MaxPoolingLayer(json,
         JsonUtil.getIntArray(json.getAsJsonArray("heapCopy")));
@@ -205,25 +181,10 @@ public class MaxPoolingLayer extends LayerBase {
     return Arrays.asList();
   }
 
-  /**
-   * The type Calc regions parameter.
-   */
   public static class CalcRegionsParameter {
-    /**
-     * The Input dims.
-     */
     public int[] inputDims;
-    /**
-     * The Kernel dims.
-     */
     public int[] kernelDims;
 
-    /**
-     * Instantiates a new Calc regions parameter.
-     *
-     * @param inputDims  the input dims
-     * @param kernelDims the kernel dims
-     */
     public CalcRegionsParameter(final int[] inputDims, final int[] kernelDims) {
       this.inputDims = inputDims;
       this.kernelDims = kernelDims;

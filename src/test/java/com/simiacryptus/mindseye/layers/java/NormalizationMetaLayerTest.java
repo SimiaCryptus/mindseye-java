@@ -27,9 +27,6 @@ import com.simiacryptus.mindseye.test.unit.ComponentTest;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-/**
- * The type Normalization meta key apply.
- */
 public abstract class NormalizationMetaLayerTest extends MetaLayerTestBase {
   @Override
   protected Layer lossLayer() {
@@ -64,9 +61,6 @@ public abstract class NormalizationMetaLayerTest extends MetaLayerTestBase {
     //return new BatchDerivativeTester(1e-2, 1e-5, 10);
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends NormalizationMetaLayerTest {
   }
 

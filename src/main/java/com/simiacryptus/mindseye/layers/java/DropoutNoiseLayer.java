@@ -31,55 +31,29 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.IntStream;
 
-/**
- * Randomly selects a fraction of the inputs and sets all other elements to zero.
- */
 @SuppressWarnings("serial")
 public class DropoutNoiseLayer extends LayerBase implements StochasticComponent {
 
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(DropoutNoiseLayer.class);
-  /**
-   * The Seed.
-   */
   long seed = StochasticComponent.random.get().nextLong();
   private double value;
 
-  /**
-   * Instantiates a new Dropout noise key.
-   */
   public DropoutNoiseLayer() {
     this(0.5);
   }
 
-  /**
-   * Instantiates a new Dropout noise key.
-   *
-   * @param value the value
-   */
   public DropoutNoiseLayer(final double value) {
     super();
     setValue(value);
   }
 
-  /**
-   * Instantiates a new Dropout noise key.
-   *
-   * @param json the json
-   */
   protected DropoutNoiseLayer(@Nonnull final JsonObject json) {
     super(json);
     value = json.get("value").getAsDouble();
   }
 
-  /**
-   * From json dropout noise key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the dropout noise key
-   */
   public static DropoutNoiseLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new DropoutNoiseLayer(json);
   }
@@ -152,21 +126,10 @@ public class DropoutNoiseLayer extends LayerBase implements StochasticComponent 
     return json;
   }
 
-  /**
-   * Gets value.
-   *
-   * @return the value
-   */
   public double getValue() {
     return value;
   }
 
-  /**
-   * Sets value.
-   *
-   * @param value the value
-   * @return the value
-   */
   @Nonnull
   public DropoutNoiseLayer setValue(final double value) {
     this.value = value;

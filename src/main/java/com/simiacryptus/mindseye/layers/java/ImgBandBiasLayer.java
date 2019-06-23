@@ -37,9 +37,6 @@ import java.util.UUID;
 import java.util.function.DoubleSupplier;
 import java.util.function.IntToDoubleFunction;
 
-/**
- * Adds a per-color-band value offset to the single tensor input.
- */
 @SuppressWarnings("serial")
 public class ImgBandBiasLayer extends LayerBase {
 
@@ -48,52 +45,26 @@ public class ImgBandBiasLayer extends LayerBase {
   @Nullable
   private final double[] bias;
 
-  /**
-   * Instantiates a new Img band bias key.
-   */
   protected ImgBandBiasLayer() {
     super();
     bias = null;
   }
 
-  /**
-   * Instantiates a new Img band bias key.
-   *
-   * @param bands the bands
-   */
   public ImgBandBiasLayer(final int bands) {
     super();
     bias = new double[bands];
   }
 
 
-  /**
-   * Instantiates a new Img band bias key.
-   *
-   * @param json the json
-   */
   protected ImgBandBiasLayer(@Nonnull final JsonObject json) {
     super(json);
     bias = JsonUtil.getDoubleArray(json.getAsJsonArray("bias"));
   }
 
-  /**
-   * From json img band bias key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the img band bias key
-   */
   public static ImgBandBiasLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ImgBandBiasLayer(json);
   }
 
-  /**
-   * Add double [ ].
-   *
-   * @param input the input
-   * @return the double [ ]
-   */
   @Nonnull
   public double[] add(@Nonnull final double[] input) {
     assert Arrays.stream(input).allMatch(v -> Double.isFinite(v));
@@ -110,12 +81,6 @@ public class ImgBandBiasLayer extends LayerBase {
     return array;
   }
 
-  /**
-   * Add weights img band bias key.
-   *
-   * @param f the f
-   * @return the img band bias key
-   */
   @Nonnull
   public ImgBandBiasLayer addWeights(@Nonnull final DoubleSupplier f) {
     Util.add(f, getBias());
@@ -128,12 +93,6 @@ public class ImgBandBiasLayer extends LayerBase {
     return eval(inObj[0]);
   }
 
-  /**
-   * Eval nn result.
-   *
-   * @param input the input
-   * @return the nn result
-   */
   @Nonnull
   public Result eval(@Nonnull final Result input) {
     @Nullable final double[] bias = getBias();
@@ -190,11 +149,6 @@ public class ImgBandBiasLayer extends LayerBase {
     };
   }
 
-  /**
-   * Get bias double [ ].
-   *
-   * @return the double [ ]
-   */
   @Nullable
   public double[] getBias() {
     if (!Arrays.stream(bias).allMatch(v -> Double.isFinite(v))) {
@@ -211,12 +165,6 @@ public class ImgBandBiasLayer extends LayerBase {
     return json;
   }
 
-  /**
-   * Set nn key.
-   *
-   * @param ds the ds
-   * @return the nn key
-   */
   @Nonnull
   public Layer set(@Nonnull final double[] ds) {
     @Nullable final double[] bias = getBias();
@@ -227,12 +175,6 @@ public class ImgBandBiasLayer extends LayerBase {
     return this;
   }
 
-  /**
-   * Sets weights.
-   *
-   * @param f the f
-   * @return the weights
-   */
   @Nonnull
   public ImgBandBiasLayer setWeights(@Nonnull final IntToDoubleFunction f) {
     @Nullable final double[] bias = getBias();
@@ -249,12 +191,6 @@ public class ImgBandBiasLayer extends LayerBase {
     return Arrays.asList(getBias());
   }
 
-  /**
-   * Sets weights log.
-   *
-   * @param value the value
-   * @return the weights log
-   */
   @Nonnull
   public ImgBandBiasLayer setWeightsLog(final double value) {
     for (int i = 0; i < bias.length; i++) {
@@ -264,24 +200,12 @@ public class ImgBandBiasLayer extends LayerBase {
   }
 
 
-  /**
-   * Sets and free.
-   *
-   * @param tensor the tensor
-   * @return the and free
-   */
   public ImgBandBiasLayer setAndFree(final Tensor tensor) {
     set(tensor.getData());
     tensor.freeRef();
     return this;
   }
 
-  /**
-   * Set img band bias key.
-   *
-   * @param tensor the tensor
-   * @return the img band bias key
-   */
   public ImgBandBiasLayer set(final Tensor tensor) {
     return (ImgBandBiasLayer) set(tensor.getData());
   }

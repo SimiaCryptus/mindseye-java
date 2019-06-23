@@ -24,9 +24,6 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-/**
- * The type Max png band key apply.
- */
 public abstract class MaxImageBandLayerTest extends LayerTestBase {
 
   @Nonnull
@@ -43,9 +40,6 @@ public abstract class MaxImageBandLayerTest extends LayerTestBase {
     return new MaxImageBandLayer();
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends MaxImageBandLayerTest {
   }
 

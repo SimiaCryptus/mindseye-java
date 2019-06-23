@@ -23,13 +23,7 @@ package com.simiacryptus.mindseye.layers.java;
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 
-/**
- * The type Sinewave activation key apply.
- */
 public abstract class SinewaveActivationLayerTest extends ActivationLayerTestBase {
-  /**
-   * Instantiates a new Sinewave activation key apply.
-   */
   public SinewaveActivationLayerTest() {
     super(new SinewaveActivationLayer());
   }
@@ -39,9 +33,6 @@ public abstract class SinewaveActivationLayerTest extends ActivationLayerTestBas
     return new MeanSqLossLayer();
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends SinewaveActivationLayerTest {
   }
 

@@ -24,14 +24,8 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-/**
- * The type Scale meta key apply.
- */
 public abstract class ScaleMetaLayerTest extends LayerTestBase {
 
-  /**
-   * Instantiates a new Scale meta key apply.
-   */
   public ScaleMetaLayerTest() {
     validateBatchExecution = false;
   }
@@ -50,9 +44,6 @@ public abstract class ScaleMetaLayerTest extends LayerTestBase {
     return new ScaleMetaLayer();
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends ScaleMetaLayerTest {
   }
 

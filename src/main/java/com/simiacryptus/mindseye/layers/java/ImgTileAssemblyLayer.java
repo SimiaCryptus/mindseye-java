@@ -29,10 +29,6 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
-/**
- * Reduces the resolution of the input by selecting a centered window. The output png will have the same number of
- * color bands.
- */
 @SuppressWarnings("serial")
 public class ImgTileAssemblyLayer extends LayerBase {
 
@@ -44,23 +40,12 @@ public class ImgTileAssemblyLayer extends LayerBase {
   private int offsetX = 0;
   private int offsetY = 0;
 
-  /**
-   * Instantiates a new Img crop key.
-   *
-   * @param columns the size x
-   * @param rows    the size y
-   */
   public ImgTileAssemblyLayer(final int columns, final int rows) {
     super();
     this.columns = columns;
     this.rows = rows;
   }
 
-  /**
-   * Instantiates a new Img crop key.
-   *
-   * @param json the json
-   */
   protected ImgTileAssemblyLayer(@Nonnull final JsonObject json) {
     super(json);
     columns = getInt(json, "columns", 1);
@@ -71,20 +56,6 @@ public class ImgTileAssemblyLayer extends LayerBase {
     setOffsetY(getInt(json, "offsetY", 0));
   }
 
-  /**
-   * Copy condense tensor.
-   *
-   * @param inputData  the input data
-   * @param outputData the output data
-   * @param offsetX    the position x
-   * @param offsetY    the position y
-   * @param paddingX   the padding x
-   * @param paddingY   the padding y
-   * @param toroidal   the toroidal
-   * @param rowF       the row f
-   * @param colF       the col f
-   * @return the tensor
-   */
   @Nonnull
   public static Tensor copy(
       @Nonnull final Tensor inputData,
@@ -157,13 +128,6 @@ public class ImgTileAssemblyLayer extends LayerBase {
     return outputData;
   }
 
-  /**
-   * From json img crop key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the img crop key
-   */
   public static ImgTileAssemblyLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ImgTileAssemblyLayer(json);
   }
@@ -308,81 +272,37 @@ public class ImgTileAssemblyLayer extends LayerBase {
   }
 
 
-  /**
-   * Gets padding x.
-   *
-   * @return the padding x
-   */
   public int getPaddingX() {
     return paddingX;
   }
 
-  /**
-   * Sets padding x.
-   *
-   * @param paddingX the padding x
-   * @return the padding x
-   */
   public ImgTileAssemblyLayer setPaddingX(int paddingX) {
     this.paddingX = paddingX;
     return this;
   }
 
-  /**
-   * Gets padding y.
-   *
-   * @return the padding y
-   */
   public int getPaddingY() {
     return paddingY;
   }
 
-  /**
-   * Sets padding y.
-   *
-   * @param paddingY the padding y
-   * @return the padding y
-   */
   public ImgTileAssemblyLayer setPaddingY(int paddingY) {
     this.paddingY = paddingY;
     return this;
   }
 
-  /**
-   * Gets offset x.
-   *
-   * @return the offset x
-   */
   public int getOffsetX() {
     return offsetX;
   }
 
-  /**
-   * Sets offset x.
-   *
-   * @param offsetX the offset x
-   * @return the offset x
-   */
   public ImgTileAssemblyLayer setOffsetX(int offsetX) {
     this.offsetX = offsetX;
     return this;
   }
 
-  /**
-   * Gets offset y.
-   *
-   * @return the offset y
-   */
   public int getOffsetY() {
     return offsetY;
   }
 
-  /**
-   * Sets offset y.
-   *
-   * @param offsetY the offset y
-   * @return the offset y
-   */
   public ImgTileAssemblyLayer setOffsetY(int offsetY) {
     this.offsetY = offsetY;
     return this;

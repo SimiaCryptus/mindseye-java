@@ -30,10 +30,6 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.IntStream;
 
-/**
- * Reduces the resolution of the input by selecting a centered window. The output png will have the same number of
- * color bands.
- */
 @SuppressWarnings("serial")
 public class ImgViewLayer extends LayerBase {
 
@@ -77,11 +73,6 @@ public class ImgViewLayer extends LayerBase {
     setSizeX(sizeX).setSizeY(sizeY).setOffsetX(offsetX).setOffsetY(offsetY).setWrap(wrap);
   }
 
-  /**
-   * Instantiates a new Img crop key.
-   *
-   * @param json the json
-   */
   protected ImgViewLayer(@Nonnull final JsonObject json) {
     super(json);
     setSizeX(json.getAsJsonPrimitive("sizeX").getAsInt());
@@ -146,13 +137,6 @@ public class ImgViewLayer extends LayerBase {
     return tensor.get(x, y, channel);
   }
 
-  /**
-   * From json img crop key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the img crop key
-   */
   public static ImgViewLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ImgViewLayer(json);
   }
@@ -273,14 +257,6 @@ public class ImgViewLayer extends LayerBase {
     };
   }
 
-  /**
-   * Get view dimensions int [ ].
-   *
-   * @param sourceDimensions      the source dimensions
-   * @param destinationDimensions the destination dimensions
-   * @param offset                the offset
-   * @return the int [ ]
-   */
   @Nonnull
   public int[] getViewDimensions(int[] sourceDimensions, int[] destinationDimensions, int[] offset) {
     @Nonnull final int[] viewDim = new int[3];

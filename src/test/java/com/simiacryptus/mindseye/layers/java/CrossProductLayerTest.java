@@ -24,9 +24,6 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-/**
- * The type Cross product key apply.
- */
 public abstract class CrossProductLayerTest extends LayerTestBase {
 
   @Nonnull
@@ -43,9 +40,6 @@ public abstract class CrossProductLayerTest extends LayerTestBase {
     return new CrossProductLayer();
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends CrossProductLayerTest {
   }
 

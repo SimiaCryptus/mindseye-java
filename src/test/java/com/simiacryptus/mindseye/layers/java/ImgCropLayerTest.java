@@ -25,14 +25,8 @@ import javax.annotation.Nonnull;
 import java.util.Random;
 
 
-/**
- * The type Img crop key apply.
- */
 public abstract class ImgCropLayerTest extends LayerTestBase {
 
-  /**
-   * Instantiates a new Img crop key apply.
-   */
   public ImgCropLayerTest() {
     validateBatchExecution = false;
   }
@@ -51,9 +45,6 @@ public abstract class ImgCropLayerTest extends LayerTestBase {
     return new ImgCropLayer(1, 1);
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends ImgCropLayerTest {
   }
 

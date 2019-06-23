@@ -24,9 +24,6 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-/**
- * The type Assert dimensions key apply.
- */
 public abstract class AssertDimensionsLayerTest extends LayerTestBase {
 
   @Nonnull
@@ -43,9 +40,6 @@ public abstract class AssertDimensionsLayerTest extends LayerTestBase {
     return new AssertDimensionsLayer(2, 2);
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends AssertDimensionsLayerTest {
 
   }

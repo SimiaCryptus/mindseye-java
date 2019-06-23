@@ -24,13 +24,7 @@ import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 import com.simiacryptus.mindseye.test.unit.SingleDerivativeTester;
 
-/**
- * The type Log activation key apply.
- */
 public abstract class LogActivationLayerTest extends ActivationLayerTestBase {
-  /**
-   * Instantiates a new Log activation key apply.
-   */
   public LogActivationLayerTest() {
     super(new LogActivationLayer());
   }
@@ -40,9 +34,6 @@ public abstract class LogActivationLayerTest extends ActivationLayerTestBase {
     return new SingleDerivativeTester(1e-2, 1e-8);
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends LogActivationLayerTest {
     @Override
     protected Layer lossLayer() {

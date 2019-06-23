@@ -29,9 +29,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
-/**
- * Concatenates two or more images apply the same resolution so the output contains all input color bands.
- */
 @SuppressWarnings("serial")
 public class TensorConcatLayer extends LayerBase {
 
@@ -39,31 +36,16 @@ public class TensorConcatLayer extends LayerBase {
   private static final Logger log = LoggerFactory.getLogger(TensorConcatLayer.class);
   private int maxBands;
 
-  /**
-   * Instantiates a new Img eval key.
-   */
   public TensorConcatLayer() {
     setMaxBands(0);
   }
 
-  /**
-   * Instantiates a new Img eval key.
-   *
-   * @param json the json
-   */
   protected TensorConcatLayer(@Nonnull final JsonObject json) {
     super(json);
     JsonElement maxBands = json.get("maxBands");
     if (null != maxBands) setMaxBands(maxBands.getAsInt());
   }
 
-  /**
-   * From json img eval key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the img eval key
-   */
   public static TensorConcatLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new TensorConcatLayer(json);
   }
@@ -162,21 +144,10 @@ public class TensorConcatLayer extends LayerBase {
     return Arrays.asList();
   }
 
-  /**
-   * Gets max bands.
-   *
-   * @return the max bands
-   */
   public int getMaxBands() {
     return maxBands;
   }
 
-  /**
-   * Sets max bands.
-   *
-   * @param maxBands the max bands
-   * @return the max bands
-   */
   @Nonnull
   public TensorConcatLayer setMaxBands(int maxBands) {
     this.maxBands = maxBands;

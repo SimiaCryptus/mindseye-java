@@ -33,48 +33,25 @@ import java.util.UUID;
 import java.util.function.ToDoubleFunction;
 import java.util.stream.IntStream;
 
-/**
- * Computes the average value for each element across all elements of an execution batch. The output batch size will
- * always be one.
- */
 @SuppressWarnings("serial")
 public class AvgMetaLayer extends LayerBase {
 
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(AvgMetaLayer.class);
-  /**
-   * The Last result.
-   */
   @Nullable
   public Tensor lastResult;
   private int minBatchCount = 1;
 
-  /**
-   * Instantiates a new Avg meta key.
-   */
   public AvgMetaLayer() {
   }
 
-  /**
-   * Instantiates a new Avg meta key.
-   *
-   * @param json      the json
-   * @param resources the resources
-   */
   protected AvgMetaLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> resources) {
     super(json);
     lastResult = Tensor.fromJson(json.get("lastResult"), resources);
     minBatchCount = json.get("minBatchCount").getAsInt();
   }
 
-  /**
-   * From json avg meta key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the avg meta key
-   */
   public static AvgMetaLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new AvgMetaLayer(json, rs);
   }
@@ -159,21 +136,10 @@ public class AvgMetaLayer extends LayerBase {
     return json;
   }
 
-  /**
-   * The Min batch count.
-   *
-   * @return the min batch count
-   */
   public int getMinBatchCount() {
     return minBatchCount;
   }
 
-  /**
-   * Sets min batch count.
-   *
-   * @param minBatchCount the min batch count
-   * @return the min batch count
-   */
   @Nonnull
   public AvgMetaLayer setMinBatchCount(final int minBatchCount) {
     this.minBatchCount = minBatchCount;

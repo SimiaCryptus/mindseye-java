@@ -25,34 +25,16 @@ import com.simiacryptus.mindseye.lang.DataSerializer;
 import javax.annotation.Nonnull;
 import java.util.Map;
 
-/**
- * The Absolute Value.
- */
 @SuppressWarnings("serial")
 public final class AbsActivationLayer extends SimpleActivationLayer<AbsActivationLayer> {
 
-  /**
-   * Instantiates a new Abs activation key.
-   */
   public AbsActivationLayer() {
   }
 
-  /**
-   * Instantiates a new Abs activation key.
-   *
-   * @param id the id
-   */
   protected AbsActivationLayer(@Nonnull final JsonObject id) {
     super(id);
   }
 
-  /**
-   * From json abs activation key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the abs activation key
-   */
   public static AbsActivationLayer fromJson(final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new AbsActivationLayer(json);
   }

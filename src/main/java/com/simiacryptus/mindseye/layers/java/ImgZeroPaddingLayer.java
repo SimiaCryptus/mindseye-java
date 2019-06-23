@@ -29,10 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Increases the resolution of the input by selecting a larger centered window. The output png will have the same
- * number of color bands, and the area outside the source png will be setWeights to 0.
- */
 @SuppressWarnings("serial")
 public class ImgZeroPaddingLayer extends LayerBase {
 
@@ -40,36 +36,18 @@ public class ImgZeroPaddingLayer extends LayerBase {
   private final int sizeX;
   private final int sizeY;
 
-  /**
-   * Instantiates a new Img crop key.
-   *
-   * @param sizeX the size x
-   * @param sizeY the size y
-   */
   public ImgZeroPaddingLayer(final int sizeX, final int sizeY) {
     super();
     this.sizeX = sizeX;
     this.sizeY = sizeY;
   }
 
-  /**
-   * Instantiates a new Img crop key.
-   *
-   * @param json the json
-   */
   protected ImgZeroPaddingLayer(@Nonnull final JsonObject json) {
     super(json);
     sizeX = json.getAsJsonPrimitive("sizeX").getAsInt();
     sizeY = json.getAsJsonPrimitive("sizeY").getAsInt();
   }
 
-  /**
-   * From json img crop key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the img crop key
-   */
   public static ImgZeroPaddingLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ImgZeroPaddingLayer(json);
   }

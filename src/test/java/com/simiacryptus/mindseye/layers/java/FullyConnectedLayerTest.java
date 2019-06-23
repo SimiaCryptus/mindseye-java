@@ -25,9 +25,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Random;
 
-/**
- * The type Fully connected key apply.
- */
 public abstract class FullyConnectedLayerTest extends LayerTestBase {
 
   @Nonnull
@@ -35,12 +32,6 @@ public abstract class FullyConnectedLayerTest extends LayerTestBase {
   private final int inputs;
   private final int outputs;
 
-  /**
-   * Instantiates a new Fully connected key test.
-   *
-   * @param inputs  the inputs
-   * @param outputs the outputs
-   */
   protected FullyConnectedLayerTest(int inputs, int outputs) {
     fullyConnectedLayer = new FullyConnectedLayer(new int[]{inputs}, new int[]{outputs});
     this.inputs = inputs;
@@ -68,13 +59,7 @@ public abstract class FullyConnectedLayerTest extends LayerTestBase {
     return fullyConnectedLayer;
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends FullyConnectedLayerTest {
-    /**
-     * Instantiates a new Basic.
-     */
     public Basic() {
       super(3, 3);
     }

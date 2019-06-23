@@ -26,13 +26,7 @@ import com.simiacryptus.mindseye.layers.ValueLayer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-/**
- * The type Target value key apply.
- */
 public class ValueLayerTest {
-  /**
-   * Basic apply.
-   */
   public static class Normal extends LayerTestBase {
 
     @Nonnull

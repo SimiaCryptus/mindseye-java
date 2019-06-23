@@ -23,13 +23,7 @@ package com.simiacryptus.mindseye.layers.java;
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 
-/**
- * The type Sigmoid activation key apply.
- */
 public abstract class SigmoidActivationLayerTest extends ActivationLayerTestBase {
-  /**
-   * Instantiates a new Sigmoid activation key apply.
-   */
   public SigmoidActivationLayerTest() {
     super(new SigmoidActivationLayer());
   }
@@ -39,9 +33,6 @@ public abstract class SigmoidActivationLayerTest extends ActivationLayerTestBase
     return new MeanSqLossLayer();
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends SigmoidActivationLayerTest {
   }
 

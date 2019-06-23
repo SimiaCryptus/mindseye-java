@@ -32,10 +32,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
-/**
- * A tunable linear (y=A*x+B) function, whose parameters can participate in learning. Defaults to y=1*x+0, and is NOT
- * frozen by default.
- */
 @SuppressWarnings("serial")
 public class LinearActivationLayer extends LayerBase {
 
@@ -45,9 +41,6 @@ public class LinearActivationLayer extends LayerBase {
   @Nullable
   private final Tensor weights;
 
-  /**
-   * Instantiates a new Linear activation key.
-   */
   public LinearActivationLayer() {
     super();
     weights = new Tensor(2);
@@ -55,24 +48,11 @@ public class LinearActivationLayer extends LayerBase {
     weights.set(1, 0.);
   }
 
-  /**
-   * Instantiates a new Linear activation key.
-   *
-   * @param json      the json
-   * @param resources the resources
-   */
   protected LinearActivationLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> resources) {
     super(json);
     weights = Tensor.fromJson(json.get("weights"), resources);
   }
 
-  /**
-   * From json linear activation key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the linear activation key
-   */
   public static LinearActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new LinearActivationLayer(json, rs);
   }
@@ -157,21 +137,10 @@ public class LinearActivationLayer extends LayerBase {
     };
   }
 
-  /**
-   * Gets bias.
-   *
-   * @return the bias
-   */
   public double getBias() {
     return weights.get(1);
   }
 
-  /**
-   * Sets bias.
-   *
-   * @param bias the bias
-   * @return the bias
-   */
   @Nonnull
   public LinearActivationLayer setBias(final double bias) {
     weights.set(1, bias);
@@ -186,21 +155,10 @@ public class LinearActivationLayer extends LayerBase {
     return json;
   }
 
-  /**
-   * Gets scale.
-   *
-   * @return the scale
-   */
   public double getScale() {
     return weights.get(0);
   }
 
-  /**
-   * Sets scale.
-   *
-   * @param scale the scale
-   * @return the scale
-   */
   @Nonnull
   public LinearActivationLayer setScale(final double scale) {
     weights.set(0, scale);

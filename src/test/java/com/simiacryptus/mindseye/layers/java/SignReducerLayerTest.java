@@ -24,13 +24,7 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-/**
- * The type Sign reducer key apply.
- */
 public class SignReducerLayerTest {
-  /**
-   * The type Normal.
-   */
   public static class Normal extends LayerTestBase {
 
     @Nonnull
@@ -48,9 +42,6 @@ public class SignReducerLayerTest {
     }
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends SignReducerLayerTest {
   }
 

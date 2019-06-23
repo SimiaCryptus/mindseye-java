@@ -39,35 +39,19 @@ import java.util.function.ToDoubleBiFunction;
 import java.util.function.ToDoubleFunction;
 import java.util.stream.IntStream;
 
-/**
- * A dense matrix operator using vector-matrix multiplication. Represents a fully connected key of synapses, where all
- * inputs are connected to all outputs via seperate coefficients.
- */
 @SuppressWarnings("serial")
 public class FullyConnectedReferenceLayer extends LayerBase {
 
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(FullyConnectedReferenceLayer.class);
-  /**
-   * The Input dims.
-   */
   @Nullable
   public final int[] inputDims;
-  /**
-   * The Output dims.
-   */
   @Nullable
   public final int[] outputDims;
-  /**
-   * The Weights.
-   */
   @Nullable
   public final Tensor weights;
 
-  /**
-   * Instantiates a new Fully connected key.
-   */
   protected FullyConnectedReferenceLayer() {
     super();
     outputDims = null;
@@ -75,12 +59,6 @@ public class FullyConnectedReferenceLayer extends LayerBase {
     inputDims = null;
   }
 
-  /**
-   * Instantiates a new Fully connected key.
-   *
-   * @param inputDims  the input dims
-   * @param outputDims the output dims
-   */
   public FullyConnectedReferenceLayer(@Nonnull final int[] inputDims, @Nonnull final int[] outputDims) {
     this.inputDims = Arrays.copyOf(inputDims, inputDims.length);
     this.outputDims = Arrays.copyOf(outputDims, outputDims.length);
@@ -95,12 +73,6 @@ public class FullyConnectedReferenceLayer extends LayerBase {
     });
   }
 
-  /**
-   * Instantiates a new Fully connected key.
-   *
-   * @param json      the json
-   * @param resources the resources
-   */
   protected FullyConnectedReferenceLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> resources) {
     super(json);
     outputDims = JsonUtil.getIntArray(json.getAsJsonArray("outputDims"));
@@ -108,13 +80,6 @@ public class FullyConnectedReferenceLayer extends LayerBase {
     weights = Tensor.fromJson(json.get("weights"), resources);
   }
 
-  /**
-   * From json fully connected key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the fully connected key
-   */
   public static FullyConnectedReferenceLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new FullyConnectedReferenceLayer(json, rs);
   }
@@ -210,46 +175,23 @@ public class FullyConnectedReferenceLayer extends LayerBase {
   }
 
 
-  /**
-   * Gets weights.
-   *
-   * @return the weights
-   */
   @Nullable
   public Tensor getWeights() {
     return weights;
   }
 
-  /**
-   * Sets weights.
-   *
-   * @param f the f
-   * @return the weights
-   */
   @Nonnull
   public FullyConnectedReferenceLayer set(@Nonnull final DoubleSupplier f) {
     Arrays.parallelSetAll(weights.getData(), i -> f.getAsDouble());
     return this;
   }
 
-  /**
-   * Sets weights.
-   *
-   * @param f the f
-   * @return the weights
-   */
   @Nonnull
   public FullyConnectedReferenceLayer set(@Nonnull final IntToDoubleFunction f) {
     weights.set(f);
     return this;
   }
 
-  /**
-   * Sets weights.
-   *
-   * @param f the f
-   * @return the weights
-   */
   @Nonnull
   public FullyConnectedReferenceLayer setByCoord(@Nonnull final ToDoubleFunction<Coordinate> f) {
     weights.coordStream(true).forEach(c -> {
@@ -258,36 +200,18 @@ public class FullyConnectedReferenceLayer extends LayerBase {
     return this;
   }
 
-  /**
-   * Sets weights.
-   *
-   * @param data the data
-   * @return the weights
-   */
   @Nonnull
   public FullyConnectedReferenceLayer set(final double[] data) {
     weights.set(data);
     return this;
   }
 
-  /**
-   * Set fully connected key.
-   *
-   * @param data the data
-   * @return the fully connected key
-   */
   @Nonnull
   public FullyConnectedReferenceLayer set(@Nonnull final Tensor data) {
     weights.set(data);
     return this;
   }
 
-  /**
-   * Sets weights.
-   *
-   * @param f the f
-   * @return the weights
-   */
   @Nonnull
   public FullyConnectedReferenceLayer setByCoord(@Nonnull final ToDoubleBiFunction<Coordinate, Coordinate> f) {
     new Tensor(inputDims).coordStream(true).forEach(in -> {
@@ -298,12 +222,6 @@ public class FullyConnectedReferenceLayer extends LayerBase {
     return this;
   }
 
-  /**
-   * Sets weights log.
-   *
-   * @param value the value
-   * @return the weights log
-   */
   @Nonnull
   public FullyConnectedReferenceLayer setWeightsLog(final double value) {
     weights.coordStream(false).forEach(c -> {

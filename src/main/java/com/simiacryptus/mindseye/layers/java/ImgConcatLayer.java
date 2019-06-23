@@ -29,9 +29,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
-/**
- * Concatenates two or more images apply the same resolution so the output contains all input color bands.
- */
 @SuppressWarnings("serial")
 public class ImgConcatLayer extends LayerBase {
 
@@ -39,31 +36,16 @@ public class ImgConcatLayer extends LayerBase {
   private static final Logger log = LoggerFactory.getLogger(ImgConcatLayer.class);
   private int maxBands;
 
-  /**
-   * Instantiates a new Img eval key.
-   */
   public ImgConcatLayer() {
     setMaxBands(0);
   }
 
-  /**
-   * Instantiates a new Img eval key.
-   *
-   * @param json the json
-   */
   protected ImgConcatLayer(@Nonnull final JsonObject json) {
     super(json);
     JsonElement maxBands = json.get("maxBands");
     if (null != maxBands) setMaxBands(maxBands.getAsInt());
   }
 
-  /**
-   * From json img eval key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the img eval key
-   */
   public static ImgConcatLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ImgConcatLayer(json);
   }
@@ -162,21 +144,10 @@ public class ImgConcatLayer extends LayerBase {
     return Arrays.asList();
   }
 
-  /**
-   * Gets max bands.
-   *
-   * @return the max bands
-   */
   public int getMaxBands() {
     return maxBands;
   }
 
-  /**
-   * Sets max bands.
-   *
-   * @param maxBands the max bands
-   * @return the max bands
-   */
   @Nonnull
   public ImgConcatLayer setMaxBands(int maxBands) {
     this.maxBands = maxBands;

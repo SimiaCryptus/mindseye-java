@@ -26,13 +26,7 @@ import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-/**
- * The type Max dropout noise key apply.
- */
 public abstract class MaxDropoutNoiseLayerTest extends ActivationLayerTestBase {
-  /**
-   * Instantiates a new Max dropout noise key apply.
-   */
   public MaxDropoutNoiseLayerTest() {
     super(new MaxDropoutNoiseLayer(2, 2, 1));
   }
@@ -50,9 +44,6 @@ public abstract class MaxDropoutNoiseLayerTest extends ActivationLayerTestBase {
     };
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends MaxDropoutNoiseLayerTest {
   }
 

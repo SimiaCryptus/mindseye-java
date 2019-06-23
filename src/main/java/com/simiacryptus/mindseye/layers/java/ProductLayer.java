@@ -34,37 +34,19 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
-/**
- * The type Product key.
- */
 @SuppressWarnings("serial")
 public class ProductLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(ProductLayer.class);
 
-  /**
-   * Instantiates a new Product key.
-   */
   public ProductLayer() {
   }
 
-  /**
-   * Instantiates a new Product key.
-   *
-   * @param id the id
-   */
   protected ProductLayer(@Nonnull final JsonObject id) {
     super(id);
   }
 
-  /**
-   * From json product key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the product key
-   */
   public static ProductLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ProductLayer(json);
   }

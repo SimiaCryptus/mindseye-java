@@ -24,9 +24,6 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-/**
- * The type Img band scale key apply.
- */
 public abstract class ImgBandScaleLayerTest extends LayerTestBase {
 
   @Nonnull
@@ -43,9 +40,6 @@ public abstract class ImgBandScaleLayerTest extends LayerTestBase {
     return new ImgBandScaleLayer(0.0, 0.0, 0.0).addWeights(this::random);
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends ImgBandScaleLayerTest {
   }
 

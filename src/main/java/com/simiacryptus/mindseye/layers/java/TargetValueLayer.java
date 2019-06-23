@@ -33,9 +33,6 @@ import javax.annotation.Nonnull;
 import java.util.Map;
 import java.util.UUID;
 
-/**
- * Works as a single-input terminal loss function which compares the input apply a preset constant target tensor.
- */
 @SuppressWarnings("serial")
 public class TargetValueLayer extends DAGNetwork {
 
@@ -44,36 +41,18 @@ public class TargetValueLayer extends DAGNetwork {
   private final DAGNode head;
   private final DAGNode target;
 
-  /**
-   * Instantiates a new Target value key.
-   *
-   * @param values the values
-   */
   public TargetValueLayer(final double... values) {
     super(1);
     target = wrap(ValueLayer.wrap(new Tensor(values)));
     head = wrap(new MeanSqLossLayer(), getInput(0), target.addRef());
   }
 
-  /**
-   * Instantiates a new Target value key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   */
   protected TargetValueLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json, rs);
     head = getNodeById(UUID.fromString(json.getAsJsonPrimitive("head").getAsString()));
     target = getNodeById(UUID.fromString(json.getAsJsonPrimitive("target").getAsString()));
   }
 
-  /**
-   * From json nn key.
-   *
-   * @param inner the heapCopy
-   * @param rs    the rs
-   * @return the nn key
-   */
   public static Layer fromJson(@Nonnull final JsonObject inner, Map<CharSequence, byte[]> rs) {
     return new TargetValueLayer(inner, rs);
   }
@@ -98,12 +77,6 @@ public class TargetValueLayer extends DAGNetwork {
     return json;
   }
 
-  /**
-   * Sets target.
-   *
-   * @param value the value
-   * @return the target
-   */
   @Nonnull
   public TargetValueLayer setTarget(final double... value) {
     target.<ValueLayer>getLayer().setData(new Tensor(value));

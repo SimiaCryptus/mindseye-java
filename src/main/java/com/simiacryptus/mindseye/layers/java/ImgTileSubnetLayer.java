@@ -34,10 +34,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- * This key works as a scaling function, similar to a father wavelet. Allows convolutional and pooling layers to work
- * across larger png regions.
- */
 @SuppressWarnings("serial")
 public class ImgTileSubnetLayer extends WrapperLayer {
 
@@ -46,15 +42,6 @@ public class ImgTileSubnetLayer extends WrapperLayer {
   private final int strideX;
   private final int strideY;
 
-  /**
-   * Instantiates a new Rescaled subnet key.
-   *
-   * @param subnetwork the subnetwork
-   * @param width      the width
-   * @param height     the scale
-   * @param strideX    the stride x
-   * @param strideY    the stride y
-   */
   public ImgTileSubnetLayer(final Layer subnetwork, final int width, final int height, final int strideX, final int strideY) {
     super(subnetwork);
     this.height = height;
@@ -63,23 +50,10 @@ public class ImgTileSubnetLayer extends WrapperLayer {
     this.strideY = strideY;
   }
 
-  /**
-   * Instantiates a new Img tile subnet key.
-   *
-   * @param subnetwork the subnetwork
-   * @param width      the width
-   * @param height     the height
-   */
   public ImgTileSubnetLayer(final Layer subnetwork, final int width, final int height) {
     this(subnetwork, width, height, width, height);
   }
 
-  /**
-   * Instantiates a new Rescaled subnet key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   */
   protected ImgTileSubnetLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json, rs);
     height = json.getAsJsonPrimitive("height").getAsInt();
@@ -89,13 +63,6 @@ public class ImgTileSubnetLayer extends WrapperLayer {
     JsonObject subnetwork = json.getAsJsonObject("subnetwork");
   }
 
-  /**
-   * From json rescaled subnet key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the rescaled subnet key
-   */
   public static ImgTileSubnetLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ImgTileSubnetLayer(json, rs);
   }

@@ -29,9 +29,6 @@ import com.simiacryptus.util.data.ScalarStatistics;
 import javax.annotation.Nonnull;
 import java.util.*;
 
-/**
- * A diagnostic pass-through key that collects value statistics of forward and backprop signals.
- */
 @SuppressWarnings("serial")
 public final class MonitoringSynapse extends LayerBase implements MonitoredItem {
 
@@ -40,29 +37,14 @@ public final class MonitoringSynapse extends LayerBase implements MonitoredItem 
   private int totalBatches = 0;
   private int totalItems = 0;
 
-  /**
-   * Instantiates a new Monitoring synapse.
-   */
   public MonitoringSynapse() {
     super();
   }
 
-  /**
-   * Instantiates a new Monitoring synapse.
-   *
-   * @param id the id
-   */
   protected MonitoringSynapse(@Nonnull final JsonObject id) {
     super(id);
   }
 
-  /**
-   * From json monitoring synapse.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the monitoring synapse
-   */
   @Nonnull
   public static MonitoringSynapse fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     @Nonnull final MonitoringSynapse obj = new MonitoringSynapse(json);
@@ -73,24 +55,11 @@ public final class MonitoringSynapse extends LayerBase implements MonitoredItem 
     return obj;
   }
 
-  /**
-   * Add to monitoring synapse.
-   *
-   * @param obj the obj
-   * @return the monitoring synapse
-   */
   @Nonnull
   public MonitoringSynapse addTo(@Nonnull final MonitoredObject obj) {
     return addTo(obj, getName());
   }
 
-  /**
-   * Add to monitoring synapse.
-   *
-   * @param obj  the obj
-   * @param name the name
-   * @return the monitoring synapse
-   */
   @Nonnull
   public MonitoringSynapse addTo(@Nonnull final MonitoredObject obj, final String name) {
     setName(name);

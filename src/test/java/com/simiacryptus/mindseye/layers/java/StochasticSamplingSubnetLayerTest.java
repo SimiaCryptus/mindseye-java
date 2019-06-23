@@ -25,9 +25,6 @@ import com.simiacryptus.mindseye.network.PipelineNetwork;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-/**
- * The type Rascaled subnet key apply.
- */
 public abstract class StochasticSamplingSubnetLayerTest extends LayerTestBase {
 
   @Nonnull
@@ -51,9 +48,6 @@ public abstract class StochasticSamplingSubnetLayerTest extends LayerTestBase {
     return tileSubnetLayer;
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends StochasticSamplingSubnetLayerTest {
   }
 

@@ -23,13 +23,7 @@ package com.simiacryptus.mindseye.layers.java;
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 
-/**
- * The type Sq activation key apply.
- */
 public abstract class SqActivationLayerTest extends ActivationLayerTestBase {
-  /**
-   * Instantiates a new Sq activation key apply.
-   */
   public SqActivationLayerTest() {
     super(new SqActivationLayer());
   }
@@ -39,9 +33,6 @@ public abstract class SqActivationLayerTest extends ActivationLayerTestBase {
     return new MeanSqLossLayer();
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends SqActivationLayerTest {
   }
 

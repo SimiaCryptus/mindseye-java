@@ -24,9 +24,6 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-/**
- * The type Product key apply.
- */
 public abstract class ProductLayerTest extends LayerTestBase {
 
   @Nonnull
@@ -43,9 +40,6 @@ public abstract class ProductLayerTest extends LayerTestBase {
     return new ProductLayer();
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends ProductLayerTest {
   }
 

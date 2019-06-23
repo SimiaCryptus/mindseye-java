@@ -24,9 +24,6 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-/**
- * The type Softmax activation key apply.
- */
 public abstract class SoftmaxLayerTest extends LayerTestBase {
 
   @Nonnull
@@ -41,9 +38,6 @@ public abstract class SoftmaxLayerTest extends LayerTestBase {
     return new SoftmaxLayer();
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends SoftmaxLayerTest {
   }
 

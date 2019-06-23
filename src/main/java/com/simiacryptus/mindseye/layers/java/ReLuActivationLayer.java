@@ -34,9 +34,6 @@ import java.util.UUID;
 import java.util.function.DoubleSupplier;
 import java.util.stream.IntStream;
 
-/**
- * Rectified Linear Unit. y=(x&lt;0)?0:x
- */
 @SuppressWarnings("serial")
 public class ReLuActivationLayer extends LayerBase {
 
@@ -46,9 +43,6 @@ public class ReLuActivationLayer extends LayerBase {
   @Nullable
   private final Tensor weights;
 
-  /**
-   * Instantiates a new Re lu activation key.
-   */
   public ReLuActivationLayer() {
     super();
     weights = new Tensor(1);
@@ -56,24 +50,11 @@ public class ReLuActivationLayer extends LayerBase {
     this.frozen = true;
   }
 
-  /**
-   * Instantiates a new Re lu activation key.
-   *
-   * @param json      the json
-   * @param resources the resources
-   */
   protected ReLuActivationLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> resources) {
     super(json);
     weights = Tensor.fromJson(json.get("weights"), resources);
   }
 
-  /**
-   * From json re lu activation key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the re lu activation key
-   */
   public static ReLuActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ReLuActivationLayer(json, rs);
   }
@@ -84,12 +65,6 @@ public class ReLuActivationLayer extends LayerBase {
     super._free();
   }
 
-  /**
-   * Add weights re lu activation key.
-   *
-   * @param f the f
-   * @return the re lu activation key
-   */
   @Nonnull
   public ReLuActivationLayer addWeights(@Nonnull final DoubleSupplier f) {
     Util.add(f, weights.getData());
@@ -178,33 +153,16 @@ public class ReLuActivationLayer extends LayerBase {
     return json;
   }
 
-  /**
-   * Gets mobility.
-   *
-   * @return the mobility
-   */
   protected double getMobility() {
     return 1;
   }
 
-  /**
-   * Sets weight.
-   *
-   * @param data the data
-   * @return the weight
-   */
   @Nonnull
   public ReLuActivationLayer setWeight(final double data) {
     weights.set(0, data);
     return this;
   }
 
-  /**
-   * Sets weights.
-   *
-   * @param f the f
-   * @return the weights
-   */
   @Nonnull
   public ReLuActivationLayer setWeights(@Nonnull final DoubleSupplier f) {
     Arrays.parallelSetAll(weights.getData(), i -> f.getAsDouble());

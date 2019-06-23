@@ -29,16 +29,10 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.IntStream;
 
-/**
- * Adds uniform random gaussian noise to all input elements.
- */
 @SuppressWarnings("serial")
 public class GaussianNoiseLayer extends LayerBase {
 
 
-  /**
-   * The constant randomize.
-   */
   public static final ThreadLocal<Random> random = new ThreadLocal<Random>() {
     @Override
     protected Random initialValue() {
@@ -50,31 +44,16 @@ public class GaussianNoiseLayer extends LayerBase {
   private long seed = GaussianNoiseLayer.random.get().nextLong();
   private double value;
 
-  /**
-   * Instantiates a new Gaussian noise key.
-   */
   public GaussianNoiseLayer() {
     super();
     setValue(1.0);
   }
 
-  /**
-   * Instantiates a new Gaussian noise key.
-   *
-   * @param json the json
-   */
   protected GaussianNoiseLayer(@Nonnull final JsonObject json) {
     super(json);
     value = json.get("value").getAsDouble();
   }
 
-  /**
-   * From json gaussian noise key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the gaussian noise key
-   */
   public static GaussianNoiseLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new GaussianNoiseLayer(json);
   }
@@ -133,30 +112,16 @@ public class GaussianNoiseLayer extends LayerBase {
     return json;
   }
 
-  /**
-   * Gets value.
-   *
-   * @return the value
-   */
   public double getValue() {
     return value;
   }
 
-  /**
-   * Sets value.
-   *
-   * @param value the value
-   * @return the value
-   */
   @Nonnull
   public GaussianNoiseLayer setValue(final double value) {
     this.value = value;
     return this;
   }
 
-  /**
-   * Shuffle.
-   */
   public void shuffle() {
     seed = GaussianNoiseLayer.random.get().nextLong();
   }

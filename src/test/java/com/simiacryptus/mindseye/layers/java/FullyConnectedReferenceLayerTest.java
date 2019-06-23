@@ -24,9 +24,6 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-/**
- * The type Fully connected key apply.
- */
 public abstract class FullyConnectedReferenceLayerTest extends LayerTestBase {
   @Nonnull
   private final int[] outputDims;
@@ -35,12 +32,6 @@ public abstract class FullyConnectedReferenceLayerTest extends LayerTestBase {
   private final FullyConnectedReferenceLayer layer;
 
 
-  /**
-   * Instantiates a new Fully connected reference key allocationOverflow.
-   *
-   * @param inputDims  the input dims
-   * @param outputDims the output dims
-   */
   public FullyConnectedReferenceLayerTest(int[] inputDims, @Nonnull int[] outputDims) {
     this.outputDims = outputDims;
     this.inputDims = inputDims;
@@ -62,25 +53,13 @@ public abstract class FullyConnectedReferenceLayerTest extends LayerTestBase {
     return layer;
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends FullyConnectedReferenceLayerTest {
-    /**
-     * Instantiates a new Basic.
-     */
     public Basic() {
       super(new int[]{2}, new int[]{2});
     }
   }
 
-  /**
-   * Basic Test
-   */
   public static class Image extends FullyConnectedReferenceLayerTest {
-    /**
-     * Instantiates a new Image.
-     */
     public Image() {
       super(new int[]{3, 3, 3}, new int[]{2, 2, 4});
     }

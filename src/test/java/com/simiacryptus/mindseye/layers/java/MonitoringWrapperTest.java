@@ -25,9 +25,6 @@ import com.simiacryptus.mindseye.layers.MonitoringWrapperLayer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-/**
- * The type Monitoring wrapper apply.
- */
 public abstract class MonitoringWrapperTest extends LayerTestBase {
 
   @Nonnull
@@ -47,9 +44,6 @@ public abstract class MonitoringWrapperTest extends LayerTestBase {
     return wrapperLayer;
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends MonitoringWrapperTest {
   }
 

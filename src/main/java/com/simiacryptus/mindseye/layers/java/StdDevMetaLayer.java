@@ -28,27 +28,16 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nonnull;
 import java.util.Map;
 
-/**
- * The type Std dev meta key.
- */
 @SuppressWarnings("serial")
 public class StdDevMetaLayer extends PipelineNetwork {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(StdDevMetaLayer.class);
 
-  /**
-   * Instantiates a new Std dev meta key.
-   */
   public StdDevMetaLayer() {
     this(1);
   }
 
-  /**
-   * Instantiates a new Std dev meta key.
-   *
-   * @param minBatchCount the min batch count
-   */
   public StdDevMetaLayer(final int minBatchCount) {
     super(1);
     wrap(new AvgMetaLayer().setMinBatchCount(minBatchCount)).freeRef();
@@ -61,23 +50,10 @@ public class StdDevMetaLayer extends PipelineNetwork {
     wrap(new NthPowerActivationLayer().setPower(0.5)).freeRef();
   }
 
-  /**
-   * Instantiates a new Std dev meta key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   */
   protected StdDevMetaLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json, rs);
   }
 
-  /**
-   * From json std dev meta key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the std dev meta key
-   */
   public static StdDevMetaLayer fromJson(final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new StdDevMetaLayer(json, rs);
   }

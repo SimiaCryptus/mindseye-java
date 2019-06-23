@@ -24,9 +24,6 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-/**
- * The type Max subsample key apply.
- */
 public abstract class MaxPoolingLayerTest extends LayerTestBase {
 
   @Nonnull
@@ -43,9 +40,6 @@ public abstract class MaxPoolingLayerTest extends LayerTestBase {
     return new MaxPoolingLayer(2, 2, 1);
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends MaxPoolingLayerTest {
   }
 

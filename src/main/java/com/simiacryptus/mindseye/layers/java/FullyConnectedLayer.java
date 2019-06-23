@@ -42,32 +42,19 @@ import java.util.function.ToDoubleFunction;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-/**
- * A dense matrix operator using vector-matrix multiplication. Represents a fully connected key of synapses, where all
- * inputs are connected to all outputs via seperate coefficients.
- */
 @SuppressWarnings("serial")
 public class FullyConnectedLayer extends LayerBase {
 
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(FullyConnectedLayer.class);
-  /**
-   * The Input dims.
-   */
   @Nullable
   public final int[] inputDims;
-  /**
-   * The Output dims.
-   */
   @Nullable
   public final int[] outputDims;
   @Nullable
   private final Tensor weights;
 
-  /**
-   * Instantiates a new Fully connected key.
-   */
   protected FullyConnectedLayer() {
     super();
     outputDims = null;
@@ -75,12 +62,6 @@ public class FullyConnectedLayer extends LayerBase {
     inputDims = null;
   }
 
-  /**
-   * Instantiates a new Fully connected key.
-   *
-   * @param inputDims  the input dims
-   * @param outputDims the output dims
-   */
   public FullyConnectedLayer(@Nonnull final int[] inputDims, @Nonnull final int[] outputDims) {
     final int inputs = Tensor.length(inputDims);
     this.inputDims = Arrays.copyOf(inputDims, inputDims.length);
@@ -95,12 +76,6 @@ public class FullyConnectedLayer extends LayerBase {
     });
   }
 
-  /**
-   * Instantiates a new Fully connected key.
-   *
-   * @param json      the json
-   * @param resources the resources
-   */
   protected FullyConnectedLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> resources) {
     super(json);
     outputDims = JsonUtil.getIntArray(json.getAsJsonArray("outputDims"));
@@ -108,13 +83,6 @@ public class FullyConnectedLayer extends LayerBase {
     weights = Tensor.fromJson(json.get("weights"), resources);
   }
 
-  /**
-   * Cross multiply.
-   *
-   * @param rows   the rows
-   * @param cols   the cols
-   * @param matrix the matrix
-   */
   public static void crossMultiply(@Nonnull final double[] rows, @Nonnull final double[] cols, final double[] matrix) {
     int i = 0;
     for (final double c : cols) {
@@ -124,13 +92,6 @@ public class FullyConnectedLayer extends LayerBase {
     }
   }
 
-  /**
-   * Cross multiply t.
-   *
-   * @param rows   the rows
-   * @param cols   the cols
-   * @param matrix the matrix
-   */
   public static void crossMultiplyT(@Nonnull final double[] rows, @Nonnull final double[] cols, final double[] matrix) {
     int i = 0;
     for (final double r : rows) {
@@ -140,36 +101,15 @@ public class FullyConnectedLayer extends LayerBase {
     }
   }
 
-  /**
-   * From json fully connected key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the fully connected key
-   */
   public static FullyConnectedLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new FullyConnectedLayer(json, rs);
   }
 
-  /**
-   * Multiply.
-   *
-   * @param matrix the matrix
-   * @param in     the in
-   * @param out    the out
-   */
   public static void multiply(final double[] matrix, @Nonnull final double[] in, @Nonnull final double[] out) {
     @Nonnull final DoubleMatrix matrixObj = new DoubleMatrix(out.length, in.length, matrix);
     matrixObj.mmuli(new DoubleMatrix(in.length, 1, in), new DoubleMatrix(out.length, 1, out));
   }
 
-  /**
-   * Multiply t.
-   *
-   * @param matrix the matrix
-   * @param in     the in
-   * @param out    the out
-   */
   public static void multiplyT(final double[] matrix, @Nonnull final double[] in, @Nonnull final double[] out) {
     @Nonnull DoubleMatrix doubleMatrix = new DoubleMatrix(in.length, out.length, matrix);
     @Nonnull final DoubleMatrix matrixObj = FullyConnectedLayer.transpose(doubleMatrix);
@@ -177,12 +117,6 @@ public class FullyConnectedLayer extends LayerBase {
     RecycleBin.DOUBLES.recycle(matrixObj.data, matrixObj.data.length);
   }
 
-  /**
-   * Transpose double matrix.
-   *
-   * @param doubleMatrix the double matrix
-   * @return the double matrix
-   */
   @Nonnull
   public static DoubleMatrix transpose(@Nonnull final DoubleMatrix doubleMatrix) {
     @Nonnull final DoubleMatrix result = new DoubleMatrix(doubleMatrix.columns, doubleMatrix.rows, RecycleBin.DOUBLES.obtain(doubleMatrix.length));
@@ -288,11 +222,6 @@ public class FullyConnectedLayer extends LayerBase {
     return json;
   }
 
-  /**
-   * Gets transpose.
-   *
-   * @return the transpose
-   */
   @Nonnull
   public Layer getTranspose() {
     throw new RuntimeException("Not Implemented");
@@ -301,46 +230,23 @@ public class FullyConnectedLayer extends LayerBase {
   /**
    * The Weights.
    */
-  /**
-   * Gets weights.
-   *
-   * @return the weights
-   */
   @Nullable
   public Tensor getWeights() {
     return weights;
   }
 
-  /**
-   * Sets weights.
-   *
-   * @param f the f
-   * @return the weights
-   */
   @Nonnull
   public FullyConnectedLayer set(@Nonnull final DoubleSupplier f) {
     Arrays.parallelSetAll(getWeights().getData(), i -> f.getAsDouble());
     return this;
   }
 
-  /**
-   * Sets weights.
-   *
-   * @param f the f
-   * @return the weights
-   */
   @Nonnull
   public FullyConnectedLayer set(@Nonnull final IntToDoubleFunction f) {
     getWeights().set(f);
     return this;
   }
 
-  /**
-   * Sets weights.
-   *
-   * @param f the f
-   * @return the weights
-   */
   @Nonnull
   public FullyConnectedLayer setByCoord(@Nonnull final ToDoubleFunction<Coordinate> f) {
     getWeights().coordStream(true).forEach(c -> {
@@ -349,13 +255,6 @@ public class FullyConnectedLayer extends LayerBase {
     return this;
   }
 
-  /**
-   * Init spacial.
-   *
-   * @param radius    the radius
-   * @param stiffness the stiffness
-   * @param peak      the peak
-   */
   public void initSpacial(final double radius, final double stiffness, final double peak) {
     setByCoord((@Nonnull final Coordinate in, @Nonnull final Coordinate out) -> {
       final double[] doubleCoords = IntStream.range(0, in.getCoords().length).mapToDouble(d -> {
@@ -369,36 +268,18 @@ public class FullyConnectedLayer extends LayerBase {
     });
   }
 
-  /**
-   * Sets weights.
-   *
-   * @param data the data
-   * @return the weights
-   */
   @Nonnull
   public FullyConnectedLayer set(final double[] data) {
     getWeights().set(data);
     return this;
   }
 
-  /**
-   * Set fully connected key.
-   *
-   * @param data the data
-   * @return the fully connected key
-   */
   @Nonnull
   public FullyConnectedLayer set(@Nonnull final Tensor data) {
     getWeights().set(data);
     return this;
   }
 
-  /**
-   * Sets weights.
-   *
-   * @param f the f
-   * @return the weights
-   */
   @Nonnull
   public FullyConnectedLayer setByCoord(@Nonnull final ToDoubleBiFunction<Coordinate, Coordinate> f) {
     new Tensor(inputDims).coordStream(true).forEach(in -> {
@@ -409,12 +290,6 @@ public class FullyConnectedLayer extends LayerBase {
     return this;
   }
 
-  /**
-   * Sets weights log.
-   *
-   * @param value the value
-   * @return the weights log
-   */
   @Nonnull
   public FullyConnectedLayer setWeightsLog(final double value) {
     getWeights().coordStream(false).forEach(c -> {

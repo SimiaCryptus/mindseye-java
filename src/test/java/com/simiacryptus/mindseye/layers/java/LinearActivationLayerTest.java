@@ -23,20 +23,11 @@ package com.simiacryptus.mindseye.layers.java;
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 
-/**
- * The type Linear activation key apply.
- */
 public abstract class LinearActivationLayerTest extends ActivationLayerTestBase {
-  /**
-   * Instantiates a new Linear activation key apply.
-   */
   public LinearActivationLayerTest() {
     super(new LinearActivationLayer());
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends LinearActivationLayerTest {
     @Override
     protected Layer lossLayer() {

@@ -31,34 +31,16 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
-/**
- * Sums all inputs together, element-by-element, assuming they all have the same dimension.
- */
 @SuppressWarnings("serial")
 public class SumInputsLayer extends LayerBase {
 
-  /**
-   * Instantiates a new Sum inputs key.
-   */
   public SumInputsLayer() {
   }
 
-  /**
-   * Instantiates a new Sum inputs key.
-   *
-   * @param id the id
-   */
   protected SumInputsLayer(@Nonnull final JsonObject id) {
     super(id);
   }
 
-  /**
-   * From json sum inputs key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the sum inputs key
-   */
   public static SumInputsLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new SumInputsLayer(json);
   }

@@ -38,9 +38,6 @@ import java.util.function.Function;
 import java.util.function.IntToDoubleFunction;
 import java.util.stream.IntStream;
 
-/**
- * Scales the input using per-color-band coefficients
- */
 @SuppressWarnings("serial")
 public class ImgBandScaleLayer extends LayerBase {
 
@@ -49,52 +46,26 @@ public class ImgBandScaleLayer extends LayerBase {
   @Nullable
   private final double[] weights;
 
-  /**
-   * Instantiates a new Img band scale key.
-   */
   protected ImgBandScaleLayer() {
     super();
     weights = null;
   }
 
-  /**
-   * Instantiates a new Img band scale key.
-   *
-   * @param bands the bands
-   */
   public ImgBandScaleLayer(final double... bands) {
     super();
     weights = bands;
   }
 
 
-  /**
-   * Instantiates a new Img band scale key.
-   *
-   * @param json the json
-   */
   protected ImgBandScaleLayer(@Nonnull final JsonObject json) {
     super(json);
     weights = JsonUtil.getDoubleArray(json.getAsJsonArray("bias"));
   }
 
-  /**
-   * From json img band scale key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the img band scale key
-   */
   public static ImgBandScaleLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ImgBandScaleLayer(json);
   }
 
-  /**
-   * Add weights img band scale key.
-   *
-   * @param f the f
-   * @return the img band scale key
-   */
   @Nonnull
   public ImgBandScaleLayer addWeights(@Nonnull final DoubleSupplier f) {
     Util.add(f, getWeights());
@@ -107,12 +78,6 @@ public class ImgBandScaleLayer extends LayerBase {
     return eval(inObj[0]);
   }
 
-  /**
-   * Eval nn result.
-   *
-   * @param input the input
-   * @return the nn result
-   */
   @Nonnull
   public Result eval(@Nonnull final Result input) {
     @Nullable final double[] weights = getWeights();
@@ -193,11 +158,6 @@ public class ImgBandScaleLayer extends LayerBase {
     return json;
   }
 
-  /**
-   * Get wieghts double [ ].
-   *
-   * @return the double [ ]
-   */
   @Nullable
   public double[] getWeights() {
     if (!Arrays.stream(weights).allMatch(v -> Double.isFinite(v))) {
@@ -206,12 +166,6 @@ public class ImgBandScaleLayer extends LayerBase {
     return weights;
   }
 
-  /**
-   * Sets weights.
-   *
-   * @param f the f
-   * @return the weights
-   */
   @Nonnull
   public ImgBandScaleLayer setWeights(@Nonnull final IntToDoubleFunction f) {
     @Nullable final double[] bias = getWeights();
@@ -222,12 +176,6 @@ public class ImgBandScaleLayer extends LayerBase {
     return this;
   }
 
-  /**
-   * Set nn key.
-   *
-   * @param ds the ds
-   * @return the nn key
-   */
   @Nonnull
   public Layer set(@Nonnull final double[] ds) {
     @Nullable final double[] bias = getWeights();

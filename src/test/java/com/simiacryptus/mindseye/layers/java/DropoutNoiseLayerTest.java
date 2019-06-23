@@ -24,9 +24,6 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-/**
- * The type Dropout noise key apply.
- */
 public abstract class DropoutNoiseLayerTest extends LayerTestBase {
 
   @Nonnull
@@ -43,9 +40,6 @@ public abstract class DropoutNoiseLayerTest extends LayerTestBase {
     return new DropoutNoiseLayer();
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends DropoutNoiseLayerTest {
   }
 

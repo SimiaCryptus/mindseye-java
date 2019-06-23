@@ -29,10 +29,6 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.IntStream;
 
-/**
- * Reduces the resolution of the input by selecting a centered window. The output png will have the same number of
- * color bands.
- */
 @SuppressWarnings("serial")
 public class ImgTileSelectLayer extends LayerBase {
 
@@ -43,14 +39,6 @@ public class ImgTileSelectLayer extends LayerBase {
   private final int positionX;
   private final int positionY;
 
-  /**
-   * Instantiates a new Img crop key.
-   *
-   * @param sizeX     the size x
-   * @param sizeY     the size y
-   * @param positionX the position x
-   * @param positionY the position y
-   */
   public ImgTileSelectLayer(final int sizeX, final int sizeY, final int positionX, final int positionY) {
     this(
         sizeX,
@@ -61,15 +49,6 @@ public class ImgTileSelectLayer extends LayerBase {
     );
   }
 
-  /**
-   * Instantiates a new Img crop key.
-   *
-   * @param sizeX     the size x
-   * @param sizeY     the size y
-   * @param positionX the position x
-   * @param positionY the position y
-   * @param toroidal  the toroidal
-   */
   public ImgTileSelectLayer(final int sizeX, final int sizeY, final int positionX, final int positionY, final boolean toroidal) {
     super();
     this.sizeX = sizeX;
@@ -79,11 +58,6 @@ public class ImgTileSelectLayer extends LayerBase {
     this.toroidal = toroidal;
   }
 
-  /**
-   * Instantiates a new Img crop key.
-   *
-   * @param json the json
-   */
   protected ImgTileSelectLayer(@Nonnull final JsonObject json) {
     super(json);
     sizeX = json.getAsJsonPrimitive("sizeX").getAsInt();
@@ -94,16 +68,6 @@ public class ImgTileSelectLayer extends LayerBase {
     this.toroidal = null != toroidal && toroidal.getAsBoolean();
   }
 
-  /**
-   * Copy condense tensor.
-   *
-   * @param inputData  the input data
-   * @param outputData the output data
-   * @param posX       the pos x
-   * @param posY       the pos y
-   * @param toroidal   the toroidal
-   * @return the tensor
-   */
   @Nonnull
   public static Tensor copy(
       @Nonnull final Tensor inputData,
@@ -146,13 +110,6 @@ public class ImgTileSelectLayer extends LayerBase {
     return outputData;
   }
 
-  /**
-   * From json img crop key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the img crop key
-   */
   public static ImgTileSelectLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ImgTileSelectLayer(json);
   }
@@ -285,14 +242,6 @@ public class ImgTileSelectLayer extends LayerBase {
     };
   }
 
-  /**
-   * Get view dimensions int [ ].
-   *
-   * @param sourceDimensions      the source dimensions
-   * @param destinationDimensions the destination dimensions
-   * @param offset                the offset
-   * @return the int [ ]
-   */
   @Nonnull
   public int[] getViewDimensions(int[] sourceDimensions, int[] destinationDimensions, int[] offset) {
     @Nonnull final int[] viewDim = new int[3];

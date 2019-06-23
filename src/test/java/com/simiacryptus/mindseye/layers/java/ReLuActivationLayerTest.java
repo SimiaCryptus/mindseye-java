@@ -23,13 +23,7 @@ package com.simiacryptus.mindseye.layers.java;
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 
-/**
- * The type Re lu activation key apply.
- */
 public abstract class ReLuActivationLayerTest extends ActivationLayerTestBase {
-  /**
-   * Instantiates a new Re lu activation key apply.
-   */
   public ReLuActivationLayerTest() {
     super(new ReLuActivationLayer());
   }
@@ -39,9 +33,6 @@ public abstract class ReLuActivationLayerTest extends ActivationLayerTestBase {
     return new MeanSqLossLayer();
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends ReLuActivationLayerTest {
   }
 

@@ -24,9 +24,6 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-/**
- * The type Sum reducer key apply.
- */
 public abstract class SumReducerLayerTest extends LayerTestBase {
 
   @Nonnull
@@ -51,9 +48,6 @@ public abstract class SumReducerLayerTest extends LayerTestBase {
     };
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends SumReducerLayerTest {
   }
 

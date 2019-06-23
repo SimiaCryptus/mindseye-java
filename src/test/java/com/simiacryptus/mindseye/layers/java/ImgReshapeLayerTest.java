@@ -24,9 +24,6 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-/**
- * The type Img reshapeCast key apply.
- */
 public abstract class ImgReshapeLayerTest extends LayerTestBase {
 
   @Nonnull
@@ -43,9 +40,6 @@ public abstract class ImgReshapeLayerTest extends LayerTestBase {
     return new ImgReshapeLayer(2, 2, false);
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends ImgReshapeLayerTest {
   }
 

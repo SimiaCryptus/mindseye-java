@@ -24,9 +24,6 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-/**
- * The type Img band select key apply.
- */
 public abstract class ImgBandSelectLayerTest extends LayerTestBase {
 
   @Nonnull
@@ -43,9 +40,6 @@ public abstract class ImgBandSelectLayerTest extends LayerTestBase {
     return new ImgBandSelectLayer(0, 2);
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends ImgBandSelectLayerTest {
   }
 

@@ -23,20 +23,11 @@ package com.simiacryptus.mindseye.layers.java;
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 
-/**
- * The type Gaussian noise key apply.
- */
 public abstract class GaussianNoiseLayerTest extends ActivationLayerTestBase {
-  /**
-   * Instantiates a new Gaussian noise key apply.
-   */
   public GaussianNoiseLayerTest() {
     super(new GaussianNoiseLayer());
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends GaussianNoiseLayerTest {
     @Override
     protected Layer lossLayer() {

@@ -25,34 +25,16 @@ import com.simiacryptus.mindseye.lang.DataSerializer;
 import javax.annotation.Nonnull;
 import java.util.Map;
 
-/**
- * Specialized square activation function. Deprecated. Use NthPowerActivationLayer.
- */
 @SuppressWarnings("serial")
 public final class SqActivationLayer extends SimpleActivationLayer<SqActivationLayer> {
 
-  /**
-   * Instantiates a new Sq activation key.
-   */
   public SqActivationLayer() {
   }
 
-  /**
-   * Instantiates a new Sq activation key.
-   *
-   * @param id the id
-   */
   protected SqActivationLayer(@Nonnull final JsonObject id) {
     super(id);
   }
 
-  /**
-   * From json sq activation key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the sq activation key
-   */
   public static SqActivationLayer fromJson(final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new SqActivationLayer(json);
   }

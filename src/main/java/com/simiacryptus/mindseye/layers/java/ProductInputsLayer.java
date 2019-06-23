@@ -31,34 +31,16 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
-/**
- * Multiplies all inputs together, element-by-element.
- */
 @SuppressWarnings("serial")
 public class ProductInputsLayer extends LayerBase {
 
-  /**
-   * Instantiates a new Product inputs key.
-   */
   public ProductInputsLayer() {
   }
 
-  /**
-   * Instantiates a new Product inputs key.
-   *
-   * @param id the id
-   */
   protected ProductInputsLayer(@Nonnull final JsonObject id) {
     super(id);
   }
 
-  /**
-   * From json product inputs key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the product inputs key
-   */
   public static ProductInputsLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ProductInputsLayer(json);
   }

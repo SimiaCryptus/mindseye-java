@@ -33,9 +33,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
-/**
- * The type Bias meta key.
- */
 @SuppressWarnings("serial")
 public class BiasMetaLayer extends LayerBase {
 
@@ -43,28 +40,13 @@ public class BiasMetaLayer extends LayerBase {
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(BiasMetaLayer.class);
 
-  /**
-   * Instantiates a new Bias meta key.
-   */
   public BiasMetaLayer() {
   }
 
-  /**
-   * Instantiates a new Bias meta key.
-   *
-   * @param id the id
-   */
   protected BiasMetaLayer(@Nonnull final JsonObject id) {
     super(id);
   }
 
-  /**
-   * From json bias meta key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the bias meta key
-   */
   public static BiasMetaLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new BiasMetaLayer(json);
   }

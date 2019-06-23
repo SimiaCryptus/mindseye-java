@@ -27,10 +27,6 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.IntStream;
 
-/**
- * Reduces or expands png resolution by rearranging the values in NxN tiles to effectively stripe the small-scale
- * spacial dimension across N^2 color bands.
- */
 @SuppressWarnings("serial")
 public class ImgReshapeLayer extends LayerBase {
 
@@ -39,13 +35,6 @@ public class ImgReshapeLayer extends LayerBase {
   private final int kernelSizeX;
   private final int kernelSizeY;
 
-  /**
-   * Instantiates a new Img reshapeCast key.
-   *
-   * @param kernelSizeX the kernel size x
-   * @param kernelSizeY the kernel size y
-   * @param expand      the expandPlasma
-   */
   public ImgReshapeLayer(final int kernelSizeX, final int kernelSizeY, final boolean expand) {
     super();
     this.kernelSizeX = kernelSizeX;
@@ -53,11 +42,6 @@ public class ImgReshapeLayer extends LayerBase {
     this.expand = expand;
   }
 
-  /**
-   * Instantiates a new Img reshapeCast key.
-   *
-   * @param json the json
-   */
   protected ImgReshapeLayer(@Nonnull final JsonObject json) {
     super(json);
     kernelSizeX = json.getAsJsonPrimitive("kernelSizeX").getAsInt();
@@ -65,13 +49,6 @@ public class ImgReshapeLayer extends LayerBase {
     expand = json.getAsJsonPrimitive("expandPlasma").getAsBoolean();
   }
 
-  /**
-   * Copy condense tensor.
-   *
-   * @param inputData  the input data
-   * @param outputData the output data
-   * @return the tensor
-   */
   @Nonnull
   public static Tensor copyCondense(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData) {
     @Nonnull final int[] inDim = inputData.getDimensions();
@@ -101,13 +78,6 @@ public class ImgReshapeLayer extends LayerBase {
     return outputData;
   }
 
-  /**
-   * Copy expandPlasma tensor.
-   *
-   * @param inputData  the input data
-   * @param outputData the output data
-   * @return the tensor
-   */
   @Nonnull
   public static Tensor copyExpand(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData) {
     @Nonnull final int[] inDim = inputData.getDimensions();
@@ -136,13 +106,6 @@ public class ImgReshapeLayer extends LayerBase {
     return outputData;
   }
 
-  /**
-   * From json img reshapeCast key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the img reshapeCast key
-   */
   public static ImgReshapeLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ImgReshapeLayer(json);
   }

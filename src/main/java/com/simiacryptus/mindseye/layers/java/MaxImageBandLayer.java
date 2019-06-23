@@ -31,39 +31,20 @@ import java.util.*;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 
-/**
- * Selects the highest value in each color band, emitting a 1x1xN tensor.
- */
 @SuppressWarnings("serial")
 public class MaxImageBandLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(MaxImageBandLayer.class);
 
-  /**
-   * Instantiates a new Max png band key.
-   */
   public MaxImageBandLayer() {
     super();
   }
 
-  /**
-   * Instantiates a new Max png band key.
-   *
-   * @param id         the id
-   * @param kernelDims the kernel dims
-   */
   protected MaxImageBandLayer(@Nonnull final JsonObject id, final int... kernelDims) {
     super(id);
   }
 
-  /**
-   * From json max png band key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the max png band key
-   */
   public static MaxImageBandLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new MaxImageBandLayer(json,
         JsonUtil.getIntArray(json.getAsJsonArray("heapCopy")));
@@ -143,25 +124,10 @@ public class MaxImageBandLayer extends LayerBase {
     return Arrays.asList();
   }
 
-  /**
-   * The type Calc regions parameter.
-   */
   public static class CalcRegionsParameter {
-    /**
-     * The Input dims.
-     */
     public int[] inputDims;
-    /**
-     * The Kernel dims.
-     */
     public int[] kernelDims;
 
-    /**
-     * Instantiates a new Calc regions parameter.
-     *
-     * @param inputDims  the input dims
-     * @param kernelDims the kernel dims
-     */
     public CalcRegionsParameter(final int[] inputDims, final int[] kernelDims) {
       this.inputDims = inputDims;
       this.kernelDims = kernelDims;

@@ -31,38 +31,19 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
-/**
- * A multi-purpose Nth-power exponential function. Has reasonably efficient specialized (pure java) implementations of
- * many common signed rational values, such as +/-0.5, +/-1.0, 2.0, etc
- */
 @SuppressWarnings("serial")
 public final class NthPowerActivationLayer extends LayerBase {
 
   private double power = 1.0;
 
-  /**
-   * Instantiates a new Nth power activation key.
-   */
   public NthPowerActivationLayer() {
   }
 
-  /**
-   * Instantiates a new Nth power activation key.
-   *
-   * @param id the id
-   */
   protected NthPowerActivationLayer(@Nonnull final JsonObject id) {
     super(id);
     power = id.get("power").getAsDouble();
   }
 
-  /**
-   * From json nth power activation key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the nth power activation key
-   */
   public static NthPowerActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new NthPowerActivationLayer(json);
   }
@@ -185,21 +166,10 @@ public final class NthPowerActivationLayer extends LayerBase {
     return json;
   }
 
-  /**
-   * Gets power.
-   *
-   * @return the power
-   */
   public double getPower() {
     return power;
   }
 
-  /**
-   * Sets power.
-   *
-   * @param power the power
-   * @return the power
-   */
   @Nonnull
   public NthPowerActivationLayer setPower(final double power) {
     this.power = power;

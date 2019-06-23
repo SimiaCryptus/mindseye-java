@@ -33,41 +33,20 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
-/**
- * Normalizes the input so that the L1 magnitude (ie sum of abs) is 1.
- */
 @SuppressWarnings("serial")
 public class L1NormalizationLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(L1NormalizationLayer.class);
-  /**
-   * The Max input.
-   */
   double maxInput = 50;
 
-  /**
-   * Instantiates a new L 1 normalization key.
-   */
   public L1NormalizationLayer() {
   }
 
-  /**
-   * Instantiates a new L 1 normalization key.
-   *
-   * @param id the id
-   */
   protected L1NormalizationLayer(@Nonnull final JsonObject id) {
     super(id);
   }
 
-  /**
-   * From json l 1 normalization key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the l 1 normalization key
-   */
   public static L1NormalizationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new L1NormalizationLayer(json);
   }

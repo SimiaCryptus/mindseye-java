@@ -34,37 +34,19 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
-/**
- * Sums all input values to produce a single-element output.
- */
 @SuppressWarnings("serial")
 public class SumReducerLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(SumReducerLayer.class);
 
-  /**
-   * Instantiates a new Sum reducer key.
-   */
   public SumReducerLayer() {
   }
 
-  /**
-   * Instantiates a new Sum reducer key.
-   *
-   * @param id the id
-   */
   protected SumReducerLayer(@Nonnull final JsonObject id) {
     super(id);
   }
 
-  /**
-   * From json sum reducer key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the sum reducer key
-   */
   public static SumReducerLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new SumReducerLayer(json);
   }

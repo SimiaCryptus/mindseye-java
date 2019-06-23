@@ -24,9 +24,6 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-/**
- * The type Avg subsample key apply.
- */
 public abstract class AvgPoolingLayerTest extends LayerTestBase {
 
   @Nonnull
@@ -51,9 +48,6 @@ public abstract class AvgPoolingLayerTest extends LayerTestBase {
     };
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends AvgPoolingLayerTest {
 
   }

@@ -33,42 +33,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 
-/**
- * This key is a pass-thru except that it throws an error if the dimensions are not consistent apply its setting.
- */
 @SuppressWarnings("serial")
 public class AssertDimensionsLayer extends LayerBase {
 
   private final int[] dims;
 
-  /**
-   * Instantiates a new Assert dimensions key.
-   *
-   * @param dims the dims
-   */
   public AssertDimensionsLayer(final int... dims) {
     super();
     this.dims = dims;
   }
 
-  /**
-   * Instantiates a new Assert dimensions key.
-   *
-   * @param json the json
-   */
   protected AssertDimensionsLayer(@Nonnull final JsonObject json) {
     super(json);
     final JsonArray dimsJson = json.get("dims").getAsJsonArray();
     dims = IntStream.range(0, dimsJson.size()).map(i -> dimsJson.get(i).getAsInt()).toArray();
   }
 
-  /**
-   * From json assert dimensions key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the assert dimensions key
-   */
   public static AssertDimensionsLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new AssertDimensionsLayer(json);
   }

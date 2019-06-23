@@ -25,38 +25,20 @@ import com.simiacryptus.mindseye.lang.DataSerializer;
 import javax.annotation.Nonnull;
 import java.util.Map;
 
-/**
- * Enforces a maximum-maxValue constraint on the input signal, rounding down any values exceeding a setByCoord threshold.
- */
 @SuppressWarnings("serial")
 public class BoundedActivationLayer extends SimpleActivationLayer<BoundedActivationLayer> {
 
   private double maxValue = Double.POSITIVE_INFINITY;
   private double minValue = Double.NEGATIVE_INFINITY;
 
-  /**
-   * Instantiates a new Max const key.
-   */
   public BoundedActivationLayer() {
     super();
   }
 
-  /**
-   * Instantiates a new Max const key.
-   *
-   * @param id the id
-   */
   protected BoundedActivationLayer(@Nonnull final JsonObject id) {
     super(id);
   }
 
-  /**
-   * From json max const key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the max const key
-   */
   @Nonnull
   public static BoundedActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     @Nonnull final BoundedActivationLayer obj = new BoundedActivationLayer(json);
@@ -81,21 +63,10 @@ public class BoundedActivationLayer extends SimpleActivationLayer<BoundedActivat
     return json;
   }
 
-  /**
-   * Gets maxValue.
-   *
-   * @return the maxValue
-   */
   public double getMaxValue() {
     return maxValue;
   }
 
-  /**
-   * Sets maxValue.
-   *
-   * @param maxValue the maxValue
-   * @return the maxValue
-   */
   @Nonnull
   public BoundedActivationLayer setMaxValue(final double maxValue) {
     this.maxValue = maxValue;

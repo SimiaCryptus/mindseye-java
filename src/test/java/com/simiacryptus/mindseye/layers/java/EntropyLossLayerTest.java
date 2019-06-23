@@ -26,9 +26,6 @@ import com.simiacryptus.util.Util;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-/**
- * The type Entropy loss key apply.
- */
 public abstract class EntropyLossLayerTest extends LayerTestBase {
 
   @Override
@@ -55,9 +52,6 @@ public abstract class EntropyLossLayerTest extends LayerTestBase {
     return Util.R.get().nextDouble();
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends EntropyLossLayerTest {
   }
 

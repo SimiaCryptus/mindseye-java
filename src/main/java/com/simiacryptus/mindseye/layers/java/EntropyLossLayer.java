@@ -33,38 +33,19 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
-/**
- * An entropy-based cost function. The output value is the expected number of nats needed to encode a category chosen
- * using the first input as a distribution, but using the second input distribution for the encoding scheme.
- */
 @SuppressWarnings("serial")
 public class EntropyLossLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(EntropyLossLayer.class);
 
-  /**
-   * Instantiates a new Entropy loss key.
-   */
   public EntropyLossLayer() {
   }
 
-  /**
-   * Instantiates a new Entropy loss key.
-   *
-   * @param id the id
-   */
   protected EntropyLossLayer(@Nonnull final JsonObject id) {
     super(id);
   }
 
-  /**
-   * From json entropy loss key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the entropy loss key
-   */
   public static EntropyLossLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new EntropyLossLayer(json);
   }

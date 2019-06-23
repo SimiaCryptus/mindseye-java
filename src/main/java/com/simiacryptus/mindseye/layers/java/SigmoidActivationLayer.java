@@ -25,11 +25,6 @@ import com.simiacryptus.mindseye.lang.DataSerializer;
 import javax.annotation.Nonnull;
 import java.util.Map;
 
-/**
- * The classic activation function, either "sigmoid" or "tanh" dependiong on the setting of "balanced". If
- * balanced==true, the function exhibits odd symmetry (f(x) == -f(-x)) If balanced==false, the function is bounded to
- * (0,1)
- */
 @SuppressWarnings("serial")
 public final class SigmoidActivationLayer extends SimpleActivationLayer<SigmoidActivationLayer> {
 
@@ -39,29 +34,14 @@ public final class SigmoidActivationLayer extends SimpleActivationLayer<SigmoidA
   private static final double MIN_F = Math.exp(SigmoidActivationLayer.MIN_X);
   private boolean balanced = true;
 
-  /**
-   * Instantiates a new Sigmoid activation key.
-   */
   public SigmoidActivationLayer() {
   }
 
-  /**
-   * Instantiates a new Sigmoid activation key.
-   *
-   * @param id the id
-   */
   protected SigmoidActivationLayer(@Nonnull final JsonObject id) {
     super(id);
     balanced = id.get("balanced").getAsBoolean();
   }
 
-  /**
-   * From json sigmoid activation key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the sigmoid activation key
-   */
   public static SigmoidActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new SigmoidActivationLayer(json);
   }
@@ -105,21 +85,10 @@ public final class SigmoidActivationLayer extends SimpleActivationLayer<SigmoidA
     return json;
   }
 
-  /**
-   * Is balanced boolean.
-   *
-   * @return the boolean
-   */
   public boolean isBalanced() {
     return balanced;
   }
 
-  /**
-   * Sets balanced.
-   *
-   * @param balanced the balanced
-   * @return the balanced
-   */
   @Nonnull
   public SigmoidActivationLayer setBalanced(final boolean balanced) {
     this.balanced = balanced;

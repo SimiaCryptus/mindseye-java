@@ -24,9 +24,6 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-/**
- * The type Img eval key apply.
- */
 public abstract class TensorConcatLayerTest extends LayerTestBase {
 
   @Nonnull
@@ -43,9 +40,6 @@ public abstract class TensorConcatLayerTest extends LayerTestBase {
     return new TensorConcatLayer();
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends TensorConcatLayerTest {
   }
 

@@ -31,37 +31,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-/**
- * The type Cross dot meta key.
- */
 @SuppressWarnings("serial")
 public class CrossDotMetaLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(CrossDotMetaLayer.class);
 
-  /**
-   * Instantiates a new Cross dot meta key.
-   */
   public CrossDotMetaLayer() {
   }
 
-  /**
-   * Instantiates a new Cross dot meta key.
-   *
-   * @param id the id
-   */
   protected CrossDotMetaLayer(@Nonnull final JsonObject id) {
     super(id);
   }
 
-  /**
-   * From json cross dot meta key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the cross dot meta key
-   */
   public static CrossDotMetaLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new CrossDotMetaLayer(json);
   }

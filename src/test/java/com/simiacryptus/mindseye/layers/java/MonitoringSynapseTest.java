@@ -24,9 +24,6 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-/**
- * The type Monitoring synapse apply.
- */
 public abstract class MonitoringSynapseTest extends LayerTestBase {
 
   @Nonnull
@@ -43,9 +40,6 @@ public abstract class MonitoringSynapseTest extends LayerTestBase {
     return new MonitoringSynapse();
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends MonitoringSynapseTest {
   }
 

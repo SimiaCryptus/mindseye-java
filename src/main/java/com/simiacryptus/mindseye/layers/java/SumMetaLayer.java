@@ -33,9 +33,6 @@ import java.util.UUID;
 import java.util.function.ToDoubleFunction;
 import java.util.stream.IntStream;
 
-/**
- * The type Sum meta key.
- */
 @SuppressWarnings("serial")
 public class SumMetaLayer extends LayerBase {
 
@@ -46,31 +43,15 @@ public class SumMetaLayer extends LayerBase {
   private Tensor lastResult;
   private int minBatches = 1;
 
-  /**
-   * Instantiates a new Sum meta key.
-   */
   public SumMetaLayer() {
   }
 
-  /**
-   * Instantiates a new Sum meta key.
-   *
-   * @param json      the id
-   * @param resources the resources
-   */
   protected SumMetaLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> resources) {
     super(json);
     lastResult = Tensor.fromJson(json.get("lastResult"), resources);
     minBatches = json.get("minBatches").getAsInt();
   }
 
-  /**
-   * From json sum meta key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the sum meta key
-   */
   public static SumMetaLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new SumMetaLayer(json, rs);
   }
@@ -145,21 +126,10 @@ public class SumMetaLayer extends LayerBase {
     super._free();
   }
 
-  /**
-   * Gets min batches.
-   *
-   * @return the min batches
-   */
   public int getMinBatches() {
     return minBatches;
   }
 
-  /**
-   * Sets min batches.
-   *
-   * @param minBatches the min batches
-   * @return the min batches
-   */
   @Nonnull
   public SumMetaLayer setMinBatches(final int minBatches) {
     this.minBatches = minBatches;

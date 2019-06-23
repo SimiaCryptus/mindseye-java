@@ -24,9 +24,6 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-/**
- * The type Rascaled subnet key apply.
- */
 public abstract class RescaledSubnetLayerTest extends LayerTestBase {
 
   @Nonnull
@@ -46,9 +43,6 @@ public abstract class RescaledSubnetLayerTest extends LayerTestBase {
     return rescaledSubnetLayer;
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends RescaledSubnetLayerTest {
   }
 

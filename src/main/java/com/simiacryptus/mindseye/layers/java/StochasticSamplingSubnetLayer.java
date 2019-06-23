@@ -39,10 +39,6 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.IntStream;
 
-/**
- * This key works as a scaling function, similar to a father wavelet. Allows convolutional and pooling layers to work
- * across larger png regions.
- */
 @SuppressWarnings("serial")
 public class StochasticSamplingSubnetLayer extends LayerBase implements StochasticComponent {
 
@@ -54,12 +50,6 @@ public class StochasticSamplingSubnetLayer extends LayerBase implements Stochast
   private final Layer subnetwork;
   private long seed = System.nanoTime();
 
-  /**
-   * Instantiates a new Rescaled subnet key.
-   *
-   * @param subnetwork the subnetwork
-   * @param samples    the samples
-   */
   public StochasticSamplingSubnetLayer(final Layer subnetwork, final int samples) {
     super();
     this.samples = samples;
@@ -67,12 +57,6 @@ public class StochasticSamplingSubnetLayer extends LayerBase implements Stochast
     this.subnetwork.addRef();
   }
 
-  /**
-   * Instantiates a new Rescaled subnet key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   */
   protected StochasticSamplingSubnetLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json);
     samples = json.getAsJsonPrimitive("samples").getAsInt();
@@ -81,23 +65,10 @@ public class StochasticSamplingSubnetLayer extends LayerBase implements Stochast
     this.subnetwork = subnetwork == null ? null : Layer.fromJson(subnetwork, rs);
   }
 
-  /**
-   * From json rescaled subnet key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the rescaled subnet key
-   */
   public static StochasticSamplingSubnetLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new StochasticSamplingSubnetLayer(json, rs);
   }
 
-  /**
-   * Average result.
-   *
-   * @param samples the samples
-   * @return the result
-   */
   public static Result average(final Result[] samples) {
     PipelineNetwork gateNetwork = new PipelineNetwork(samples.length);
     try {
@@ -155,11 +126,6 @@ public class StochasticSamplingSubnetLayer extends LayerBase implements Stochast
     }
   }
 
-  /**
-   * Get seeds long [ ].
-   *
-   * @return the long [ ]
-   */
   public long[] getSeeds() {
     Random random = new Random(seed);
     return IntStream.range(0, this.samples).mapToLong(i -> random.nextLong()).toArray();

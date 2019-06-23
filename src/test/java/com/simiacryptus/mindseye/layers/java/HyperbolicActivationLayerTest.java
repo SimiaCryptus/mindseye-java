@@ -27,13 +27,7 @@ import com.simiacryptus.mindseye.test.unit.TrainingTester;
 
 import java.util.HashMap;
 
-/**
- * The type Hyperbolic activation key apply.
- */
 public abstract class HyperbolicActivationLayerTest extends ActivationLayerTestBase {
-  /**
-   * Instantiates a new Hyperbolic activation key apply.
-   */
   public HyperbolicActivationLayerTest() {
     super(new HyperbolicActivationLayer());
   }
@@ -56,9 +50,6 @@ public abstract class HyperbolicActivationLayerTest extends ActivationLayerTestB
     }.setRandomizationMode(TrainingTester.RandomizationMode.Random);
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends HyperbolicActivationLayerTest {
     @Override
     protected Layer lossLayer() {

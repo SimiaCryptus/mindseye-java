@@ -25,14 +25,8 @@ import com.simiacryptus.mindseye.layers.LoggingWrapperLayer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-/**
- * The type Logging wrapper key apply.
- */
 public abstract class LoggingWrapperLayerTest extends LayerTestBase {
 
-  /**
-   * Instantiates a new Logging wrapper key apply.
-   */
   public LoggingWrapperLayerTest() {
     validateBatchExecution = false;
   }
@@ -54,9 +48,6 @@ public abstract class LoggingWrapperLayerTest extends LayerTestBase {
     return loggingWrapperLayer;
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends LoggingWrapperLayerTest {
   }
 

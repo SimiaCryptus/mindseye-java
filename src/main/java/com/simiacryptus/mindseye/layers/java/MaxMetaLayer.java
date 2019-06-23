@@ -29,9 +29,6 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.IntStream;
 
-/**
- * The type Max meta key.
- */
 @SuppressWarnings("serial")
 public class MaxMetaLayer extends LayerBase {
 
@@ -39,28 +36,13 @@ public class MaxMetaLayer extends LayerBase {
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(MaxMetaLayer.class);
 
-  /**
-   * Instantiates a new Max meta key.
-   */
   public MaxMetaLayer() {
   }
 
-  /**
-   * Instantiates a new Max meta key.
-   *
-   * @param id the id
-   */
   protected MaxMetaLayer(@Nonnull final JsonObject id) {
     super(id);
   }
 
-  /**
-   * From json max meta key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the max meta key
-   */
   public static MaxMetaLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new MaxMetaLayer(json);
   }

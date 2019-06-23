@@ -31,39 +31,21 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
-/**
- * Scales the input using per-color-band coefficients
- */
 @SuppressWarnings("serial")
 public class ImgPixelSoftmaxLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(ImgPixelSoftmaxLayer.class);
 
-  /**
-   * Instantiates a new Img band scale key.
-   */
   public ImgPixelSoftmaxLayer() {
     super();
   }
 
 
-  /**
-   * Instantiates a new Img band scale key.
-   *
-   * @param json the json
-   */
   protected ImgPixelSoftmaxLayer(@Nonnull final JsonObject json) {
     super(json);
   }
 
-  /**
-   * From json img band scale key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the img band scale key
-   */
   public static ImgPixelSoftmaxLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ImgPixelSoftmaxLayer(json);
   }
@@ -75,12 +57,6 @@ public class ImgPixelSoftmaxLayer extends LayerBase {
     return eval(inObj[0]);
   }
 
-  /**
-   * Eval nn result.
-   *
-   * @param input the input
-   * @return the nn result
-   */
   @Nonnull
   public Result eval(@Nonnull final Result input) {
     final TensorList inputData = input.getData();

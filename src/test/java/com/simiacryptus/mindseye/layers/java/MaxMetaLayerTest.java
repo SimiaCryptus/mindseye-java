@@ -25,9 +25,6 @@ import com.simiacryptus.mindseye.layers.MetaLayerTestBase;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-/**
- * The type Max meta key apply.
- */
 public abstract class MaxMetaLayerTest extends MetaLayerTestBase {
   @Override
   protected Layer lossLayer() {
@@ -56,9 +53,6 @@ public abstract class MaxMetaLayerTest extends MetaLayerTestBase {
     };
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends MaxMetaLayerTest {
   }
 

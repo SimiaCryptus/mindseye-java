@@ -25,10 +25,6 @@ import com.simiacryptus.mindseye.lang.DataSerializer;
 import javax.annotation.Nonnull;
 import java.util.Map;
 
-/**
- * This activation key uses the unit gaussian curve. The maximal response, at x=0, is y=1. At +/- infinity, the value
- * is zero.
- */
 @SuppressWarnings("serial")
 public final class GaussianActivationLayer extends SimpleActivationLayer<GaussianActivationLayer> {
 
@@ -39,35 +35,17 @@ public final class GaussianActivationLayer extends SimpleActivationLayer<Gaussia
   private final double mean;
   private final double stddev;
 
-  /**
-   * Instantiates a new Gaussian activation key.
-   *
-   * @param mean   the mean
-   * @param stddev the stddev
-   */
   public GaussianActivationLayer(final double mean, final double stddev) {
     this.mean = mean;
     this.stddev = stddev;
   }
 
-  /**
-   * Instantiates a new Gaussian activation key.
-   *
-   * @param id the id
-   */
   protected GaussianActivationLayer(@Nonnull final JsonObject id) {
     super(id);
     mean = id.get("mean").getAsDouble();
     stddev = id.get("stddev").getAsDouble();
   }
 
-  /**
-   * From json gaussian activation key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the gaussian activation key
-   */
   public static GaussianActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new GaussianActivationLayer(json);
   }

@@ -26,13 +26,7 @@ import com.simiacryptus.mindseye.test.ToleranceStatistics;
 import com.simiacryptus.mindseye.test.unit.ComponentTest;
 import com.simiacryptus.mindseye.test.unit.SingleDerivativeTester;
 
-/**
- * The type Entropy key apply.
- */
 public abstract class EntropyLayerTest extends ActivationLayerTestBase {
-  /**
-   * Instantiates a new Entropy key apply.
-   */
   public EntropyLayerTest() {
     super(new EntropyLayer());
   }
@@ -43,9 +37,6 @@ public abstract class EntropyLayerTest extends ActivationLayerTestBase {
     return new SingleDerivativeTester(1e-2, 1e-5);
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends EntropyLayerTest {
     @Override
     protected Layer lossLayer() {

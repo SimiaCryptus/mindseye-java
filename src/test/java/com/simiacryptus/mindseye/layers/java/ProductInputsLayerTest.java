@@ -26,9 +26,6 @@ import com.simiacryptus.mindseye.test.unit.TrainingTester;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-/**
- * The type Product inputs key apply.
- */
 public abstract class ProductInputsLayerTest extends LayerTestBase {
   @Nonnull
   @Override
@@ -47,9 +44,6 @@ public abstract class ProductInputsLayerTest extends LayerTestBase {
     }.setRandomizationMode(TrainingTester.RandomizationMode.Random);
   }
 
-  /**
-   * Multiply one multivariate input apply a univariate input
-   */
   public static class N1Test extends ProductInputsLayerTest {
     @Nonnull
     @Override
@@ -60,9 +54,6 @@ public abstract class ProductInputsLayerTest extends LayerTestBase {
     }
   }
 
-  /**
-   * Multiply three multivariate inputs
-   */
   public static class NNNTest extends ProductInputsLayerTest {
 
     @Nonnull
@@ -74,9 +65,6 @@ public abstract class ProductInputsLayerTest extends LayerTestBase {
     }
   }
 
-  /**
-   * Multiply two multivariate inputs
-   */
   public static class NNTest extends ProductInputsLayerTest {
 
     @Nonnull

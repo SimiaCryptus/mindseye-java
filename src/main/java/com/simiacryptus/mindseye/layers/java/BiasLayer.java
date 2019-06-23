@@ -36,56 +36,29 @@ import java.util.UUID;
 import java.util.function.DoubleSupplier;
 import java.util.function.IntToDoubleFunction;
 
-/**
- * Adds a bias tensor to the input. Expects a single input of the same dimension as the bias tensor.
- */
 @SuppressWarnings("serial")
 public class BiasLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(BiasLayer.class);
-  /**
-   * The Bias.
-   */
   @Nullable
   public final Tensor bias;
 
-  /**
-   * Instantiates a new Bias key.
-   */
   protected BiasLayer() {
     super();
     bias = null;
   }
 
-  /**
-   * Instantiates a new Bias key.
-   *
-   * @param dims the dims
-   */
   public BiasLayer(final int... dims) {
     bias = new Tensor(dims);
   }
 
 
-  /**
-   * Instantiates a new Bias key.
-   *
-   * @param json the json
-   * @param rs
-   */
   protected BiasLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json);
     bias = Tensor.fromJson(json.get("bias"), rs);
   }
 
-  /**
-   * From json bias key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the bias key
-   */
   public static BiasLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new BiasLayer(json, rs);
   }
@@ -96,12 +69,6 @@ public class BiasLayer extends LayerBase {
     super._free();
   }
 
-  /**
-   * Add double [ ].
-   *
-   * @param input the input
-   * @return the double [ ]
-   */
   public double[] add(@Nonnull final double[] input) {
     final double[] array = RecycleBin.DOUBLES.obtain(input.length);
     double[] bias = this.bias.getData();
@@ -117,12 +84,6 @@ public class BiasLayer extends LayerBase {
     return array;
   }
 
-  /**
-   * Add weights bias key.
-   *
-   * @param f the f
-   * @return the bias key
-   */
   @Nonnull
   public BiasLayer addWeights(@Nonnull final DoubleSupplier f) {
     double[] bias = this.bias.getData();
@@ -192,12 +153,6 @@ public class BiasLayer extends LayerBase {
   }
 
 
-  /**
-   * Set nn key.
-   *
-   * @param ds the ds
-   * @return the nn key
-   */
   @Nonnull
   public Layer set(@Nonnull final double[] ds) {
     double[] bias = this.bias.getData();
@@ -207,12 +162,6 @@ public class BiasLayer extends LayerBase {
     return this;
   }
 
-  /**
-   * Sets weights.
-   *
-   * @param f the f
-   * @return the weights
-   */
   @Nonnull
   public BiasLayer setWeights(@Nonnull final IntToDoubleFunction f) {
     double[] bias = this.bias.getData();
@@ -222,12 +171,6 @@ public class BiasLayer extends LayerBase {
     return this;
   }
 
-  /**
-   * Sets weights log.
-   *
-   * @param value the value
-   * @return the weights log
-   */
   @Nonnull
   public BiasLayer setWeightsLog(final double value) {
     double[] bias = this.bias.getData();
@@ -243,12 +186,6 @@ public class BiasLayer extends LayerBase {
     return Arrays.asList(bias.getData());
   }
 
-  /**
-   * Set bias key.
-   *
-   * @param tensor the tensor
-   * @return the bias key
-   */
   @Nonnull
   public BiasLayer set(@Nonnull Tensor tensor) {
     double[] bias = this.bias.getData();

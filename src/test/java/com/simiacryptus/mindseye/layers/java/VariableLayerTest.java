@@ -24,9 +24,6 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-/**
- * The type Variable key apply.
- */
 public abstract class VariableLayerTest extends LayerTestBase {
 
   @Nonnull
@@ -46,9 +43,6 @@ public abstract class VariableLayerTest extends LayerTestBase {
     return variableLayer;
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends VariableLayerTest {
   }
 

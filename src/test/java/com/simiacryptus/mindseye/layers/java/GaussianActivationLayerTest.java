@@ -23,20 +23,11 @@ package com.simiacryptus.mindseye.layers.java;
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 
-/**
- * The type Gaussian activation key apply.
- */
 public abstract class GaussianActivationLayerTest extends ActivationLayerTestBase {
-  /**
-   * Instantiates a new Gaussian activation key apply.
-   */
   public GaussianActivationLayerTest() {
     super(new GaussianActivationLayer(0, 1));
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends GaussianActivationLayerTest {
     @Override
     protected Layer lossLayer() {

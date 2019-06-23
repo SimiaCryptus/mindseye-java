@@ -33,37 +33,19 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
-/**
- * Computes the average value across all elements of each input tensor. The output dimensions are always 1x1x1.
- */
 @SuppressWarnings("serial")
 public class AvgReducerLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(SumReducerLayer.class);
 
-  /**
-   * Instantiates a new Avg reducer key.
-   */
   public AvgReducerLayer() {
   }
 
-  /**
-   * Instantiates a new Avg reducer key.
-   *
-   * @param id the id
-   */
   protected AvgReducerLayer(@Nonnull final JsonObject id) {
     super(id);
   }
 
-  /**
-   * From json avg reducer key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the avg reducer key
-   */
   public static AvgReducerLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new AvgReducerLayer(json);
   }

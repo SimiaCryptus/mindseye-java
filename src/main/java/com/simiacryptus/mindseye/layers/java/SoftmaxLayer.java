@@ -31,41 +31,20 @@ import java.util.*;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 
-/**
- * The classic "softmax" key. All outputs will sum to 1 and be proportional to the log of the input.
- */
 @SuppressWarnings("serial")
 public class SoftmaxLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(SoftmaxLayer.class);
-  /**
-   * The Max input.
-   */
   double maxInput = 50;
 
-  /**
-   * Instantiates a new Softmax activation key.
-   */
   public SoftmaxLayer() {
   }
 
-  /**
-   * Instantiates a new Softmax activation key.
-   *
-   * @param id the id
-   */
   protected SoftmaxLayer(@Nonnull final JsonObject id) {
     super(id);
   }
 
-  /**
-   * From json softmax activation key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the softmax activation key
-   */
   public static SoftmaxLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new SoftmaxLayer(json);
   }

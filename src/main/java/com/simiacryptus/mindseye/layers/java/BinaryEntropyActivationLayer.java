@@ -25,34 +25,16 @@ import com.simiacryptus.mindseye.lang.DataSerializer;
 import javax.annotation.Nonnull;
 import java.util.Map;
 
-/**
- * The type Binary entropy activation key.
- */
 @SuppressWarnings("serial")
 public final class BinaryEntropyActivationLayer extends SimpleActivationLayer<BinaryEntropyActivationLayer> {
 
-  /**
-   * Instantiates a new Binary entropy activation key.
-   */
   public BinaryEntropyActivationLayer() {
   }
 
-  /**
-   * Instantiates a new Binary entropy activation key.
-   *
-   * @param id the id
-   */
   protected BinaryEntropyActivationLayer(@Nonnull final JsonObject id) {
     super(id);
   }
 
-  /**
-   * From json binary entropy activation key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the binary entropy activation key
-   */
   public static BinaryEntropyActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new BinaryEntropyActivationLayer(json);
   }

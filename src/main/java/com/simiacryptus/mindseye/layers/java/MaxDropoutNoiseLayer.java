@@ -35,10 +35,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-/**
- * Selects the maximum value in each NxN cell, setting all other values to zero. This introduces sparsity into the
- * signal, but does not sumChannels resolution.
- */
 @SuppressWarnings("serial")
 public class MaxDropoutNoiseLayer extends LayerBase {
 
@@ -48,40 +44,20 @@ public class MaxDropoutNoiseLayer extends LayerBase {
   private final int[] kernelSize;
   private final Function<IntArray, List<List<Coordinate>>> getCellMap_cached = Util.cache(this::getCellMap);
 
-  /**
-   * Instantiates a new Max dropout noise key.
-   */
   public MaxDropoutNoiseLayer() {
     this(2, 2);
   }
 
-  /**
-   * Instantiates a new Max dropout noise key.
-   *
-   * @param dims the dims
-   */
   public MaxDropoutNoiseLayer(final int... dims) {
     super();
     kernelSize = dims;
   }
 
-  /**
-   * Instantiates a new Max dropout noise key.
-   *
-   * @param json the json
-   */
   protected MaxDropoutNoiseLayer(@Nonnull final JsonObject json) {
     super(json);
     kernelSize = JsonUtil.getIntArray(json.getAsJsonArray("kernelSize"));
   }
 
-  /**
-   * From json max dropout noise key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the max dropout noise key
-   */
   public static MaxDropoutNoiseLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new MaxDropoutNoiseLayer(json);
   }

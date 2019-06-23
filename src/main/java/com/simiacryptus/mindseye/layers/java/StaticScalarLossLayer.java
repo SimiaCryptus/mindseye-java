@@ -32,9 +32,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
-/**
- * The type Static scalar loss key.
- */
 @SuppressWarnings("serial")
 public class StaticScalarLossLayer extends LayerBase {
 
@@ -42,29 +39,14 @@ public class StaticScalarLossLayer extends LayerBase {
   private static final Logger log = LoggerFactory.getLogger(StaticScalarLossLayer.class);
   private double target = 0.0;
 
-  /**
-   * Instantiates a new Static scalar loss key.
-   */
   public StaticScalarLossLayer() {
   }
 
 
-  /**
-   * Instantiates a new Static scalar loss key.
-   *
-   * @param id the id
-   */
   protected StaticScalarLossLayer(@Nonnull final JsonObject id) {
     super(id);
   }
 
-  /**
-   * From json static scalar loss key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the static scalar loss key
-   */
   public static StaticScalarLossLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new StaticScalarLossLayer(json);
   }
@@ -119,21 +101,10 @@ public class StaticScalarLossLayer extends LayerBase {
     return super.getJsonStub();
   }
 
-  /**
-   * Gets target.
-   *
-   * @return the target
-   */
   public double getTarget() {
     return target;
   }
 
-  /**
-   * Sets target.
-   *
-   * @param target the target
-   * @return the target
-   */
   @Nonnull
   public StaticScalarLossLayer setTarget(final double target) {
     this.target = target;

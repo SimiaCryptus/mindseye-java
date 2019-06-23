@@ -26,13 +26,7 @@ import com.simiacryptus.mindseye.network.PipelineNetwork;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-/**
- * The type Sum inputs key apply.
- */
 public class SumInputsLayerTest {
-  /**
-   * The type N 1 apply.
-   */
   public static class N1Test extends LayerTestBase {
 
     @Nonnull
@@ -59,9 +53,6 @@ public class SumInputsLayerTest {
 
   }
 
-  /**
-   * The type Nn apply.
-   */
   public static class NNTest extends LayerTestBase {
 
     @Nonnull
@@ -88,14 +79,8 @@ public class SumInputsLayerTest {
 
   }
 
-  /**
-   * Ensures addition can be used to implement a doubling (x2) function
-   */
   public static class OnePlusOne extends LayerTestBase {
 
-    /**
-     * Instantiates a new Asymmetric apply.
-     */
     public OnePlusOne() {
       super();
     }

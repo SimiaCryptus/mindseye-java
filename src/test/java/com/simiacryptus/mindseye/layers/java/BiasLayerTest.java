@@ -24,18 +24,10 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-/**
- * The type Bias key apply.
- */
 public abstract class BiasLayerTest extends LayerTestBase {
 
   private final int dimension;
 
-  /**
-   * Instantiates a new Bias key apply.
-   *
-   * @param dimension the dimension
-   */
   public BiasLayerTest(int dimension) {
     this.dimension = dimension;
   }
@@ -54,26 +46,14 @@ public abstract class BiasLayerTest extends LayerTestBase {
     return new BiasLayer(dimension).addWeights(this::random);
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends BiasLayerTest {
-    /**
-     * Instantiates a new Basic.
-     */
     public Basic() {
       super(5);
     }
   }
 
-  /**
-   * Tests applying a single bias value on all inputs.
-   */
   public static class Reducing extends BiasLayerTest {
 
-    /**
-     * Instantiates a new Reducing.
-     */
     public Reducing() {
       super(5);
     }

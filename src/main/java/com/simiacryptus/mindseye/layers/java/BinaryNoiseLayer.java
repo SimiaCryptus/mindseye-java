@@ -32,16 +32,10 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nonnull;
 import java.util.*;
 
-/**
- * The type Binary noise key.
- */
 @SuppressWarnings("serial")
 public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
 
 
-  /**
-   * The constant randomize.
-   */
   public static final ThreadLocal<Random> random = new ThreadLocal<Random>() {
     @Override
     protected Random initialValue() {
@@ -50,36 +44,20 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
   };
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(BinaryNoiseLayer.class);
-  /**
-   * The Mask list.
-   */
   @Nonnull
   List<Tensor> maskList = new ArrayList<>();
   private double value;
   private long seed = System.nanoTime();
 
-  /**
-   * Instantiates a new Binary noise key.
-   */
   public BinaryNoiseLayer() {
     this(0.5);
   }
 
-  /**
-   * Instantiates a new Binary noise key.
-   *
-   * @param value the value
-   */
   public BinaryNoiseLayer(final double value) {
     super();
     setValue(value);
   }
 
-  /**
-   * Instantiates a new Binary noise key.
-   *
-   * @param json the json
-   */
   protected BinaryNoiseLayer(@Nonnull final JsonObject json) {
     super(json);
     value = json.get("value").getAsDouble();
@@ -88,13 +66,6 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
 //    this.enabled = enabled == null || enabled.getAsBoolean();
   }
 
-  /**
-   * From json binary noise key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the binary noise key
-   */
   public static BinaryNoiseLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new BinaryNoiseLayer(json);
   }
@@ -173,21 +144,10 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
     return json;
   }
 
-  /**
-   * Gets value.
-   *
-   * @return the value
-   */
   public double getValue() {
     return value;
   }
 
-  /**
-   * Sets value.
-   *
-   * @param value the value
-   * @return the value
-   */
   @Nonnull
   public BinaryNoiseLayer setValue(final double value) {
     this.value = value;

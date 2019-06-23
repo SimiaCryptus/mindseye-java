@@ -28,20 +28,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Random;
 
-/**
- * The type Rascaled subnet key apply.
- */
 public abstract class ReshapeLayerTest extends LayerTestBase {
 
   private final int[] outputDims;
   private final int[] inputDims;
 
-  /**
-   * Instantiates a new Reshape key test.
-   *
-   * @param inputDims  the input dims
-   * @param outputDims the output dims
-   */
   protected ReshapeLayerTest(int[] inputDims, int[] outputDims) {
     this.inputDims = inputDims;
     this.outputDims = outputDims;
@@ -61,87 +52,43 @@ public abstract class ReshapeLayerTest extends LayerTestBase {
     return new ReshapeLayer(outputDims);
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends ReshapeLayerTest {
-    /**
-     * Instantiates a new Basic.
-     */
     public Basic() {
       super(new int[]{6, 6, 1}, new int[]{1, 1, 36});
     }
   }
 
-  /**
-   * The type Basic 1.
-   */
   public static class Basic1 extends ReshapeLayerTest {
-    /**
-     * Instantiates a new Basic 1.
-     */
     public Basic1() {
       super(new int[]{1, 1, 32}, new int[]{1, 1, 32});
     }
   }
 
-  /**
-   * The type BigTests 0.
-   */
   public static class Big0 extends Big {
-    /**
-     * Instantiates a new BigTests 0.
-     */
     public Big0() {
       super(256);
     }
 
   }
 
-  /**
-   * The type BigTests 1.
-   */
   public static class Big1 extends Big {
-    /**
-     * Instantiates a new BigTests 1.
-     */
     public Big1() {
       super(new int[]{4, 4, 256}, new int[]{1, 1, 2 * 2048});
     }
   }
 
-  /**
-   * The type BigTests 2.
-   */
   public static class Big2 extends Big {
-    /**
-     * Instantiates a new BigTests 2.
-     */
     public Big2() {
       super(new int[]{1, 1, 2 * 2048}, new int[]{4, 4, 256});
     }
   }
 
-  /**
-   * The type BigTests.
-   */
   public abstract static class Big extends ReshapeLayerTest {
 
-    /**
-     * Instantiates a new Big.
-     *
-     * @param size the size
-     */
     public Big(int size) {
       this(new int[]{1, 1, size}, new int[]{1, 1, size});
     }
 
-    /**
-     * Instantiates a new BigTests.
-     *
-     * @param inputDims  the input dims
-     * @param outputDims the output dims
-     */
     public Big(int[] inputDims, int[] outputDims) {
       super(inputDims, outputDims);
       validateDifferentials = false;

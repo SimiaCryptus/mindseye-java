@@ -28,18 +28,12 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nonnull;
 import java.util.Map;
 
-/**
- * The type Std dev meta key.
- */
 @SuppressWarnings("serial")
 public class AutoEntropyLayer extends PipelineNetwork {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(AutoEntropyLayer.class);
 
-  /**
-   * Instantiates a new Std dev meta key.
-   */
   public AutoEntropyLayer() {
     super(1);
     DAGNode input = getInput(0);
@@ -47,23 +41,10 @@ public class AutoEntropyLayer extends PipelineNetwork {
     wrap(new EntropyLossLayer(), input, input).freeRef();
   }
 
-  /**
-   * Instantiates a new Std dev meta key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   */
   protected AutoEntropyLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json, rs);
   }
 
-  /**
-   * From json std dev meta key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the std dev meta key
-   */
   public static AutoEntropyLayer fromJson(final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new AutoEntropyLayer(json, rs);
   }

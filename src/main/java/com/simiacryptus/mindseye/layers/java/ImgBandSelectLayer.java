@@ -29,30 +29,17 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.IntStream;
 
-/**
- * Selects specific color bands from the input, producing an png apply the same resolution but fewer bands.
- */
 @SuppressWarnings("serial")
 public class ImgBandSelectLayer extends LayerBase {
 
 
   private final int[] bands;
 
-  /**
-   * Instantiates a new Img band select key.
-   *
-   * @param bands the bands
-   */
   public ImgBandSelectLayer(final int... bands) {
     super();
     this.bands = bands;
   }
 
-  /**
-   * Instantiates a new Img band select key.
-   *
-   * @param json the json
-   */
   protected ImgBandSelectLayer(@Nonnull final JsonObject json) {
     super(json);
     final JsonArray jsonArray = json.getAsJsonArray("bands");
@@ -62,13 +49,6 @@ public class ImgBandSelectLayer extends LayerBase {
     }
   }
 
-  /**
-   * From json img band select key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the img band select key
-   */
   public static ImgBandSelectLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ImgBandSelectLayer(json);
   }

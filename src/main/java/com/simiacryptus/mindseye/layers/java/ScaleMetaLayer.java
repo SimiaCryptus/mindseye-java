@@ -33,9 +33,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
-/**
- * The type Scale meta key.
- */
 @SuppressWarnings("serial")
 public class ScaleMetaLayer extends LayerBase {
 
@@ -43,28 +40,13 @@ public class ScaleMetaLayer extends LayerBase {
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(ScaleMetaLayer.class);
 
-  /**
-   * Instantiates a new Scale meta key.
-   */
   public ScaleMetaLayer() {
   }
 
-  /**
-   * Instantiates a new Scale meta key.
-   *
-   * @param id the id
-   */
   protected ScaleMetaLayer(@Nonnull final JsonObject id) {
     super(id);
   }
 
-  /**
-   * From json scale meta key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the scale meta key
-   */
   public static ScaleMetaLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ScaleMetaLayer(json);
   }

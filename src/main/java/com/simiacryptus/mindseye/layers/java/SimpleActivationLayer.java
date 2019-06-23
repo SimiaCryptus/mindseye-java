@@ -31,40 +31,21 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
-/**
- * A parent class for all stateless, univariate "activation" functions.
- *
- * @param <T> the type parameter
- */
 @SuppressWarnings("serial")
 public abstract class SimpleActivationLayer<T extends SimpleActivationLayer<T>> extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(SigmoidActivationLayer.class);
 
-  /**
-   * Instantiates a new Simple activation key.
-   */
   public SimpleActivationLayer() {
     super();
     this.frozen = true;
   }
 
-  /**
-   * Instantiates a new Simple activation key.
-   *
-   * @param id the id
-   */
   protected SimpleActivationLayer(@Nonnull final JsonObject id) {
     super(id);
   }
 
-  /**
-   * Eval.
-   *
-   * @param x       the x
-   * @param results the results
-   */
   protected abstract void eval(final double x, double[] results);
 
   @Nonnull

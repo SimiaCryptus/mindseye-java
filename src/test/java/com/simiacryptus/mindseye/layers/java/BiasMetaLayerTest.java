@@ -24,13 +24,7 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-/**
- * The type Bias meta key apply.
- */
 public abstract class BiasMetaLayerTest extends LayerTestBase {
-  /**
-   * Instantiates a new Bias meta key apply.
-   */
   public BiasMetaLayerTest() {
     validateBatchExecution = false;
   }
@@ -49,9 +43,6 @@ public abstract class BiasMetaLayerTest extends LayerTestBase {
     return new BiasMetaLayer();
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends BiasMetaLayerTest {
   }
 

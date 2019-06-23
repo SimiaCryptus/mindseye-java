@@ -25,13 +25,7 @@ import com.simiacryptus.mindseye.layers.MetaLayerTestBase;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-/**
- * The type Sum meta key apply.
- */
 public abstract class SumMetaLayerTest extends MetaLayerTestBase {
-  /**
-   * Instantiates a new Sum meta key apply.
-   */
   public SumMetaLayerTest() {
     super();
     validateBatchExecution = false;
@@ -64,9 +58,6 @@ public abstract class SumMetaLayerTest extends MetaLayerTestBase {
     };
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends SumMetaLayerTest {
   }
 

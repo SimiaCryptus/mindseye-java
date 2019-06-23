@@ -24,14 +24,8 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-/**
- * The type Cross dot meta key apply.
- */
 public abstract class CrossDotMetaLayerTest extends LayerTestBase {
 
-  /**
-   * Instantiates a new Cross dot meta key apply.
-   */
   public CrossDotMetaLayerTest() {
     validateBatchExecution = false;
   }
@@ -50,9 +44,6 @@ public abstract class CrossDotMetaLayerTest extends LayerTestBase {
     return new CrossDotMetaLayer();
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends CrossDotMetaLayerTest {
   }
 

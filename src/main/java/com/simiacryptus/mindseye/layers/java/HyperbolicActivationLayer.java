@@ -32,10 +32,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
-/**
- * This activation key uses a parameterized hyperbolic function. This function, ion various parameterizations, can
- * resemble: x^2, abs(x), x^3, x However, at high +/- x, the behavior is nearly linear.
- */
 @SuppressWarnings("serial")
 public class HyperbolicActivationLayer extends LayerBase {
 
@@ -46,9 +42,6 @@ public class HyperbolicActivationLayer extends LayerBase {
   private final Tensor weights;
   private int negativeMode = 1;
 
-  /**
-   * Instantiates a new Hyperbolic activation key.
-   */
   public HyperbolicActivationLayer() {
     super();
     weights = new Tensor(2);
@@ -56,25 +49,12 @@ public class HyperbolicActivationLayer extends LayerBase {
     weights.set(1, 1.);
   }
 
-  /**
-   * Instantiates a new Hyperbolic activation key.
-   *
-   * @param json      the json
-   * @param resources the resources
-   */
   protected HyperbolicActivationLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> resources) {
     super(json);
     weights = Tensor.fromJson(json.get("weights"), resources);
     negativeMode = json.getAsJsonPrimitive("negativeMode").getAsInt();
   }
 
-  /**
-   * From json hyperbolic activation key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the hyperbolic activation key
-   */
   public static HyperbolicActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new HyperbolicActivationLayer(json, rs);
   }
@@ -173,63 +153,32 @@ public class HyperbolicActivationLayer extends LayerBase {
     return json;
   }
 
-  /**
-   * Gets scale l.
-   *
-   * @return the scale l
-   */
   public double getScaleL() {
     return 1 / weights.get(1);
   }
 
-  /**
-   * Gets scale r.
-   *
-   * @return the scale r
-   */
   public double getScaleR() {
     return 1 / weights.get(0);
   }
 
-  /**
-   * Sets mode asymetric.
-   *
-   * @return the mode asymetric
-   */
   @Nonnull
   public HyperbolicActivationLayer setModeAsymetric() {
     negativeMode = 0;
     return this;
   }
 
-  /**
-   * Sets mode even.
-   *
-   * @return the mode even
-   */
   @Nonnull
   public HyperbolicActivationLayer setModeEven() {
     negativeMode = 1;
     return this;
   }
 
-  /**
-   * Sets mode odd.
-   *
-   * @return the mode odd
-   */
   @Nonnull
   public HyperbolicActivationLayer setModeOdd() {
     negativeMode = -1;
     return this;
   }
 
-  /**
-   * Sets scale.
-   *
-   * @param scale the scale
-   * @return the scale
-   */
   @Nonnull
   public HyperbolicActivationLayer setScale(final double scale) {
     weights.set(0, 1 / scale);

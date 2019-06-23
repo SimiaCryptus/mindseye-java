@@ -27,10 +27,6 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.IntStream;
 
-/**
- * Reduces the resolution of the input by selecting a centered window. The output png will have the same number of
- * color bands.
- */
 @SuppressWarnings("serial")
 public class ImgCropLayer extends LayerBase {
 
@@ -38,36 +34,18 @@ public class ImgCropLayer extends LayerBase {
   private final int sizeX;
   private final int sizeY;
 
-  /**
-   * Instantiates a new Img crop key.
-   *
-   * @param sizeX the size x
-   * @param sizeY the size y
-   */
   public ImgCropLayer(final int sizeX, final int sizeY) {
     super();
     this.sizeX = sizeX;
     this.sizeY = sizeY;
   }
 
-  /**
-   * Instantiates a new Img crop key.
-   *
-   * @param json the json
-   */
   protected ImgCropLayer(@Nonnull final JsonObject json) {
     super(json);
     sizeX = json.getAsJsonPrimitive("sizeX").getAsInt();
     sizeY = json.getAsJsonPrimitive("sizeY").getAsInt();
   }
 
-  /**
-   * Copy condense tensor.
-   *
-   * @param inputData  the input data
-   * @param outputData the output data
-   * @return the tensor
-   */
   @Nonnull
   public static Tensor copy(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData) {
     @Nonnull final int[] inDim = inputData.getDimensions();
@@ -102,13 +80,6 @@ public class ImgCropLayer extends LayerBase {
     return outputData;
   }
 
-  /**
-   * From json img crop key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the img crop key
-   */
   public static ImgCropLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ImgCropLayer(json);
   }

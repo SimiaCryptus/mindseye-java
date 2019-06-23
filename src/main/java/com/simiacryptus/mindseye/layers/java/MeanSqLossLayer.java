@@ -35,37 +35,19 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-/**
- * An RMS-differencing loss function without the final square root.
- */
 @SuppressWarnings("serial")
 public class MeanSqLossLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(MeanSqLossLayer.class);
 
-  /**
-   * Instantiates a new Mean sq loss key.
-   */
   public MeanSqLossLayer() {
   }
 
-  /**
-   * Instantiates a new Mean sq loss key.
-   *
-   * @param id the id
-   */
   protected MeanSqLossLayer(@Nonnull final JsonObject id) {
     super(id);
   }
 
-  /**
-   * From json mean sq loss key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the mean sq loss key
-   */
   public static MeanSqLossLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new MeanSqLossLayer(json);
   }

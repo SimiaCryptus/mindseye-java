@@ -30,46 +30,20 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
-/**
- * The type Cross product key.
- */
 @SuppressWarnings("serial")
 public class CrossProductLayer extends LayerBase {
 
-  /**
-   * Instantiates a new Cross product key.
-   */
   public CrossProductLayer() {
   }
 
-  /**
-   * Instantiates a new Cross product key.
-   *
-   * @param id the id
-   */
   protected CrossProductLayer(@Nonnull final JsonObject id) {
     super(id);
   }
 
-  /**
-   * From json cross product key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the cross product key
-   */
   public static CrossProductLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new CrossProductLayer(json);
   }
 
-  /**
-   * Index int.
-   *
-   * @param x   the x
-   * @param y   the y
-   * @param max the max
-   * @return the int
-   */
   public static int index(final int x, final int y, final int max) {
     return max * (max - 1) / 2 - (max - x) * (max - x - 1) / 2 + y - x - 1;
   }

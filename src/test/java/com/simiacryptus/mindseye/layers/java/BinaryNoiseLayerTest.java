@@ -24,14 +24,8 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-/**
- * The type Binary noise key apply.
- */
 public abstract class BinaryNoiseLayerTest extends LayerTestBase {
 
-  /**
-   * Instantiates a new Binary noise key apply.
-   */
   public BinaryNoiseLayerTest() {
     validateBatchExecution = false;
   }
@@ -50,9 +44,6 @@ public abstract class BinaryNoiseLayerTest extends LayerTestBase {
     return StochasticSamplingSubnetLayer.wrap(BinaryNoiseLayer.maskLayer(0.5), 3);
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends BinaryNoiseLayerTest {
   }
 

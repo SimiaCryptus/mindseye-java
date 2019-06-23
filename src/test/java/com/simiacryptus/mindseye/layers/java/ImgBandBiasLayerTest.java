@@ -24,9 +24,6 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-/**
- * The type Img band bias key apply.
- */
 public abstract class ImgBandBiasLayerTest extends LayerTestBase {
 
   @Nonnull
@@ -43,9 +40,6 @@ public abstract class ImgBandBiasLayerTest extends LayerTestBase {
     return new ImgBandBiasLayer(3).addWeights(this::random);
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends ImgBandBiasLayerTest {
   }
 

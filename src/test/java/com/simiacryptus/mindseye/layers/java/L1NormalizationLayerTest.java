@@ -24,9 +24,6 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-/**
- * The type L 1 normalization key apply.
- */
 public abstract class L1NormalizationLayerTest extends LayerTestBase {
 
   @Nonnull
@@ -46,9 +43,6 @@ public abstract class L1NormalizationLayerTest extends LayerTestBase {
     return super.random() * 100;
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends L1NormalizationLayerTest {
   }
 

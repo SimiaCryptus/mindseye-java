@@ -39,15 +39,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-/**
- * A local-pooling key which sets all elements to the average value.
- */
 @SuppressWarnings("serial")
 public class AvgPoolingLayer extends LayerBase {
 
-  /**
-   * The constant indexMapCache.
-   */
   public static final LoadingCache<AvgPoolingLayer.IndexMapKey, Map<Coordinate, List<int[]>>> indexMapCache = CacheBuilder.newBuilder()
       .build(new LayerCacheLoader());
   @SuppressWarnings("unused")
@@ -55,41 +49,20 @@ public class AvgPoolingLayer extends LayerBase {
   private int[] kernelDims;
 
 
-  /**
-   * Instantiates a new Avg subsample key.
-   */
   protected AvgPoolingLayer() {
     super();
   }
 
-  /**
-   * Instantiates a new Avg subsample key.
-   *
-   * @param kernelDims the kernel dims
-   */
   public AvgPoolingLayer(@Nonnull final int... kernelDims) {
 
     this.kernelDims = Arrays.copyOf(kernelDims, kernelDims.length);
   }
 
-  /**
-   * Instantiates a new Avg subsample key.
-   *
-   * @param id         the id
-   * @param kernelDims the kernel dims
-   */
   protected AvgPoolingLayer(@Nonnull final JsonObject id, @Nonnull final int... kernelDims) {
     super(id);
     this.kernelDims = Arrays.copyOf(kernelDims, kernelDims.length);
   }
 
-  /**
-   * From json avg subsample key.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the avg subsample key
-   */
   public static AvgPoolingLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new AvgPoolingLayer(json,
         JsonUtil.getIntArray(json.getAsJsonArray("heapCopy")));
@@ -174,38 +147,16 @@ public class AvgPoolingLayer extends LayerBase {
     return Arrays.asList();
   }
 
-  /**
-   * The type Index buildMap key.
-   */
   public static final class IndexMapKey {
-    /**
-     * The Kernel.
-     */
     int[] kernel;
-    /**
-     * The Output.
-     */
     int[] output;
 
-    /**
-     * Instantiates a new Index buildMap key.
-     *
-     * @param kernel the kernel
-     * @param output the output
-     */
     public IndexMapKey(final int[] kernel, final int[] output) {
       super();
       this.kernel = kernel;
       this.output = output;
     }
 
-    /**
-     * Instantiates a new Index buildMap key.
-     *
-     * @param kernel the kernel
-     * @param input  the input
-     * @param output the output
-     */
     public IndexMapKey(@Nonnull final Tensor kernel, final Tensor input, @Nonnull final Tensor output) {
       super();
       this.kernel = kernel.getDimensions();

@@ -25,14 +25,8 @@ import com.simiacryptus.mindseye.layers.MetaLayerTestBase;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-/**
- * The type Std dev meta key apply.
- */
 public abstract class AutoEntropyLayerTest extends MetaLayerTestBase {
 
-  /**
-   * Instantiates a new Std dev meta key apply.
-   */
   public AutoEntropyLayerTest() {
     super();
     //validateDifferentials = false;
@@ -60,9 +54,6 @@ public abstract class AutoEntropyLayerTest extends MetaLayerTestBase {
     };
   }
 
-  /**
-   * Basic Test
-   */
   public static class Basic extends AutoEntropyLayerTest {
     @Override
     protected Layer lossLayer() {
