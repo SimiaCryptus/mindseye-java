@@ -69,12 +69,10 @@ public class ImgPixelGateLayer extends LayerBase {
     assert 3 == inputDims.length;
     return new Result(TensorArray.wrap(IntStream.range(0, inputData.length()).mapToObj(i -> {
       Tensor inputTensor = inputData.get(i);
-      Tensor gateTensor = gateData.get(i);
-      Tensor result = new Tensor(inputDims[0], inputDims[1], 1).setByCoord(c -> {
-        return IntStream.range(0, inputDims[2]).mapToDouble(b -> {
-          int[] coords = c.getCoords();
-          return inputTensor.get(coords[0], coords[1], b) * gateTensor.get(coords[0], coords[1], 0);
-        }).sum();
+      Tensor gateTensor = gateData.get(gateData.length()==1?0:i);
+      Tensor result = new Tensor(inputDims[0], inputDims[1], inputDims[2]).setByCoord(c -> {
+        int[] coords = c.getCoords();
+        return inputTensor.get(coords[0], coords[1], coords[2]) * gateTensor.get(coords[0], coords[1], 0);
       });
       inputTensor.freeRef();
       gateTensor.freeRef();
@@ -83,11 +81,11 @@ public class ImgPixelGateLayer extends LayerBase {
       if (input.isAlive()) {
         @Nonnull TensorArray tensorArray = TensorArray.wrap(IntStream.range(0, delta.length()).mapToObj(i -> {
           Tensor deltaTensor = delta.get(i);
-          Tensor gateTensor = gateData.get(i);
+          Tensor gateTensor = gateData.get(gateData.length()==1?0:i);
           Tensor result = new Tensor(input.getData().getDimensions())
               .setByCoord(c -> {
                 int[] coords = c.getCoords();
-                return deltaTensor.get(coords[0], coords[1], 0) * gateTensor.get(coords[0], coords[1], 0);
+                return deltaTensor.get(coords[0], coords[1], coords[2]) * gateTensor.get(coords[0], coords[1], 0);
               });
           deltaTensor.freeRef();
           gateTensor.freeRef();
@@ -102,7 +100,7 @@ public class ImgPixelGateLayer extends LayerBase {
           Tensor result = new Tensor(gateData.getDimensions())
               .setByCoord(c -> IntStream.range(0, inputDims[2]).mapToDouble(b -> {
                 int[] coords = c.getCoords();
-                return deltaTensor.get(coords[0], coords[1], 0) * inputTensor.get(coords[0], coords[1], b);
+                return deltaTensor.get(coords[0], coords[1], b) * inputTensor.get(coords[0], coords[1], b);
               }).sum());
           deltaTensor.freeRef();
           inputTensor.freeRef();
