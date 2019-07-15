@@ -143,6 +143,7 @@ public class LinearActivationLayer extends LayerBase {
 
   @Nonnull
   public LinearActivationLayer setBias(final double bias) {
+    if (!Double.isFinite(bias)) throw new IllegalArgumentException();
     weights.set(1, bias);
     return this;
   }
@@ -161,6 +162,7 @@ public class LinearActivationLayer extends LayerBase {
 
   @Nonnull
   public LinearActivationLayer setScale(final double scale) {
+    if (!Double.isFinite(scale)) throw new IllegalArgumentException();
     weights.set(0, scale);
     return this;
   }

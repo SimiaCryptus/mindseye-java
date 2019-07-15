@@ -69,7 +69,7 @@ public class ImgPixelGateLayer extends LayerBase {
     assert 3 == inputDims.length;
     return new Result(TensorArray.wrap(IntStream.range(0, inputData.length()).mapToObj(i -> {
       Tensor inputTensor = inputData.get(i);
-      Tensor gateTensor = gateData.get(gateData.length()==1?0:i);
+      Tensor gateTensor = gateData.get(gateData.length() == 1 ? 0 : i);
       Tensor result = new Tensor(inputDims[0], inputDims[1], inputDims[2]).setByCoord(c -> {
         int[] coords = c.getCoords();
         return inputTensor.get(coords[0], coords[1], coords[2]) * gateTensor.get(coords[0], coords[1], 0);
@@ -81,7 +81,7 @@ public class ImgPixelGateLayer extends LayerBase {
       if (input.isAlive()) {
         @Nonnull TensorArray tensorArray = TensorArray.wrap(IntStream.range(0, delta.length()).mapToObj(i -> {
           Tensor deltaTensor = delta.get(i);
-          Tensor gateTensor = gateData.get(gateData.length()==1?0:i);
+          Tensor gateTensor = gateData.get(gateData.length() == 1 ? 0 : i);
           Tensor result = new Tensor(input.getData().getDimensions())
               .setByCoord(c -> {
                 int[] coords = c.getCoords();
