@@ -22,10 +22,7 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import com.simiacryptus.mindseye.lang.DataSerializer;
-import com.simiacryptus.mindseye.lang.Layer;
-import com.simiacryptus.mindseye.lang.LayerBase;
-import com.simiacryptus.mindseye.lang.Result;
+import com.simiacryptus.mindseye.lang.*;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
@@ -56,15 +53,15 @@ public class AssertDimensionsLayer extends LayerBase {
   @Override
   public Result evalAndFree(@Nonnull final Result... array) {
     if (0 == array.length) {
-      throw new IllegalArgumentException();
+      throw new IllegalArgumentException(getName());
     }
     Result input = array[0];
     if (0 == input.getData().length()) {
-      throw new IllegalArgumentException();
+      throw new IllegalArgumentException(getName());
     }
     @Nonnull final int[] inputDims = input.getData().getDimensions();
-    if (!Arrays.equals(inputDims, dims)) {
-      throw new IllegalArgumentException(Arrays.toString(inputDims) + " != " + Arrays.toString(dims));
+    if (Tensor.length(inputDims) != Tensor.length(dims)) {
+      throw new IllegalArgumentException(getName() + ": " + Arrays.toString(inputDims) + " != " + Arrays.toString(dims));
     }
     return input;
   }
