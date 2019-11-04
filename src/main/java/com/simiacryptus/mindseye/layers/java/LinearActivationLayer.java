@@ -86,7 +86,10 @@ public class LinearActivationLayer extends LayerBase {
     final double bias = weights.get(1);
     weights.addRef();
     return new Result(TensorArray.wrap(IntStream.range(0, itemCnt)
-        .mapToObj(dataIndex -> inData.get(dataIndex).mapAndFree(v -> scale * v + bias))
+        .mapToObj(dataIndex -> inData.get(dataIndex).mapAndFree(v -> {
+          final double r = scale * v + bias;
+          return Double.isFinite(r) ? r : 0;
+        }))
         .toArray(i -> new Tensor[i])),
         (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
           if (!isFrozen()) {
