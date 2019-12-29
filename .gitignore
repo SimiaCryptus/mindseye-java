@@ -1,3 +1,5 @@
 .idea/
 mindseye-java.iml
 target/
+logs/
+reports/
