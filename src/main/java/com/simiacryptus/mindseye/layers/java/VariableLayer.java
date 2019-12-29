@@ -38,13 +38,14 @@ public class VariableLayer extends WrapperLayer {
     super(inner);
   }
 
-  public static VariableLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
-    return new VariableLayer(json, rs);
-  }
-
   @Override
   public List<Layer> getChildren() {
     return super.getChildren();
+  }
+
+  @SuppressWarnings("unused")
+  public static VariableLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+    return new VariableLayer(json, rs);
   }
 
 }

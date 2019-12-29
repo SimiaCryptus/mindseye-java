@@ -35,7 +35,6 @@ import java.util.stream.IntStream;
 @SuppressWarnings("serial")
 public class LinearActivationLayer extends LayerBase {
 
-
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(LinearActivationLayer.class);
   @Nullable
@@ -53,8 +52,16 @@ public class LinearActivationLayer extends LayerBase {
     weights = Tensor.fromJson(json.get("weights"), resources);
   }
 
-  public static LinearActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
-    return new LinearActivationLayer(json, rs);
+  public double getBias() {
+    return weights.get(1);
+  }
+
+  @Nonnull
+  public LinearActivationLayer setBias(final double bias) {
+    if (!Double.isFinite(bias))
+      throw new IllegalArgumentException();
+    weights.set(1, bias);
+    return this;
   }
 
   @Nullable
@@ -70,60 +77,66 @@ public class LinearActivationLayer extends LayerBase {
     }
   }
 
-  @Override
-  protected void _free() {
-    weights.freeRef();
-    super._free();
+  public double getScale() {
+    return weights.get(0);
+  }
+
+  @Nonnull
+  public LinearActivationLayer setScale(final double scale) {
+    if (!Double.isFinite(scale))
+      throw new IllegalArgumentException();
+    weights.set(0, scale);
+    return this;
+  }
+
+  @SuppressWarnings("unused")
+  public static LinearActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+    return new LinearActivationLayer(json, rs);
   }
 
   @Nonnull
   @Override
-  public Result evalAndFree(final Result... inObj) {
+  public Result eval(final Result... inObj) {
     final Result in0 = inObj[0];
     final TensorList inData = in0.getData();
     final int itemCnt = inData.length();
     final double scale = weights.get(0);
     final double bias = weights.get(1);
-    weights.addRef();
-    return new Result(TensorArray.wrap(IntStream.range(0, itemCnt)
-        .mapToObj(dataIndex -> inData.get(dataIndex).mapAndFree(v -> {
+    return new Result(
+        new TensorArray(IntStream.range(0, itemCnt).mapToObj(dataIndex -> inData.get(dataIndex).map(v -> {
           final double r = scale * v + bias;
           return Double.isFinite(r) ? r : 0;
-        }))
-        .toArray(i -> new Tensor[i])),
-        (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
-          if (!isFrozen()) {
-            IntStream.range(0, delta.length()).forEach(dataIndex -> {
-              @Nullable Tensor deltaT = delta.get(dataIndex);
-              @Nullable Tensor inputT = inData.get(dataIndex);
-              @Nullable final double[] deltaData = deltaT.getData();
-              @Nullable final double[] inputData = inputT.getData();
-              @Nonnull final Tensor weightDelta = new Tensor(weights.getDimensions());
-              for (int i = 0; i < deltaData.length; i++) {
-                weightDelta.add(0, deltaData[i] * inputData[inputData.length == 1 ? 0 : i]);
-                weightDelta.add(1, deltaData[i]);
-              }
-              buffer.get(LinearActivationLayer.this.getId(), weights.getData()).addInPlace(weightDelta.getData()).freeRef();
-              inputT.freeRef();
-              deltaT.freeRef();
-              weightDelta.freeRef();
-            });
+        })).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
+      if (!isFrozen()) {
+        IntStream.range(0, delta.length()).forEach(dataIndex -> {
+          @Nullable
+          Tensor deltaT = delta.get(dataIndex);
+          @Nullable
+          Tensor inputT = inData.get(dataIndex);
+          @Nullable final double[] deltaData = deltaT.getData();
+          @Nullable final double[] inputData = inputT.getData();
+          @Nonnull final Tensor weightDelta = new Tensor(weights.getDimensions());
+          for (int i = 0; i < deltaData.length; i++) {
+            weightDelta.add(0, deltaData[i] * inputData[inputData.length == 1 ? 0 : i]);
+            weightDelta.add(1, deltaData[i]);
           }
-          if (in0.isAlive()) {
-            @Nonnull final TensorList tensorList = TensorArray.wrap(IntStream.range(0, delta.length()).mapToObj(dataIndex -> {
-              @Nullable Tensor tensor = delta.get(dataIndex);
-              @Nullable final double[] deltaData = tensor.getData();
-              @Nonnull final Tensor passback = new Tensor(inData.getDimensions());
-              for (int i = 0; i < passback.length(); i++) {
-                passback.set(i, deltaData[i] * weights.getData()[0]);
-              }
-              tensor.freeRef();
-              return passback;
-            }).toArray(i -> new Tensor[i]));
-            in0.accumulate(buffer, tensorList);
+          buffer.get(LinearActivationLayer.this.getId(), weights.getData()).addInPlace(weightDelta.getData());
+        });
+      }
+      if (in0.isAlive()) {
+        @Nonnull final TensorList tensorList = new TensorArray(IntStream.range(0, delta.length()).mapToObj(dataIndex -> {
+          @Nullable
+          Tensor tensor = delta.get(dataIndex);
+          @Nullable final double[] deltaData = tensor.getData();
+          @Nonnull final Tensor passback = new Tensor(inData.getDimensions());
+          for (int i = 0; i < passback.length(); i++) {
+            passback.set(i, deltaData[i] * weights.getData()[0]);
           }
-          delta.freeRef();
-        }) {
+          return passback;
+        }).toArray(i -> new Tensor[i]));
+        in0.accumulate(buffer, tensorList);
+      }
+    }) {
 
       @Override
       public boolean isAlive() {
@@ -132,23 +145,9 @@ public class LinearActivationLayer extends LayerBase {
 
       @Override
       protected void _free() {
-        weights.freeRef();
-        inData.freeRef();
-        in0.freeRef();
       }
 
     };
-  }
-
-  public double getBias() {
-    return weights.get(1);
-  }
-
-  @Nonnull
-  public LinearActivationLayer setBias(final double bias) {
-    if (!Double.isFinite(bias)) throw new IllegalArgumentException();
-    weights.set(1, bias);
-    return this;
   }
 
   @Nonnull
@@ -159,21 +158,15 @@ public class LinearActivationLayer extends LayerBase {
     return json;
   }
 
-  public double getScale() {
-    return weights.get(0);
-  }
-
-  @Nonnull
-  public LinearActivationLayer setScale(final double scale) {
-    if (!Double.isFinite(scale)) throw new IllegalArgumentException();
-    weights.set(0, scale);
-    return this;
-  }
-
   @Nonnull
   @Override
   public List<double[]> state() {
     return Arrays.asList(weights.getData());
+  }
+
+  @Override
+  protected void _free() {
+    super._free();
   }
 
 }

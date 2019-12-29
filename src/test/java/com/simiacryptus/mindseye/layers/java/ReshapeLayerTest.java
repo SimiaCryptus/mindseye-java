@@ -95,11 +95,6 @@ public abstract class ReshapeLayerTest extends LayerTestBase {
     }
 
     @Override
-    public Class<? extends Layer> getReferenceLayerClass() {
-      return null;
-    }
-
-    @Override
     public ComponentTest<ToleranceStatistics> getBatchingTester() {
       if (!validateBatchExecution) return null;
       return (new BatchingTester(1e-2, true) {
@@ -124,6 +119,11 @@ public abstract class ReshapeLayerTest extends LayerTestBase {
       logger.warn("Disabled Performance Test");
       return null;
       //return super.getPerformanceTester();
+    }
+
+    @Override
+    public Class<? extends Layer> getReferenceLayerClass() {
+      return null;
     }
   }
 }

@@ -47,6 +47,7 @@ public class L1NormalizationLayer extends LayerBase {
     super(id);
   }
 
+  @SuppressWarnings("unused")
   public static L1NormalizationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new L1NormalizationLayer(json);
   }
@@ -54,22 +55,17 @@ public class L1NormalizationLayer extends LayerBase {
   @Nonnull
   @Override
   public Result eval(@Nonnull final Result... input) {
-    Arrays.stream(input).forEach(nnResult -> nnResult.addRef());
     final Result in = input[0];
     final TensorList inData = in.getData();
-    inData.addRef();
-    return new Result(TensorArray.wrap(IntStream.range(0, inData.length()).mapToObj(dataIndex -> {
+    return new Result(new TensorArray(IntStream.range(0, inData.length()).mapToObj(dataIndex -> {
       @Nullable final Tensor value = inData.get(dataIndex);
-      try {
+      {
         final double sum = value.sum();
         if (!Double.isFinite(sum) || 0 == sum) {
-          value.addRef();
           return value;
         } else {
           return value.scale(1.0 / sum);
         }
-      } finally {
-        value.freeRef();
       }
     }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList outDelta) -> {
       if (in.isAlive()) {
@@ -87,27 +83,24 @@ public class L1NormalizationLayer extends LayerBase {
               passbackData[i] = (delta[i] - dot / sum) / sum;
             }
           }
-          outputTensor.freeRef();
-          inputTensor.freeRef();
           return passback;
         }).toArray(i -> new Tensor[i]);
-        assert Arrays.stream(passbackArray).flatMapToDouble(x -> Arrays.stream(x.getData())).allMatch(v -> Double.isFinite(v));
-        @Nonnull TensorArray tensorArray = TensorArray.wrap(passbackArray);
+        assert Arrays.stream(passbackArray).flatMapToDouble(x -> Arrays.stream(x.getData()))
+            .allMatch(v -> Double.isFinite(v));
+        @Nonnull
+        TensorArray tensorArray = new TensorArray(passbackArray);
         in.accumulate(buffer, tensorArray);
       }
-      outDelta.freeRef();
     }) {
-
-      @Override
-      protected void _free() {
-        inData.freeRef();
-        Arrays.stream(input).forEach(nnResult -> nnResult.freeRef());
-      }
-
 
       @Override
       public boolean isAlive() {
         return in.isAlive();
+      }
+
+      @Override
+      protected void _free() {
+
       }
 
     };

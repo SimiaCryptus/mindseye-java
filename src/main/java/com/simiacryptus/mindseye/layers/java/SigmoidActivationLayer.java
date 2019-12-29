@@ -42,8 +42,27 @@ public final class SigmoidActivationLayer extends SimpleActivationLayer<SigmoidA
     balanced = id.get("balanced").getAsBoolean();
   }
 
+  public boolean isBalanced() {
+    return balanced;
+  }
+
+  @Nonnull
+  public SigmoidActivationLayer setBalanced(final boolean balanced) {
+    this.balanced = balanced;
+    return this;
+  }
+
+  @SuppressWarnings("unused")
   public static SigmoidActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new SigmoidActivationLayer(json);
+  }
+
+  @Nonnull
+  @Override
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
+    @Nonnull final JsonObject json = super.getJsonStub();
+    json.addProperty("balanced", balanced);
+    return json;
   }
 
   @Override
@@ -75,23 +94,5 @@ public final class SigmoidActivationLayer extends SimpleActivationLayer<SigmoidA
       return SigmoidActivationLayer.MAX_F;
     }
     return Math.exp(x);
-  }
-
-  @Nonnull
-  @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull final JsonObject json = super.getJsonStub();
-    json.addProperty("balanced", balanced);
-    return json;
-  }
-
-  public boolean isBalanced() {
-    return balanced;
-  }
-
-  @Nonnull
-  public SigmoidActivationLayer setBalanced(final boolean balanced) {
-    this.balanced = balanced;
-    return this;
   }
 }

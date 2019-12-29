@@ -20,7 +20,6 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
-import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.mindseye.lang.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +45,7 @@ public class EntropyLossLayer extends LayerBase {
     super(id);
   }
 
+  @SuppressWarnings("unused")
   public static EntropyLossLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new EntropyLossLayer(json);
   }
@@ -53,13 +53,11 @@ public class EntropyLossLayer extends LayerBase {
   @Nonnull
   @Override
   public Result eval(@Nonnull final Result... inObj) {
-    Arrays.stream(inObj).forEach(nnResult -> nnResult.addRef());
     final double zero_tol = 1e-12;
     TensorList indata = inObj[0].getData();
-    indata.addRef();
     @Nonnull final Tensor gradient[] = new Tensor[indata.length()];
     final double max_prob = 1.;
-    return new Result(TensorArray.wrap(IntStream.range(0, indata.length()).mapToObj(dataIndex -> {
+    return new Result(new TensorArray(IntStream.range(0, indata.length()).mapToObj(dataIndex -> {
       @Nullable final Tensor l = indata.get(dataIndex);
       @Nullable final Tensor r = inObj[1].getData().get(dataIndex);
       if (l.length() != r.length()) {
@@ -80,14 +78,13 @@ public class EntropyLossLayer extends LayerBase {
           gradientData[i] = 0;
         }
       }
-      l.freeRef();
-      r.freeRef();
       assert total >= 0;
       gradient[dataIndex] = gradientTensor;
       return new Tensor(new double[]{total}, 1);
     }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
       if (inObj[1].isAlive()) {
-        @Nonnull TensorArray tensorArray = TensorArray.wrap(IntStream.range(0, delta.length()).mapToObj(dataIndex -> {
+        @Nonnull
+        TensorArray tensorArray = new TensorArray(IntStream.range(0, delta.length()).mapToObj(dataIndex -> {
           Tensor deltaTensor = delta.get(dataIndex);
           @Nullable final Tensor inputTensor = indata.get(dataIndex);
           @Nonnull final Tensor passback = new Tensor(gradient[dataIndex].getDimensions());
@@ -95,37 +92,31 @@ public class EntropyLossLayer extends LayerBase {
             final double lv = Math.max(Math.min(inputTensor.get(i), max_prob), zero_tol);
             passback.set(i, -deltaTensor.get(0) * Math.log(lv));
           }
-          inputTensor.freeRef();
-          deltaTensor.freeRef();
           return passback;
         }).toArray(i -> new Tensor[i]));
         inObj[1].accumulate(buffer, tensorArray);
       }
       if (inObj[0].isAlive()) {
-        @Nonnull TensorArray tensorArray = TensorArray.wrap(IntStream.range(0, delta.length()).mapToObj(dataIndex -> {
+        @Nonnull
+        TensorArray tensorArray = new TensorArray(IntStream.range(0, delta.length()).mapToObj(dataIndex -> {
           Tensor tensor = delta.get(dataIndex);
           @Nonnull final Tensor passback = new Tensor(gradient[dataIndex].getDimensions());
           for (int i = 0; i < passback.length(); i++) {
             passback.set(i, tensor.get(0) * gradient[dataIndex].get(i));
           }
-          tensor.freeRef();
           return passback;
         }).toArray(i -> new Tensor[i]));
         inObj[0].accumulate(buffer, tensorArray);
       }
-      delta.freeRef();
     }) {
-
-      @Override
-      protected void _free() {
-        indata.freeRef();
-        Arrays.stream(gradient).forEach(ReferenceCounting::freeRef);
-        Arrays.stream(inObj).forEach(ReferenceCounting::freeRef);
-      }
 
       @Override
       public boolean isAlive() {
         return inObj[0].isAlive() || inObj[0].isAlive();
+      }
+
+      @Override
+      protected void _free() {
       }
 
     };

@@ -36,8 +36,15 @@ public class EntropyLayer extends SimpleActivationLayer<EntropyLayer> {
     super(id);
   }
 
+  @SuppressWarnings("unused")
   public static EntropyLayer fromJson(final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new EntropyLayer(json);
+  }
+
+  @Nonnull
+  @Override
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
+    return super.getJsonStub();
   }
 
   @Override
@@ -57,11 +64,5 @@ public class EntropyLayer extends SimpleActivationLayer<EntropyLayer> {
     assert minDeriv <= Math.abs(d);
     results[0] = f;
     results[1] = d;
-  }
-
-  @Nonnull
-  @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    return super.getJsonStub();
   }
 }

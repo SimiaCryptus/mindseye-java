@@ -26,12 +26,14 @@ import com.simiacryptus.mindseye.lang.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.IntStream;
 
 @SuppressWarnings("serial")
 public class ImgBandSelectLayer extends LayerBase {
-
 
   private final int[] bands;
 
@@ -49,6 +51,7 @@ public class ImgBandSelectLayer extends LayerBase {
     }
   }
 
+  @SuppressWarnings("unused")
   public static ImgBandSelectLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ImgBandSelectLayer(json);
   }
@@ -61,43 +64,37 @@ public class ImgBandSelectLayer extends LayerBase {
     @Nonnull final int[] inputDims = batch.getDimensions();
     assert 3 == inputDims.length;
     @Nonnull final Tensor outputDims = new Tensor(inputDims[0], inputDims[1], bands.length);
-    Arrays.stream(inObj).forEach(nnResult -> nnResult.addRef());
-    @Nonnull TensorArray wrap = TensorArray.wrap(IntStream.range(0, batch.length()).parallel()
-        .mapToObj(dataIndex -> outputDims.mapCoords((c) -> {
-          int[] coords = c.getCoords();
-          @Nullable Tensor tensor = batch.get(dataIndex);
-          double v = tensor.get(coords[0], coords[1], bands[coords[2]]);
-          tensor.freeRef();
-          return v;
-        }))
-        .toArray(i -> new Tensor[i]));
-    outputDims.freeRef();
+    @Nonnull
+    TensorArray wrap = new TensorArray(IntStream.range(0, batch.length()).parallel().mapToObj(dataIndex -> outputDims.mapCoords((c) -> {
+      int[] coords = c.getCoords();
+      @Nullable
+      Tensor tensor = batch.get(dataIndex);
+      return tensor.get(coords[0], coords[1], bands[coords[2]]);
+    })).toArray(i -> new Tensor[i]));
     return new Result(wrap, (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList error) -> {
       if (input.isAlive()) {
-        @Nonnull TensorArray tensorArray = TensorArray.wrap(IntStream.range(0, error.length()).parallel()
-            .mapToObj(dataIndex -> {
-              @Nonnull final Tensor passback = new Tensor(inputDims);
-              @Nullable final Tensor err = error.get(dataIndex);
-              err.coordStream(false).forEach(c -> {
-                int[] coords = c.getCoords();
-                passback.set(coords[0], coords[1], bands[coords[2]], err.get(c));
-              });
-              err.freeRef();
-              return passback;
-            }).toArray(i -> new Tensor[i]));
+        @Nonnull
+        TensorArray tensorArray = new TensorArray(IntStream.range(0, error.length()).parallel().mapToObj(dataIndex -> {
+          @Nonnull final Tensor passback = new Tensor(inputDims);
+          @Nullable final Tensor err = error.get(dataIndex);
+          err.coordStream(false).forEach(c -> {
+            int[] coords = c.getCoords();
+            passback.set(coords[0], coords[1], bands[coords[2]], err.get(c));
+          });
+          return passback;
+        }).toArray(i -> new Tensor[i]));
         input.accumulate(buffer, tensorArray);
       }
-      error.freeRef();
     }) {
-
-      @Override
-      protected void _free() {
-        Arrays.stream(inObj).forEach(nnResult -> nnResult.freeRef());
-      }
 
       @Override
       public boolean isAlive() {
         return input.isAlive() || !isFrozen();
+      }
+
+      @Override
+      protected void _free() {
+
       }
     };
   }
@@ -114,12 +111,10 @@ public class ImgBandSelectLayer extends LayerBase {
     return json;
   }
 
-
   @Nonnull
   @Override
   public List<double[]> state() {
     return new ArrayList<>();
   }
-
 
 }

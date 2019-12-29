@@ -34,18 +34,14 @@ public abstract class LoggingWrapperLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{
-        {3}
-    };
+    return new int[][]{{3}};
   }
 
   @Nonnull
   @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
     LinearActivationLayer inner = new LinearActivationLayer();
-    LoggingWrapperLayer loggingWrapperLayer = new LoggingWrapperLayer(inner);
-    inner.freeRef();
-    return loggingWrapperLayer;
+    return new LoggingWrapperLayer(inner);
   }
 
   public static class Basic extends LoggingWrapperLayerTest {

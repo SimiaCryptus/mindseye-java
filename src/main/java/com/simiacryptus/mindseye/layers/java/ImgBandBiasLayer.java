@@ -20,8 +20,8 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
-import com.simiacryptus.ref.lang.RecycleBin;
 import com.simiacryptus.mindseye.lang.*;
+import com.simiacryptus.ref.lang.RecycleBin;
 import com.simiacryptus.util.FastRandom;
 import com.simiacryptus.util.JsonUtil;
 import com.simiacryptus.util.Util;
@@ -55,12 +55,38 @@ public class ImgBandBiasLayer extends LayerBase {
     bias = new double[bands];
   }
 
-
   protected ImgBandBiasLayer(@Nonnull final JsonObject json) {
     super(json);
     bias = JsonUtil.getDoubleArray(json.getAsJsonArray("bias"));
   }
 
+  @Nullable
+  public double[] getBias() {
+    if (!Arrays.stream(bias).allMatch(v -> Double.isFinite(v))) {
+      throw new IllegalStateException(Arrays.toString(bias));
+    }
+    return bias;
+  }
+
+  @Nonnull
+  public ImgBandBiasLayer setWeights(@Nonnull final IntToDoubleFunction f) {
+    @Nullable final double[] bias = getBias();
+    for (int i = 0; i < bias.length; i++) {
+      bias[i] = f.applyAsDouble(i);
+    }
+    assert Arrays.stream(bias).allMatch(v -> Double.isFinite(v));
+    return this;
+  }
+
+  @Nonnull
+  public ImgBandBiasLayer setWeightsLog(final double value) {
+    for (int i = 0; i < bias.length; i++) {
+      bias[i] = (FastRandom.INSTANCE.random() - 0.5) * Math.pow(10, value);
+    }
+    return this;
+  }
+
+  @SuppressWarnings("unused")
   public static ImgBandBiasLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ImgBandBiasLayer(json);
   }
@@ -71,7 +97,8 @@ public class ImgBandBiasLayer extends LayerBase {
     assert null != input;
     @Nullable final double[] bias = getBias();
     assert null != bias;
-    if (input.length % bias.length != 0) throw new IllegalArgumentException();
+    if (input.length % bias.length != 0)
+      throw new IllegalArgumentException();
     @Nonnull final double[] array = new double[input.length];
     final int size = input.length / bias.length;
     for (int i = 0; i < array.length; i++) {
@@ -96,21 +123,16 @@ public class ImgBandBiasLayer extends LayerBase {
   @Nonnull
   public Result eval(@Nonnull final Result input) {
     @Nullable final double[] bias = getBias();
-    input.addRef();
-    return new Result(TensorArray.wrap(input.getData().stream().parallel()
-        .map(r -> {
-          if (r.getDimensions().length != 3) {
-            throw new IllegalArgumentException(Arrays.toString(r.getDimensions()));
-          }
-          if (r.getDimensions()[2] != bias.length) {
-            throw new IllegalArgumentException(String.format("%s: %s does not have %s bands",
-                getName(), Arrays.toString(r.getDimensions()), bias.length));
-          }
-          @Nonnull Tensor tensor = new Tensor(add(r.getData()), r.getDimensions());
-          r.freeRef();
-          return tensor;
-        })
-        .toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList data) -> {
+    return new Result(new TensorArray(input.getData().stream().parallel().map(r -> {
+      if (r.getDimensions().length != 3) {
+        throw new IllegalArgumentException(Arrays.toString(r.getDimensions()));
+      }
+      if (r.getDimensions()[2] != bias.length) {
+        throw new IllegalArgumentException(
+            String.format("%s: %s does not have %s bands", getName(), Arrays.toString(r.getDimensions()), bias.length));
+      }
+      return new Tensor(add(r.getData()), r.getDimensions());
+    }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList data) -> {
       if (!isFrozen()) {
         final Delta<UUID> deltaBuffer = buffer.get(ImgBandBiasLayer.this.getId(), bias);
         data.stream().parallel().forEach(d -> {
@@ -123,38 +145,25 @@ public class ImgBandBiasLayer extends LayerBase {
               array[i / size] = 0.0;
             }
           }
-          d.freeRef();
           assert Arrays.stream(array).allMatch(v -> Double.isFinite(v));
           deltaBuffer.addInPlace(array);
           RecycleBin.DOUBLES.recycle(array, array.length);
         });
-        deltaBuffer.freeRef();
       }
       if (input.isAlive()) {
-        data.addRef();
         input.accumulate(buffer, data);
       }
-      data.freeRef();
     }) {
-
-      @Override
-      protected void _free() {
-        input.freeRef();
-      }
 
       @Override
       public boolean isAlive() {
         return input.isAlive() || !isFrozen();
       }
-    };
-  }
 
-  @Nullable
-  public double[] getBias() {
-    if (!Arrays.stream(bias).allMatch(v -> Double.isFinite(v))) {
-      throw new IllegalStateException(Arrays.toString(bias));
-    }
-    return bias;
+      @Override
+      protected void _free() {
+      }
+    };
   }
 
   @Nonnull
@@ -176,34 +185,9 @@ public class ImgBandBiasLayer extends LayerBase {
   }
 
   @Nonnull
-  public ImgBandBiasLayer setWeights(@Nonnull final IntToDoubleFunction f) {
-    @Nullable final double[] bias = getBias();
-    for (int i = 0; i < bias.length; i++) {
-      bias[i] = f.applyAsDouble(i);
-    }
-    assert Arrays.stream(bias).allMatch(v -> Double.isFinite(v));
-    return this;
-  }
-
-  @Nonnull
   @Override
   public List<double[]> state() {
     return Arrays.asList(getBias());
-  }
-
-  @Nonnull
-  public ImgBandBiasLayer setWeightsLog(final double value) {
-    for (int i = 0; i < bias.length; i++) {
-      bias[i] = (FastRandom.INSTANCE.random() - 0.5) * Math.pow(10, value);
-    }
-    return this;
-  }
-
-
-  public ImgBandBiasLayer setAndFree(final Tensor tensor) {
-    set(tensor.getData());
-    tensor.freeRef();
-    return this;
   }
 
   public ImgBandBiasLayer set(final Tensor tensor) {

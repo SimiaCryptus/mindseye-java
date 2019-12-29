@@ -37,7 +37,6 @@ import java.util.stream.IntStream;
 @SuppressWarnings("serial")
 public class ReLuActivationLayer extends LayerBase {
 
-
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(ReLuActivationLayer.class);
   @Nullable
@@ -53,104 +52,6 @@ public class ReLuActivationLayer extends LayerBase {
   protected ReLuActivationLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> resources) {
     super(json);
     weights = Tensor.fromJson(json.get("weights"), resources);
-  }
-
-  public static ReLuActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
-    return new ReLuActivationLayer(json, rs);
-  }
-
-  @Override
-  protected void _free() {
-    weights.freeRef();
-    super._free();
-  }
-
-  @Nonnull
-  public ReLuActivationLayer addWeights(@Nonnull final DoubleSupplier f) {
-    Util.add(f, weights.getData());
-    return this;
-  }
-
-  @Nonnull
-  @Override
-  public Result eval(final Result... inObj) {
-    final Result input = inObj[0];
-    final TensorList indata = input.getData();
-    input.addRef();
-    indata.addRef();
-    weights.addRef();
-    final int itemCnt = indata.length();
-    return new Result(TensorArray.wrap(IntStream.range(0, itemCnt).parallel().mapToObj(dataIndex -> {
-      @Nullable Tensor tensorElement = indata.get(dataIndex);
-      @Nonnull final Tensor tensor = tensorElement.multiply(weights.get(0));
-      tensorElement.freeRef();
-      @Nullable final double[] outputData = tensor.getData();
-      for (int i = 0; i < outputData.length; i++) {
-        if (outputData[i] < 0) {
-          outputData[i] = 0;
-        }
-      }
-      return tensor;
-    }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
-      if (!isFrozen()) {
-        IntStream.range(0, delta.length()).parallel().forEach(dataIndex -> {
-          @Nullable Tensor deltaTensor = delta.get(dataIndex);
-          @Nullable final double[] deltaData = deltaTensor.getData();
-          @Nullable Tensor inputTensor = indata.get(dataIndex);
-          @Nullable final double[] inputData = inputTensor.getData();
-          @Nonnull final Tensor weightDelta = new Tensor(weights.getDimensions());
-          @Nullable final double[] weightDeltaData = weightDelta.getData();
-          for (int i = 0; i < deltaData.length; i++) {
-            weightDeltaData[0] += inputData[i] < 0 ? 0 : deltaData[i] * inputData[i];
-          }
-          buffer.get(ReLuActivationLayer.this.getId(), weights.getData()).addInPlace(weightDeltaData).freeRef();
-          deltaTensor.freeRef();
-          inputTensor.freeRef();
-          weightDelta.freeRef();
-        });
-      }
-      if (input.isAlive()) {
-        final double weight = weights.getData()[0];
-        @Nonnull TensorArray tensorArray = TensorArray.wrap(IntStream.range(0, delta.length()).parallel().mapToObj(dataIndex -> {
-          @Nullable Tensor deltaTensor = delta.get(dataIndex);
-          @Nullable final double[] deltaData = deltaTensor.getData();
-          @Nullable Tensor inTensor = indata.get(dataIndex);
-          @Nullable final double[] inputData = inTensor.getData();
-          @Nonnull final int[] dims = inTensor.getDimensions();
-          @Nonnull final Tensor passback = new Tensor(dims);
-          for (int i = 0; i < passback.length(); i++) {
-            passback.set(i, inputData[i] < 0 ? 0 : deltaData[i] * weight);
-          }
-          inTensor.freeRef();
-          deltaTensor.freeRef();
-          return passback;
-        }).toArray(i -> new Tensor[i]));
-        input.accumulate(buffer, tensorArray);
-      }
-      delta.freeRef();
-    }) {
-
-      @Override
-      protected void _free() {
-        input.freeRef();
-        indata.freeRef();
-        weights.freeRef();
-      }
-
-      @Override
-      public boolean isAlive() {
-        return input.isAlive() || !isFrozen();
-      }
-
-    };
-  }
-
-  @Nonnull
-  @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, @Nonnull DataSerializer dataSerializer) {
-    @Nonnull final JsonObject json = super.getJsonStub();
-    json.add("weights", weights.getJson(resources, dataSerializer));
-    return json;
   }
 
   protected double getMobility() {
@@ -169,10 +70,101 @@ public class ReLuActivationLayer extends LayerBase {
     return this;
   }
 
+  @SuppressWarnings("unused")
+  public static ReLuActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+    return new ReLuActivationLayer(json, rs);
+  }
+
+  @Nonnull
+  public ReLuActivationLayer addWeights(@Nonnull final DoubleSupplier f) {
+    Util.add(f, weights.getData());
+    return this;
+  }
+
+  @Nonnull
+  @Override
+  public Result eval(final Result... inObj) {
+    final Result input = inObj[0];
+    final TensorList indata = input.getData();
+    final int itemCnt = indata.length();
+    return new Result(new TensorArray(IntStream.range(0, itemCnt).parallel().mapToObj(dataIndex -> {
+      @Nullable
+      Tensor tensorElement = indata.get(dataIndex);
+      @Nonnull final Tensor tensor = tensorElement.multiply(weights.get(0));
+      @Nullable final double[] outputData = tensor.getData();
+      for (int i = 0; i < outputData.length; i++) {
+        if (outputData[i] < 0) {
+          outputData[i] = 0;
+        }
+      }
+      return tensor;
+    }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
+      if (!isFrozen()) {
+        IntStream.range(0, delta.length()).parallel().forEach(dataIndex -> {
+          @Nullable
+          Tensor deltaTensor = delta.get(dataIndex);
+          @Nullable final double[] deltaData = deltaTensor.getData();
+          @Nullable
+          Tensor inputTensor = indata.get(dataIndex);
+          @Nullable final double[] inputData = inputTensor.getData();
+          @Nonnull final Tensor weightDelta = new Tensor(weights.getDimensions());
+          @Nullable final double[] weightDeltaData = weightDelta.getData();
+          for (int i = 0; i < deltaData.length; i++) {
+            weightDeltaData[0] += inputData[i] < 0 ? 0 : deltaData[i] * inputData[i];
+          }
+          buffer.get(ReLuActivationLayer.this.getId(), weights.getData()).addInPlace(weightDeltaData);
+        });
+      }
+      if (input.isAlive()) {
+        final double weight = weights.getData()[0];
+        @Nonnull
+        TensorArray tensorArray = new TensorArray(IntStream.range(0, delta.length()).parallel().mapToObj(dataIndex -> {
+          @Nullable
+          Tensor deltaTensor = delta.get(dataIndex);
+          @Nullable final double[] deltaData = deltaTensor.getData();
+          @Nullable
+          Tensor inTensor = indata.get(dataIndex);
+          @Nullable final double[] inputData = inTensor.getData();
+          @Nonnull final int[] dims = inTensor.getDimensions();
+          @Nonnull final Tensor passback = new Tensor(dims);
+          for (int i = 0; i < passback.length(); i++) {
+            passback.set(i, inputData[i] < 0 ? 0 : deltaData[i] * weight);
+          }
+          return passback;
+        }).toArray(i -> new Tensor[i]));
+        input.accumulate(buffer, tensorArray);
+      }
+    }) {
+
+      @Override
+      public boolean isAlive() {
+        return input.isAlive() || !isFrozen();
+      }
+
+      @Override
+      protected void _free() {
+      }
+
+    };
+  }
+
+  @Nonnull
+  @Override
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, @Nonnull DataSerializer dataSerializer) {
+    @Nonnull final JsonObject json = super.getJsonStub();
+    json.add("weights", weights.getJson(resources, dataSerializer));
+    return json;
+  }
+
   @Nonnull
   @Override
   public List<double[]> state() {
     return Arrays.asList(weights.getData());
+  }
+
+  @Override
+  protected void _free() {
+    super._free();
   }
 
 }

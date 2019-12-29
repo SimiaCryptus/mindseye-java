@@ -38,14 +38,6 @@ public abstract class FullyConnectedLayerTest extends LayerTestBase {
     this.outputs = outputs;
   }
 
-  @Nonnull
-  @Override
-  public int[][] getSmallDims(Random random) {
-    return new int[][]{
-        {inputs}
-    };
-  }
-
   @Nullable
   @Override
   public Class<? extends Layer> getReferenceLayerClass() {
@@ -54,8 +46,13 @@ public abstract class FullyConnectedLayerTest extends LayerTestBase {
 
   @Nonnull
   @Override
+  public int[][] getSmallDims(Random random) {
+    return new int[][]{{inputs}};
+  }
+
+  @Nonnull
+  @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
-    fullyConnectedLayer.addRef();
     return fullyConnectedLayer;
   }
 
@@ -65,24 +62,23 @@ public abstract class FullyConnectedLayerTest extends LayerTestBase {
     }
   }
 
-//  /**
-//   * The type BigTests.
-//   */
-//  public static class BigTests extends FullyConnectedLayerTest {
-//    /**
-//     * Instantiates a new BigTests.
-//     */
-//    public BigTests() {
-//      super(25088, 4096);
-//      validateDifferentials = false;
-//    }
-//
-//    @Override
-//    public Class<? extends LayerBase> getReferenceLayerClass() {
-//      return null;
-//    }
-//
-//  }
-
+  //  /**
+  //   * The type BigTests.
+  //   */
+  //  public static class BigTests extends FullyConnectedLayerTest {
+  //    /**
+  //     * Instantiates a new BigTests.
+  //     */
+  //    public BigTests() {
+  //      super(25088, 4096);
+  //      validateDifferentials = false;
+  //    }
+  //
+  //    @Override
+  //    public Class<? extends LayerBase> getReferenceLayerClass() {
+  //      return null;
+  //    }
+  //
+  //  }
 
 }

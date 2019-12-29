@@ -27,12 +27,6 @@ import javax.annotation.Nonnull;
 import java.util.Random;
 
 public abstract class ProductInputsLayerTest extends LayerTestBase {
-  @Nonnull
-  @Override
-  public Layer getLayer(final int[][] inputSize, Random random) {
-    return new ProductInputsLayer();
-  }
-
   @Override
   public ComponentTest<TrainingTester.ComponentResult> getTrainingTester() {
     return new TrainingTester() {
@@ -42,6 +36,12 @@ public abstract class ProductInputsLayerTest extends LayerTestBase {
         return ProductInputsLayerTest.this.lossLayer();
       }
     }.setRandomizationMode(TrainingTester.RandomizationMode.Random);
+  }
+
+  @Nonnull
+  @Override
+  public Layer getLayer(final int[][] inputSize, Random random) {
+    return new ProductInputsLayer();
   }
 
   public static class N1Test extends ProductInputsLayerTest {

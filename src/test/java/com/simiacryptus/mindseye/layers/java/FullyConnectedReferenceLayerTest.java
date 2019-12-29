@@ -31,7 +31,6 @@ public abstract class FullyConnectedReferenceLayerTest extends LayerTestBase {
   @Nonnull
   private final FullyConnectedReferenceLayer layer;
 
-
   public FullyConnectedReferenceLayerTest(int[] inputDims, @Nonnull int[] outputDims) {
     this.outputDims = outputDims;
     this.inputDims = inputDims;
@@ -41,15 +40,12 @@ public abstract class FullyConnectedReferenceLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{
-        inputDims
-    };
+    return new int[][]{inputDims};
   }
 
   @Nonnull
   @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
-    layer.addRef();
     return layer;
   }
 

@@ -35,8 +35,15 @@ public final class LogActivationLayer extends SimpleActivationLayer<LogActivatio
     super(id);
   }
 
+  @SuppressWarnings("unused")
   public static LogActivationLayer fromJson(final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new LogActivationLayer(json);
+  }
+
+  @Nonnull
+  @Override
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
+    return super.getJsonStub();
   }
 
   @Override
@@ -57,12 +64,6 @@ public final class LogActivationLayer extends SimpleActivationLayer<LogActivatio
       results[0] = 0;
       results[1] = 0;
     }
-  }
-
-  @Nonnull
-  @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    return super.getJsonStub();
   }
 
 }

@@ -35,8 +35,15 @@ public final class AbsActivationLayer extends SimpleActivationLayer<AbsActivatio
     super(id);
   }
 
+  @SuppressWarnings("unused")
   public static AbsActivationLayer fromJson(final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new AbsActivationLayer(json);
+  }
+
+  @Nonnull
+  @Override
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
+    return super.getJsonStub();
   }
 
   @Override
@@ -48,12 +55,6 @@ public final class AbsActivationLayer extends SimpleActivationLayer<AbsActivatio
     assert minDeriv <= Math.abs(d);
     results[0] = f;
     results[1] = d;
-  }
-
-  @Nonnull
-  @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    return super.getJsonStub();
   }
 
 }

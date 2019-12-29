@@ -41,7 +41,7 @@ public abstract class BinaryNoiseLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
-    return StochasticSamplingSubnetLayer.wrap(BinaryNoiseLayer.maskLayer(0.5), 3);
+    return new StochasticSamplingSubnetLayer(BinaryNoiseLayer.maskLayer(0.5), 3);
   }
 
   public static class Basic extends BinaryNoiseLayerTest {

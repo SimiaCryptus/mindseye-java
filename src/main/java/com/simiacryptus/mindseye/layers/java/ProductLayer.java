@@ -20,8 +20,6 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
-import com.simiacryptus.ref.lang.ReferenceCounting;
-import com.simiacryptus.ref.lang.ReferenceCountingBase;
 import com.simiacryptus.mindseye.lang.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,15 +45,17 @@ public class ProductLayer extends LayerBase {
     super(id);
   }
 
+  @SuppressWarnings("unused")
   public static ProductLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ProductLayer(json);
   }
 
   @Nonnull
   @Override
-  public Result evalAndFree(@Nonnull final Result... inObj) {
+  public Result eval(@Nonnull final Result... inObj) {
     final Result in0 = inObj[0];
-    assert Arrays.stream(inObj).mapToInt(x -> x.getData().length()).distinct().count() == 1 : Arrays.toString(Arrays.stream(inObj).mapToInt(x -> x.getData().length()).toArray());
+    assert Arrays.stream(inObj).mapToInt(x -> x.getData().length()).distinct().count() == 1 : Arrays
+        .toString(Arrays.stream(inObj).mapToInt(x -> x.getData().length()).toArray());
     @Nonnull final double[] sum_A = new double[in0.getData().length()];
     final Tensor[] outputA = IntStream.range(0, in0.getData().length()).mapToObj(dataIndex -> {
       double sum = 1;
@@ -65,39 +65,29 @@ public class ProductLayer extends LayerBase {
         for (final double element2 : tensorData) {
           sum *= element2;
         }
-        tensor.freeRef();
       }
       sum_A[dataIndex] = sum;
       return new Tensor(new double[]{sum}, 1);
     }).toArray(i -> new Tensor[i]);
-    return new Result(TensorArray.wrap(outputA), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
-      for (@Nonnull final Result input : inObj) {
-        if (input.isAlive()) {
-          TensorList data = input.getData();
-          input.accumulate(buffer, TensorArray.wrap(IntStream.range(0, delta.length()).mapToObj(dataIndex -> {
-            Tensor dataTensor = delta.get(dataIndex);
-            Tensor lTensor = data.get(dataIndex);
-            @Nonnull final Tensor passback = new Tensor(lTensor.getDimensions());
-            for (int i = 0; i < lTensor.length(); i++) {
-              double d = lTensor.getData()[i];
-              double deltaV = dataTensor.get(0);
-              passback.set(i, d == 0 ? 0 : (deltaV * sum_A[dataIndex] / d));
+    return new Result(new TensorArray(outputA),
+        (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
+          for (@Nonnull final Result input : inObj) {
+            if (input.isAlive()) {
+              TensorList data = input.getData();
+              input.accumulate(buffer, new TensorArray(IntStream.range(0, delta.length()).mapToObj(dataIndex -> {
+                Tensor dataTensor = delta.get(dataIndex);
+                Tensor lTensor = data.get(dataIndex);
+                @Nonnull final Tensor passback = new Tensor(lTensor.getDimensions());
+                for (int i = 0; i < lTensor.length(); i++) {
+                  double d = lTensor.getData()[i];
+                  double deltaV = dataTensor.get(0);
+                  passback.set(i, d == 0 ? 0 : (deltaV * sum_A[dataIndex] / d));
+                }
+                return passback;
+              }).toArray(i -> new Tensor[i])));
             }
-            dataTensor.freeRef();
-            lTensor.freeRef();
-            return passback;
-          }).toArray(i -> new Tensor[i])));
-        }
-      }
-      delta.freeRef();
-    }) {
-
-      @Override
-      protected void _free() {
-        Arrays.stream(inObj).map(Result::getData).forEach(ReferenceCounting::freeRef);
-        Arrays.stream(inObj).forEach(ReferenceCountingBase::freeRef);
-      }
-
+          }
+        }) {
 
       @Override
       public boolean isAlive() {
@@ -106,6 +96,10 @@ public class ProductLayer extends LayerBase {
             return true;
           }
         return false;
+      }
+
+      @Override
+      protected void _free() {
       }
 
     };

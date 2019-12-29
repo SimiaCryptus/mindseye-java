@@ -21,6 +21,7 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,18 +36,19 @@ public class NormalizationMetaLayer extends PipelineNetwork {
 
   public NormalizationMetaLayer() {
     super(1);
-    wrap(new SqActivationLayer()).freeRef();
-    wrap(new AvgReducerLayer()).freeRef();
-    wrap(new AvgMetaLayer()).freeRef();
-    wrap(new NthPowerActivationLayer().setPower(-0.5)).freeRef();
-    wrap(new ProductInputsLayer(), getHead(), getInput(0)).freeRef();
+    add(new SqActivationLayer());
+    add(new AvgReducerLayer());
+    add(new AvgMetaLayer());
+    add(new NthPowerActivationLayer().setPower(-0.5));
+    add(new ProductInputsLayer(), getHead(), getInput(0));
   }
 
   protected NormalizationMetaLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json, rs);
   }
 
-  public static NormalizationMetaLayer fromJson(final JsonObject json, Map<CharSequence, byte[]> rs) {
+  @SuppressWarnings("unused")
+  public static NormalizationMetaLayer fromJson(@NotNull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new NormalizationMetaLayer(json, rs);
   }
 

@@ -46,12 +46,18 @@ public class AssertDimensionsLayer extends LayerBase {
     dims = IntStream.range(0, dimsJson.size()).map(i -> dimsJson.get(i).getAsInt()).toArray();
   }
 
+  @Override
+  public List<Layer> getChildren() {
+    return super.getChildren();
+  }
+
+  @SuppressWarnings("unused")
   public static AssertDimensionsLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new AssertDimensionsLayer(json);
   }
 
   @Override
-  public Result evalAndFree(@Nonnull final Result... array) {
+  public Result eval(@Nonnull final Result... array) {
     if (0 == array.length) {
       throw new IllegalArgumentException(getName());
     }
@@ -64,11 +70,6 @@ public class AssertDimensionsLayer extends LayerBase {
       throw new IllegalArgumentException(getName() + ": " + Arrays.toString(inputDims) + " != " + Arrays.toString(dims));
     }
     return input;
-  }
-
-  @Override
-  public List<Layer> getChildren() {
-    return super.getChildren();
   }
 
   @Nonnull

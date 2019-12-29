@@ -20,8 +20,6 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
-import com.simiacryptus.ref.lang.ReferenceCounting;
-import com.simiacryptus.ref.lang.ReferenceCountingBase;
 import com.simiacryptus.mindseye.lang.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +45,7 @@ public class SumReducerLayer extends LayerBase {
     super(id);
   }
 
+  @SuppressWarnings("unused")
   public static SumReducerLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new SumReducerLayer(json);
   }
@@ -54,43 +53,36 @@ public class SumReducerLayer extends LayerBase {
   @Nonnull
   @Override
   public Result eval(@Nonnull final Result... inObj) {
-    Arrays.stream(inObj).forEach(nnResult -> nnResult.addRef());
-    Arrays.stream(inObj).forEach(x -> x.getData().addRef());
-    return new Result(TensorArray.wrap(IntStream.range(0, inObj[0].getData().length()).parallel().mapToDouble(dataIndex -> {
-      double sum = 0;
-      for (@Nonnull final Result element : inObj) {
-        @Nullable Tensor tensor = element.getData().get(dataIndex);
-        @Nullable final double[] input = tensor.getData();
-        for (final double element2 : input) {
-          sum += element2;
-        }
-        tensor.freeRef();
-      }
-      return sum;
-    }).mapToObj(x -> new Tensor(new double[]{x}, new int[]{1})).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList data) -> {
-      for (@Nonnull final Result in_l : inObj) {
-        if (in_l.isAlive()) {
-          @Nonnull TensorArray tensorArray = TensorArray.wrap(IntStream.range(0, in_l.getData().length()).parallel().mapToObj(dataIndex -> {
-            Tensor tensor = data.get(dataIndex);
-            assert 1 == tensor.length() : Arrays.toString(tensor.getDimensions());
-            @Nonnull final Tensor passback = new Tensor(in_l.getData().getDimensions());
-            for (int i = 0; i < Tensor.length(in_l.getData().getDimensions()); i++) {
-              passback.set(i, tensor.get(0));
+    return new Result(
+        new TensorArray(IntStream.range(0, inObj[0].getData().length()).parallel().mapToDouble(dataIndex -> {
+          double sum = 0;
+          for (@Nonnull final Result element : inObj) {
+            @Nullable
+            Tensor tensor = element.getData().get(dataIndex);
+            @Nullable final double[] input = tensor.getData();
+            for (final double element2 : input) {
+              sum += element2;
             }
-            tensor.freeRef();
-            return passback;
-          }).toArray(i -> new Tensor[i]));
-          in_l.accumulate(buffer, tensorArray);
-        }
-      }
-      data.freeRef();
-    }) {
-
-      @Override
-      protected void _free() {
-        Arrays.stream(inObj).map(Result::getData).forEach(ReferenceCounting::freeRef);
-        Arrays.stream(inObj).forEach(ReferenceCountingBase::freeRef);
-      }
+          }
+          return sum;
+        }).mapToObj(x -> new Tensor(new double[]{x}, new int[]{1})).toArray(i -> new Tensor[i])),
+        (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList data) -> {
+          for (@Nonnull final Result in_l : inObj) {
+            if (in_l.isAlive()) {
+              @Nonnull
+              TensorArray tensorArray = new TensorArray(IntStream.range(0, in_l.getData().length()).parallel().mapToObj(dataIndex -> {
+                Tensor tensor = data.get(dataIndex);
+                assert 1 == tensor.length() : Arrays.toString(tensor.getDimensions());
+                @Nonnull final Tensor passback = new Tensor(in_l.getData().getDimensions());
+                for (int i = 0; i < Tensor.length(in_l.getData().getDimensions()); i++) {
+                  passback.set(i, tensor.get(0));
+                }
+                return passback;
+              }).toArray(i -> new Tensor[i]));
+              in_l.accumulate(buffer, tensorArray);
+            }
+          }
+        }) {
 
       @Override
       public boolean isAlive() {
@@ -99,6 +91,10 @@ public class SumReducerLayer extends LayerBase {
             return true;
           }
         return false;
+      }
+
+      @Override
+      protected void _free() {
       }
 
     };

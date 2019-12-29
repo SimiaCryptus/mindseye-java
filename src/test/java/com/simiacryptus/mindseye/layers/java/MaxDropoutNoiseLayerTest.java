@@ -31,17 +31,17 @@ public abstract class MaxDropoutNoiseLayerTest extends ActivationLayerTestBase {
     super(new MaxDropoutNoiseLayer(2, 2, 1));
   }
 
-  @Override
-  protected Layer lossLayer() {
-    return new MeanSqLossLayer();
-  }
-
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
     return new int[][]{
         {8, 8, 1}
     };
+  }
+
+  @Override
+  protected Layer lossLayer() {
+    return new MeanSqLossLayer();
   }
 
   public static class Basic extends MaxDropoutNoiseLayerTest {

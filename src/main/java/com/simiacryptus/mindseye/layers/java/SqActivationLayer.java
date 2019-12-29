@@ -35,8 +35,15 @@ public final class SqActivationLayer extends SimpleActivationLayer<SqActivationL
     super(id);
   }
 
+  @SuppressWarnings("unused")
   public static SqActivationLayer fromJson(final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new SqActivationLayer(json);
+  }
+
+  @Nonnull
+  @Override
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
+    return super.getJsonStub();
   }
 
   @Override
@@ -48,12 +55,6 @@ public final class SqActivationLayer extends SimpleActivationLayer<SqActivationL
     assert minDeriv <= Math.abs(d);
     results[0] = f;
     results[1] = d;
-  }
-
-  @Nonnull
-  @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    return super.getJsonStub();
   }
 
 }

@@ -36,7 +36,6 @@ import java.util.stream.IntStream;
 @SuppressWarnings("serial")
 public class AvgMetaLayer extends LayerBase {
 
-
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(AvgMetaLayer.class);
   @Nullable
@@ -52,64 +51,59 @@ public class AvgMetaLayer extends LayerBase {
     minBatchCount = json.get("minBatchCount").getAsInt();
   }
 
-  public static AvgMetaLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
-    return new AvgMetaLayer(json, rs);
+  public int getMinBatchCount() {
+    return minBatchCount;
   }
 
-  @Override
-  protected void _free() {
-    if (null != lastResult) lastResult.freeRef();
-    super._free();
+  @Nonnull
+  public AvgMetaLayer setMinBatchCount(final int minBatchCount) {
+    this.minBatchCount = minBatchCount;
+    return this;
+  }
+
+  @SuppressWarnings("unused")
+  public static AvgMetaLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+    return new AvgMetaLayer(json, rs);
   }
 
   @Nonnull
   @Override
   public Result eval(final Result... inObj) {
     final Result input = inObj[0];
-    input.addRef();
     TensorList inputData = input.getData();
     final int itemCnt = inputData.length();
-    @Nullable Tensor thisResult;
+    @Nullable
+    Tensor thisResult;
     boolean passback;
     if (null == lastResult || inputData.length() > minBatchCount) {
-      @Nonnull final ToDoubleFunction<Coordinate> f = (c) ->
-          IntStream.range(0, itemCnt)
-              .mapToDouble(dataIndex -> {
-                Tensor tensor = inputData.get(dataIndex);
-                double v = tensor.get(c);
-                tensor.freeRef();
-                return v;
-              })
-              .sum() / itemCnt;
+      @Nonnull final ToDoubleFunction<Coordinate> f = (c) -> IntStream.range(0, itemCnt).mapToDouble(dataIndex -> {
+        Tensor tensor = inputData.get(dataIndex);
+        return tensor.get(c);
+      }).sum() / itemCnt;
       Tensor tensor = inputData.get(0);
       thisResult = tensor.mapCoords(f);
-      tensor.freeRef();
       passback = true;
-      if (null != lastResult) lastResult.freeRef();
       lastResult = thisResult;
-      lastResult.addRef();
     } else {
       passback = false;
       thisResult = lastResult;
-      thisResult.addRef();
     }
-    return new Result(TensorArray.create(thisResult), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList data) -> {
-      if (passback && input.isAlive()) {
-        @Nullable final Tensor delta = data.get(0);
-        @Nonnull final Tensor feedback[] = new Tensor[itemCnt];
-        Arrays.parallelSetAll(feedback, i -> new Tensor(delta.getDimensions()));
-        thisResult.coordStream(true).forEach((inputCoord) -> {
-          for (int inputItem = 0; inputItem < itemCnt; inputItem++) {
-            feedback[inputItem].add(inputCoord, delta.get(inputCoord) / itemCnt);
+    return new Result(new TensorArray(thisResult),
+        (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList data) -> {
+          if (passback && input.isAlive()) {
+            @Nullable final Tensor delta = data.get(0);
+            @Nonnull final Tensor feedback[] = new Tensor[itemCnt];
+            Arrays.parallelSetAll(feedback, i -> new Tensor(delta.getDimensions()));
+            thisResult.coordStream(true).forEach((inputCoord) -> {
+              for (int inputItem = 0; inputItem < itemCnt; inputItem++) {
+                feedback[inputItem].add(inputCoord, delta.get(inputCoord) / itemCnt);
+              }
+            });
+            @Nonnull
+            TensorArray tensorArray = new TensorArray(feedback);
+            input.accumulate(buffer, tensorArray);
           }
-        });
-        delta.freeRef();
-        @Nonnull TensorArray tensorArray = TensorArray.wrap(feedback);
-        input.accumulate(buffer, tensorArray);
-      }
-      data.freeRef();
-    }) {
-
+        }) {
 
       @Override
       public boolean isAlive() {
@@ -118,8 +112,6 @@ public class AvgMetaLayer extends LayerBase {
 
       @Override
       protected void _free() {
-        thisResult.freeRef();
-        input.freeRef();
       }
 
     };
@@ -136,19 +128,14 @@ public class AvgMetaLayer extends LayerBase {
     return json;
   }
 
-  public int getMinBatchCount() {
-    return minBatchCount;
-  }
-
-  @Nonnull
-  public AvgMetaLayer setMinBatchCount(final int minBatchCount) {
-    this.minBatchCount = minBatchCount;
-    return this;
-  }
-
   @Nonnull
   @Override
   public List<double[]> state() {
     return Arrays.asList();
+  }
+
+  @Override
+  protected void _free() {
+    super._free();
   }
 }

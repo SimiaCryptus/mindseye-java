@@ -32,11 +32,6 @@ public class NthPowerActivationLayerTest {
     }
 
     @Override
-    protected Layer lossLayer() {
-      return new MeanSqLossLayer();
-    }
-
-    @Override
     public SingleDerivativeTester getDerivativeTester() {
       return new SingleDerivativeTester(1e-2, 1e-4);
     }
@@ -46,6 +41,11 @@ public class NthPowerActivationLayerTest {
       final double v = super.random();
       if (Math.abs(v) < 0.2) return random();
       return v;
+    }
+
+    @Override
+    protected Layer lossLayer() {
+      return new MeanSqLossLayer();
     }
   }
 
@@ -55,11 +55,6 @@ public class NthPowerActivationLayerTest {
     }
 
     @Override
-    protected Layer lossLayer() {
-      return new MeanSqLossLayer();
-    }
-
-    @Override
     public SingleDerivativeTester getDerivativeTester() {
       return new SingleDerivativeTester(1e-2, 1e-4);
     }
@@ -69,6 +64,11 @@ public class NthPowerActivationLayerTest {
       final double v = super.random();
       if (Math.abs(v) < 0.2) return random();
       return v;
+    }
+
+    @Override
+    protected Layer lossLayer() {
+      return new MeanSqLossLayer();
     }
   }
 

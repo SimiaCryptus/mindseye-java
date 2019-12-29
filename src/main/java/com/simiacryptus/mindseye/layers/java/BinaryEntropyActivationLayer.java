@@ -35,8 +35,15 @@ public final class BinaryEntropyActivationLayer extends SimpleActivationLayer<Bi
     super(id);
   }
 
+  @SuppressWarnings("unused")
   public static BinaryEntropyActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new BinaryEntropyActivationLayer(json);
+  }
+
+  @Nonnull
+  @Override
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
+    return super.getJsonStub();
   }
 
   @Override
@@ -48,12 +55,6 @@ public final class BinaryEntropyActivationLayer extends SimpleActivationLayer<Bi
     assert minDeriv <= Math.abs(d);
     results[0] = f;
     results[1] = d;
-  }
-
-  @Nonnull
-  @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    return super.getJsonStub();
   }
 
 }

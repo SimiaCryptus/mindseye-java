@@ -46,18 +46,14 @@ public abstract class SimpleActivationLayer<T extends SimpleActivationLayer<T>> 
     super(id);
   }
 
-  protected abstract void eval(final double x, double[] results);
-
   @Nonnull
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     final TensorList indata0 = inObj[0].getData();
     final int itemCnt = indata0.length();
     assert 0 < itemCnt;
-    Arrays.stream(inObj).forEach(nnResult -> nnResult.addRef());
-    Arrays.stream(inObj).forEach(nnResult -> nnResult.getData().addRef());
     @Nonnull final Tensor inputGradientA[] = new Tensor[itemCnt];
-    return new Result(TensorArray.wrap(IntStream.range(0, itemCnt).parallel().mapToObj(dataIndex -> {
+    return new Result(new TensorArray(IntStream.range(0, itemCnt).parallel().mapToObj(dataIndex -> {
       @Nullable final Tensor input = indata0.get(dataIndex);
       @Nonnull final Tensor output = new Tensor(indata0.getDimensions());
       @Nonnull final Tensor inputGradient = new Tensor(input.length());
@@ -68,40 +64,34 @@ public abstract class SimpleActivationLayer<T extends SimpleActivationLayer<T>> 
         inputGradient.set(i, results[1]);
         output.set(i, results[0]);
       }
-      input.freeRef();
       return output;
     }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList data) -> {
       if (inObj[0].isAlive()) {
-        @Nonnull TensorArray tensorArray = TensorArray.wrap(IntStream.range(0, itemCnt).parallel().mapToObj(dataIndex -> {
+        @Nonnull
+        TensorArray tensorArray = new TensorArray(IntStream.range(0, itemCnt).parallel().mapToObj(dataIndex -> {
           @Nonnull final Tensor passback = new Tensor(data.getDimensions());
           @Nullable final double[] gradientData = inputGradientA[dataIndex].getData();
-          @Nullable Tensor tensor = data.get(dataIndex);
+          @Nullable
+          Tensor tensor = data.get(dataIndex);
           IntStream.range(0, passback.length()).forEach(i -> {
             final double v = gradientData[i];
             if (Double.isFinite(v)) {
               passback.set(i, tensor.get(i) * v);
             }
           });
-          tensor.freeRef();
           return passback;
         }).toArray(i -> new Tensor[i]));
         inObj[0].accumulate(buffer, tensorArray);
       }
-      data.freeRef();
     }) {
-
-      @Override
-      protected void _free() {
-        Arrays.stream(inObj).forEach(nnResult -> nnResult.freeRef());
-        Arrays.stream(inObj).forEach(nnResult -> nnResult.getData().freeRef());
-        for (@Nonnull Tensor tensor : inputGradientA) {
-          tensor.freeRef();
-        }
-      }
 
       @Override
       public boolean isAlive() {
         return inObj[0].isAlive();
+      }
+
+      @Override
+      protected void _free() {
       }
     };
   }
@@ -111,5 +101,7 @@ public abstract class SimpleActivationLayer<T extends SimpleActivationLayer<T>> 
   public List<double[]> state() {
     return Arrays.asList();
   }
+
+  protected abstract void eval(final double x, double[] results);
 
 }

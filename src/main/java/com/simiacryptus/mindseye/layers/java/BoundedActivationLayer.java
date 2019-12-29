@@ -39,30 +39,6 @@ public class BoundedActivationLayer extends SimpleActivationLayer<BoundedActivat
     super(id);
   }
 
-  @Nonnull
-  public static BoundedActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
-    @Nonnull final BoundedActivationLayer obj = new BoundedActivationLayer(json);
-    obj.maxValue = json.get("maxValue").getAsDouble();
-    return obj;
-  }
-
-  @Override
-  protected void eval(final double x, final double[] results) {
-    final double d = x > maxValue || x < getMinValue() ? 0 : 1;
-    final double f = x > maxValue ? maxValue : x < getMinValue() ? getMinValue() : x;
-    assert Double.isFinite(d);
-    results[0] = f;
-    results[1] = d;
-  }
-
-  @Nonnull
-  @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull final JsonObject json = super.getJsonStub();
-    json.addProperty("maxValue", maxValue);
-    return json;
-  }
-
   public double getMaxValue() {
     return maxValue;
   }
@@ -80,5 +56,30 @@ public class BoundedActivationLayer extends SimpleActivationLayer<BoundedActivat
   public BoundedActivationLayer setMinValue(double minValue) {
     this.minValue = minValue;
     return this;
+  }
+
+  @Nonnull
+  @SuppressWarnings("unused")
+  public static BoundedActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+    @Nonnull final BoundedActivationLayer obj = new BoundedActivationLayer(json);
+    obj.maxValue = json.get("maxValue").getAsDouble();
+    return obj;
+  }
+
+  @Nonnull
+  @Override
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
+    @Nonnull final JsonObject json = super.getJsonStub();
+    json.addProperty("maxValue", maxValue);
+    return json;
+  }
+
+  @Override
+  protected void eval(final double x, final double[] results) {
+    final double d = x > maxValue || x < getMinValue() ? 0 : 1;
+    final double f = x > maxValue ? maxValue : x < getMinValue() ? getMinValue() : x;
+    assert Double.isFinite(d);
+    results[0] = f;
+    results[1] = d;
   }
 }

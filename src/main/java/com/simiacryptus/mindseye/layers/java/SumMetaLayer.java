@@ -36,7 +36,6 @@ import java.util.stream.IntStream;
 @SuppressWarnings("serial")
 public class SumMetaLayer extends LayerBase {
 
-
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(SumMetaLayer.class);
   @Nullable
@@ -52,56 +51,60 @@ public class SumMetaLayer extends LayerBase {
     minBatches = json.get("minBatches").getAsInt();
   }
 
+  public int getMinBatches() {
+    return minBatches;
+  }
+
+  @Nonnull
+  public SumMetaLayer setMinBatches(final int minBatches) {
+    this.minBatches = minBatches;
+    return this;
+  }
+
+  @SuppressWarnings("unused")
   public static SumMetaLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new SumMetaLayer(json, rs);
   }
 
   @Nullable
   @Override
-  public Result evalAndFree(@Nonnull final Result... inObj) {
-    if (1 != inObj.length) throw new IllegalArgumentException();
+  public Result eval(@Nonnull final Result... inObj) {
+    if (1 != inObj.length)
+      throw new IllegalArgumentException();
     final Result input = inObj[0];
     TensorList inputData = input.getData();
     final int itemCnt = inputData.length();
     if (null == lastResult || minBatches < itemCnt) {
-      if (null != lastResult) lastResult.freeRef();
-      @Nonnull final ToDoubleFunction<Coordinate> f = (c) ->
-          IntStream.range(0, itemCnt)
-              .mapToDouble(dataIndex -> {
-                Tensor tensor = inputData.get(dataIndex);
-                double v = tensor.get(c);
-                tensor.freeRef();
-                return v;
-              })
-              .sum();
-      lastResult = inputData.get(0).mapCoordsAndFree(f);
+      @Nonnull final ToDoubleFunction<Coordinate> f = (c) -> IntStream.range(0, itemCnt).mapToDouble(dataIndex -> {
+        Tensor tensor = inputData.get(dataIndex);
+        return tensor.get(c);
+      }).sum();
+      lastResult = inputData.get(0).mapCoords(f);
     }
-    return new Result(TensorArray.create(lastResult), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList data) -> {
-      if (input.isAlive()) {
-        @Nullable final Tensor delta = data.get(0);
-        @Nonnull final Tensor feedback[] = new Tensor[itemCnt];
-        Arrays.parallelSetAll(feedback, i -> new Tensor(delta.getDimensions()));
-        delta.coordStream(false).forEach((inputCoord) -> {
-          for (int inputItem = 0; inputItem < itemCnt; inputItem++) {
-            feedback[inputItem].add(inputCoord, delta.get(inputCoord));
+    return new Result(new TensorArray(lastResult),
+        (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList data) -> {
+          if (input.isAlive()) {
+            @Nullable final Tensor delta = data.get(0);
+            @Nonnull final Tensor feedback[] = new Tensor[itemCnt];
+            Arrays.parallelSetAll(feedback, i -> new Tensor(delta.getDimensions()));
+            delta.coordStream(false).forEach((inputCoord) -> {
+              for (int inputItem = 0; inputItem < itemCnt; inputItem++) {
+                feedback[inputItem].add(inputCoord, delta.get(inputCoord));
+              }
+            });
+            @Nonnull
+            TensorArray tensorArray = new TensorArray(feedback);
+            input.accumulate(buffer, tensorArray);
           }
-        });
-        delta.freeRef();
-        @Nonnull TensorArray tensorArray = TensorArray.wrap(feedback);
-        input.accumulate(buffer, tensorArray);
-      }
-      data.freeRef();
-    }) {
-
-      @Override
-      protected void _free() {
-        inputData.freeRef();
-        input.freeRef();
-      }
+        }) {
 
       @Override
       public boolean isAlive() {
         return input.isAlive();
+      }
+
+      @Override
+      protected void _free() {
       }
 
     };
@@ -118,27 +121,14 @@ public class SumMetaLayer extends LayerBase {
     return json;
   }
 
-  @Override
-  protected void _free() {
-    if (null != lastResult) {
-      lastResult.freeRef();
-    }
-    super._free();
-  }
-
-  public int getMinBatches() {
-    return minBatches;
-  }
-
-  @Nonnull
-  public SumMetaLayer setMinBatches(final int minBatches) {
-    this.minBatches = minBatches;
-    return this;
-  }
-
   @Nonnull
   @Override
   public List<double[]> state() {
     return Arrays.asList();
+  }
+
+  @Override
+  protected void _free() {
+    super._free();
   }
 }

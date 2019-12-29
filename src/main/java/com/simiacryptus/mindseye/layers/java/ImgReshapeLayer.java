@@ -24,12 +24,14 @@ import com.simiacryptus.mindseye.lang.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.IntStream;
 
 @SuppressWarnings("serial")
 public class ImgReshapeLayer extends LayerBase {
-
 
   private final boolean expand;
   private final int kernelSizeX;
@@ -106,6 +108,7 @@ public class ImgReshapeLayer extends LayerBase {
     return outputData;
   }
 
+  @SuppressWarnings("unused")
   public static ImgReshapeLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ImgReshapeLayer(json);
   }
@@ -114,8 +117,6 @@ public class ImgReshapeLayer extends LayerBase {
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     //assert Arrays.stream(inObj).flatMapToDouble(input-> input.getData().stream().flatMapToDouble(x-> Arrays.stream(x.getData()))).allMatch(v->Double.isFinite(v));
-    Arrays.stream(inObj).forEach(nnResult -> nnResult.addRef());
-
     final Result input = inObj[0];
     final TensorList batch = input.getData();
     @Nonnull final int[] inputDims = batch.getDimensions();
@@ -126,48 +127,37 @@ public class ImgReshapeLayer extends LayerBase {
     //assert input.getData().stream().flatMapToDouble(x-> Arrays.stream(x.getData())).allMatch(v->Double.isFinite(v));
     Tensor outputDims;
     if (expand) {
-      outputDims = new Tensor(inputDims[0] * kernelSizeX,
-          inputDims[1] * kernelSizeY,
+      outputDims = new Tensor(inputDims[0] * kernelSizeX, inputDims[1] * kernelSizeY,
           inputDims[2] / (kernelSizeX * kernelSizeY));
     } else {
-      outputDims = new Tensor(inputDims[0] / kernelSizeX,
-          inputDims[1] / kernelSizeY,
+      outputDims = new Tensor(inputDims[0] / kernelSizeX, inputDims[1] / kernelSizeY,
           inputDims[2] * kernelSizeX * kernelSizeY);
     }
-    TensorArray data = TensorArray.wrap(IntStream.range(0, batch.length()).parallel()
-        .mapToObj(dataIndex -> {
-          Tensor inputData = batch.get(dataIndex);
-          Tensor tensor = expand ? ImgReshapeLayer.copyExpand(inputData, outputDims.copy()) : ImgReshapeLayer.copyCondense(inputData, outputDims.copy());
-          inputData.freeRef();
-          return tensor;
-        })
-        .toArray(i -> new Tensor[i]));
-    outputDims.freeRef();
+    TensorArray data = new TensorArray(IntStream.range(0, batch.length()).parallel().mapToObj(dataIndex -> {
+      Tensor inputData = batch.get(dataIndex);
+      return expand ? ImgReshapeLayer.copyExpand(inputData, outputDims.copy())
+          : ImgReshapeLayer.copyCondense(inputData, outputDims.copy());
+    }).toArray(i -> new Tensor[i]));
     return new Result(data, (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList error) -> {
       //assert error.stream().flatMapToDouble(x-> Arrays.stream(x.getData())).allMatch(v->Double.isFinite(v));
       if (input.isAlive()) {
-        @Nonnull TensorArray tensorArray = TensorArray.wrap(IntStream.range(0, error.length()).parallel()
-            .mapToObj(dataIndex -> {
-              @Nonnull final Tensor passback = new Tensor(inputDims);
-              @Nullable final Tensor err = error.get(dataIndex);
-              Tensor tensor = expand ? ImgReshapeLayer.copyCondense(err, passback) : ImgReshapeLayer.copyExpand(err, passback);
-              err.freeRef();
-              return tensor;
-            }).toArray(i -> new Tensor[i]));
+        @Nonnull
+        TensorArray tensorArray = new TensorArray(IntStream.range(0, error.length()).parallel().mapToObj(dataIndex -> {
+          @Nonnull final Tensor passback = new Tensor(inputDims);
+          @Nullable final Tensor err = error.get(dataIndex);
+          return expand ? ImgReshapeLayer.copyCondense(err, passback) : ImgReshapeLayer.copyExpand(err, passback);
+        }).toArray(i -> new Tensor[i]));
         input.accumulate(buffer, tensorArray);
       }
-      error.freeRef();
     }) {
-
-      @Override
-      protected void _free() {
-        Arrays.stream(inObj).forEach(nnResult -> nnResult.freeRef());
-      }
-
 
       @Override
       public boolean isAlive() {
         return input.isAlive() || !isFrozen();
+      }
+
+      @Override
+      protected void _free() {
       }
     };
   }
@@ -187,6 +177,5 @@ public class ImgReshapeLayer extends LayerBase {
   public List<double[]> state() {
     return new ArrayList<>();
   }
-
 
 }

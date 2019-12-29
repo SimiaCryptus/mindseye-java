@@ -42,63 +42,8 @@ public class StaticScalarLossLayer extends LayerBase {
   public StaticScalarLossLayer() {
   }
 
-
   protected StaticScalarLossLayer(@Nonnull final JsonObject id) {
     super(id);
-  }
-
-  public static StaticScalarLossLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
-    return new StaticScalarLossLayer(json);
-  }
-
-  @Nonnull
-  @Override
-  public Result eval(@Nonnull final Result... inObj) {
-    if (1 != inObj.length) throw new IllegalArgumentException();
-    Arrays.stream(inObj).forEach(nnResult -> nnResult.addRef());
-    //if (inObj[0].getData().length() != 1) throw new IllegalArgumentException();
-    final Result in0 = inObj[0];
-    TensorList indata = in0.getData();
-    indata.addRef();
-    return new Result(TensorArray.wrap(IntStream.range(0, indata.length()).parallel().mapToObj(dataIndex -> {
-      @Nullable final Tensor a = indata.get(dataIndex);
-      final double diff = Math.abs(a.get(0) - getTarget());
-      a.freeRef();
-      return new Tensor(new double[]{diff}, 1);
-    }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList data) -> {
-      if (in0.isAlive()) {
-        @Nonnull TensorArray tensorArray = TensorArray.wrap(IntStream.range(0, data.length()).parallel().mapToObj(dataIndex -> {
-          @Nullable final Tensor a = indata.get(dataIndex);
-          Tensor tensor = data.get(dataIndex);
-          final double deriv = tensor.get(0) * (a.get(0) - getTarget() < 0 ? -1 : 1);
-          tensor.freeRef();
-          a.freeRef();
-          return new Tensor(new double[]{deriv}, 1);
-        }).toArray(i -> new Tensor[i]));
-        in0.accumulate(buffer, tensorArray);
-      }
-      data.freeRef();
-    }) {
-
-      @Override
-      protected void _free() {
-        indata.freeRef();
-        Arrays.stream(inObj).forEach(nnResult -> nnResult.freeRef());
-      }
-
-
-      @Override
-      public boolean isAlive() {
-        return in0.isAlive();
-      }
-
-    };
-  }
-
-  @Nonnull
-  @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    return super.getJsonStub();
   }
 
   public double getTarget() {
@@ -109,6 +54,54 @@ public class StaticScalarLossLayer extends LayerBase {
   public StaticScalarLossLayer setTarget(final double target) {
     this.target = target;
     return this;
+  }
+
+  @SuppressWarnings("unused")
+  public static StaticScalarLossLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+    return new StaticScalarLossLayer(json);
+  }
+
+  @Nonnull
+  @Override
+  public Result eval(@Nonnull final Result... inObj) {
+    if (1 != inObj.length)
+      throw new IllegalArgumentException();
+    //if (inObj[0].getData().length() != 1) throw new IllegalArgumentException();
+    final Result in0 = inObj[0];
+    TensorList indata = in0.getData();
+    return new Result(new TensorArray(IntStream.range(0, indata.length()).parallel().mapToObj(dataIndex -> {
+      @Nullable final Tensor a = indata.get(dataIndex);
+      final double diff = Math.abs(a.get(0) - getTarget());
+      return new Tensor(new double[]{diff}, 1);
+    }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList data) -> {
+      if (in0.isAlive()) {
+        @Nonnull
+        TensorArray tensorArray = new TensorArray(IntStream.range(0, data.length()).parallel().mapToObj(dataIndex -> {
+          @Nullable final Tensor a = indata.get(dataIndex);
+          Tensor tensor = data.get(dataIndex);
+          final double deriv = tensor.get(0) * (a.get(0) - getTarget() < 0 ? -1 : 1);
+          return new Tensor(new double[]{deriv}, 1);
+        }).toArray(i -> new Tensor[i]));
+        in0.accumulate(buffer, tensorArray);
+      }
+    }) {
+
+      @Override
+      public boolean isAlive() {
+        return in0.isAlive();
+      }
+
+      @Override
+      protected void _free() {
+      }
+
+    };
+  }
+
+  @Nonnull
+  @Override
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
+    return super.getJsonStub();
   }
 
   @Nonnull

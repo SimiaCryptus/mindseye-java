@@ -42,7 +42,6 @@ import java.util.stream.IntStream;
 @SuppressWarnings("serial")
 public class FullyConnectedReferenceLayer extends LayerBase {
 
-
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(FullyConnectedReferenceLayer.class);
   @Nullable
@@ -68,8 +67,7 @@ public class FullyConnectedReferenceLayer extends LayerBase {
     set(() -> {
       final double ratio = Math.sqrt(6. / (inputs + outputs + 1));
       final double fate = Util.R.get().nextDouble();
-      final double v = (1 - 2 * fate) * ratio;
-      return v;
+      return (1 - 2 * fate) * ratio;
     });
   }
 
@@ -80,116 +78,9 @@ public class FullyConnectedReferenceLayer extends LayerBase {
     weights = Tensor.fromJson(json.get("weights"), resources);
   }
 
-  public static FullyConnectedReferenceLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
-    return new FullyConnectedReferenceLayer(json, rs);
-  }
-
-  @Override
-  protected void _free() {
-    weights.freeRef();
-    super._free();
-  }
-
-  @Nonnull
-  @Override
-  public Result evalAndFree(final Result... inObj) {
-    final Result inputResult = inObj[0];
-    final TensorList indata = inputResult.getData();
-    @Nonnull int[] inputDimensions = indata.getDimensions();
-    assert Tensor.length(inputDimensions) == Tensor.length(this.inputDims) : Arrays.toString(inputDimensions) + " == " + Arrays.toString(this.inputDims);
-    weights.addRef();
-    return new Result(TensorArray.wrap(IntStream.range(0, indata.length()).mapToObj(index -> {
-      @Nullable final Tensor input = indata.get(index);
-      @Nullable final Tensor output = new Tensor(outputDims);
-      weights.coordStream(false).forEach(c -> {
-        int[] coords = c.getCoords();
-        double prev = output.get(coords[1]);
-        double w = weights.get(c);
-        double i = input.get(coords[0]);
-        double value = prev + w * i;
-        output.set(coords[1], value);
-      });
-      input.freeRef();
-      return output;
-    }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
-      if (!isFrozen()) {
-        Tensor[] array = IntStream.range(0, indata.length()).mapToObj(i -> {
-          @Nullable final Tensor inputTensor = indata.get(i);
-          @Nullable final Tensor deltaTensor = delta.get(i);
-          @Nonnull Tensor weights = new Tensor(FullyConnectedReferenceLayer.this.weights.getDimensions());
-          weights.coordStream(false).forEach(c -> {
-            int[] coords = c.getCoords();
-            weights.set(c, inputTensor.get(coords[0]) * deltaTensor.get(coords[1]));
-          });
-          inputTensor.freeRef();
-          deltaTensor.freeRef();
-          return weights;
-        }).toArray(i -> new Tensor[i]);
-        Tensor tensor = Arrays.stream(array).reduce((a, b) -> {
-          Tensor c = a.addAndFree(b);
-          b.freeRef();
-          return c;
-        }).get();
-        buffer.get(this.getId(), weights.getData()).addInPlace(tensor.getData()).freeRef();
-        tensor.freeRef();
-      }
-      if (inputResult.isAlive()) {
-        @Nonnull final TensorList tensorList = TensorArray.wrap(IntStream.range(0, indata.length()).mapToObj(i -> {
-          @Nullable final Tensor inputTensor = new Tensor(inputDims);
-          @Nullable final Tensor deltaTensor = delta.get(i);
-          weights.coordStream(false).forEach(c -> {
-            int[] coords = c.getCoords();
-            inputTensor.set(coords[0], inputTensor.get(coords[0]) + weights.get(c) * deltaTensor.get(coords[1]));
-          });
-          deltaTensor.freeRef();
-          return inputTensor;
-        }).toArray(i -> new Tensor[i]));
-        inputResult.accumulate(buffer, tensorList);
-      }
-      delta.freeRef();
-    }) {
-
-      @Override
-      protected void _free() {
-        indata.freeRef();
-        inputResult.freeRef();
-        weights.freeRef();
-      }
-
-      @Override
-      public boolean isAlive() {
-        return inputResult.isAlive() || !isFrozen();
-      }
-
-    };
-  }
-
-  @Nonnull
-  @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, @Nonnull DataSerializer dataSerializer) {
-    @Nonnull final JsonObject json = super.getJsonStub();
-    json.add("outputDims", JsonUtil.getJson(outputDims));
-    json.add("inputDims", JsonUtil.getJson(inputDims));
-    json.add("weights", weights.getJson(resources, dataSerializer));
-    return json;
-  }
-
-
   @Nullable
   public Tensor getWeights() {
     return weights;
-  }
-
-  @Nonnull
-  public FullyConnectedReferenceLayer set(@Nonnull final DoubleSupplier f) {
-    Arrays.parallelSetAll(weights.getData(), i -> f.getAsDouble());
-    return this;
-  }
-
-  @Nonnull
-  public FullyConnectedReferenceLayer set(@Nonnull final IntToDoubleFunction f) {
-    weights.set(f);
-    return this;
   }
 
   @Nonnull
@@ -197,18 +88,6 @@ public class FullyConnectedReferenceLayer extends LayerBase {
     weights.coordStream(true).forEach(c -> {
       weights.set(c, f.applyAsDouble(c));
     });
-    return this;
-  }
-
-  @Nonnull
-  public FullyConnectedReferenceLayer set(final double[] data) {
-    weights.set(data);
-    return this;
-  }
-
-  @Nonnull
-  public FullyConnectedReferenceLayer set(@Nonnull final Tensor data) {
-    weights.set(data);
     return this;
   }
 
@@ -230,10 +109,118 @@ public class FullyConnectedReferenceLayer extends LayerBase {
     return this;
   }
 
+  @SuppressWarnings("unused")
+  public static FullyConnectedReferenceLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+    return new FullyConnectedReferenceLayer(json, rs);
+  }
+
+  @Nonnull
+  @Override
+  public Result eval(final Result... inObj) {
+    final Result inputResult = inObj[0];
+    final TensorList indata = inputResult.getData();
+    @Nonnull
+    int[] inputDimensions = indata.getDimensions();
+    assert Tensor.length(inputDimensions) == Tensor.length(this.inputDims) : Arrays.toString(inputDimensions) + " == "
+        + Arrays.toString(this.inputDims);
+    return new Result(new TensorArray(IntStream.range(0, indata.length()).mapToObj(index -> {
+      @Nullable final Tensor input = indata.get(index);
+      @Nullable final Tensor output = new Tensor(outputDims);
+      weights.coordStream(false).forEach(c -> {
+        int[] coords = c.getCoords();
+        double prev = output.get(coords[1]);
+        double w = weights.get(c);
+        double i = input.get(coords[0]);
+        double value = prev + w * i;
+        output.set(coords[1], value);
+      });
+      return output;
+    }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
+      if (!isFrozen()) {
+        Tensor[] array = IntStream.range(0, indata.length()).mapToObj(i -> {
+          @Nullable final Tensor inputTensor = indata.get(i);
+          @Nullable final Tensor deltaTensor = delta.get(i);
+          @Nonnull
+          Tensor weights = new Tensor(FullyConnectedReferenceLayer.this.weights.getDimensions());
+          weights.coordStream(false).forEach(c -> {
+            int[] coords = c.getCoords();
+            weights.set(c, inputTensor.get(coords[0]) * deltaTensor.get(coords[1]));
+          });
+          return weights;
+        }).toArray(i -> new Tensor[i]);
+        Tensor tensor = Arrays.stream(array).reduce((a, b) -> {
+          return a.addAndFree(b);
+        }).get();
+        buffer.get(this.getId(), weights.getData()).addInPlace(tensor.getData());
+      }
+      if (inputResult.isAlive()) {
+        @Nonnull final TensorList tensorList = new TensorArray(IntStream.range(0, indata.length()).mapToObj(i -> {
+          @Nullable final Tensor inputTensor = new Tensor(inputDims);
+          @Nullable final Tensor deltaTensor = delta.get(i);
+          weights.coordStream(false).forEach(c -> {
+            int[] coords = c.getCoords();
+            inputTensor.set(coords[0], inputTensor.get(coords[0]) + weights.get(c) * deltaTensor.get(coords[1]));
+          });
+          return inputTensor;
+        }).toArray(i -> new Tensor[i]));
+        inputResult.accumulate(buffer, tensorList);
+      }
+    }) {
+
+      @Override
+      public boolean isAlive() {
+        return inputResult.isAlive() || !isFrozen();
+      }
+
+      @Override
+      protected void _free() {
+      }
+
+    };
+  }
+
+  @Nonnull
+  @Override
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, @Nonnull DataSerializer dataSerializer) {
+    @Nonnull final JsonObject json = super.getJsonStub();
+    json.add("outputDims", JsonUtil.getJson(outputDims));
+    json.add("inputDims", JsonUtil.getJson(inputDims));
+    json.add("weights", weights.getJson(resources, dataSerializer));
+    return json;
+  }
+
+  @Nonnull
+  public void set(@Nonnull final DoubleSupplier f) {
+    Arrays.parallelSetAll(weights.getData(), i -> f.getAsDouble());
+  }
+
+  @Nonnull
+  public FullyConnectedReferenceLayer set(@Nonnull final IntToDoubleFunction f) {
+    weights.set(f);
+    return this;
+  }
+
+  @Nonnull
+  public FullyConnectedReferenceLayer set(final double[] data) {
+    weights.set(data);
+    return this;
+  }
+
+  @Nonnull
+  public FullyConnectedReferenceLayer set(@Nonnull final Tensor data) {
+    weights.set(data);
+    return this;
+  }
+
   @Nonnull
   @Override
   public List<double[]> state() {
     return Arrays.asList(getWeights().getData());
+  }
+
+  @Override
+  protected void _free() {
+    super._free();
   }
 
 }

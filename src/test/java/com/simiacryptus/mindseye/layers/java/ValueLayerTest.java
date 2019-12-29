@@ -39,9 +39,7 @@ public class ValueLayerTest {
     @Override
     public Layer getLayer(final int[][] inputSize, Random random) {
       Tensor tensor = new Tensor(0.1);
-      ValueLayer valueLayer = new ValueLayer(tensor);
-      tensor.freeRef();
-      return valueLayer;
+      return new ValueLayer(tensor);
     }
   }
 

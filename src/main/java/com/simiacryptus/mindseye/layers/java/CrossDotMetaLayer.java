@@ -44,6 +44,7 @@ public class CrossDotMetaLayer extends LayerBase {
     super(id);
   }
 
+  @SuppressWarnings("unused")
   public static CrossDotMetaLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new CrossDotMetaLayer(json);
   }
@@ -53,8 +54,6 @@ public class CrossDotMetaLayer extends LayerBase {
   public Result eval(@Nonnull final Result... inObj) {
     final Result input = inObj[0];
     final TensorList indata = input.getData();
-    Arrays.stream(inObj).forEach(nnResult -> nnResult.addRef());
-    indata.addRef();
     final int itemCnt = indata.length();
     final int dim = Tensor.length(indata.getDimensions());
     @Nonnull final Tensor results = new Tensor(dim, dim);
@@ -68,49 +67,44 @@ public class CrossDotMetaLayer extends LayerBase {
           Tensor tensor = indata.get(k);
           @Nullable final double[] kk = tensor.getData();
           v += kk[i] * kk[j];
-          tensor.freeRef();
         }
         results.set(new int[]{i, j}, v);
       }
     }
-    return new Result(TensorArray.wrap(results), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
-      if (input.isAlive()) {
-        @Nullable final Tensor deltaTensor = delta.get(0);
-        @Nonnull final Tensor feedback[] = new Tensor[itemCnt];
-        Arrays.parallelSetAll(feedback, i -> new Tensor(dim));
+    return new Result(new TensorArray(results),
+        (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
+          if (input.isAlive()) {
+            @Nullable final Tensor deltaTensor = delta.get(0);
+            @Nonnull final Tensor feedback[] = new Tensor[itemCnt];
+            Arrays.parallelSetAll(feedback, i -> new Tensor(dim));
 
-        for (int i = 0; i < dim; i++) {
-          for (int j = 0; j < dim; j++) {
-            if (i == j) {
-              continue;
+            for (int i = 0; i < dim; i++) {
+              for (int j = 0; j < dim; j++) {
+                if (i == j) {
+                  continue;
+                }
+                final double v = deltaTensor.get(i, j);
+                for (int k = 0; k < itemCnt; k++) {
+                  Tensor tensor = indata.get(k);
+                  @Nullable final double[] kk = tensor.getData();
+                  feedback[k].add(i, v * kk[j]);
+                  feedback[k].add(j, v * kk[i]);
+                }
+              }
             }
-            final double v = deltaTensor.get(i, j);
-            for (int k = 0; k < itemCnt; k++) {
-              Tensor tensor = indata.get(k);
-              @Nullable final double[] kk = tensor.getData();
-              feedback[k].add(i, v * kk[j]);
-              feedback[k].add(j, v * kk[i]);
-              tensor.freeRef();
-            }
+            @Nonnull
+            TensorArray tensorArray = new TensorArray(feedback);
+            input.accumulate(buffer, tensorArray);
           }
-        }
-        deltaTensor.freeRef();
-
-        @Nonnull TensorArray tensorArray = TensorArray.wrap(feedback);
-        input.accumulate(buffer, tensorArray);
-      }
-      delta.freeRef();
-    }) {
-
-      @Override
-      protected void _free() {
-        indata.freeRef();
-        Arrays.stream(inObj).forEach(nnResult -> nnResult.freeRef());
-      }
+        }) {
 
       @Override
       public boolean isAlive() {
         return input.isAlive();
+      }
+
+      @Override
+      protected void _free() {
       }
 
     };

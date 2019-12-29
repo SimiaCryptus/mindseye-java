@@ -41,6 +41,7 @@ public class SumInputsLayer extends LayerBase {
     super(id);
   }
 
+  @SuppressWarnings("unused")
   public static SumInputsLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new SumInputsLayer(json);
   }
@@ -52,69 +53,44 @@ public class SumInputsLayer extends LayerBase {
   @Nonnull
   @Override
   public Result eval(@Nonnull final Result... inObj) {
-    Arrays.stream(inObj).forEach(nnResult -> nnResult.addRef());
-    Arrays.stream(inObj).forEach(x -> x.getData().addRef());
     return new Result(Arrays.stream(inObj).parallel().map(x -> {
-      TensorList data = x.getData();
-      data.addRef();
-      return data;
+      return x.getData();
     }).reduce((l, r) -> {
       assert l.length() == r.length() || 1 == l.length() || 1 == r.length();
-      @Nonnull TensorArray sum = TensorArray.wrap(IntStream.range(0, l.length()).parallel()
-          .mapToObj(i -> {
+      return new TensorArray(IntStream.range(0, l.length()).parallel().mapToObj(i -> {
             @Nullable final Tensor left = l.get(1 == l.length() ? 0 : i);
             @Nullable final Tensor right = r.get(1 == r.length() ? 0 : i);
-            @Nullable Tensor tensor;
+            @Nullable
+            Tensor tensor;
             if (right.length() == 1) {
               tensor = left.mapParallel(v -> v + right.get(0));
             } else {
               tensor = left.reduceParallel(right, (v1, v2) -> v1 + v2);
             }
-            left.freeRef();
-            right.freeRef();
             return tensor;
-          })
-          .toArray(i -> new Tensor[i]));
-      l.freeRef();
-      r.freeRef();
-      return sum;
+          }).toArray(i -> new Tensor[i]));
     }).get(), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
-      try {
-        for (@Nonnull final Result input : inObj) {
-          if (input.isAlive()) {
-            delta.addRef();
-            @Nonnull TensorList projectedDelta = delta;
-            if (1 < projectedDelta.length() && input.getData().length() == 1) {
-              TensorArray new_projectedDelta = TensorArray.wrap(projectedDelta.stream().parallel().reduce((a, b) -> {
-                @Nullable Tensor c = a.addAndFree(b);
-                b.freeRef();
-                return c;
-              }).get());
-              projectedDelta.freeRef();
-              projectedDelta = new_projectedDelta;
-            }
-            if (1 < Tensor.length(projectedDelta.getDimensions()) && Tensor.length(input.getData().getDimensions()) == 1) {
-              @Nonnull TensorArray new_projectedDelta = TensorArray.wrap(projectedDelta.stream().map(t -> {
-                Tensor tensor = new Tensor(new double[]{t.sum()});
-                t.freeRef();
-                return tensor;
-              }).toArray(i -> new Tensor[i]));
-              projectedDelta.freeRef();
-              projectedDelta = new_projectedDelta;
-            }
-            input.accumulate(buffer, projectedDelta);
+      for (@Nonnull final Result input : inObj) {
+        if (input.isAlive()) {
+          @Nonnull
+          TensorList projectedDelta = delta;
+          if (1 < projectedDelta.length() && input.getData().length() == 1) {
+            projectedDelta = new TensorArray(projectedDelta.stream().parallel().reduce((a, b) -> {
+                      return a.addAndFree(b);
+                    }).get());
           }
+          if (1 < Tensor.length(projectedDelta.getDimensions())
+              && Tensor.length(input.getData().getDimensions()) == 1) {
+            @Nonnull
+            TensorArray new_projectedDelta = new TensorArray(projectedDelta.stream().map(t -> {
+              return new Tensor(new double[]{t.sum()});
+            }).toArray(i -> new Tensor[i]));
+            projectedDelta = new_projectedDelta;
+          }
+          input.accumulate(buffer, projectedDelta);
         }
-      } finally {
-        delta.freeRef();
       }
     }) {
-
-      @Override
-      protected void _free() {
-        Arrays.stream(inObj).forEach(nnResult -> nnResult.freeRef());
-        Arrays.stream(inObj).forEach(x -> x.getData().freeRef());
-      }
 
       @Override
       public boolean isAlive() {
@@ -123,6 +99,10 @@ public class SumInputsLayer extends LayerBase {
             return true;
           }
         return false;
+      }
+
+      @Override
+      protected void _free() {
       }
 
     };

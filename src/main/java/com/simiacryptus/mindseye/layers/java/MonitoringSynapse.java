@@ -46,6 +46,18 @@ public final class MonitoringSynapse extends LayerBase implements MonitoredItem 
   }
 
   @Nonnull
+  @Override
+  public Map<CharSequence, Object> getMetrics() {
+    @Nonnull final HashMap<CharSequence, Object> map = new HashMap<>();
+    map.put("totalBatches", totalBatches);
+    map.put("totalItems", totalItems);
+    map.put("forward", forwardStatistics.getMetrics());
+    map.put("backprop", backpropStatistics.getMetrics());
+    return map;
+  }
+
+  @Nonnull
+  @SuppressWarnings("unused")
   public static MonitoringSynapse fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     @Nonnull final MonitoringSynapse obj = new MonitoringSynapse(json);
     obj.totalBatches = json.get("totalBatches").getAsInt();
@@ -72,8 +84,6 @@ public final class MonitoringSynapse extends LayerBase implements MonitoredItem 
     assert 1 == inObj.length;
     final Result input = inObj[0];
     final TensorList inputdata = input.getData();
-    input.addRef();
-    inputdata.addRef();
     System.nanoTime();
     System.nanoTime();
     totalBatches++;
@@ -81,19 +91,14 @@ public final class MonitoringSynapse extends LayerBase implements MonitoredItem 
     forwardStatistics.clear();
     inputdata.stream().parallel().forEach(t -> {
       forwardStatistics.add(t.getData());
-      t.freeRef();
     });
     return new Result(inputdata, (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList data) -> {
       backpropStatistics.clear();
-      data.addRef();
       input.accumulate(buffer, data);
       data.stream().parallel().forEach(t -> {
         backpropStatistics.add(t.getData());
-        t.freeRef();
       });
-      data.freeRef();
     }) {
-
 
       @Override
       public boolean isAlive() {
@@ -102,7 +107,6 @@ public final class MonitoringSynapse extends LayerBase implements MonitoredItem 
 
       @Override
       protected void _free() {
-        input.freeRef();
       }
     };
   }
@@ -114,17 +118,6 @@ public final class MonitoringSynapse extends LayerBase implements MonitoredItem 
     json.addProperty("totalBatches", totalBatches);
     json.addProperty("totalItems", totalItems);
     return json;
-  }
-
-  @Nonnull
-  @Override
-  public Map<CharSequence, Object> getMetrics() {
-    @Nonnull final HashMap<CharSequence, Object> map = new HashMap<>();
-    map.put("totalBatches", totalBatches);
-    map.put("totalItems", totalItems);
-    map.put("forward", forwardStatistics.getMetrics());
-    map.put("backprop", backpropStatistics.getMetrics());
-    return map;
   }
 
   @Override

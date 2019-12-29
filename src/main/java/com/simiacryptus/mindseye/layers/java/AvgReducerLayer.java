@@ -20,7 +20,6 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
-import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.mindseye.lang.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +45,7 @@ public class AvgReducerLayer extends LayerBase {
     super(id);
   }
 
+  @SuppressWarnings("unused")
   public static AvgReducerLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new AvgReducerLayer(json);
   }
@@ -53,45 +53,36 @@ public class AvgReducerLayer extends LayerBase {
   @Nonnull
   @Override
   public Result eval(@Nonnull final Result... inObj) {
-    Arrays.stream(inObj).forEach(x -> x.addRef());
-    Arrays.stream(inObj).forEach(x -> x.getData().addRef());
-    return new Result(TensorArray.wrap(IntStream.range(0, inObj[0].getData().length()).parallel().mapToDouble(dataIndex -> {
-      double sum = 0;
-      for (@Nonnull final Result element : inObj) {
-        Tensor tensor = element.getData().get(dataIndex);
-        @Nullable final double[] input = tensor.getData();
-        for (final double element2 : input) {
-          sum += element2 / input.length;
-        }
-        tensor.freeRef();
-      }
-      return sum;
-    }).mapToObj(x -> new Tensor(new double[]{x}, new int[]{1})).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
-      for (@Nonnull final Result in_l : inObj) {
-        if (in_l.isAlive()) {
-          TensorList inData = in_l.getData();
-          @Nonnull final TensorList tensorList = TensorArray.wrap(IntStream.range(0, inData.length()).parallel().mapToObj(dataIndex -> {
-            Tensor deltaTensor = delta.get(dataIndex);
-            final double deltaV = deltaTensor.get(0);
-            deltaTensor.freeRef();
-            @Nonnull final Tensor passback = new Tensor(inData.getDimensions());
-            final int dim = passback.length();
-            for (int i = 0; i < dim; i++) {
-              passback.set(i, deltaV / dim);
+    return new Result(
+        new TensorArray(IntStream.range(0, inObj[0].getData().length()).parallel().mapToDouble(dataIndex -> {
+          double sum = 0;
+          for (@Nonnull final Result element : inObj) {
+            Tensor tensor = element.getData().get(dataIndex);
+            @Nullable final double[] input = tensor.getData();
+            for (final double element2 : input) {
+              sum += element2 / input.length;
             }
-            return passback;
-          }).toArray(i -> new Tensor[i]));
-          in_l.accumulate(buffer, tensorList);
-        }
-      }
-      delta.freeRef();
-    }) {
-
-      @Override
-      protected void _free() {
-        Arrays.stream(inObj).forEach(ReferenceCounting::freeRef);
-        Arrays.stream(inObj).map(Result::getData).forEach(ReferenceCounting::freeRef);
-      }
+          }
+          return sum;
+        }).mapToObj(x -> new Tensor(new double[]{x}, new int[]{1})).toArray(i -> new Tensor[i])),
+        (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
+          for (@Nonnull final Result in_l : inObj) {
+            if (in_l.isAlive()) {
+              TensorList inData = in_l.getData();
+              @Nonnull final TensorList tensorList = new TensorArray(IntStream.range(0, inData.length()).parallel().mapToObj(dataIndex -> {
+                Tensor deltaTensor = delta.get(dataIndex);
+                final double deltaV = deltaTensor.get(0);
+                @Nonnull final Tensor passback = new Tensor(inData.getDimensions());
+                final int dim = passback.length();
+                for (int i = 0; i < dim; i++) {
+                  passback.set(i, deltaV / dim);
+                }
+                return passback;
+              }).toArray(i -> new Tensor[i]));
+              in_l.accumulate(buffer, tensorList);
+            }
+          }
+        }) {
 
       @Override
       public boolean isAlive() {
@@ -100,6 +91,10 @@ public class AvgReducerLayer extends LayerBase {
             return true;
           }
         return false;
+      }
+
+      @Override
+      protected void _free() {
       }
 
     };

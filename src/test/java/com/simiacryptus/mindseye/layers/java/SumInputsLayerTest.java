@@ -32,9 +32,7 @@ public class SumInputsLayerTest {
     @Nonnull
     @Override
     public int[][] getSmallDims(Random random) {
-      return new int[][]{
-          {3}, {1}
-      };
+      return new int[][]{{3}, {1}};
     }
 
     @Nonnull
@@ -46,9 +44,7 @@ public class SumInputsLayerTest {
     @Nonnull
     @Override
     public int[][] getLargeDims(Random random) {
-      return new int[][]{
-          {100}, {1}
-      };
+      return new int[][]{{100}, {1}};
     }
 
   }
@@ -58,9 +54,7 @@ public class SumInputsLayerTest {
     @Nonnull
     @Override
     public int[][] getSmallDims(Random random) {
-      return new int[][]{
-          {3}, {3}
-      };
+      return new int[][]{{3}, {3}};
     }
 
     @Nonnull
@@ -72,9 +66,7 @@ public class SumInputsLayerTest {
     @Nonnull
     @Override
     public int[][] getLargeDims(Random random) {
-      return new int[][]{
-          {100}, {100}
-      };
+      return new int[][]{{100}, {100}};
     }
 
   }
@@ -85,16 +77,6 @@ public class SumInputsLayerTest {
       super();
     }
 
-
-    @Nonnull
-    @Override
-    public Layer getLayer(int[][] inputSize, Random random) {
-      @Nonnull PipelineNetwork network = new PipelineNetwork();
-      DAGNode input = network.getInput(0);
-      network.wrap(new SumInputsLayer(), input.addRef(), input).freeRef();
-      return network;
-    }
-
     @Override
     public Layer getReferenceLayer() {
       return null;
@@ -102,22 +84,30 @@ public class SumInputsLayerTest {
 
     @Nonnull
     @Override
+    protected Class<?> getTargetClass() {
+      return SumInputsLayer.class;
+    }
+
+    @Nonnull
+    @Override
+    public Layer getLayer(int[][] inputSize, Random random) {
+      @Nonnull
+      PipelineNetwork network = new PipelineNetwork();
+      DAGNode input = network.getInput(0);
+      network.add(new SumInputsLayer(), input, input);
+      return network;
+    }
+
+    @Nonnull
+    @Override
     public int[][] getSmallDims(Random random) {
-      return new int[][]{
-          {1, 1, 1}
-      };
+      return new int[][]{{1, 1, 1}};
     }
 
     @Nonnull
     @Override
     public int[][] getLargeDims(Random random) {
       return getSmallDims(random);
-    }
-
-    @Nonnull
-    @Override
-    protected Class<?> getTargetClass() {
-      return SumInputsLayer.class;
     }
 
   }

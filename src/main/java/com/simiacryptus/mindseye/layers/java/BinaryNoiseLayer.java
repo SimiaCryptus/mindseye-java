@@ -21,7 +21,6 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.mindseye.layers.StochasticComponent;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
@@ -35,7 +34,6 @@ import java.util.*;
 @SuppressWarnings("serial")
 public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
 
-
   public static final ThreadLocal<Random> random = new ThreadLocal<Random>() {
     @Override
     protected Random initialValue() {
@@ -45,6 +43,7 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(BinaryNoiseLayer.class);
   @Nonnull
+  final
   List<Tensor> maskList = new ArrayList<>();
   private double value;
   private long seed = System.nanoTime();
@@ -63,9 +62,20 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
     value = json.get("value").getAsDouble();
     seed = json.get("seed").getAsLong();
     JsonElement enabled = json.get("enabled");
-//    this.enabled = enabled == null || enabled.getAsBoolean();
+    //    this.enabled = enabled == null || enabled.getAsBoolean();
   }
 
+  public double getValue() {
+    return value;
+  }
+
+  @Nonnull
+  public void setValue(final double value) {
+    this.value = value;
+    shuffle(StochasticComponent.random.get().nextLong());
+  }
+
+  @SuppressWarnings("unused")
   public static BinaryNoiseLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new BinaryNoiseLayer(json);
   }
@@ -73,15 +83,12 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
   @NotNull
   public static Layer maskLayer(double density) {
     PipelineNetwork subnet = new PipelineNetwork(1);
-    subnet.wrap(new ProductInputsLayer(),
-        subnet.wrap(new BinaryNoiseLayer(density), subnet.getInput(0)),
-        subnet.getInput(0)
-    ).freeRef();
+    subnet.add(new ProductInputsLayer(), subnet.add(new BinaryNoiseLayer(density), subnet.getInput(0)), subnet.getInput(0));
     return subnet;
   }
 
   @Override
-  public Result evalAndFree(@Nonnull final Result... inObj) {
+  public Result eval(@Nonnull final Result... inObj) {
     final Result input = inObj[0];
     TensorList inputData = input.getData();
     @Nonnull final int[] dimensions = inputData.getDimensions();
@@ -99,39 +106,29 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
         maskList.add(tensorPrototype.map(v -> random.nextDouble() < getValue() ? amplitude : 0, false));
       }
     }
-    tensorPrototype.freeRef();
-    TensorArray data = TensorArray.create(maskList.stream().limit(length).toArray(i -> new Tensor[i]));
+    TensorArray data = new TensorArray(maskList.stream().limit(length).toArray(i -> new Tensor[i]));
     assert inputData.length() == data.length() : (inputData.length() + " != " + data.length());
-    inputData.freeRef();
     return new Result(data, (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
-      input.accumulate(buffer, TensorArray.wrap(delta.stream().map(t -> t.mapAndFree(x -> 0)).toArray(i -> new Tensor[i])));
-      delta.freeRef();
+      input.accumulate(buffer,
+          new TensorArray(delta.stream().map(t -> t.map(x -> 0)).toArray(i -> new Tensor[i])));
     }) {
-
-      @Override
-      protected void _free() {
-        Arrays.stream(inObj).forEach(nnResult -> nnResult.freeRef());
-      }
-
 
       @Override
       public boolean isAlive() {
         return input.isAlive();
       }
+
+      @Override
+      protected void _free() {
+      }
     };
   }
 
   public void clear() {
+    final List<Tensor> maskList = this.maskList;
     synchronized (maskList) {
-      maskList.stream().forEach(ReferenceCounting::freeRef);
       maskList.clear();
     }
-  }
-
-  @Override
-  protected void _free() {
-    clear();
-    super._free();
   }
 
   @Nonnull
@@ -140,19 +137,8 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
     @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("value", value);
     json.addProperty("seed", seed);
-//    json.addProperty("enabled", enabled);
+    //    json.addProperty("enabled", enabled);
     return json;
-  }
-
-  public double getValue() {
-    return value;
-  }
-
-  @Nonnull
-  public BinaryNoiseLayer setValue(final double value) {
-    this.value = value;
-    shuffle(StochasticComponent.random.get().nextLong());
-    return this;
   }
 
   @Override
@@ -171,6 +157,12 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
   @Override
   public List<double[]> state() {
     return Arrays.asList();
+  }
+
+  @Override
+  protected void _free() {
+    clear();
+    super._free();
   }
 
 }

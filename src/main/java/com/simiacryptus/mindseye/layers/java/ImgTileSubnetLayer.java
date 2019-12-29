@@ -42,7 +42,8 @@ public class ImgTileSubnetLayer extends WrapperLayer {
   private final int strideX;
   private final int strideY;
 
-  public ImgTileSubnetLayer(final Layer subnetwork, final int width, final int height, final int strideX, final int strideY) {
+  public ImgTileSubnetLayer(final Layer subnetwork, final int width, final int height, final int strideX,
+                            final int strideY) {
     super(subnetwork);
     this.height = height;
     this.width = width;
@@ -63,13 +64,14 @@ public class ImgTileSubnetLayer extends WrapperLayer {
     JsonObject subnetwork = json.getAsJsonObject("subnetwork");
   }
 
+  @SuppressWarnings("unused")
   public static ImgTileSubnetLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ImgTileSubnetLayer(json, rs);
   }
 
   @Nullable
   @Override
-  public Result evalAndFree(@Nonnull final Result... inObj) {
+  public Result eval(@Nonnull final Result... inObj) {
     assert 1 == inObj.length;
     Result input = inObj[0];
     final TensorList inputData = input.getData();
@@ -77,15 +79,14 @@ public class ImgTileSubnetLayer extends WrapperLayer {
     assert 3 == inputDims.length;
     int cols = (int) (Math.ceil((inputDims[0] - width) * 1.0 / strideX) + 1);
     int rows = (int) (Math.ceil((inputDims[1] - height) * 1.0 / strideY) + 1);
-    if (cols == 1 && rows == 1) return getInner().evalAndFree(inObj);
+    if (cols == 1 && rows == 1)
+      return getInner().eval(inObj);
     Result[] results = new Result[rows * cols];
     TensorList[] passback = new TensorList[rows * cols];
     int index = 0;
     AtomicInteger passbacks = new AtomicInteger(0);
     for (int row = 0; row < rows; row++) {
       for (int col = 0; col < cols; col++) {
-        input.addRef();
-        inputData.addRef();
         int positionX = col * strideX;
         int positionY = row * strideY;
         assert positionX >= 0;
@@ -94,36 +95,27 @@ public class ImgTileSubnetLayer extends WrapperLayer {
         assert positionY < inputDims[1];
         final int finalIndex = index;
         ImgTileSelectLayer tileSelectLayer = new ImgTileSelectLayer(width, height, positionX, positionY);
-        Result selectedTile = tileSelectLayer.evalAndFree(new Result(inputData, (ctx, delta) -> {
+        Result selectedTile = tileSelectLayer.eval(new Result(inputData, (ctx, delta) -> {
           passback[finalIndex] = delta;
           if (passbacks.incrementAndGet() == rows * cols) {
             passbacks.set(0);
             ImgTileAssemblyLayer imgTileAssemblyLayer = new ImgTileAssemblyLayer(cols, rows);
-            TensorList reassembled = imgTileAssemblyLayer.evalAndFree(Arrays.stream(passback).map(t -> new Result(t, (c2, d2) -> {
-              d2.freeRef();
-            })).toArray(i -> new Result[i])).getDataAndFree();
-            imgTileAssemblyLayer.freeRef();
+            TensorList reassembled = imgTileAssemblyLayer.eval(Arrays.stream(passback).map(t -> new Result(t, (c2, d2) -> {
+            })).<Result>toArray(i -> new Result[i])).getData();
             input.accumulate(ctx, reassembled);
           }
-          delta.freeRef();
         }) {
           @Override
           protected void _free() {
-            input.freeRef();
             super._free();
           }
         });
-        tileSelectLayer.freeRef();
-        results[index] = getInner().evalAndFree(selectedTile);
+        results[index] = getInner().eval(selectedTile);
         index = index + 1;
       }
     }
-    input.freeRef();
-    inputData.freeRef();
     ImgTileAssemblyLayer imgTileAssemblyLayer = new ImgTileAssemblyLayer(cols, rows);
-    Result result = imgTileAssemblyLayer.evalAndFree(results);
-    imgTileAssemblyLayer.freeRef();
-    return result;
+    return imgTileAssemblyLayer.eval(results);
   }
 
   @Nonnull
@@ -136,7 +128,6 @@ public class ImgTileSubnetLayer extends WrapperLayer {
     json.addProperty("strideY", strideY);
     return json;
   }
-
 
   @Nonnull
   @Override

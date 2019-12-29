@@ -40,6 +40,7 @@ public class CrossDifferenceLayer extends LayerBase {
     super(id);
   }
 
+  @SuppressWarnings("unused")
   public static CrossDifferenceLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new CrossDifferenceLayer(json);
   }
@@ -52,24 +53,23 @@ public class CrossDifferenceLayer extends LayerBase {
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     assert 1 == inObj.length;
-    Arrays.stream(inObj).forEach(nnResult -> nnResult.addRef());
-    return new Result(TensorArray.wrap(inObj[0].getData().stream().parallel().map(tensor -> {
+    return new Result(new TensorArray(inObj[0].getData().stream().parallel().map(tensor -> {
       final int inputDim = tensor.length();
       final int outputDim = (inputDim * inputDim - inputDim) / 2;
-      @Nonnull final Tensor result = new Tensor(outputDim);
+      @Nonnull final Tensor result1 = new Tensor(outputDim);
       @Nullable final double[] inputData = tensor.getData();
-      @Nullable final double[] resultData = result.getData();
+      @Nullable final double[] resultData = result1.getData();
       IntStream.range(0, inputDim).forEach(x -> {
         IntStream.range(x + 1, inputDim).forEach(y -> {
           resultData[CrossDifferenceLayer.index(x, y, inputDim)] = inputData[x] - inputData[y];
         });
       });
-      tensor.freeRef();
-      return result;
+      return result1;
     }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList data) -> {
       final Result input = inObj[0];
       if (input.isAlive()) {
-        @Nonnull TensorArray tensorArray = TensorArray.wrap(data.stream().parallel().map(tensor -> {
+        @Nonnull
+        TensorArray tensorArray = new TensorArray(data.stream().parallel().map(tensor -> {
           final int outputDim = tensor.length();
           final int inputDim = (1 + (int) Math.sqrt(1 + 8 * outputDim)) / 2;
           @Nonnull final Tensor passback = new Tensor(inputDim);
@@ -81,18 +81,11 @@ public class CrossDifferenceLayer extends LayerBase {
               passbackData[y] += -tensorData[CrossDifferenceLayer.index(x, y, inputDim)];
             });
           });
-          tensor.freeRef();
           return passback;
         }).toArray(i -> new Tensor[i]));
         input.accumulate(buffer, tensorArray);
       }
-      data.freeRef();
     }) {
-
-      @Override
-      protected void _free() {
-        Arrays.stream(inObj).forEach(nnResult -> nnResult.freeRef());
-      }
 
       @Override
       public boolean isAlive() {
@@ -101,6 +94,10 @@ public class CrossDifferenceLayer extends LayerBase {
             return true;
           }
         return false;
+      }
+
+      @Override
+      protected void _free() {
       }
 
     };

@@ -29,18 +29,14 @@ public abstract class ImgTileSubnetLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{
-        {6, 6, 1}
-    };
+    return new int[][]{{6, 6, 1}};
   }
 
   @Nonnull
   @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
     LinearActivationLayer subnetwork = new LinearActivationLayer();
-    ImgTileSubnetLayer tileSubnetLayer = new ImgTileSubnetLayer(subnetwork, 3, 3, 2, 2);
-    subnetwork.freeRef();
-    return tileSubnetLayer;
+    return new ImgTileSubnetLayer(subnetwork, 3, 3, 2, 2);
   }
 
   public static class Basic extends ImgTileSubnetLayerTest {

@@ -31,11 +31,6 @@ public abstract class SumMetaLayerTest extends MetaLayerTestBase {
     validateBatchExecution = false;
   }
 
-  @Override
-  protected Layer lossLayer() {
-    return new MeanSqLossLayer();
-  }
-
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
@@ -56,6 +51,11 @@ public abstract class SumMetaLayerTest extends MetaLayerTestBase {
     return new int[][]{
         {100}
     };
+  }
+
+  @Override
+  protected Layer lossLayer() {
+    return new MeanSqLossLayer();
   }
 
   public static class Basic extends SumMetaLayerTest {

@@ -25,6 +25,7 @@ import com.google.common.cache.LoadingCache;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.util.JsonUtil;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,12 +43,11 @@ import java.util.stream.IntStream;
 @SuppressWarnings("serial")
 public class AvgPoolingLayer extends LayerBase {
 
-  public static final LoadingCache<AvgPoolingLayer.IndexMapKey, Map<Coordinate, List<int[]>>> indexMapCache = CacheBuilder.newBuilder()
-      .build(new LayerCacheLoader());
+  public static final LoadingCache<AvgPoolingLayer.IndexMapKey, Map<Coordinate, List<int[]>>> indexMapCache = CacheBuilder
+      .newBuilder().build(new LayerCacheLoader());
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(AvgPoolingLayer.class);
   private int[] kernelDims;
-
 
   protected AvgPoolingLayer() {
     super();
@@ -63,9 +63,9 @@ public class AvgPoolingLayer extends LayerBase {
     this.kernelDims = Arrays.copyOf(kernelDims, kernelDims.length);
   }
 
+  @SuppressWarnings("unused")
   public static AvgPoolingLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
-    return new AvgPoolingLayer(json,
-        JsonUtil.getIntArray(json.getAsJsonArray("heapCopy")));
+    return new AvgPoolingLayer(json, JsonUtil.getIntArray(json.getAsJsonArray("heapCopy")));
   }
 
   private static synchronized Map<Coordinate, List<int[]>> getCoordMap(final int[] kernelDims, final int[] outDims) {
@@ -97,38 +97,36 @@ public class AvgPoolingLayer extends LayerBase {
           output.add(entry.getKey(), sum / kernelSize);
         }
       }
-      input.freeRef();
       return output;
     }).toArray(i -> new Tensor[i]);
-    Arrays.stream(inObj).forEach(nnResult -> nnResult.addRef());
-    return new Result(TensorArray.wrap(outputValues), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
-      if (inObj[0].isAlive()) {
-        final Tensor[] passback = IntStream.range(0, delta.length()).mapToObj(dataIndex -> {
-          @Nullable Tensor tensor = delta.get(dataIndex);
-          @Nonnull final Tensor backSignal = new Tensor(inputDims);
-          for (@Nonnull final Entry<Coordinate, List<int[]>> outputMapping : coordMap.entrySet()) {
-            final double outputValue = tensor.get(outputMapping.getKey());
-            for (@Nonnull final int[] inputCoord : outputMapping.getValue()) {
-              backSignal.add(inputCoord, outputValue / kernelSize);
-            }
+    return new Result(new TensorArray(outputValues),
+        (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
+          if (inObj[0].isAlive()) {
+            final Tensor[] passback = IntStream.range(0, delta.length()).mapToObj(dataIndex -> {
+              @Nullable
+              Tensor tensor = delta.get(dataIndex);
+              @Nonnull final Tensor backSignal = new Tensor(inputDims);
+              for (@Nonnull final Entry<Coordinate, List<int[]>> outputMapping : coordMap.entrySet()) {
+                final double outputValue = tensor.get(outputMapping.getKey());
+                for (@Nonnull final int[] inputCoord : outputMapping.getValue()) {
+                  backSignal.add(inputCoord, outputValue / kernelSize);
+                }
+              }
+              return backSignal;
+            }).toArray(i -> new Tensor[i]);
+            @Nonnull
+            TensorArray tensorArray = new TensorArray(passback);
+            inObj[0].accumulate(buffer, tensorArray);
           }
-          tensor.freeRef();
-          return backSignal;
-        }).toArray(i -> new Tensor[i]);
-        @Nonnull TensorArray tensorArray = TensorArray.wrap(passback);
-        inObj[0].accumulate(buffer, tensorArray);
-      }
-      delta.freeRef();
-    }) {
-
-      @Override
-      protected void _free() {
-        Arrays.stream(inObj).forEach(nnResult -> nnResult.freeRef());
-      }
+        }) {
 
       @Override
       public boolean isAlive() {
         return inObj[0].isAlive();
+      }
+
+      @Override
+      protected void _free() {
       }
     };
   }
@@ -148,8 +146,8 @@ public class AvgPoolingLayer extends LayerBase {
   }
 
   public static final class IndexMapKey {
-    int[] kernel;
-    int[] output;
+    final int[] kernel;
+    final int[] output;
 
     public IndexMapKey(final int[] kernel, final int[] output) {
       super();
@@ -193,12 +191,13 @@ public class AvgPoolingLayer extends LayerBase {
 
   private static class LayerCacheLoader extends CacheLoader<IndexMapKey, Map<Coordinate, List<int[]>>> {
     @Override
-    public Map<Coordinate, List<int[]>> load(final IndexMapKey key) {
+    public Map<Coordinate, List<int[]>> load(@NotNull final IndexMapKey key) {
       final int[] ksize = key.kernel;
       Tensor tensor = new Tensor(key.output);
-      final Map<Coordinate, List<int[]>> coordMap = tensor.coordStream(true).collect(Collectors.toMap(o -> o, o -> {
-        @Nonnull Tensor blank = new Tensor(ksize);
-        List<int[]> collect = blank.coordStream(true).map(kernelCoord -> {
+      return tensor.coordStream(true).collect(Collectors.toMap(o -> o, o -> {
+        @Nonnull
+        Tensor blank = new Tensor(ksize);
+        return blank.coordStream(true).map(kernelCoord -> {
           int[] coords = o.getCoords();
           @Nonnull final int[] r = new int[coords.length];
           for (int i = 0; i < coords.length; i++) {
@@ -206,11 +205,7 @@ public class AvgPoolingLayer extends LayerBase {
           }
           return r;
         }).collect(Collectors.toList());
-        blank.freeRef();
-        return collect;
       }));
-      tensor.freeRef();
-      return coordMap;
     }
   }
 }

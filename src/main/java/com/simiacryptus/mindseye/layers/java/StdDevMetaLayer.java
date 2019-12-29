@@ -22,6 +22,7 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.network.InnerNode;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,21 +41,22 @@ public class StdDevMetaLayer extends PipelineNetwork {
 
   public StdDevMetaLayer(final int minBatchCount) {
     super(1);
-    wrap(new AvgMetaLayer().setMinBatchCount(minBatchCount)).freeRef();
-    wrap(new AvgReducerLayer()).freeRef();
-    InnerNode square = wrap(new SqActivationLayer());
-    wrap(new SqActivationLayer(), getInput(0), square.addRef()).freeRef();
-    wrap(new AvgMetaLayer().setMinBatchCount(minBatchCount)).freeRef();
-    wrap(new AvgReducerLayer()).freeRef();
-    wrap(new SumInputsLayer(), getHead(), wrap(new LinearActivationLayer().setScale(-1).freeze(), square)).freeRef();
-    wrap(new NthPowerActivationLayer().setPower(0.5)).freeRef();
+    add(new AvgMetaLayer().setMinBatchCount(minBatchCount));
+    add(new AvgReducerLayer());
+    InnerNode square = add(new SqActivationLayer());
+    add(new SqActivationLayer(), getInput(0), square);
+    add(new AvgMetaLayer().setMinBatchCount(minBatchCount));
+    add(new AvgReducerLayer());
+    add(new SumInputsLayer(), getHead(), add(new LinearActivationLayer().setScale(-1).freeze(), square));
+    add(new NthPowerActivationLayer().setPower(0.5));
   }
 
   protected StdDevMetaLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json, rs);
   }
 
-  public static StdDevMetaLayer fromJson(final JsonObject json, Map<CharSequence, byte[]> rs) {
+  @SuppressWarnings("unused")
+  public static StdDevMetaLayer fromJson(@NotNull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new StdDevMetaLayer(json, rs);
   }
 

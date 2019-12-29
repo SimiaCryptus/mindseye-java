@@ -29,18 +29,14 @@ public abstract class RescaledSubnetLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{
-        {6, 6, 1}
-    };
+    return new int[][]{{6, 6, 1}};
   }
 
   @Nonnull
   @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
     SigmoidActivationLayer subnetwork = new SigmoidActivationLayer();
-    RescaledSubnetLayer rescaledSubnetLayer = new RescaledSubnetLayer(2, subnetwork);
-    subnetwork.freeRef();
-    return rescaledSubnetLayer;
+    return new RescaledSubnetLayer(2, subnetwork);
   }
 
   public static class Basic extends RescaledSubnetLayerTest {

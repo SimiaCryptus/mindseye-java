@@ -30,22 +30,16 @@ public abstract class StochasticSamplingSubnetLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{
-        {6, 6, 1}
-    };
+    return new int[][]{{6, 6, 1}};
   }
 
   @Nonnull
   @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
     PipelineNetwork subnetwork = new PipelineNetwork(1);
-    subnetwork.wrap(new ProductLayer(),
-        subnetwork.getInput(0),
-        subnetwork.wrap(new BinaryNoiseLayer(0.5), subnetwork.getInput(0))).freeRef();
+    subnetwork.add(new ProductLayer(), subnetwork.getInput(0), subnetwork.add(new BinaryNoiseLayer(0.5), subnetwork.getInput(0)));
 
-    StochasticSamplingSubnetLayer tileSubnetLayer = new StochasticSamplingSubnetLayer(subnetwork, 2);
-    subnetwork.freeRef();
-    return tileSubnetLayer;
+    return new StochasticSamplingSubnetLayer(subnetwork, 2);
   }
 
   public static class Basic extends StochasticSamplingSubnetLayerTest {

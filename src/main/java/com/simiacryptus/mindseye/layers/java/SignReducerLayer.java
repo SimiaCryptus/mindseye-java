@@ -39,15 +39,8 @@ public class SignReducerLayer extends DAGNetwork {
 
   public SignReducerLayer() {
     super(1);
-    final DAGNode avgInput = wrap(new AvgReducerLayer(), getInput(0));
-    head = wrap(new SigmoidActivationLayer().setBalanced(false),
-        wrap(new ProductInputsLayer(),
-            avgInput.addRef(),
-            wrap(new NthPowerActivationLayer().setPower(-1), (DAGNode) wrap(new NthPowerActivationLayer().setPower(0.5),
-                wrap(new SumInputsLayer(),
-                    wrap(new AvgReducerLayer(), wrap(new SqActivationLayer(), getInput(0))),
-                    wrap(new LinearActivationLayer().setScale(-1), wrap(new SqActivationLayer(), avgInput))
-                )))));
+    final DAGNode avgInput = add(new AvgReducerLayer(), getInput(0));
+    head = add(new SigmoidActivationLayer().setBalanced(false), add(new ProductInputsLayer(), avgInput, add(new NthPowerActivationLayer().setPower(-1), (DAGNode) add(new NthPowerActivationLayer().setPower(0.5), add(new SumInputsLayer(), add(new AvgReducerLayer(), add(new SqActivationLayer(), getInput(0))), add(new LinearActivationLayer().setScale(-1), add(new SqActivationLayer(), avgInput)))))));
   }
 
   protected SignReducerLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -55,19 +48,18 @@ public class SignReducerLayer extends DAGNetwork {
     head = getNodeById(UUID.fromString(json.getAsJsonPrimitive("head").getAsString()));
   }
 
+  @Override
+  public DAGNode getHead() {
+    return head;
+  }
+
+  @SuppressWarnings("unused")
   public static Layer fromJson(@Nonnull final JsonObject inner, Map<CharSequence, byte[]> rs) {
     return new SignReducerLayer(inner, rs);
   }
 
   @Override
-  public DAGNode getHead() {
-    head.addRef();
-    return head;
-  }
-
-  @Override
   protected void _free() {
-    head.freeRef();
     super._free();
   }
 }

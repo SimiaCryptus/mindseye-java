@@ -26,11 +26,6 @@ import javax.annotation.Nonnull;
 import java.util.Random;
 
 public abstract class MaxMetaLayerTest extends MetaLayerTestBase {
-  @Override
-  protected Layer lossLayer() {
-    return new MeanSqLossLayer();
-  }
-
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
@@ -51,6 +46,11 @@ public abstract class MaxMetaLayerTest extends MetaLayerTestBase {
     return new int[][]{
         {3}
     };
+  }
+
+  @Override
+  protected Layer lossLayer() {
+    return new MeanSqLossLayer();
   }
 
   public static class Basic extends MaxMetaLayerTest {

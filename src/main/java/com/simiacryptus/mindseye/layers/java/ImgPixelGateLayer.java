@@ -41,11 +41,11 @@ public class ImgPixelGateLayer extends LayerBase {
     super();
   }
 
-
   protected ImgPixelGateLayer(@Nonnull final JsonObject json) {
     super(json);
   }
 
+  @SuppressWarnings("unused")
   public static ImgPixelGateLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ImgPixelGateLayer(json);
   }
@@ -61,68 +61,50 @@ public class ImgPixelGateLayer extends LayerBase {
   public Result eval(@Nonnull final Result input, @Nonnull final Result gate) {
     final TensorList inputData = input.getData();
     final TensorList gateData = gate.getData();
-    inputData.addRef();
-    input.addRef();
-    gate.addRef();
-    gateData.addRef();
     int[] inputDims = inputData.getDimensions();
     assert 3 == inputDims.length;
-    return new Result(TensorArray.wrap(IntStream.range(0, inputData.length()).mapToObj(i -> {
+    return new Result(new TensorArray(IntStream.range(0, inputData.length()).mapToObj(i -> {
       Tensor inputTensor = inputData.get(i);
       Tensor gateTensor = gateData.get(gateData.length() == 1 ? 0 : i);
-      Tensor result = new Tensor(inputDims[0], inputDims[1], inputDims[2]).setByCoord(c -> {
+      return new Tensor(inputDims[0], inputDims[1], inputDims[2]).setByCoord(c -> {
         int[] coords = c.getCoords();
         return inputTensor.get(coords[0], coords[1], coords[2]) * gateTensor.get(coords[0], coords[1], 0);
       });
-      inputTensor.freeRef();
-      gateTensor.freeRef();
-      return result;
     }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
       if (input.isAlive()) {
-        @Nonnull TensorArray tensorArray = TensorArray.wrap(IntStream.range(0, delta.length()).mapToObj(i -> {
+        @Nonnull
+        TensorArray tensorArray = new TensorArray(IntStream.range(0, delta.length()).mapToObj(i -> {
           Tensor deltaTensor = delta.get(i);
           Tensor gateTensor = gateData.get(gateData.length() == 1 ? 0 : i);
-          Tensor result = new Tensor(input.getData().getDimensions())
-              .setByCoord(c -> {
-                int[] coords = c.getCoords();
-                return deltaTensor.get(coords[0], coords[1], coords[2]) * gateTensor.get(coords[0], coords[1], 0);
-              });
-          deltaTensor.freeRef();
-          gateTensor.freeRef();
-          return result;
+          return new Tensor(input.getData().getDimensions()).setByCoord(c -> {
+            int[] coords = c.getCoords();
+            return deltaTensor.get(coords[0], coords[1], coords[2]) * gateTensor.get(coords[0], coords[1], 0);
+          });
         }).toArray(i -> new Tensor[i]));
         input.accumulate(buffer, tensorArray);
       }
       if (gate.isAlive()) {
-        @Nonnull TensorArray tensorArray = TensorArray.wrap(IntStream.range(0, delta.length()).mapToObj(i -> {
+        @Nonnull
+        TensorArray tensorArray = new TensorArray(IntStream.range(0, delta.length()).mapToObj(i -> {
           Tensor deltaTensor = delta.get(i);
           Tensor inputTensor = inputData.get(i);
-          Tensor result = new Tensor(gateData.getDimensions())
+          return new Tensor(gateData.getDimensions())
               .setByCoord(c -> IntStream.range(0, inputDims[2]).mapToDouble(b -> {
                 int[] coords = c.getCoords();
                 return deltaTensor.get(coords[0], coords[1], b) * inputTensor.get(coords[0], coords[1], b);
               }).sum());
-          deltaTensor.freeRef();
-          inputTensor.freeRef();
-          return result;
         }).toArray(i -> new Tensor[i]));
         gate.accumulate(buffer, tensorArray);
       }
-      delta.freeRef();
     }) {
-
-      @Override
-      protected void _free() {
-        inputData.freeRef();
-        input.freeRef();
-        gate.freeRef();
-        gateData.freeRef();
-      }
-
 
       @Override
       public boolean isAlive() {
         return input.isAlive() || !isFrozen();
+      }
+
+      @Override
+      protected void _free() {
       }
     };
   }
@@ -130,8 +112,7 @@ public class ImgPixelGateLayer extends LayerBase {
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull final JsonObject json = super.getJsonStub();
-    return json;
+    return super.getJsonStub();
   }
 
   @Nonnull

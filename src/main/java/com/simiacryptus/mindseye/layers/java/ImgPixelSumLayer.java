@@ -41,63 +41,55 @@ public class ImgPixelSumLayer extends LayerBase {
     super();
   }
 
-
   protected ImgPixelSumLayer(@Nonnull final JsonObject json) {
     super(json);
   }
 
+  @SuppressWarnings("unused")
   public static ImgPixelSumLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ImgPixelSumLayer(json);
   }
 
   @Nonnull
   @Override
-  public Result evalAndFree(final Result... inObj) {
+  public Result eval(final Result... inObj) {
     assert 1 == inObj.length;
-    return evalAndFree(inObj[0]);
+    return eval(inObj[0]);
   }
 
   @Nonnull
-  public Result evalAndFree(@Nonnull final Result input) {
+  public Result eval(@Nonnull final Result input) {
     final TensorList inputData = input.getData();
     int[] inputDims = inputData.getDimensions();
     assert 3 == inputDims.length;
-    return new Result(TensorArray.wrap(inputData.stream().map(tensor -> {
-      Tensor result = new Tensor(inputDims[0], inputDims[1], 1).setByCoord(c -> {
+    return new Result(new TensorArray(inputData.stream().map(tensor -> {
+      return new Tensor(inputDims[0], inputDims[1], 1).setByCoord(c -> {
         return IntStream.range(0, inputDims[2]).mapToDouble(i -> {
           int[] coords = c.getCoords();
           return tensor.get(coords[0], coords[1], i);
         }).sum();
       });
-      tensor.freeRef();
-      return result;
     }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
       if (input.isAlive()) {
-        @Nonnull TensorArray tensorArray = TensorArray.wrap(delta.stream().map(deltaTensor -> {
+        @Nonnull
+        TensorArray tensorArray = new TensorArray(delta.stream().map(deltaTensor -> {
           int[] deltaDims = deltaTensor.getDimensions();
-          Tensor result = new Tensor(deltaDims[0], deltaDims[1], inputDims[2])
-              .setByCoord(c -> {
-                int[] coords = c.getCoords();
-                return deltaTensor.get(coords[0], coords[1], 0);
-              });
-          deltaTensor.freeRef();
-          return result;
+          return new Tensor(deltaDims[0], deltaDims[1], inputDims[2]).setByCoord(c -> {
+            int[] coords = c.getCoords();
+            return deltaTensor.get(coords[0], coords[1], 0);
+          });
         }).toArray(i -> new Tensor[i]));
         input.accumulate(buffer, tensorArray);
       }
-      delta.freeRef();
     }) {
-
-      @Override
-      protected void _free() {
-        inputData.freeRef();
-        input.freeRef();
-      }
-
 
       @Override
       public boolean isAlive() {
         return input.isAlive() || !isFrozen();
+      }
+
+      @Override
+      protected void _free() {
       }
     };
   }
@@ -105,8 +97,7 @@ public class ImgPixelSumLayer extends LayerBase {
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull final JsonObject json = super.getJsonStub();
-    return json;
+    return super.getJsonStub();
   }
 
   @Nonnull

@@ -30,18 +30,18 @@ public class SubBatchLayerTest extends LayerTestBase {
 
   private final Layer layer = SubBatchLayer.wrap(new SoftmaxLayer());
 
+  @Nullable
+  @Override
+  public Class<? extends Layer> getReferenceLayerClass() {
+    return null;
+  }
+
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
     return new int[][]{
         {5}
     };
-  }
-
-  @Nullable
-  @Override
-  public Class<? extends Layer> getReferenceLayerClass() {
-    return null;
   }
 
   @Nonnull

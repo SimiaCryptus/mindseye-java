@@ -41,11 +41,11 @@ public class ImgPixelSoftmaxLayer extends LayerBase {
     super();
   }
 
-
   protected ImgPixelSoftmaxLayer(@Nonnull final JsonObject json) {
     super(json);
   }
 
+  @SuppressWarnings("unused")
   public static ImgPixelSoftmaxLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ImgPixelSoftmaxLayer(json);
   }
@@ -60,123 +60,83 @@ public class ImgPixelSoftmaxLayer extends LayerBase {
   @Nonnull
   public Result eval(@Nonnull final Result input) {
     final TensorList inputData = input.getData();
-    inputData.addRef();
-    input.addRef();
     int[] inputDims = inputData.getDimensions();
     assert 3 == inputDims.length;
     final int inputBands = inputDims[2];
     final int width = inputDims[0];
     final int height = inputDims[1];
-    TensorArray maxima = TensorArray.wrap(inputData.stream().map(inputTensor -> {
-      try {
-        return new Tensor(width, height, 1).setByCoord(c -> {
-          return IntStream.range(0, inputBands).mapToDouble(band -> {
-            int[] coords = c.getCoords();
-            return inputTensor.get(coords[0], coords[1], band);
-          }).max().getAsDouble();
-        });
-      } finally {
-        inputTensor.freeRef();
-      }
+    TensorArray maxima = new TensorArray(inputData.stream().map(inputTensor -> {
+      return new Tensor(width, height, 1).setByCoord(c -> {
+        return IntStream.range(0, inputBands).mapToDouble(band -> {
+          int[] coords = c.getCoords();
+          return inputTensor.get(coords[0], coords[1], band);
+        }).max().getAsDouble();
+      });
     }).toArray(i -> new Tensor[i]));
-    TensorArray exps = TensorArray.wrap(IntStream.range(0, inputData.length()).mapToObj(index -> {
+    TensorArray exps = new TensorArray(IntStream.range(0, inputData.length()).mapToObj(index -> {
       final Tensor inputTensor = inputData.get(index);
       Tensor maxTensor = maxima.get(index);
-      try {
-        return new Tensor(inputDims).setByCoord(c -> {
+      return new Tensor(inputDims).setByCoord(c -> {
+        int[] coords = c.getCoords();
+        return Math.exp(inputTensor.get(c) - maxTensor.get(coords[0], coords[1], 0));
+      });
+    }).toArray(i -> new Tensor[i]));
+    TensorArray sums = new TensorArray(exps.stream().map(expTensor -> {
+      return new Tensor(width, height, 1).setByCoord(c -> {
+        return IntStream.range(0, inputBands).mapToDouble(band -> {
           int[] coords = c.getCoords();
-          return Math.exp(inputTensor.get(c) - maxTensor.get(coords[0], coords[1], 0));
-        });
-      } finally {
-        inputTensor.freeRef();
-        maxTensor.freeRef();
-      }
+          return expTensor.get(coords[0], coords[1], band);
+        }).sum();
+      });
     }).toArray(i -> new Tensor[i]));
-    maxima.freeRef();
-    TensorArray sums = TensorArray.wrap(exps.stream().map(expTensor -> {
-      try {
-        return new Tensor(width, height, 1).setByCoord(c -> {
-          return IntStream.range(0, inputBands).mapToDouble(band -> {
-            int[] coords = c.getCoords();
-            return expTensor.get(coords[0], coords[1], band);
-          }).sum();
-        });
-      } finally {
-        expTensor.freeRef();
-      }
-    }).toArray(i -> new Tensor[i]));
-    TensorArray output = TensorArray.wrap(IntStream.range(0, inputData.length()).mapToObj(index -> {
+    TensorArray output = new TensorArray(IntStream.range(0, inputData.length()).mapToObj(index -> {
       Tensor sumTensor = sums.get(index);
       Tensor expTensor = exps.get(index);
-      try {
-        return new Tensor(inputDims).setByCoord(c -> {
-          int[] coords = c.getCoords();
-          return (expTensor.get(c) / sumTensor.get(coords[0], coords[1], 0));
-        });
-      } finally {
-        sumTensor.freeRef();
-        expTensor.freeRef();
-      }
+      return new Tensor(inputDims).setByCoord(c -> {
+        int[] coords = c.getCoords();
+        return (expTensor.get(c) / sumTensor.get(coords[0], coords[1], 0));
+      });
     }).toArray(i -> new Tensor[i]));
     return new Result(output, (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
       if (input.isAlive()) {
 
-        TensorArray dots = TensorArray.wrap(IntStream.range(0, inputData.length()).mapToObj(index -> {
+        TensorArray dots = new TensorArray(IntStream.range(0, inputData.length()).mapToObj(index -> {
           final Tensor deltaTensor = delta.get(index);
           Tensor expTensor = exps.get(index);
-          try {
-            return new Tensor(width, height, 1).setByCoord(c -> {
-              return IntStream.range(0, inputBands).mapToDouble(band -> {
-                int[] coords = c.getCoords();
-                return expTensor.get(coords[0], coords[1], band) * deltaTensor.get(coords[0], coords[1], band);
-              }).sum();
-            });
-          } finally {
-            expTensor.freeRef();
-            deltaTensor.freeRef();
-          }
+          return new Tensor(width, height, 1).setByCoord(c -> {
+            return IntStream.range(0, inputBands).mapToDouble(band -> {
+              int[] coords = c.getCoords();
+              return expTensor.get(coords[0], coords[1], band) * deltaTensor.get(coords[0], coords[1], band);
+            }).sum();
+          });
         }).toArray(i -> new Tensor[i]));
 
-        TensorArray passback = TensorArray.wrap(IntStream.range(0, inputData.length()).mapToObj(index -> {
+        TensorArray passback = new TensorArray(IntStream.range(0, inputData.length()).mapToObj(index -> {
           final Tensor deltaTensor = delta.get(index);
           final Tensor expTensor = exps.get(index);
           Tensor sumTensor = sums.get(index);
           Tensor dotTensor = dots.get(index);
-          try {
-            return new Tensor(inputDims).setByCoord(c -> {
-              int[] coords = c.getCoords();
-              double sum = sumTensor.get(coords[0], coords[1], 0);
-              double dot = dotTensor.get(coords[0], coords[1], 0);
-              double deltaValue = deltaTensor.get(c);
-              double expValue = expTensor.get(c);
-              return (sum * deltaValue - dot) * expValue / (sum * sum);
-            });
-          } finally {
-            deltaTensor.freeRef();
-            expTensor.freeRef();
-            sumTensor.freeRef();
-            dotTensor.freeRef();
-          }
+          return new Tensor(inputDims).setByCoord(c -> {
+            int[] coords = c.getCoords();
+            double sum = sumTensor.get(coords[0], coords[1], 0);
+            double dot = dotTensor.get(coords[0], coords[1], 0);
+            double deltaValue = deltaTensor.get(c);
+            double expValue = expTensor.get(c);
+            return (sum * deltaValue - dot) * expValue / (sum * sum);
+          });
         }).toArray(i -> new Tensor[i]));
 
         input.accumulate(buffer, passback);
-        dots.freeRef();
       }
-      delta.freeRef();
     }) {
-
-      @Override
-      protected void _free() {
-        inputData.freeRef();
-        input.freeRef();
-        sums.freeRef();
-        exps.freeRef();
-      }
-
 
       @Override
       public boolean isAlive() {
         return input.isAlive() || !isFrozen();
+      }
+
+      @Override
+      protected void _free() {
       }
     };
   }
@@ -184,8 +144,7 @@ public class ImgPixelSoftmaxLayer extends LayerBase {
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull final JsonObject json = super.getJsonStub();
-    return json;
+    return super.getJsonStub();
   }
 
   @Nonnull

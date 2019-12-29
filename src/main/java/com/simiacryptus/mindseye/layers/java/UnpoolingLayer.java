@@ -24,12 +24,14 @@ import com.simiacryptus.mindseye.lang.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.IntStream;
 
 @SuppressWarnings("serial")
 public class UnpoolingLayer extends LayerBase {
-
 
   private final int sizeX;
   private final int sizeY;
@@ -64,17 +66,14 @@ public class UnpoolingLayer extends LayerBase {
     for (int z = 0; z < inDim[2]; z++) {
       for (int y = 0; y < inDim[1]; y += kernelSizeY) {
         for (int x = 0; x < inDim[0]; x += kernelSizeX) {
-          int finalX = x;
-          int finalY = y;
-          int finalZ = z;
           int xx = kernelSizeX / 2;
           int yy = kernelSizeY / 2;
-          final double value = inputData.get((int) (finalX + xx), finalY + yy, finalZ);
-//          final double value = IntStream.range(0, kernelSizeX).mapToDouble(i -> i).flatMap(xx -> {
-//            return IntStream.range(0, kernelSizeY).mapToDouble(yy -> {
-//              return inputData.get((int) (finalX + xx), finalY + yy, finalZ);
-//            });
-//          }).sum();
+          final double value = inputData.get(x + xx, y + yy, z);
+          //          final double value = IntStream.range(0, kernelSizeX).mapToDouble(i -> i).flatMap(xx -> {
+          //            return IntStream.range(0, kernelSizeY).mapToDouble(yy -> {
+          //              return inputData.get((int) (finalX + xx), finalY + yy, finalZ);
+          //            });
+          //          }).sum();
           outputData.set(x / kernelSizeX, y / kernelSizeY, z, value);
         }
       }
@@ -102,17 +101,18 @@ public class UnpoolingLayer extends LayerBase {
           int xx = kernelSizeX / 2;
           int yy = kernelSizeY / 2;
           outputData.set(x + xx, y + yy, z, value);
-//          for (int xx = 0; xx < kernelSizeX; xx++) {
-//            for (int yy = 0; yy < kernelSizeY; yy++) {
-//              outputData.set(x + xx, y + yy, z, value);
-//            }
-//          }
+          //          for (int xx = 0; xx < kernelSizeX; xx++) {
+          //            for (int yy = 0; yy < kernelSizeY; yy++) {
+          //              outputData.set(x + xx, y + yy, z, value);
+          //            }
+          //          }
         }
       }
     }
     return outputData;
   }
 
+  @SuppressWarnings("unused")
   public static UnpoolingLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new UnpoolingLayer(json);
   }
@@ -121,50 +121,36 @@ public class UnpoolingLayer extends LayerBase {
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     //assert Arrays.stream(inObj).flatMapToDouble(input-> input.getData().stream().flatMapToDouble(x-> Arrays.stream(x.getData()))).allMatch(v->Double.isFinite(v));
-    Arrays.stream(inObj).forEach(nnResult -> nnResult.addRef());
-
     final Result input = inObj[0];
     final TensorList batch = input.getData();
     @Nonnull final int[] inputDims = batch.getDimensions();
     assert 3 == inputDims.length;
     Tensor outputDims;
-    outputDims = new Tensor(inputDims[0] * sizeX,
-        inputDims[1] * sizeY,
-        inputDims[2]);
-    TensorArray data = TensorArray.wrap(IntStream.range(0, batch.length()).parallel()
-        .mapToObj(dataIndex -> {
-          Tensor inputData = batch.get(dataIndex);
-          Tensor tensor = UnpoolingLayer.copyExpand(inputData, outputDims.copy());
-          inputData.freeRef();
-          return tensor;
-        })
-        .toArray(i -> new Tensor[i]));
-    outputDims.freeRef();
+    outputDims = new Tensor(inputDims[0] * sizeX, inputDims[1] * sizeY, inputDims[2]);
+    TensorArray data = new TensorArray(IntStream.range(0, batch.length()).parallel().mapToObj(dataIndex -> {
+      Tensor inputData = batch.get(dataIndex);
+      return UnpoolingLayer.copyExpand(inputData, outputDims.copy());
+    }).toArray(i -> new Tensor[i]));
     return new Result(data, (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList error) -> {
       //assert error.stream().flatMapToDouble(x-> Arrays.stream(x.getData())).allMatch(v->Double.isFinite(v));
       if (input.isAlive()) {
-        @Nonnull TensorArray tensorArray = TensorArray.wrap(IntStream.range(0, error.length()).parallel()
-            .mapToObj(dataIndex -> {
-              @Nonnull final Tensor passback = new Tensor(inputDims);
-              @Nullable final Tensor err = error.get(dataIndex);
-              Tensor tensor = UnpoolingLayer.copyCondense(err, passback);
-              err.freeRef();
-              return tensor;
-            }).toArray(i -> new Tensor[i]));
+        @Nonnull
+        TensorArray tensorArray = new TensorArray(IntStream.range(0, error.length()).parallel().mapToObj(dataIndex -> {
+          @Nonnull final Tensor passback = new Tensor(inputDims);
+          @Nullable final Tensor err = error.get(dataIndex);
+          return UnpoolingLayer.copyCondense(err, passback);
+        }).toArray(i -> new Tensor[i]));
         input.accumulate(buffer, tensorArray);
       }
-      error.freeRef();
     }) {
-
-      @Override
-      protected void _free() {
-        Arrays.stream(inObj).forEach(nnResult -> nnResult.freeRef());
-      }
-
 
       @Override
       public boolean isAlive() {
         return input.isAlive() || !isFrozen();
+      }
+
+      @Override
+      protected void _free() {
       }
     };
   }
@@ -183,6 +169,5 @@ public class UnpoolingLayer extends LayerBase {
   public List<double[]> state() {
     return new ArrayList<>();
   }
-
 
 }

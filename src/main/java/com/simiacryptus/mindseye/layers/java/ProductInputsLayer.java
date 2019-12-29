@@ -20,7 +20,6 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
-import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.mindseye.lang.*;
 
 import javax.annotation.Nonnull;
@@ -41,81 +40,57 @@ public class ProductInputsLayer extends LayerBase {
     super(id);
   }
 
+  @SuppressWarnings("unused")
   public static ProductInputsLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ProductInputsLayer(json);
   }
 
   @Nonnull
   @Override
-  public Result evalAndFree(@Nonnull final Result... inObj) {
+  public Result eval(@Nonnull final Result... inObj) {
     assert inObj.length > 1;
     for (int i = 1; i < inObj.length; i++) {
       final int dim0 = Tensor.length(inObj[0].getData().getDimensions());
       final int dimI = Tensor.length(inObj[i].getData().getDimensions());
       if (dim0 != 1 && dimI != 1 && dim0 != dimI) {
-        throw new IllegalArgumentException(Arrays.toString(inObj[0].getData().getDimensions()) + " != " + Arrays.toString(inObj[i].getData().getDimensions()));
+        throw new IllegalArgumentException(Arrays.toString(inObj[0].getData().getDimensions()) + " != "
+            + Arrays.toString(inObj[i].getData().getDimensions()));
       }
     }
-    return new Result(Arrays.stream(inObj).parallel().map(x -> x.getData().addRef()).reduce((l, r) -> {
-      TensorArray productArray = TensorArray.wrap(IntStream.range(0, Math.max(l.length(), r.length())).parallel()
-          .mapToObj(i1 -> {
+    return new Result(Arrays.stream(inObj).parallel().map(x -> x.getData()).reduce((l, r) -> {
+      return new TensorArray(IntStream.range(0, Math.max(l.length(), r.length())).parallel().mapToObj(i1 -> {
             @Nullable final Tensor left = l.get(1 == l.length() ? 0 : i1);
             @Nullable final Tensor right = r.get(1 == r.length() ? 0 : i1);
-            Tensor product = Tensor.product(left, right);
-            left.freeRef();
-            right.freeRef();
-            return product;
+            return Tensor.product(left, right);
           }).toArray(i -> new Tensor[i]));
-      l.freeRef();
-      r.freeRef();
-      return productArray;
     }).get(), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
       for (@Nonnull final Result input : inObj) {
         if (input.isAlive()) {
-          @Nonnull TensorList passback = Arrays.stream(inObj).parallel().map(x -> {
-            TensorList tensorList = x == input ? delta : x.getData();
-            tensorList.addRef();
-            return tensorList;
+          @Nonnull
+          TensorList passback = Arrays.stream(inObj).parallel().map(x -> {
+            return x == input ? delta : x.getData();
           }).reduce((l, r) -> {
-            TensorArray productList = TensorArray.wrap(IntStream.range(0, Math.max(l.length(), r.length())).parallel()
-                .mapToObj(j -> {
-                  @Nullable final Tensor left = l.get(1 == l.length() ? 0 : j);
-                  @Nullable final Tensor right = r.get(1 == r.length() ? 0 : j);
-                  Tensor product = Tensor.product(left, right);
-                  left.freeRef();
-                  right.freeRef();
-                  return product;
-                }).toArray(j -> new Tensor[j]));
-            l.freeRef();
-            r.freeRef();
-            return productList;
+            return new TensorArray(IntStream.range(0, Math.max(l.length(), r.length())).parallel().mapToObj(j -> {
+                              @Nullable final Tensor left = l.get(1 == l.length() ? 0 : j);
+                              @Nullable final Tensor right = r.get(1 == r.length() ? 0 : j);
+                              return Tensor.product(left, right);
+                            }).toArray(j -> new Tensor[j]));
           }).get();
           final TensorList inputData = input.getData();
           if (1 == inputData.length() && 1 < passback.length()) {
-            TensorArray newValue = TensorArray.wrap(passback.stream().reduce((a, b) -> {
-              @Nullable Tensor c = a.addAndFree(b);
-              b.freeRef();
-              return c;
-            }).get());
-            passback.freeRef();
-            passback = newValue;
+            passback = new TensorArray(passback.stream().reduce((a, b) -> {
+                      return a.addAndFree(b);
+                    }).get());
           }
           if (1 == Tensor.length(inputData.getDimensions()) && 1 < Tensor.length(passback.getDimensions())) {
-            TensorArray newValue = TensorArray.wrap(passback.stream()
-                .map((a) -> {
-                  @Nonnull Tensor b = new Tensor(a.sum());
-                  a.freeRef();
-                  return b;
-                }).toArray(i -> new Tensor[i]));
-            passback.freeRef();
-            passback = newValue;
+            passback = new TensorArray(passback.stream().map((a) -> {
+                      return new Tensor(a.sum());
+                    }).toArray(i -> new Tensor[i]));
           }
           input.accumulate(buffer, passback);
         }
       }
-      delta.freeRef();
     }) {
-
 
       @Override
       public boolean isAlive() {
@@ -128,8 +103,6 @@ public class ProductInputsLayer extends LayerBase {
 
       @Override
       protected void _free() {
-        Arrays.stream(inObj).map(Result::getData).forEach(ReferenceCounting::freeRef);
-        Arrays.stream(inObj).forEach(ReferenceCounting::freeRef);
       }
 
     };

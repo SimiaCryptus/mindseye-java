@@ -51,34 +51,32 @@ public class ReshapeLayer extends LayerBase {
     outputDims = JsonUtil.getIntArray(json.getAsJsonArray("outputDims"));
   }
 
+  @SuppressWarnings("unused")
   public static ReshapeLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ReshapeLayer(json, rs);
   }
 
   @Nullable
   @Override
-  public Result evalAndFree(@Nonnull final Result... inObj) {
+  public Result eval(@Nonnull final Result... inObj) {
     assert 1 == inObj.length;
     TensorList data = inObj[0].getData();
-    @Nonnull int[] inputDims = data.getDimensions();
+    @Nonnull
+    int[] inputDims = data.getDimensions();
     ReshapedTensorList reshapedTensorList = new ReshapedTensorList(data, outputDims);
-    data.freeRef();
     return new Result(reshapedTensorList, (DeltaSet<UUID> buffer, TensorList delta) -> {
-      @Nonnull ReshapedTensorList tensorList = new ReshapedTensorList(delta, inputDims);
+      @Nonnull
+      ReshapedTensorList tensorList = new ReshapedTensorList(delta, inputDims);
       inObj[0].accumulate(buffer, tensorList);
-      delta.freeRef();
     }) {
-
-      @Override
-      protected void _free() {
-        for (@Nonnull Result result : inObj) {
-          result.freeRef();
-        }
-      }
 
       @Override
       public boolean isAlive() {
         return inObj[0].isAlive();
+      }
+
+      @Override
+      protected void _free() {
       }
     };
 

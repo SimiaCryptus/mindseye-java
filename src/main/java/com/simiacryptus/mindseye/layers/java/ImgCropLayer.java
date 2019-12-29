@@ -30,7 +30,6 @@ import java.util.stream.IntStream;
 @SuppressWarnings("serial")
 public class ImgCropLayer extends LayerBase {
 
-
   private final int sizeX;
   private final int sizeY;
 
@@ -47,7 +46,7 @@ public class ImgCropLayer extends LayerBase {
   }
 
   @Nonnull
-  public static Tensor copy(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData) {
+  public static void copy(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData) {
     @Nonnull final int[] inDim = inputData.getDimensions();
     @Nonnull final int[] outDim = outputData.getDimensions();
     assert 3 == inDim.length;
@@ -77,9 +76,9 @@ public class ImgCropLayer extends LayerBase {
       }
       outputData.set(c, value);
     });
-    return outputData;
   }
 
+  @SuppressWarnings("unused")
   public static ImgCropLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ImgCropLayer(json);
   }
@@ -87,42 +86,35 @@ public class ImgCropLayer extends LayerBase {
   @Nonnull
   @Override
   public Result eval(@Nonnull final Result... inObj) {
-    Arrays.stream(inObj).forEach(nnResult -> nnResult.addRef());
     final Result input = inObj[0];
     final TensorList batch = input.getData();
     @Nonnull final int[] inputDims = batch.getDimensions();
     assert 3 == inputDims.length;
-    return new Result(TensorArray.wrap(IntStream.range(0, batch.length()).parallel()
-        .mapToObj(dataIndex -> {
-          @Nonnull final Tensor outputData = new Tensor(sizeX, sizeY, inputDims[2]);
-          Tensor inputData = batch.get(dataIndex);
-          ImgCropLayer.copy(inputData, outputData);
-          inputData.freeRef();
-          return outputData;
-        })
-        .toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList error) -> {
+    return new Result(new TensorArray(IntStream.range(0, batch.length()).parallel().mapToObj(dataIndex -> {
+      @Nonnull final Tensor outputData = new Tensor(sizeX, sizeY, inputDims[2]);
+      Tensor inputData = batch.get(dataIndex);
+      ImgCropLayer.copy(inputData, outputData);
+      return outputData;
+    }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList error) -> {
       if (input.isAlive()) {
-        @Nonnull TensorArray tensorArray = TensorArray.wrap(IntStream.range(0, error.length()).parallel()
-            .mapToObj(dataIndex -> {
-              @Nullable final Tensor err = error.get(dataIndex);
-              @Nonnull final Tensor passback = new Tensor(inputDims);
-              copy(err, passback);
-              err.freeRef();
-              return passback;
-            }).toArray(i -> new Tensor[i]));
+        @Nonnull
+        TensorArray tensorArray = new TensorArray(IntStream.range(0, error.length()).parallel().mapToObj(dataIndex -> {
+          @Nullable final Tensor err = error.get(dataIndex);
+          @Nonnull final Tensor passback = new Tensor(inputDims);
+          copy(err, passback);
+          return passback;
+        }).toArray(i -> new Tensor[i]));
         input.accumulate(buffer, tensorArray);
       }
-      error.freeRef();
     }) {
-
-      @Override
-      protected void _free() {
-        Arrays.stream(inObj).forEach(nnResult -> nnResult.freeRef());
-      }
 
       @Override
       public boolean isAlive() {
         return input.isAlive() || !isFrozen();
+      }
+
+      @Override
+      protected void _free() {
       }
     };
   }
@@ -141,6 +133,5 @@ public class ImgCropLayer extends LayerBase {
   public List<double[]> state() {
     return new ArrayList<>();
   }
-
 
 }

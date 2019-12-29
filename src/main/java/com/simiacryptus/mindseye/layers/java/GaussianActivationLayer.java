@@ -46,8 +46,18 @@ public final class GaussianActivationLayer extends SimpleActivationLayer<Gaussia
     stddev = id.get("stddev").getAsDouble();
   }
 
+  @SuppressWarnings("unused")
   public static GaussianActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new GaussianActivationLayer(json);
+  }
+
+  @Nonnull
+  @Override
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
+    @Nonnull final JsonObject json = super.getJsonStub();
+    json.addProperty("mean", mean);
+    json.addProperty("stddev", stddev);
+    return json;
   }
 
   @Override
@@ -78,15 +88,6 @@ public final class GaussianActivationLayer extends SimpleActivationLayer<Gaussia
       return GaussianActivationLayer.MAX_F;
     }
     return Math.exp(x);
-  }
-
-  @Nonnull
-  @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull final JsonObject json = super.getJsonStub();
-    json.addProperty("mean", mean);
-    json.addProperty("stddev", stddev);
-    return json;
   }
 
 }

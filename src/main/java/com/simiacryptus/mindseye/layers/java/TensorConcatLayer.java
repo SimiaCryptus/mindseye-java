@@ -43,9 +43,20 @@ public class TensorConcatLayer extends LayerBase {
   protected TensorConcatLayer(@Nonnull final JsonObject json) {
     super(json);
     JsonElement maxBands = json.get("maxBands");
-    if (null != maxBands) setMaxBands(maxBands.getAsInt());
+    if (null != maxBands)
+      setMaxBands(maxBands.getAsInt());
   }
 
+  public int getMaxBands() {
+    return maxBands;
+  }
+
+  @Nonnull
+  public void setMaxBands(int maxBands) {
+    this.maxBands = maxBands;
+  }
+
+  @SuppressWarnings("unused")
   public static TensorConcatLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new TensorConcatLayer(json);
   }
@@ -53,12 +64,11 @@ public class TensorConcatLayer extends LayerBase {
   @Nullable
   @Override
   public Result eval(@Nonnull final Result... inObj) {
-    Arrays.stream(inObj).forEach(nnResult -> nnResult.addRef());
     final int numBatches = inObj[0].getData().length();
-    assert Arrays.stream(inObj).allMatch(x -> x.getData().length() == numBatches) : "All inputs must use same batch size";
+    assert Arrays.stream(inObj)
+        .allMatch(x -> x.getData().length() == numBatches) : "All inputs must use same batch size";
     int[] outputDims = new int[]{
-        Arrays.stream(inObj).mapToInt(x -> Tensor.length(x.getData().getDimensions())).sum()
-    };
+        Arrays.stream(inObj).mapToInt(x -> Tensor.length(x.getData().getDimensions())).sum()};
 
     @Nonnull final List<Tensor> outputTensors = new ArrayList<>();
     for (int b = 0; b < numBatches; b++) {
@@ -66,57 +76,52 @@ public class TensorConcatLayer extends LayerBase {
       int pos = 0;
       @Nullable final double[] outputTensorData = outputTensor.getData();
       for (int i = 0; i < inObj.length; i++) {
-        @Nullable Tensor tensor = inObj[i].getData().get(b);
+        @Nullable
+        Tensor tensor = inObj[i].getData().get(b);
         @Nullable final double[] data = tensor.getData();
         System.arraycopy(data, 0, outputTensorData, pos, Math.min(data.length, outputTensorData.length - pos));
         pos += data.length;
-        tensor.freeRef();
       }
       outputTensors.add(outputTensor);
     }
-    return new Result(TensorArray.wrap(outputTensors.toArray(new Tensor[]{})), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList data) -> {
-      assert numBatches == data.length();
+    return new Result(new TensorArray(outputTensors.toArray(new Tensor[]{})),
+        (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList data) -> {
+          assert numBatches == data.length();
 
-      @Nonnull final List<Tensor[]> splitBatches = new ArrayList<>();
-      for (int b = 0; b < numBatches; b++) {
-        @Nullable final Tensor tensor = data.get(b);
-        @Nonnull final Tensor[] outputTensors2 = new Tensor[inObj.length];
-        int pos = 0;
-        for (int i = 0; i < inObj.length; i++) {
-          @Nonnull final Tensor dest = new Tensor(inObj[i].getData().getDimensions());
-          @Nullable double[] tensorData = tensor.getData();
-          System.arraycopy(tensorData, pos, dest.getData(), 0, Math.min(dest.length(), tensorData.length - pos));
-          pos += dest.length();
-          outputTensors2[i] = dest;
-        }
-        tensor.freeRef();
-        splitBatches.add(outputTensors2);
-      }
+          @Nonnull final List<Tensor[]> splitBatches = new ArrayList<>();
+          for (int b = 0; b < numBatches; b++) {
+            @Nullable final Tensor tensor = data.get(b);
+            @Nonnull final Tensor[] outputTensors2 = new Tensor[inObj.length];
+            int pos = 0;
+            for (int i = 0; i < inObj.length; i++) {
+              @Nonnull final Tensor dest = new Tensor(inObj[i].getData().getDimensions());
+              @Nullable
+              double[] tensorData = tensor.getData();
+              System.arraycopy(tensorData, pos, dest.getData(), 0, Math.min(dest.length(), tensorData.length - pos));
+              pos += dest.length();
+              outputTensors2[i] = dest;
+            }
+            splitBatches.add(outputTensors2);
+          }
 
-      @Nonnull final Tensor[][] splitData = new Tensor[inObj.length][];
-      for (int i = 0; i < splitData.length; i++) {
-        splitData[i] = new Tensor[numBatches];
-      }
-      for (int i = 0; i < inObj.length; i++) {
-        for (int b = 0; b < numBatches; b++) {
-          splitData[i][b] = splitBatches.get(b)[i];
-        }
-      }
+          @Nonnull final Tensor[][] splitData = new Tensor[inObj.length][];
+          for (int i = 0; i < splitData.length; i++) {
+            splitData[i] = new Tensor[numBatches];
+          }
+          for (int i = 0; i < inObj.length; i++) {
+            for (int b = 0; b < numBatches; b++) {
+              splitData[i][b] = splitBatches.get(b)[i];
+            }
+          }
 
-      for (int i = 0; i < inObj.length; i++) {
-        TensorArray wrap = TensorArray.wrap(splitData[i]);
-        inObj[i].accumulate(buffer, wrap);
-        if (0 < wrap.currentRefCount()) {
-          throw new RuntimeException(inObj[i].getClass() + " leak: " + wrap.currentRefCount());
-        }
-      }
-      data.freeRef();
-    }) {
-
-      @Override
-      protected void _free() {
-        Arrays.stream(inObj).forEach(nnResult -> nnResult.freeRef());
-      }
+          for (int i = 0; i < inObj.length; i++) {
+            TensorArray wrap = new TensorArray(splitData[i]);
+            inObj[i].accumulate(buffer, wrap);
+            if (0 < wrap.currentRefCount()) {
+              throw new RuntimeException(inObj[i].getClass() + " leak: " + wrap.currentRefCount());
+            }
+          }
+        }) {
 
       @Override
       public boolean isAlive() {
@@ -127,13 +132,18 @@ public class TensorConcatLayer extends LayerBase {
         return false;
       }
 
+      @Override
+      protected void _free() {
+      }
+
     };
   }
 
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull JsonObject json = super.getJsonStub();
+    @Nonnull
+    JsonObject json = super.getJsonStub();
     json.addProperty("maxBands", maxBands);
     return json;
   }
@@ -142,15 +152,5 @@ public class TensorConcatLayer extends LayerBase {
   @Override
   public List<double[]> state() {
     return Arrays.asList();
-  }
-
-  public int getMaxBands() {
-    return maxBands;
-  }
-
-  @Nonnull
-  public TensorConcatLayer setMaxBands(int maxBands) {
-    this.maxBands = maxBands;
-    return this;
   }
 }

@@ -32,7 +32,6 @@ import java.util.stream.IntStream;
 @SuppressWarnings("serial")
 public class GaussianNoiseLayer extends LayerBase {
 
-
   public static final ThreadLocal<Random> random = new ThreadLocal<Random>() {
     @Override
     protected Random initialValue() {
@@ -54,52 +53,59 @@ public class GaussianNoiseLayer extends LayerBase {
     value = json.get("value").getAsDouble();
   }
 
+  public double getValue() {
+    return value;
+  }
+
+  @Nonnull
+  public GaussianNoiseLayer setValue(final double value) {
+    this.value = value;
+    return this;
+  }
+
+  @SuppressWarnings("unused")
   public static GaussianNoiseLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new GaussianNoiseLayer(json);
   }
 
   @Nonnull
   @Override
-  public Result evalAndFree(final Result... inObj) {
+  public Result eval(final Result... inObj) {
     final Result in0 = inObj[0];
     final TensorList inputData = in0.getData();
     final int itemCnt = inputData.length();
     final Tensor[] outputA = IntStream.range(0, itemCnt).mapToObj(dataIndex -> {
       @Nonnull final Random random = new Random(seed);
       @Nullable final Tensor input = inputData.get(dataIndex);
-      @Nullable final Tensor output = input.map(x -> {
+      return input.map(x -> {
         return x + random.nextGaussian() * getValue();
       });
-      input.freeRef();
-      return output;
     }).toArray(i -> new Tensor[i]);
     int[] dimensions = inputData.getDimensions();
-    inputData.freeRef();
-    return new Result(TensorArray.wrap(outputA), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
-      if (in0.isAlive()) {
-        @Nonnull TensorArray tensorArray = TensorArray.wrap(IntStream.range(0, delta.length()).mapToObj(dataIndex -> {
-          Tensor tensor = delta.get(dataIndex);
-          @Nullable final double[] deltaData = tensor.getData();
-          @Nonnull final Tensor passback = new Tensor(dimensions);
-          for (int i = 0; i < passback.length(); i++) {
-            passback.set(i, deltaData[i]);
+    return new Result(new TensorArray(outputA),
+        (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
+          if (in0.isAlive()) {
+            @Nonnull
+            TensorArray tensorArray = new TensorArray(IntStream.range(0, delta.length()).mapToObj(dataIndex -> {
+              Tensor tensor = delta.get(dataIndex);
+              @Nullable final double[] deltaData = tensor.getData();
+              @Nonnull final Tensor passback = new Tensor(dimensions);
+              for (int i = 0; i < passback.length(); i++) {
+                passback.set(i, deltaData[i]);
+              }
+              return passback;
+            }).toArray(i -> new Tensor[i]));
+            in0.accumulate(buffer, tensorArray);
           }
-          tensor.freeRef();
-          return passback;
-        }).toArray(i -> new Tensor[i]));
-        in0.accumulate(buffer, tensorArray);
-      }
-    }) {
-
-      @Override
-      protected void _free() {
-        in0.freeRef();
-      }
-
+        }) {
 
       @Override
       public boolean isAlive() {
         return in0.isAlive() || !isFrozen();
+      }
+
+      @Override
+      protected void _free() {
       }
     };
   }
@@ -110,16 +116,6 @@ public class GaussianNoiseLayer extends LayerBase {
     @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("value", value);
     return json;
-  }
-
-  public double getValue() {
-    return value;
-  }
-
-  @Nonnull
-  public GaussianNoiseLayer setValue(final double value) {
-    this.value = value;
-    return this;
   }
 
   public void shuffle() {

@@ -32,7 +32,6 @@ import java.util.Map;
 @SuppressWarnings("serial")
 public class ImgZeroPaddingLayer extends LayerBase {
 
-
   private final int sizeX;
   private final int sizeY;
 
@@ -48,6 +47,7 @@ public class ImgZeroPaddingLayer extends LayerBase {
     sizeY = json.getAsJsonPrimitive("sizeY").getAsInt();
   }
 
+  @SuppressWarnings("unused")
   public static ImgZeroPaddingLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ImgZeroPaddingLayer(json);
   }
@@ -56,11 +56,10 @@ public class ImgZeroPaddingLayer extends LayerBase {
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     assert inObj.length == 1;
-    @Nonnull int[] dimensions = inObj[0].getData().getDimensions();
+    @Nonnull
+    int[] dimensions = inObj[0].getData().getDimensions();
     ImgCropLayer imgCropLayer = new ImgCropLayer(dimensions[0] + 2 * this.sizeX, dimensions[1] + 2 * this.sizeY);
-    Result eval = imgCropLayer.eval(inObj);
-    imgCropLayer.freeRef();
-    return eval;
+    return imgCropLayer.eval(inObj);
   }
 
   @Nonnull
@@ -77,6 +76,5 @@ public class ImgZeroPaddingLayer extends LayerBase {
   public List<double[]> state() {
     return new ArrayList<>();
   }
-
 
 }

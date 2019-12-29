@@ -29,18 +29,14 @@ public abstract class VariableLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{
-        {3}
-    };
+    return new int[][]{{3}};
   }
 
   @Nonnull
   @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
     MonitoringSynapse inner = new MonitoringSynapse();
-    VariableLayer variableLayer = new VariableLayer(inner);
-    inner.freeRef();
-    return variableLayer;
+    return new VariableLayer(inner);
   }
 
   public static class Basic extends VariableLayerTest {

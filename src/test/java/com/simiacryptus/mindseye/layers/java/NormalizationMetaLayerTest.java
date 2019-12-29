@@ -29,8 +29,9 @@ import java.util.Random;
 
 public abstract class NormalizationMetaLayerTest extends MetaLayerTestBase {
   @Override
-  protected Layer lossLayer() {
-    return new MeanSqLossLayer();
+  public ComponentTest<ToleranceStatistics> getDerivativeTester() {
+    return null;
+    //return new BatchDerivativeTester(1e-2, 1e-5, 10);
   }
 
   @Nonnull
@@ -56,9 +57,8 @@ public abstract class NormalizationMetaLayerTest extends MetaLayerTestBase {
   }
 
   @Override
-  public ComponentTest<ToleranceStatistics> getDerivativeTester() {
-    return null;
-    //return new BatchDerivativeTester(1e-2, 1e-5, 10);
+  protected Layer lossLayer() {
+    return new MeanSqLossLayer();
   }
 
   public static class Basic extends NormalizationMetaLayerTest {

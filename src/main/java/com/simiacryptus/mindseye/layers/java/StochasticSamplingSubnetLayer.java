@@ -20,16 +20,12 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
-import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.mindseye.lang.DataSerializer;
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.lang.LayerBase;
 import com.simiacryptus.mindseye.lang.Result;
 import com.simiacryptus.mindseye.layers.StochasticComponent;
-import com.simiacryptus.mindseye.network.CountingResult;
-import com.simiacryptus.mindseye.network.DAGNetwork;
-import com.simiacryptus.mindseye.network.DAGNode;
-import com.simiacryptus.mindseye.network.PipelineNetwork;
+import com.simiacryptus.mindseye.network.*;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,11 +46,10 @@ public class StochasticSamplingSubnetLayer extends LayerBase implements Stochast
   private final Layer subnetwork;
   private long seed = System.nanoTime();
 
-  public StochasticSamplingSubnetLayer(final Layer subnetwork, final int samples) {
+  public StochasticSamplingSubnetLayer(@org.jetbrains.annotations.Nullable final Layer subnetwork, final int samples) {
     super();
     this.samples = samples;
     this.subnetwork = subnetwork;
-    this.subnetwork.addRef();
   }
 
   protected StochasticSamplingSubnetLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -65,51 +60,37 @@ public class StochasticSamplingSubnetLayer extends LayerBase implements Stochast
     this.subnetwork = subnetwork == null ? null : Layer.fromJson(subnetwork, rs);
   }
 
+  public long[] getSeeds() {
+    Random random = new Random(seed);
+    return IntStream.range(0, this.samples).mapToLong(i -> random.nextLong()).toArray();
+  }
+
+  @SuppressWarnings("unused")
   public static StochasticSamplingSubnetLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new StochasticSamplingSubnetLayer(json, rs);
   }
 
   public static Result average(final Result[] samples) {
     PipelineNetwork gateNetwork = new PipelineNetwork(samples.length);
-    try {
-      gateNetwork.wrap(new SumInputsLayer(), IntStream.range(0, samples.length).mapToObj(i -> gateNetwork.getInput(i)).toArray(i -> new DAGNode[i])).freeRef();
-      gateNetwork.wrap(new LinearActivationLayer().setScale(1.0 / samples.length).freeze()).freeRef();
-      return gateNetwork.evalAndFree(samples);
-    } finally {
-      gateNetwork.freeRef();
+    {
+      gateNetwork.add(new SumInputsLayer(), IntStream.range(0, samples.length).mapToObj(i -> gateNetwork.getInput(i)).toArray(i -> new DAGNode[i]));
+      gateNetwork.add(new LinearActivationLayer().setScale(1.0 / samples.length).freeze());
+      return gateNetwork.eval(samples);
     }
   }
 
-  @NotNull
-  public static StochasticSamplingSubnetLayer wrap(Layer subnet, int samples) {
-    StochasticSamplingSubnetLayer stochasticSamplingSubnetLayer = new StochasticSamplingSubnetLayer(subnet, samples);
-    subnet.freeRef();
-    return stochasticSamplingSubnetLayer;
-  }
-
-  @Override
-  protected void _free() {
-    this.subnetwork.freeRef();
-    super._free();
-  }
-
   @Nullable
-  @Override
-  public Result evalAndFree(@Nonnull final Result... inObj) {
+  public Result eval(@Nonnull final Result... inObj) {
     if (0 == seed) {
-      return subnetwork.evalAndFree(inObj);
+      return subnetwork.eval(inObj);
     }
     Result[] counting = Arrays.stream(inObj).map(r -> {
       return new CountingResult(r, samples);
     }).toArray(i -> new Result[i]);
-    Arrays.stream(inObj).forEach(ReferenceCounting::freeRef);
-    Result average = average(Arrays.stream(getSeeds()).mapToObj(seed -> {
-      shuffleSubnet(seed);
+    return average(Arrays.stream(getSeeds()).mapToObj(seed1 -> {
+      shuffleSubnet(seed1);
       return subnetwork.eval(counting);
     }).toArray(i -> new Result[i]));
-    Arrays.stream(counting).map(Result::getData).forEach(ReferenceCounting::freeRef);
-    Arrays.stream(counting).forEach(ReferenceCounting::freeRef);
-    return average;
   }
 
   public void shuffleSubnet(long seed) {
@@ -126,11 +107,6 @@ public class StochasticSamplingSubnetLayer extends LayerBase implements Stochast
     }
   }
 
-  public long[] getSeeds() {
-    Random random = new Random(seed);
-    return IntStream.range(0, this.samples).mapToLong(i -> random.nextLong()).toArray();
-  }
-
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
@@ -140,7 +116,6 @@ public class StochasticSamplingSubnetLayer extends LayerBase implements Stochast
     json.add("subnetwork", subnetwork.getJson(resources, dataSerializer));
     return json;
   }
-
 
   @Nonnull
   @Override
@@ -165,6 +140,11 @@ public class StochasticSamplingSubnetLayer extends LayerBase implements Stochast
   public void clearNoise() {
     log.info(String.format("Set %s to random null seed", getName()));
     seed = 0;
+  }
+
+  @Override
+  protected void _free() {
+    super._free();
   }
 
 }

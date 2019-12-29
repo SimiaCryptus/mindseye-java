@@ -27,20 +27,10 @@ import org.junit.Test;
 
 public abstract class LayerTestBase extends StandardLayerTests {
 
-  @Override
-  protected Layer lossLayer() {
-    return new EntropyLossLayer();
-  }
-
   @Test(timeout = 15 * 60 * 1000)
   public void test() {
     run(this::run);
   }
-
-//  @Test(timeout = 15 * 60 * 1000)
-//  public void testMonteCarlo() throws Throwable {
-//    apply(this::monteCarlo);
-//  }
 
   @Before
   public void setup() {
@@ -48,10 +38,20 @@ public abstract class LayerTestBase extends StandardLayerTests {
     //GpuController.remove();
   }
 
+//  @Test(timeout = 15 * 60 * 1000)
+//  public void testMonteCarlo() throws Throwable {
+//    apply(this::monteCarlo);
+//  }
+
   @After
   public void cleanup() {
     System.gc();
     //GpuController.remove();
+  }
+
+  @Override
+  protected Layer lossLayer() {
+    return new EntropyLossLayer();
   }
 
 }

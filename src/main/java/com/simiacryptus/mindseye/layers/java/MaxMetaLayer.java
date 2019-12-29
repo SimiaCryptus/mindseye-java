@@ -32,7 +32,6 @@ import java.util.stream.IntStream;
 @SuppressWarnings("serial")
 public class MaxMetaLayer extends LayerBase {
 
-
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(MaxMetaLayer.class);
 
@@ -43,6 +42,7 @@ public class MaxMetaLayer extends LayerBase {
     super(id);
   }
 
+  @SuppressWarnings("unused")
   public static MaxMetaLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new MaxMetaLayer(json);
   }
@@ -51,26 +51,20 @@ public class MaxMetaLayer extends LayerBase {
   @Override
   public Result eval(final Result... inObj) {
     final Result input = inObj[0];
-    input.addRef();
     final int itemCnt = input.getData().length();
     final Tensor input0Tensor = input.getData().get(0);
     final int vectorSize = input0Tensor.length();
     @Nonnull final int[] indicies = new int[vectorSize];
     for (int i = 0; i < vectorSize; i++) {
       final int itemNumber = i;
-      indicies[i] = IntStream.range(0, itemCnt)
-          .mapToObj(x -> x).max(Comparator.comparing(dataIndex -> {
-            Tensor tensor = input.getData().get(dataIndex);
-            double v = tensor.getData()[itemNumber];
-            tensor.freeRef();
-            return v;
-          })).get();
+      indicies[i] = IntStream.range(0, itemCnt).mapToObj(x -> x).max(Comparator.comparing(dataIndex -> {
+        Tensor tensor = input.getData().get(dataIndex);
+        return tensor.getData()[itemNumber];
+      })).get();
     }
-    return new Result(TensorArray.wrap(input0Tensor.mapIndex((v, c) -> {
+    return new Result(new TensorArray(input0Tensor.mapIndex((v, c) -> {
       Tensor tensor = input.getData().get(indicies[c]);
-      double v1 = tensor.getData()[c];
-      tensor.freeRef();
-      return v1;
+      return tensor.getData()[c];
     })), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList data) -> {
       if (input.isAlive()) {
         @Nullable final Tensor delta = data.get(0);
@@ -79,11 +73,10 @@ public class MaxMetaLayer extends LayerBase {
         input0Tensor.coordStream(true).forEach((inputCoord) -> {
           feedback[indicies[inputCoord.getIndex()]].add(inputCoord, delta.get(inputCoord));
         });
-        @Nonnull TensorArray tensorArray = TensorArray.wrap(feedback);
+        @Nonnull
+        TensorArray tensorArray = new TensorArray(feedback);
         input.accumulate(buffer, tensorArray);
-        delta.freeRef();
       }
-      data.freeRef();
     }) {
 
       @Override
@@ -93,8 +86,6 @@ public class MaxMetaLayer extends LayerBase {
 
       @Override
       protected void _free() {
-        input.freeRef();
-        input0Tensor.freeRef();
       }
 
     };

@@ -38,8 +38,27 @@ public final class SinewaveActivationLayer extends SimpleActivationLayer<Sinewav
     balanced = id.get("balanced").getAsBoolean();
   }
 
+  public boolean isBalanced() {
+    return balanced;
+  }
+
+  @Nonnull
+  public SinewaveActivationLayer setBalanced(final boolean balanced) {
+    this.balanced = balanced;
+    return this;
+  }
+
+  @SuppressWarnings("unused")
   public static SinewaveActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new SinewaveActivationLayer(json);
+  }
+
+  @Nonnull
+  @Override
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
+    @Nonnull final JsonObject json = super.getJsonStub();
+    json.addProperty("balanced", balanced);
+    return json;
   }
 
   @Override
@@ -52,23 +71,5 @@ public final class SinewaveActivationLayer extends SimpleActivationLayer<Sinewav
     }
     results[0] = f;
     results[1] = d;
-  }
-
-  @Nonnull
-  @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull final JsonObject json = super.getJsonStub();
-    json.addProperty("balanced", balanced);
-    return json;
-  }
-
-  public boolean isBalanced() {
-    return balanced;
-  }
-
-  @Nonnull
-  public SinewaveActivationLayer setBalanced(final boolean balanced) {
-    this.balanced = balanced;
-    return this;
   }
 }

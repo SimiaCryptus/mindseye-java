@@ -43,8 +43,8 @@ public class TargetValueLayer extends DAGNetwork {
 
   public TargetValueLayer(final double... values) {
     super(1);
-    target = wrap(ValueLayer.wrap(new Tensor(values)));
-    head = wrap(new MeanSqLossLayer(), getInput(0), target.addRef());
+    target = add(new ValueLayer(new Tensor(values)));
+    head = add(new MeanSqLossLayer(), getInput(0), target);
   }
 
   protected TargetValueLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -53,21 +53,20 @@ public class TargetValueLayer extends DAGNetwork {
     target = getNodeById(UUID.fromString(json.getAsJsonPrimitive("target").getAsString()));
   }
 
-  public static Layer fromJson(@Nonnull final JsonObject inner, Map<CharSequence, byte[]> rs) {
-    return new TargetValueLayer(inner, rs);
-  }
-
-  @Override
-  protected void _free() {
-    head.freeRef();
-    target.freeRef();
-    super._free();
-  }
-
   @Override
   public DAGNode getHead() {
-    head.addRef();
     return head;
+  }
+
+  @Nonnull
+  public TargetValueLayer setTarget(final double... value) {
+    target.<ValueLayer>getLayer().setData(new Tensor(value));
+    return this;
+  }
+
+  @SuppressWarnings("unused")
+  public static Layer fromJson(@Nonnull final JsonObject inner, Map<CharSequence, byte[]> rs) {
+    return new TargetValueLayer(inner, rs);
   }
 
   @Override
@@ -77,9 +76,8 @@ public class TargetValueLayer extends DAGNetwork {
     return json;
   }
 
-  @Nonnull
-  public TargetValueLayer setTarget(final double... value) {
-    target.<ValueLayer>getLayer().setData(new Tensor(value));
-    return this;
+  @Override
+  protected void _free() {
+    super._free();
   }
 }

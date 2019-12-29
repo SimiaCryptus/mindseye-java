@@ -30,18 +30,14 @@ public abstract class MonitoringWrapperTest extends LayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{
-        {3}
-    };
+    return new int[][]{{3}};
   }
 
   @Nonnull
   @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
     MonitoringSynapse inner = new MonitoringSynapse();
-    MonitoringWrapperLayer wrapperLayer = new MonitoringWrapperLayer(inner);
-    inner.freeRef();
-    return wrapperLayer;
+    return new MonitoringWrapperLayer(inner);
   }
 
   public static class Basic extends MonitoringWrapperTest {
