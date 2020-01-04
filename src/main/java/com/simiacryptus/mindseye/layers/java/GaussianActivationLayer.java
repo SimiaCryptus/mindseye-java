@@ -23,11 +23,10 @@ import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.DataSerializer;
 
 import javax.annotation.Nonnull;
-import java.util.Map;
-import com.simiacryptus.ref.wrappers.RefMap;
 
 @SuppressWarnings("serial")
-public final @com.simiacryptus.ref.lang.RefAware class GaussianActivationLayer
+public final @com.simiacryptus.ref.lang.RefAware
+class GaussianActivationLayer
     extends SimpleActivationLayer<GaussianActivationLayer> {
 
   private static final double MIN_X = -20;
@@ -50,19 +49,44 @@ public final @com.simiacryptus.ref.lang.RefAware class GaussianActivationLayer
 
   @SuppressWarnings("unused")
   public static GaussianActivationLayer fromJson(@Nonnull final JsonObject json,
-      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                                 com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new GaussianActivationLayer(json);
+  }
+
+  public static @SuppressWarnings("unused")
+  GaussianActivationLayer[] addRefs(GaussianActivationLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(GaussianActivationLayer::addRef)
+        .toArray((x) -> new GaussianActivationLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  GaussianActivationLayer[][] addRefs(GaussianActivationLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(GaussianActivationLayer::addRefs)
+        .toArray((x) -> new GaussianActivationLayer[x][]);
   }
 
   @Nonnull
   @Override
   public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
-      DataSerializer dataSerializer) {
-    @Nonnull
-    final JsonObject json = super.getJsonStub();
+                            DataSerializer dataSerializer) {
+    @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("mean", mean);
     json.addProperty("stddev", stddev);
     return json;
+  }
+
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  GaussianActivationLayer addRef() {
+    return (GaussianActivationLayer) super.addRef();
   }
 
   @Override
@@ -93,27 +117,6 @@ public final @com.simiacryptus.ref.lang.RefAware class GaussianActivationLayer
       return GaussianActivationLayer.MAX_F;
     }
     return Math.exp(x);
-  }
-
-  public @SuppressWarnings("unused") void _free() {
-  }
-
-  public @Override @SuppressWarnings("unused") GaussianActivationLayer addRef() {
-    return (GaussianActivationLayer) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") GaussianActivationLayer[] addRefs(GaussianActivationLayer[] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(GaussianActivationLayer::addRef)
-        .toArray((x) -> new GaussianActivationLayer[x]);
-  }
-
-  public static @SuppressWarnings("unused") GaussianActivationLayer[][] addRefs(GaussianActivationLayer[][] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(GaussianActivationLayer::addRefs)
-        .toArray((x) -> new GaussianActivationLayer[x][]);
   }
 
 }

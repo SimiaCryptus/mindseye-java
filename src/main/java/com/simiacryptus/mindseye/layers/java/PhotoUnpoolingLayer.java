@@ -24,12 +24,11 @@ import com.simiacryptus.mindseye.lang.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
-import java.util.stream.IntStream;
-import com.simiacryptus.ref.wrappers.RefIntStream;
+import java.util.UUID;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware class PhotoUnpoolingLayer extends LayerBase {
+public @com.simiacryptus.ref.lang.RefAware
+class PhotoUnpoolingLayer extends LayerBase {
 
   public PhotoUnpoolingLayer(final int sizeX, final int sizeY) {
     super();
@@ -41,11 +40,9 @@ public @com.simiacryptus.ref.lang.RefAware class PhotoUnpoolingLayer extends Lay
 
   @Nonnull
   public static Tensor copyCondense(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData,
-      Tensor referenceData) {
-    @Nonnull
-    final int[] inDim = inputData.getDimensions();
-    @Nonnull
-    final int[] outDim = outputData.getDimensions();
+                                    Tensor referenceData) {
+    @Nonnull final int[] inDim = inputData.getDimensions();
+    @Nonnull final int[] outDim = outputData.getDimensions();
     assert 3 == inDim.length;
     assert 3 == outDim.length;
     assert inDim[0] >= outDim[0];
@@ -85,11 +82,9 @@ public @com.simiacryptus.ref.lang.RefAware class PhotoUnpoolingLayer extends Lay
 
   @Nonnull
   public static Tensor copyExpand(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData,
-      Tensor referenceData) {
-    @Nonnull
-    final int[] inDim = inputData.getDimensions();
-    @Nonnull
-    final int[] outDim = outputData.getDimensions();
+                                  Tensor referenceData) {
+    @Nonnull final int[] inDim = inputData.getDimensions();
+    @Nonnull final int[] outDim = outputData.getDimensions();
     assert 3 == inDim.length;
     assert 3 == outDim.length;
     assert inDim[0] <= outDim[0];
@@ -128,8 +123,24 @@ public @com.simiacryptus.ref.lang.RefAware class PhotoUnpoolingLayer extends Lay
 
   @SuppressWarnings("unused")
   public static PhotoUnpoolingLayer fromJson(@Nonnull final JsonObject json,
-      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                             com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new PhotoUnpoolingLayer(json);
+  }
+
+  public static @SuppressWarnings("unused")
+  PhotoUnpoolingLayer[] addRefs(PhotoUnpoolingLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(PhotoUnpoolingLayer::addRef)
+        .toArray((x) -> new PhotoUnpoolingLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  PhotoUnpoolingLayer[][] addRefs(PhotoUnpoolingLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(PhotoUnpoolingLayer::addRefs)
+        .toArray((x) -> new PhotoUnpoolingLayer[x][]);
   }
 
   @Nonnull
@@ -139,8 +150,7 @@ public @com.simiacryptus.ref.lang.RefAware class PhotoUnpoolingLayer extends Lay
     final Result input = inObj[0];
     final TensorList batch = input.getData();
     final TensorList referencebatch = inObj[1].getData();
-    @Nonnull
-    final int[] inputDims = batch.getDimensions();
+    @Nonnull final int[] inputDims = batch.getDimensions();
     assert 3 == inputDims.length;
     Tensor outputDims;
     outputDims = new Tensor(inObj[1].getData().getDimensions());
@@ -156,10 +166,8 @@ public @com.simiacryptus.ref.lang.RefAware class PhotoUnpoolingLayer extends Lay
         @Nonnull
         TensorArray tensorArray = new TensorArray(
             com.simiacryptus.ref.wrappers.RefIntStream.range(0, error.length()).parallel().mapToObj(dataIndex -> {
-              @Nonnull
-              final Tensor passback = new Tensor(inputDims);
-              @Nullable
-              final Tensor err = error.get(dataIndex);
+              @Nonnull final Tensor passback = new Tensor(inputDims);
+              @Nullable final Tensor err = error.get(dataIndex);
               Tensor referenceData = referencebatch.get(dataIndex);
               return PhotoUnpoolingLayer.copyCondense(err, passback, referenceData);
             }).toArray(i -> new Tensor[i]));
@@ -180,7 +188,7 @@ public @com.simiacryptus.ref.lang.RefAware class PhotoUnpoolingLayer extends Lay
   @Nonnull
   @Override
   public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
-      DataSerializer dataSerializer) {
+                            DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 
@@ -190,25 +198,14 @@ public @com.simiacryptus.ref.lang.RefAware class PhotoUnpoolingLayer extends Lay
     return new com.simiacryptus.ref.wrappers.RefArrayList<>();
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") PhotoUnpoolingLayer addRef() {
+  public @Override
+  @SuppressWarnings("unused")
+  PhotoUnpoolingLayer addRef() {
     return (PhotoUnpoolingLayer) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") PhotoUnpoolingLayer[] addRefs(PhotoUnpoolingLayer[] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(PhotoUnpoolingLayer::addRef)
-        .toArray((x) -> new PhotoUnpoolingLayer[x]);
-  }
-
-  public static @SuppressWarnings("unused") PhotoUnpoolingLayer[][] addRefs(PhotoUnpoolingLayer[][] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(PhotoUnpoolingLayer::addRefs)
-        .toArray((x) -> new PhotoUnpoolingLayer[x][]);
   }
 
 }

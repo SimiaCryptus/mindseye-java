@@ -26,12 +26,11 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
-import java.util.stream.IntStream;
-import com.simiacryptus.ref.wrappers.RefIntStream;
+import java.util.UUID;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware class MaxMetaLayer extends LayerBase {
+public @com.simiacryptus.ref.lang.RefAware
+class MaxMetaLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(MaxMetaLayer.class);
@@ -45,8 +44,24 @@ public @com.simiacryptus.ref.lang.RefAware class MaxMetaLayer extends LayerBase 
 
   @SuppressWarnings("unused")
   public static MaxMetaLayer fromJson(@Nonnull final JsonObject json,
-      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new MaxMetaLayer(json);
+  }
+
+  public static @SuppressWarnings("unused")
+  MaxMetaLayer[] addRefs(MaxMetaLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MaxMetaLayer::addRef)
+        .toArray((x) -> new MaxMetaLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  MaxMetaLayer[][] addRefs(MaxMetaLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MaxMetaLayer::addRefs)
+        .toArray((x) -> new MaxMetaLayer[x][]);
   }
 
   @Nonnull
@@ -56,8 +71,7 @@ public @com.simiacryptus.ref.lang.RefAware class MaxMetaLayer extends LayerBase 
     final int itemCnt = input.getData().length();
     final Tensor input0Tensor = input.getData().get(0);
     final int vectorSize = input0Tensor.length();
-    @Nonnull
-    final int[] indicies = new int[vectorSize];
+    @Nonnull final int[] indicies = new int[vectorSize];
     for (int i = 0; i < vectorSize; i++) {
       final int itemNumber = i;
       indicies[i] = com.simiacryptus.ref.wrappers.RefIntStream.range(0, itemCnt).mapToObj(x -> x)
@@ -71,10 +85,8 @@ public @com.simiacryptus.ref.lang.RefAware class MaxMetaLayer extends LayerBase 
       return tensor.getData()[c];
     })), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList data) -> {
       if (input.isAlive()) {
-        @Nullable
-        final Tensor delta = data.get(0);
-        @Nonnull
-        final Tensor feedback[] = new Tensor[itemCnt];
+        @Nullable final Tensor delta = data.get(0);
+        @Nonnull final Tensor feedback[] = new Tensor[itemCnt];
         com.simiacryptus.ref.wrappers.RefArrays.parallelSetAll(feedback, i -> new Tensor(delta.getDimensions()));
         input0Tensor.coordStream(true).forEach((inputCoord) -> {
           feedback[indicies[inputCoord.getIndex()]].add(inputCoord, delta.get(inputCoord));
@@ -99,7 +111,7 @@ public @com.simiacryptus.ref.lang.RefAware class MaxMetaLayer extends LayerBase 
   @Nonnull
   @Override
   public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
-      DataSerializer dataSerializer) {
+                            DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 
@@ -109,24 +121,13 @@ public @com.simiacryptus.ref.lang.RefAware class MaxMetaLayer extends LayerBase 
     return com.simiacryptus.ref.wrappers.RefArrays.asList();
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") MaxMetaLayer addRef() {
+  public @Override
+  @SuppressWarnings("unused")
+  MaxMetaLayer addRef() {
     return (MaxMetaLayer) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") MaxMetaLayer[] addRefs(MaxMetaLayer[] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MaxMetaLayer::addRef)
-        .toArray((x) -> new MaxMetaLayer[x]);
-  }
-
-  public static @SuppressWarnings("unused") MaxMetaLayer[][] addRefs(MaxMetaLayer[][] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MaxMetaLayer::addRefs)
-        .toArray((x) -> new MaxMetaLayer[x][]);
   }
 }

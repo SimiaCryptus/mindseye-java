@@ -24,19 +24,54 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-public abstract @com.simiacryptus.ref.lang.RefAware class ImgViewLayerTest extends LayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware
+class ImgViewLayerTest extends LayerTestBase {
 
   public ImgViewLayerTest() {
     validateBatchExecution = false;
   }
 
+  public static @SuppressWarnings("unused")
+  ImgViewLayerTest[] addRefs(ImgViewLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgViewLayerTest::addRef)
+        .toArray((x) -> new ImgViewLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  ImgViewLayerTest[][] addRefs(ImgViewLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgViewLayerTest::addRefs)
+        .toArray((x) -> new ImgViewLayerTest[x][]);
+  }
+
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][] { { 8, 8, 2 } };
+    return new int[][]{{8, 8, 2}};
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware class Basic extends ImgViewLayerTest {
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  ImgViewLayerTest addRef() {
+    return (ImgViewLayerTest) super.addRef();
+  }
+
+  public static @com.simiacryptus.ref.lang.RefAware
+  class Basic extends ImgViewLayerTest {
+
+    public static @SuppressWarnings("unused")
+    Basic[] addRefs(Basic[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+    }
 
     @Nonnull
     @Override
@@ -44,21 +79,27 @@ public abstract @com.simiacryptus.ref.lang.RefAware class ImgViewLayerTest exten
       return new ImgViewLayer(3, 2, 2, 3);
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") Basic addRef() {
+    public @Override
+    @SuppressWarnings("unused")
+    Basic addRef() {
       return (Basic) super.addRef();
-    }
-
-    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
-      if (array == null)
-        return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware class Rotated extends ImgViewLayerTest {
+  public static @com.simiacryptus.ref.lang.RefAware
+  class Rotated extends ImgViewLayerTest {
+
+    public static @SuppressWarnings("unused")
+    Rotated[] addRefs(Rotated[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Rotated::addRef)
+          .toArray((x) -> new Rotated[x]);
+    }
 
     @Nonnull
     @Override
@@ -66,22 +107,27 @@ public abstract @com.simiacryptus.ref.lang.RefAware class ImgViewLayerTest exten
       return new ImgViewLayer(3, 2, 2, 3).setRotationRadians(Math.PI / 2);
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") Rotated addRef() {
+    public @Override
+    @SuppressWarnings("unused")
+    Rotated addRef() {
       return (Rotated) super.addRef();
-    }
-
-    public static @SuppressWarnings("unused") Rotated[] addRefs(Rotated[] array) {
-      if (array == null)
-        return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Rotated::addRef)
-          .toArray((x) -> new Rotated[x]);
     }
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware class RotatedChannels extends ImgViewLayerTest {
+  public static @com.simiacryptus.ref.lang.RefAware
+  class RotatedChannels extends ImgViewLayerTest {
+
+    public static @SuppressWarnings("unused")
+    RotatedChannels[] addRefs(RotatedChannels[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(RotatedChannels::addRef)
+          .toArray((x) -> new RotatedChannels[x]);
+    }
 
     @Nonnull
     @Override
@@ -89,40 +135,15 @@ public abstract @com.simiacryptus.ref.lang.RefAware class ImgViewLayerTest exten
       return new ImgViewLayer(3, 2, 2, 3).setRotationRadians(Math.PI / 2).setChannelSelector(2, -1);
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") RotatedChannels addRef() {
+    public @Override
+    @SuppressWarnings("unused")
+    RotatedChannels addRef() {
       return (RotatedChannels) super.addRef();
     }
-
-    public static @SuppressWarnings("unused") RotatedChannels[] addRefs(RotatedChannels[] array) {
-      if (array == null)
-        return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(RotatedChannels::addRef)
-          .toArray((x) -> new RotatedChannels[x]);
-    }
-  }
-
-  public @SuppressWarnings("unused") void _free() {
-  }
-
-  public @Override @SuppressWarnings("unused") ImgViewLayerTest addRef() {
-    return (ImgViewLayerTest) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") ImgViewLayerTest[] addRefs(ImgViewLayerTest[] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgViewLayerTest::addRef)
-        .toArray((x) -> new ImgViewLayerTest[x]);
-  }
-
-  public static @SuppressWarnings("unused") ImgViewLayerTest[][] addRefs(ImgViewLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgViewLayerTest::addRefs)
-        .toArray((x) -> new ImgViewLayerTest[x][]);
   }
 
 }

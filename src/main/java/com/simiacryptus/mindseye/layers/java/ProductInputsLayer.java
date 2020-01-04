@@ -24,18 +24,11 @@ import com.simiacryptus.mindseye.lang.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
-import java.util.stream.IntStream;
-import com.simiacryptus.ref.wrappers.RefArrays;
-import com.simiacryptus.ref.wrappers.RefList;
-import com.simiacryptus.ref.wrappers.RefMap;
-import com.simiacryptus.ref.wrappers.RefIntStream;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware class ProductInputsLayer extends LayerBase {
+public @com.simiacryptus.ref.lang.RefAware
+class ProductInputsLayer extends LayerBase {
 
   public ProductInputsLayer() {
   }
@@ -46,8 +39,24 @@ public @com.simiacryptus.ref.lang.RefAware class ProductInputsLayer extends Laye
 
   @SuppressWarnings("unused")
   public static ProductInputsLayer fromJson(@Nonnull final JsonObject json,
-      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                            com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new ProductInputsLayer(json);
+  }
+
+  public static @SuppressWarnings("unused")
+  ProductInputsLayer[] addRefs(ProductInputsLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ProductInputsLayer::addRef)
+        .toArray((x) -> new ProductInputsLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  ProductInputsLayer[][] addRefs(ProductInputsLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ProductInputsLayer::addRefs)
+        .toArray((x) -> new ProductInputsLayer[x][]);
   }
 
   @Nonnull
@@ -67,49 +76,43 @@ public @com.simiacryptus.ref.lang.RefAware class ProductInputsLayer extends Laye
         com.simiacryptus.ref.wrappers.RefArrays.stream(inObj).parallel().map(x -> x.getData()).reduce((l, r) -> {
           return new TensorArray(com.simiacryptus.ref.wrappers.RefIntStream.range(0, Math.max(l.length(), r.length()))
               .parallel().mapToObj(i1 -> {
-                @Nullable
-                final Tensor left = l.get(1 == l.length() ? 0 : i1);
-                @Nullable
-                final Tensor right = r.get(1 == r.length() ? 0 : i1);
+                @Nullable final Tensor left = l.get(1 == l.length() ? 0 : i1);
+                @Nullable final Tensor right = r.get(1 == r.length() ? 0 : i1);
                 return Tensor.product(left, right);
               }).toArray(i -> new Tensor[i]));
         }).get(), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
-          for (@Nonnull
-          final Result input : inObj) {
-            if (input.isAlive()) {
-              @Nonnull
-              TensorList passback = com.simiacryptus.ref.wrappers.RefArrays.stream(inObj).parallel().map(x -> {
-                return x == input ? delta : x.getData();
-              }).reduce((l, r) -> {
-                return new TensorArray(com.simiacryptus.ref.wrappers.RefIntStream
-                    .range(0, Math.max(l.length(), r.length())).parallel().mapToObj(j -> {
-                      @Nullable
-                      final Tensor left = l.get(1 == l.length() ? 0 : j);
-                      @Nullable
-                      final Tensor right = r.get(1 == r.length() ? 0 : j);
-                      return Tensor.product(left, right);
-                    }).toArray(j -> new Tensor[j]));
-              }).get();
-              final TensorList inputData = input.getData();
-              if (1 == inputData.length() && 1 < passback.length()) {
-                passback = new TensorArray(passback.stream().reduce((a, b) -> {
-                  return a.addAndFree(b);
-                }).get());
-              }
-              if (1 == Tensor.length(inputData.getDimensions()) && 1 < Tensor.length(passback.getDimensions())) {
-                passback = new TensorArray(passback.stream().map((a) -> {
-                  return new Tensor(a.sum());
-                }).toArray(i -> new Tensor[i]));
-              }
-              input.accumulate(buffer, passback);
-            }
+      for (@Nonnull final Result input : inObj) {
+        if (input.isAlive()) {
+          @Nonnull
+          TensorList passback = com.simiacryptus.ref.wrappers.RefArrays.stream(inObj).parallel().map(x -> {
+            return x == input ? delta : x.getData();
+          }).reduce((l, r) -> {
+            return new TensorArray(com.simiacryptus.ref.wrappers.RefIntStream
+                .range(0, Math.max(l.length(), r.length())).parallel().mapToObj(j -> {
+                  @Nullable final Tensor left = l.get(1 == l.length() ? 0 : j);
+                  @Nullable final Tensor right = r.get(1 == r.length() ? 0 : j);
+                  return Tensor.product(left, right);
+                }).toArray(j -> new Tensor[j]));
+          }).get();
+          final TensorList inputData = input.getData();
+          if (1 == inputData.length() && 1 < passback.length()) {
+            passback = new TensorArray(passback.stream().reduce((a, b) -> {
+              return a.addAndFree(b);
+            }).get());
           }
-        }) {
+          if (1 == Tensor.length(inputData.getDimensions()) && 1 < Tensor.length(passback.getDimensions())) {
+            passback = new TensorArray(passback.stream().map((a) -> {
+              return new Tensor(a.sum());
+            }).toArray(i -> new Tensor[i]));
+          }
+          input.accumulate(buffer, passback);
+        }
+      }
+    }) {
 
       @Override
       public boolean isAlive() {
-        for (@Nonnull
-        final Result element : inObj)
+        for (@Nonnull final Result element : inObj)
           if (element.isAlive()) {
             return true;
           }
@@ -125,7 +128,7 @@ public @com.simiacryptus.ref.lang.RefAware class ProductInputsLayer extends Laye
   @Nonnull
   @Override
   public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
-      DataSerializer dataSerializer) {
+                            DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 
@@ -135,24 +138,13 @@ public @com.simiacryptus.ref.lang.RefAware class ProductInputsLayer extends Laye
     return com.simiacryptus.ref.wrappers.RefArrays.asList();
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") ProductInputsLayer addRef() {
+  public @Override
+  @SuppressWarnings("unused")
+  ProductInputsLayer addRef() {
     return (ProductInputsLayer) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") ProductInputsLayer[] addRefs(ProductInputsLayer[] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ProductInputsLayer::addRef)
-        .toArray((x) -> new ProductInputsLayer[x]);
-  }
-
-  public static @SuppressWarnings("unused") ProductInputsLayer[][] addRefs(ProductInputsLayer[][] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ProductInputsLayer::addRefs)
-        .toArray((x) -> new ProductInputsLayer[x][]);
   }
 }

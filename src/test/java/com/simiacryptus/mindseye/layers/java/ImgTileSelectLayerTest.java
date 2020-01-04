@@ -24,16 +24,33 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-public abstract @com.simiacryptus.ref.lang.RefAware class ImgTileSelectLayerTest extends LayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware
+class ImgTileSelectLayerTest extends LayerTestBase {
 
   public ImgTileSelectLayerTest() {
     validateBatchExecution = false;
   }
 
+  public static @SuppressWarnings("unused")
+  ImgTileSelectLayerTest[] addRefs(ImgTileSelectLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgTileSelectLayerTest::addRef)
+        .toArray((x) -> new ImgTileSelectLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  ImgTileSelectLayerTest[][] addRefs(ImgTileSelectLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgTileSelectLayerTest::addRefs)
+        .toArray((x) -> new ImgTileSelectLayerTest[x][]);
+  }
+
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][] { { 8, 8, 1 } };
+    return new int[][]{{8, 8, 1}};
   }
 
   @Nonnull
@@ -42,41 +59,35 @@ public abstract @com.simiacryptus.ref.lang.RefAware class ImgTileSelectLayerTest
     return new ImgTileSelectLayer(3, 2, 2, 3);
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware class Basic extends ImgTileSelectLayerTest {
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
 
-    public @SuppressWarnings("unused") void _free() {
-    }
+  public @Override
+  @SuppressWarnings("unused")
+  ImgTileSelectLayerTest addRef() {
+    return (ImgTileSelectLayerTest) super.addRef();
+  }
 
-    public @Override @SuppressWarnings("unused") Basic addRef() {
-      return (Basic) super.addRef();
-    }
+  public static @com.simiacryptus.ref.lang.RefAware
+  class Basic extends ImgTileSelectLayerTest {
 
-    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+    public static @SuppressWarnings("unused")
+    Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
       return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
-  }
 
-  public @SuppressWarnings("unused") void _free() {
-  }
+    public @SuppressWarnings("unused")
+    void _free() {
+    }
 
-  public @Override @SuppressWarnings("unused") ImgTileSelectLayerTest addRef() {
-    return (ImgTileSelectLayerTest) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") ImgTileSelectLayerTest[] addRefs(ImgTileSelectLayerTest[] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgTileSelectLayerTest::addRef)
-        .toArray((x) -> new ImgTileSelectLayerTest[x]);
-  }
-
-  public static @SuppressWarnings("unused") ImgTileSelectLayerTest[][] addRefs(ImgTileSelectLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgTileSelectLayerTest::addRefs)
-        .toArray((x) -> new ImgTileSelectLayerTest[x][]);
+    public @Override
+    @SuppressWarnings("unused")
+    Basic addRef() {
+      return (Basic) super.addRef();
+    }
   }
 
 }

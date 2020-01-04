@@ -25,18 +25,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
-import java.util.stream.IntStream;
-import com.simiacryptus.ref.wrappers.RefArrays;
-import com.simiacryptus.ref.wrappers.RefList;
-import com.simiacryptus.ref.wrappers.RefMap;
-import com.simiacryptus.ref.wrappers.RefIntStream;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware class ImgPixelGateLayer extends LayerBase {
+public @com.simiacryptus.ref.lang.RefAware
+class ImgPixelGateLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(ImgPixelGateLayer.class);
@@ -51,8 +44,24 @@ public @com.simiacryptus.ref.lang.RefAware class ImgPixelGateLayer extends Layer
 
   @SuppressWarnings("unused")
   public static ImgPixelGateLayer fromJson(@Nonnull final JsonObject json,
-      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                           com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new ImgPixelGateLayer(json);
+  }
+
+  public static @SuppressWarnings("unused")
+  ImgPixelGateLayer[] addRefs(ImgPixelGateLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgPixelGateLayer::addRef)
+        .toArray((x) -> new ImgPixelGateLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  ImgPixelGateLayer[][] addRefs(ImgPixelGateLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgPixelGateLayer::addRefs)
+        .toArray((x) -> new ImgPixelGateLayer[x][]);
   }
 
   @Nonnull
@@ -77,34 +86,34 @@ public @com.simiacryptus.ref.lang.RefAware class ImgPixelGateLayer extends Layer
             return inputTensor.get(coords[0], coords[1], coords[2]) * gateTensor.get(coords[0], coords[1], 0);
           });
         }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
-          if (input.isAlive()) {
-            @Nonnull
-            TensorArray tensorArray = new TensorArray(
-                com.simiacryptus.ref.wrappers.RefIntStream.range(0, delta.length()).mapToObj(i -> {
-                  Tensor deltaTensor = delta.get(i);
-                  Tensor gateTensor = gateData.get(gateData.length() == 1 ? 0 : i);
-                  return new Tensor(input.getData().getDimensions()).setByCoord(c -> {
+      if (input.isAlive()) {
+        @Nonnull
+        TensorArray tensorArray = new TensorArray(
+            com.simiacryptus.ref.wrappers.RefIntStream.range(0, delta.length()).mapToObj(i -> {
+              Tensor deltaTensor = delta.get(i);
+              Tensor gateTensor = gateData.get(gateData.length() == 1 ? 0 : i);
+              return new Tensor(input.getData().getDimensions()).setByCoord(c -> {
+                int[] coords = c.getCoords();
+                return deltaTensor.get(coords[0], coords[1], coords[2]) * gateTensor.get(coords[0], coords[1], 0);
+              });
+            }).toArray(i -> new Tensor[i]));
+        input.accumulate(buffer, tensorArray);
+      }
+      if (gate.isAlive()) {
+        @Nonnull
+        TensorArray tensorArray = new TensorArray(
+            com.simiacryptus.ref.wrappers.RefIntStream.range(0, delta.length()).mapToObj(i -> {
+              Tensor deltaTensor = delta.get(i);
+              Tensor inputTensor = inputData.get(i);
+              return new Tensor(gateData.getDimensions()).setByCoord(
+                  c -> com.simiacryptus.ref.wrappers.RefIntStream.range(0, inputDims[2]).mapToDouble(b -> {
                     int[] coords = c.getCoords();
-                    return deltaTensor.get(coords[0], coords[1], coords[2]) * gateTensor.get(coords[0], coords[1], 0);
-                  });
-                }).toArray(i -> new Tensor[i]));
-            input.accumulate(buffer, tensorArray);
-          }
-          if (gate.isAlive()) {
-            @Nonnull
-            TensorArray tensorArray = new TensorArray(
-                com.simiacryptus.ref.wrappers.RefIntStream.range(0, delta.length()).mapToObj(i -> {
-                  Tensor deltaTensor = delta.get(i);
-                  Tensor inputTensor = inputData.get(i);
-                  return new Tensor(gateData.getDimensions()).setByCoord(
-                      c -> com.simiacryptus.ref.wrappers.RefIntStream.range(0, inputDims[2]).mapToDouble(b -> {
-                        int[] coords = c.getCoords();
-                        return deltaTensor.get(coords[0], coords[1], b) * inputTensor.get(coords[0], coords[1], b);
-                      }).sum());
-                }).toArray(i -> new Tensor[i]));
-            gate.accumulate(buffer, tensorArray);
-          }
-        }) {
+                    return deltaTensor.get(coords[0], coords[1], b) * inputTensor.get(coords[0], coords[1], b);
+                  }).sum());
+            }).toArray(i -> new Tensor[i]));
+        gate.accumulate(buffer, tensorArray);
+      }
+    }) {
 
       @Override
       public boolean isAlive() {
@@ -119,7 +128,7 @@ public @com.simiacryptus.ref.lang.RefAware class ImgPixelGateLayer extends Layer
   @Nonnull
   @Override
   public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
-      DataSerializer dataSerializer) {
+                            DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 
@@ -129,24 +138,13 @@ public @com.simiacryptus.ref.lang.RefAware class ImgPixelGateLayer extends Layer
     return com.simiacryptus.ref.wrappers.RefArrays.asList();
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") ImgPixelGateLayer addRef() {
+  public @Override
+  @SuppressWarnings("unused")
+  ImgPixelGateLayer addRef() {
     return (ImgPixelGateLayer) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") ImgPixelGateLayer[] addRefs(ImgPixelGateLayer[] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgPixelGateLayer::addRef)
-        .toArray((x) -> new ImgPixelGateLayer[x]);
-  }
-
-  public static @SuppressWarnings("unused") ImgPixelGateLayer[][] addRefs(ImgPixelGateLayer[][] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgPixelGateLayer::addRefs)
-        .toArray((x) -> new ImgPixelGateLayer[x][]);
   }
 }

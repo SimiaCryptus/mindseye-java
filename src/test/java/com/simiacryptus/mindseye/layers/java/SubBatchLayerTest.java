@@ -25,7 +25,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Random;
 
-public @com.simiacryptus.ref.lang.RefAware class SubBatchLayerTest extends LayerTestBase {
+public @com.simiacryptus.ref.lang.RefAware
+class SubBatchLayerTest extends LayerTestBase {
 
   private final Layer layer = SubBatchLayer.wrap(new SoftmaxLayer());
 
@@ -35,10 +36,26 @@ public @com.simiacryptus.ref.lang.RefAware class SubBatchLayerTest extends Layer
     return null;
   }
 
+  public static @SuppressWarnings("unused")
+  SubBatchLayerTest[] addRefs(SubBatchLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SubBatchLayerTest::addRef)
+        .toArray((x) -> new SubBatchLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  SubBatchLayerTest[][] addRefs(SubBatchLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SubBatchLayerTest::addRefs)
+        .toArray((x) -> new SubBatchLayerTest[x][]);
+  }
+
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][] { { 5 } };
+    return new int[][]{{5}};
   }
 
   @Nonnull
@@ -47,25 +64,14 @@ public @com.simiacryptus.ref.lang.RefAware class SubBatchLayerTest extends Layer
     return layer.copy();
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") SubBatchLayerTest addRef() {
+  public @Override
+  @SuppressWarnings("unused")
+  SubBatchLayerTest addRef() {
     return (SubBatchLayerTest) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") SubBatchLayerTest[] addRefs(SubBatchLayerTest[] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SubBatchLayerTest::addRef)
-        .toArray((x) -> new SubBatchLayerTest[x]);
-  }
-
-  public static @SuppressWarnings("unused") SubBatchLayerTest[][] addRefs(SubBatchLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SubBatchLayerTest::addRefs)
-        .toArray((x) -> new SubBatchLayerTest[x][]);
   }
 
 }

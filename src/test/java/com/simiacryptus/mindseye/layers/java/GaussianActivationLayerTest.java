@@ -22,51 +22,62 @@ package com.simiacryptus.mindseye.layers.java;
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 
-public abstract @com.simiacryptus.ref.lang.RefAware class GaussianActivationLayerTest extends ActivationLayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware
+class GaussianActivationLayerTest extends ActivationLayerTestBase {
   public GaussianActivationLayerTest() {
     super(new GaussianActivationLayer(0, 1));
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware class Basic extends GaussianActivationLayerTest {
-    @Override
-    protected Layer lossLayer() {
-      return new EntropyLossLayer();
-    }
-
-    public @SuppressWarnings("unused") void _free() {
-    }
-
-    public @Override @SuppressWarnings("unused") Basic addRef() {
-      return (Basic) super.addRef();
-    }
-
-    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
-      if (array == null)
-        return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
-    }
-  }
-
-  public @SuppressWarnings("unused") void _free() {
-  }
-
-  public @Override @SuppressWarnings("unused") GaussianActivationLayerTest addRef() {
-    return (GaussianActivationLayerTest) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") GaussianActivationLayerTest[] addRefs(GaussianActivationLayerTest[] array) {
+  public static @SuppressWarnings("unused")
+  GaussianActivationLayerTest[] addRefs(GaussianActivationLayerTest[] array) {
     if (array == null)
       return null;
     return java.util.Arrays.stream(array).filter((x) -> x != null).map(GaussianActivationLayerTest::addRef)
         .toArray((x) -> new GaussianActivationLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused") GaussianActivationLayerTest[][] addRefs(
+  public static @SuppressWarnings("unused")
+  GaussianActivationLayerTest[][] addRefs(
       GaussianActivationLayerTest[][] array) {
     if (array == null)
       return null;
     return java.util.Arrays.stream(array).filter((x) -> x != null).map(GaussianActivationLayerTest::addRefs)
         .toArray((x) -> new GaussianActivationLayerTest[x][]);
+  }
+
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  GaussianActivationLayerTest addRef() {
+    return (GaussianActivationLayerTest) super.addRef();
+  }
+
+  public static @com.simiacryptus.ref.lang.RefAware
+  class Basic extends GaussianActivationLayerTest {
+    public static @SuppressWarnings("unused")
+    Basic[] addRefs(Basic[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+    }
+
+    public @SuppressWarnings("unused")
+    void _free() {
+    }
+
+    public @Override
+    @SuppressWarnings("unused")
+    Basic addRef() {
+      return (Basic) super.addRef();
+    }
+
+    @Override
+    protected Layer lossLayer() {
+      return new EntropyLossLayer();
+    }
   }
 
 }

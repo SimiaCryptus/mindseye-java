@@ -24,16 +24,33 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-public abstract @com.simiacryptus.ref.lang.RefAware class BinaryNoiseLayerTest extends LayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware
+class BinaryNoiseLayerTest extends LayerTestBase {
 
   public BinaryNoiseLayerTest() {
     validateBatchExecution = false;
   }
 
+  public static @SuppressWarnings("unused")
+  BinaryNoiseLayerTest[] addRefs(BinaryNoiseLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BinaryNoiseLayerTest::addRef)
+        .toArray((x) -> new BinaryNoiseLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  BinaryNoiseLayerTest[][] addRefs(BinaryNoiseLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BinaryNoiseLayerTest::addRefs)
+        .toArray((x) -> new BinaryNoiseLayerTest[x][]);
+  }
+
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][] { { 5 } };
+    return new int[][]{{5}};
   }
 
   @Nonnull
@@ -42,41 +59,35 @@ public abstract @com.simiacryptus.ref.lang.RefAware class BinaryNoiseLayerTest e
     return new StochasticSamplingSubnetLayer(BinaryNoiseLayer.maskLayer(0.5), 3);
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware class Basic extends BinaryNoiseLayerTest {
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
 
-    public @SuppressWarnings("unused") void _free() {
-    }
+  public @Override
+  @SuppressWarnings("unused")
+  BinaryNoiseLayerTest addRef() {
+    return (BinaryNoiseLayerTest) super.addRef();
+  }
 
-    public @Override @SuppressWarnings("unused") Basic addRef() {
-      return (Basic) super.addRef();
-    }
+  public static @com.simiacryptus.ref.lang.RefAware
+  class Basic extends BinaryNoiseLayerTest {
 
-    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+    public static @SuppressWarnings("unused")
+    Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
       return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
-  }
 
-  public @SuppressWarnings("unused") void _free() {
-  }
+    public @SuppressWarnings("unused")
+    void _free() {
+    }
 
-  public @Override @SuppressWarnings("unused") BinaryNoiseLayerTest addRef() {
-    return (BinaryNoiseLayerTest) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") BinaryNoiseLayerTest[] addRefs(BinaryNoiseLayerTest[] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BinaryNoiseLayerTest::addRef)
-        .toArray((x) -> new BinaryNoiseLayerTest[x]);
-  }
-
-  public static @SuppressWarnings("unused") BinaryNoiseLayerTest[][] addRefs(BinaryNoiseLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BinaryNoiseLayerTest::addRefs)
-        .toArray((x) -> new BinaryNoiseLayerTest[x][]);
+    public @Override
+    @SuppressWarnings("unused")
+    Basic addRef() {
+      return (Basic) super.addRef();
+    }
   }
 
 }

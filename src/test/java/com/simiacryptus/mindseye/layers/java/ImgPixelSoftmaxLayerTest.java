@@ -24,12 +24,29 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-public abstract @com.simiacryptus.ref.lang.RefAware class ImgPixelSoftmaxLayerTest extends LayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware
+class ImgPixelSoftmaxLayerTest extends LayerTestBase {
+
+  public static @SuppressWarnings("unused")
+  ImgPixelSoftmaxLayerTest[] addRefs(ImgPixelSoftmaxLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgPixelSoftmaxLayerTest::addRef)
+        .toArray((x) -> new ImgPixelSoftmaxLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  ImgPixelSoftmaxLayerTest[][] addRefs(ImgPixelSoftmaxLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgPixelSoftmaxLayerTest::addRefs)
+        .toArray((x) -> new ImgPixelSoftmaxLayerTest[x][]);
+  }
 
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][] { { 2, 2, 3 } };
+    return new int[][]{{2, 2, 3}};
   }
 
   @Nonnull
@@ -38,41 +55,35 @@ public abstract @com.simiacryptus.ref.lang.RefAware class ImgPixelSoftmaxLayerTe
     return new ImgPixelSoftmaxLayer();
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware class Basic extends ImgPixelSoftmaxLayerTest {
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
 
-    public @SuppressWarnings("unused") void _free() {
-    }
+  public @Override
+  @SuppressWarnings("unused")
+  ImgPixelSoftmaxLayerTest addRef() {
+    return (ImgPixelSoftmaxLayerTest) super.addRef();
+  }
 
-    public @Override @SuppressWarnings("unused") Basic addRef() {
-      return (Basic) super.addRef();
-    }
+  public static @com.simiacryptus.ref.lang.RefAware
+  class Basic extends ImgPixelSoftmaxLayerTest {
 
-    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+    public static @SuppressWarnings("unused")
+    Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
       return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
-  }
 
-  public @SuppressWarnings("unused") void _free() {
-  }
+    public @SuppressWarnings("unused")
+    void _free() {
+    }
 
-  public @Override @SuppressWarnings("unused") ImgPixelSoftmaxLayerTest addRef() {
-    return (ImgPixelSoftmaxLayerTest) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") ImgPixelSoftmaxLayerTest[] addRefs(ImgPixelSoftmaxLayerTest[] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgPixelSoftmaxLayerTest::addRef)
-        .toArray((x) -> new ImgPixelSoftmaxLayerTest[x]);
-  }
-
-  public static @SuppressWarnings("unused") ImgPixelSoftmaxLayerTest[][] addRefs(ImgPixelSoftmaxLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgPixelSoftmaxLayerTest::addRefs)
-        .toArray((x) -> new ImgPixelSoftmaxLayerTest[x][]);
+    public @Override
+    @SuppressWarnings("unused")
+    Basic addRef() {
+      return (Basic) super.addRef();
+    }
   }
 
 }

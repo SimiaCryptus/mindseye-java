@@ -26,19 +26,37 @@ import com.simiacryptus.mindseye.test.unit.TrainingTester;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-public abstract @com.simiacryptus.ref.lang.RefAware class ProductInputsLayerTest extends LayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware
+class ProductInputsLayerTest extends LayerTestBase {
   @Override
   public ComponentTest<TrainingTester.ComponentResult> getTrainingTester() {
     return new TrainingTester() {
+
+      public @SuppressWarnings("unused")
+      void _free() {
+      }
 
       @Override
       protected Layer lossLayer() {
         return ProductInputsLayerTest.this.lossLayer();
       }
-
-      public @SuppressWarnings("unused") void _free() {
-      }
     }.setRandomizationMode(TrainingTester.RandomizationMode.Random);
+  }
+
+  public static @SuppressWarnings("unused")
+  ProductInputsLayerTest[] addRefs(ProductInputsLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ProductInputsLayerTest::addRef)
+        .toArray((x) -> new ProductInputsLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  ProductInputsLayerTest[][] addRefs(ProductInputsLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ProductInputsLayerTest::addRefs)
+        .toArray((x) -> new ProductInputsLayerTest[x][]);
   }
 
   @Nonnull
@@ -47,90 +65,94 @@ public abstract @com.simiacryptus.ref.lang.RefAware class ProductInputsLayerTest
     return new ProductInputsLayer();
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware class N1Test extends ProductInputsLayerTest {
-    @Nonnull
-    @Override
-    public int[][] getSmallDims(Random random) {
-      return new int[][] { { 3 }, { 1 } };
-    }
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
 
-    public @SuppressWarnings("unused") void _free() {
-    }
+  public @Override
+  @SuppressWarnings("unused")
+  ProductInputsLayerTest addRef() {
+    return (ProductInputsLayerTest) super.addRef();
+  }
 
-    public @Override @SuppressWarnings("unused") N1Test addRef() {
-      return (N1Test) super.addRef();
-    }
-
-    public static @SuppressWarnings("unused") N1Test[] addRefs(N1Test[] array) {
+  public static @com.simiacryptus.ref.lang.RefAware
+  class N1Test extends ProductInputsLayerTest {
+    public static @SuppressWarnings("unused")
+    N1Test[] addRefs(N1Test[] array) {
       if (array == null)
         return null;
       return java.util.Arrays.stream(array).filter((x) -> x != null).map(N1Test::addRef).toArray((x) -> new N1Test[x]);
     }
-  }
-
-  public static @com.simiacryptus.ref.lang.RefAware class NNNTest extends ProductInputsLayerTest {
 
     @Nonnull
     @Override
     public int[][] getSmallDims(Random random) {
-      return new int[][] { { 3 }, { 3 }, { 3 } };
+      return new int[][]{{3}, {1}};
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") NNNTest addRef() {
-      return (NNNTest) super.addRef();
+    public @Override
+    @SuppressWarnings("unused")
+    N1Test addRef() {
+      return (N1Test) super.addRef();
     }
+  }
 
-    public static @SuppressWarnings("unused") NNNTest[] addRefs(NNNTest[] array) {
+  public static @com.simiacryptus.ref.lang.RefAware
+  class NNNTest extends ProductInputsLayerTest {
+
+    public static @SuppressWarnings("unused")
+    NNNTest[] addRefs(NNNTest[] array) {
       if (array == null)
         return null;
       return java.util.Arrays.stream(array).filter((x) -> x != null).map(NNNTest::addRef)
           .toArray((x) -> new NNNTest[x]);
     }
-  }
-
-  public static @com.simiacryptus.ref.lang.RefAware class NNTest extends ProductInputsLayerTest {
 
     @Nonnull
     @Override
     public int[][] getSmallDims(Random random) {
-      return new int[][] { { 3 }, { 3 } };
+      return new int[][]{{3}, {3}, {3}};
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") NNTest addRef() {
-      return (NNTest) super.addRef();
+    public @Override
+    @SuppressWarnings("unused")
+    NNNTest addRef() {
+      return (NNNTest) super.addRef();
     }
+  }
 
-    public static @SuppressWarnings("unused") NNTest[] addRefs(NNTest[] array) {
+  public static @com.simiacryptus.ref.lang.RefAware
+  class NNTest extends ProductInputsLayerTest {
+
+    public static @SuppressWarnings("unused")
+    NNTest[] addRefs(NNTest[] array) {
       if (array == null)
         return null;
       return java.util.Arrays.stream(array).filter((x) -> x != null).map(NNTest::addRef).toArray((x) -> new NNTest[x]);
     }
-  }
 
-  public @SuppressWarnings("unused") void _free() {
-  }
+    @Nonnull
+    @Override
+    public int[][] getSmallDims(Random random) {
+      return new int[][]{{3}, {3}};
+    }
 
-  public @Override @SuppressWarnings("unused") ProductInputsLayerTest addRef() {
-    return (ProductInputsLayerTest) super.addRef();
-  }
+    public @SuppressWarnings("unused")
+    void _free() {
+    }
 
-  public static @SuppressWarnings("unused") ProductInputsLayerTest[] addRefs(ProductInputsLayerTest[] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ProductInputsLayerTest::addRef)
-        .toArray((x) -> new ProductInputsLayerTest[x]);
-  }
-
-  public static @SuppressWarnings("unused") ProductInputsLayerTest[][] addRefs(ProductInputsLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ProductInputsLayerTest::addRefs)
-        .toArray((x) -> new ProductInputsLayerTest[x][]);
+    public @Override
+    @SuppressWarnings("unused")
+    NNTest addRef() {
+      return (NNTest) super.addRef();
+    }
   }
 }

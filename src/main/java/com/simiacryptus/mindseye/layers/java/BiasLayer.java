@@ -29,18 +29,13 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.function.DoubleSupplier;
 import java.util.function.IntToDoubleFunction;
-import com.simiacryptus.ref.wrappers.RefArrays;
-import com.simiacryptus.ref.wrappers.RefList;
-import com.simiacryptus.ref.wrappers.RefMap;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware class BiasLayer extends LayerBase {
+public @com.simiacryptus.ref.lang.RefAware
+class BiasLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(BiasLayer.class);
@@ -81,8 +76,24 @@ public @com.simiacryptus.ref.lang.RefAware class BiasLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   public static BiasLayer fromJson(@Nonnull final JsonObject json,
-      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                   com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new BiasLayer(json, rs);
+  }
+
+  public static @SuppressWarnings("unused")
+  BiasLayer[] addRefs(BiasLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BiasLayer::addRef)
+        .toArray((x) -> new BiasLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  BiasLayer[][] addRefs(BiasLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BiasLayer::addRefs)
+        .toArray((x) -> new BiasLayer[x][]);
   }
 
   public double[] add(@Nonnull final double[] input) {
@@ -123,10 +134,9 @@ public @com.simiacryptus.ref.lang.RefAware class BiasLayer extends LayerBase {
         final Delta<UUID> deltaBuffer = buffer.get(BiasLayer.this.getId(), bias);
         if (1 == bias.length()) {
           delta.stream().parallel().forEach(d -> {
-            @Nullable
-            final double[] array = d.getData();
+            @Nullable final double[] array = d.getData();
             deltaBuffer.addInPlace(1 == array.length ? array
-                : new double[] { com.simiacryptus.ref.wrappers.RefArrays.stream(array).sum() });
+                : new double[]{com.simiacryptus.ref.wrappers.RefArrays.stream(array).sum()});
           });
         } else {
           delta.stream().parallel().forEach(d -> {
@@ -152,9 +162,8 @@ public @com.simiacryptus.ref.lang.RefAware class BiasLayer extends LayerBase {
   @Nonnull
   @Override
   public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
-      DataSerializer dataSerializer) {
-    @Nonnull
-    final JsonObject json = super.getJsonStub();
+                            DataSerializer dataSerializer) {
+    @Nonnull final JsonObject json = super.getJsonStub();
     json.add("bias", bias.getJson(resources, dataSerializer));
     return json;
   }
@@ -188,21 +197,9 @@ public @com.simiacryptus.ref.lang.RefAware class BiasLayer extends LayerBase {
     super._free();
   }
 
-  public @Override @SuppressWarnings("unused") BiasLayer addRef() {
+  public @Override
+  @SuppressWarnings("unused")
+  BiasLayer addRef() {
     return (BiasLayer) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") BiasLayer[] addRefs(BiasLayer[] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BiasLayer::addRef)
-        .toArray((x) -> new BiasLayer[x]);
-  }
-
-  public static @SuppressWarnings("unused") BiasLayer[][] addRefs(BiasLayer[][] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BiasLayer::addRefs)
-        .toArray((x) -> new BiasLayer[x][]);
   }
 }

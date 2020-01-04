@@ -31,22 +31,13 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import com.simiacryptus.ref.wrappers.RefArrays;
-import com.simiacryptus.ref.wrappers.RefList;
-import com.simiacryptus.ref.wrappers.RefMap;
-import com.simiacryptus.ref.wrappers.RefCollectors;
-import com.simiacryptus.ref.wrappers.RefIntStream;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware class AvgPoolingLayer extends LayerBase {
+public @com.simiacryptus.ref.lang.RefAware
+class AvgPoolingLayer extends LayerBase {
 
   public static final LoadingCache<AvgPoolingLayer.IndexMapKey, com.simiacryptus.ref.wrappers.RefMap<Coordinate, com.simiacryptus.ref.wrappers.RefList<int[]>>> indexMapCache = CacheBuilder
       .newBuilder().build(new LayerCacheLoader());
@@ -70,8 +61,24 @@ public @com.simiacryptus.ref.lang.RefAware class AvgPoolingLayer extends LayerBa
 
   @SuppressWarnings("unused")
   public static AvgPoolingLayer fromJson(@Nonnull final JsonObject json,
-      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                         com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new AvgPoolingLayer(json, JsonUtil.getIntArray(json.getAsJsonArray("heapCopy")));
+  }
+
+  public static @SuppressWarnings("unused")
+  AvgPoolingLayer[] addRefs(AvgPoolingLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(AvgPoolingLayer::addRef)
+        .toArray((x) -> new AvgPoolingLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  AvgPoolingLayer[][] addRefs(AvgPoolingLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(AvgPoolingLayer::addRefs)
+        .toArray((x) -> new AvgPoolingLayer[x][]);
   }
 
   private static synchronized com.simiacryptus.ref.wrappers.RefMap<Coordinate, com.simiacryptus.ref.wrappers.RefList<int[]>> getCoordMap(
@@ -89,8 +96,7 @@ public @com.simiacryptus.ref.lang.RefAware class AvgPoolingLayer extends LayerBa
   public Result eval(@Nonnull final Result... inObj) {
     final int kernelSize = Tensor.length(kernelDims);
     final TensorList data = inObj[0].getData();
-    @Nonnull
-    final int[] inputDims = data.getDimensions();
+    @Nonnull final int[] inputDims = data.getDimensions();
     final int[] newDims = com.simiacryptus.ref.wrappers.RefIntStream.range(0, inputDims.length).map(i -> {
       assert 0 == inputDims[i] % kernelDims[i] : inputDims[i] + ":" + kernelDims[i];
       return inputDims[i] / kernelDims[i];
@@ -99,12 +105,9 @@ public @com.simiacryptus.ref.lang.RefAware class AvgPoolingLayer extends LayerBa
         .getCoordMap(kernelDims, newDims);
     final Tensor[] outputValues = com.simiacryptus.ref.wrappers.RefIntStream.range(0, data.length())
         .mapToObj(dataIndex -> {
-          @Nullable
-          final Tensor input = data.get(dataIndex);
-          @Nonnull
-          final Tensor output = new Tensor(newDims);
-          for (@Nonnull
-          final Entry<Coordinate, com.simiacryptus.ref.wrappers.RefList<int[]>> entry : coordMap.entrySet()) {
+          @Nullable final Tensor input = data.get(dataIndex);
+          @Nonnull final Tensor output = new Tensor(newDims);
+          for (@Nonnull final Entry<Coordinate, com.simiacryptus.ref.wrappers.RefList<int[]>> entry : coordMap.entrySet()) {
             double sum = entry.getValue().stream().mapToDouble(inputCoord -> input.get(inputCoord)).sum();
             if (Double.isFinite(sum)) {
               output.add(entry.getKey(), sum / kernelSize);
@@ -119,14 +122,11 @@ public @com.simiacryptus.ref.lang.RefAware class AvgPoolingLayer extends LayerBa
                 .mapToObj(dataIndex -> {
                   @Nullable
                   Tensor tensor = delta.get(dataIndex);
-                  @Nonnull
-                  final Tensor backSignal = new Tensor(inputDims);
-                  for (@Nonnull
-                  final Entry<Coordinate, com.simiacryptus.ref.wrappers.RefList<int[]>> outputMapping : coordMap
+                  @Nonnull final Tensor backSignal = new Tensor(inputDims);
+                  for (@Nonnull final Entry<Coordinate, com.simiacryptus.ref.wrappers.RefList<int[]>> outputMapping : coordMap
                       .entrySet()) {
                     final double outputValue = tensor.get(outputMapping.getKey());
-                    for (@Nonnull
-                    final int[] inputCoord : outputMapping.getValue()) {
+                    for (@Nonnull final int[] inputCoord : outputMapping.getValue()) {
                       backSignal.add(inputCoord, outputValue / kernelSize);
                     }
                   }
@@ -151,9 +151,8 @@ public @com.simiacryptus.ref.lang.RefAware class AvgPoolingLayer extends LayerBa
   @Nonnull
   @Override
   public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
-      DataSerializer dataSerializer) {
-    @Nonnull
-    final JsonObject json = super.getJsonStub();
+                            DataSerializer dataSerializer) {
+    @Nonnull final JsonObject json = super.getJsonStub();
     json.add("heapCopy", JsonUtil.getJson(kernelDims));
     return json;
   }
@@ -164,7 +163,18 @@ public @com.simiacryptus.ref.lang.RefAware class AvgPoolingLayer extends LayerBa
     return com.simiacryptus.ref.wrappers.RefArrays.asList();
   }
 
-  public static final @com.simiacryptus.ref.lang.RefAware class IndexMapKey {
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  AvgPoolingLayer addRef() {
+    return (AvgPoolingLayer) super.addRef();
+  }
+
+  public static final @com.simiacryptus.ref.lang.RefAware
+  class IndexMapKey {
     final int[] kernel;
     final int[] output;
 
@@ -191,8 +201,7 @@ public @com.simiacryptus.ref.lang.RefAware class AvgPoolingLayer extends LayerBa
       if (getClass() != obj.getClass()) {
         return false;
       }
-      @Nullable
-      final AvgPoolingLayer.IndexMapKey other = (AvgPoolingLayer.IndexMapKey) obj;
+      @Nullable final AvgPoolingLayer.IndexMapKey other = (AvgPoolingLayer.IndexMapKey) obj;
       if (!com.simiacryptus.ref.wrappers.RefArrays.equals(kernel, other.kernel)) {
         return false;
       }
@@ -209,7 +218,8 @@ public @com.simiacryptus.ref.lang.RefAware class AvgPoolingLayer extends LayerBa
     }
   }
 
-  private static @com.simiacryptus.ref.lang.RefAware class LayerCacheLoader extends
+  private static @com.simiacryptus.ref.lang.RefAware
+  class LayerCacheLoader extends
       CacheLoader<IndexMapKey, com.simiacryptus.ref.wrappers.RefMap<Coordinate, com.simiacryptus.ref.wrappers.RefList<int[]>>> {
     @Override
     public com.simiacryptus.ref.wrappers.RefMap<Coordinate, com.simiacryptus.ref.wrappers.RefList<int[]>> load(
@@ -221,8 +231,7 @@ public @com.simiacryptus.ref.lang.RefAware class AvgPoolingLayer extends LayerBa
         Tensor blank = new Tensor(ksize);
         return blank.coordStream(true).map(kernelCoord -> {
           int[] coords = o.getCoords();
-          @Nonnull
-          final int[] r = new int[coords.length];
+          @Nonnull final int[] r = new int[coords.length];
           for (int i = 0; i < coords.length; i++) {
             r[i] = coords[i] * ksize[i] + kernelCoord.getCoords()[i];
           }
@@ -230,26 +239,5 @@ public @com.simiacryptus.ref.lang.RefAware class AvgPoolingLayer extends LayerBa
         }).collect(com.simiacryptus.ref.wrappers.RefCollectors.toList());
       }));
     }
-  }
-
-  public @SuppressWarnings("unused") void _free() {
-  }
-
-  public @Override @SuppressWarnings("unused") AvgPoolingLayer addRef() {
-    return (AvgPoolingLayer) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") AvgPoolingLayer[] addRefs(AvgPoolingLayer[] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(AvgPoolingLayer::addRef)
-        .toArray((x) -> new AvgPoolingLayer[x]);
-  }
-
-  public static @SuppressWarnings("unused") AvgPoolingLayer[][] addRefs(AvgPoolingLayer[][] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(AvgPoolingLayer::addRefs)
-        .toArray((x) -> new AvgPoolingLayer[x][]);
   }
 }

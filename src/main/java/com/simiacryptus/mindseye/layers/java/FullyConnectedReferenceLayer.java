@@ -29,22 +29,15 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.function.DoubleSupplier;
 import java.util.function.IntToDoubleFunction;
 import java.util.function.ToDoubleBiFunction;
 import java.util.function.ToDoubleFunction;
-import java.util.stream.IntStream;
-import com.simiacryptus.ref.wrappers.RefArrays;
-import com.simiacryptus.ref.wrappers.RefList;
-import com.simiacryptus.ref.wrappers.RefMap;
-import com.simiacryptus.ref.wrappers.RefIntStream;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware class FullyConnectedReferenceLayer extends LayerBase {
+public @com.simiacryptus.ref.lang.RefAware
+class FullyConnectedReferenceLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(FullyConnectedReferenceLayer.class);
@@ -76,7 +69,7 @@ public @com.simiacryptus.ref.lang.RefAware class FullyConnectedReferenceLayer ex
   }
 
   protected FullyConnectedReferenceLayer(@Nonnull final JsonObject json,
-      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources) {
+                                         com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources) {
     super(json);
     outputDims = JsonUtil.getIntArray(json.getAsJsonArray("outputDims"));
     inputDims = JsonUtil.getIntArray(json.getAsJsonArray("inputDims"));
@@ -100,7 +93,7 @@ public @com.simiacryptus.ref.lang.RefAware class FullyConnectedReferenceLayer ex
   public FullyConnectedReferenceLayer setByCoord(@Nonnull final ToDoubleBiFunction<Coordinate, Coordinate> f) {
     new Tensor(inputDims).coordStream(true).forEach(in -> {
       new Tensor(outputDims).coordStream(true).forEach(out -> {
-        weights.set(new int[] { in.getIndex(), out.getIndex() }, f.applyAsDouble(in, out));
+        weights.set(new int[]{in.getIndex(), out.getIndex()}, f.applyAsDouble(in, out));
       });
     });
     return this;
@@ -116,8 +109,26 @@ public @com.simiacryptus.ref.lang.RefAware class FullyConnectedReferenceLayer ex
 
   @SuppressWarnings("unused")
   public static FullyConnectedReferenceLayer fromJson(@Nonnull final JsonObject json,
-      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                                      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new FullyConnectedReferenceLayer(json, rs);
+  }
+
+  public static @SuppressWarnings("unused")
+  FullyConnectedReferenceLayer[] addRefs(
+      FullyConnectedReferenceLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(FullyConnectedReferenceLayer::addRef)
+        .toArray((x) -> new FullyConnectedReferenceLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  FullyConnectedReferenceLayer[][] addRefs(
+      FullyConnectedReferenceLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(FullyConnectedReferenceLayer::addRefs)
+        .toArray((x) -> new FullyConnectedReferenceLayer[x][]);
   }
 
   @Nonnull
@@ -131,10 +142,8 @@ public @com.simiacryptus.ref.lang.RefAware class FullyConnectedReferenceLayer ex
         .toString(inputDimensions) + " == " + com.simiacryptus.ref.wrappers.RefArrays.toString(this.inputDims);
     return new Result(
         new TensorArray(com.simiacryptus.ref.wrappers.RefIntStream.range(0, indata.length()).mapToObj(index -> {
-          @Nullable
-          final Tensor input = indata.get(index);
-          @Nullable
-          final Tensor output = new Tensor(outputDims);
+          @Nullable final Tensor input = indata.get(index);
+          @Nullable final Tensor output = new Tensor(outputDims);
           weights.coordStream(false).forEach(c -> {
             int[] coords = c.getCoords();
             double prev = output.get(coords[1]);
@@ -145,43 +154,38 @@ public @com.simiacryptus.ref.lang.RefAware class FullyConnectedReferenceLayer ex
           });
           return output;
         }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
-          if (!isFrozen()) {
-            Tensor[] array = com.simiacryptus.ref.wrappers.RefIntStream.range(0, indata.length()).mapToObj(i -> {
-              @Nullable
-              final Tensor inputTensor = indata.get(i);
-              @Nullable
-              final Tensor deltaTensor = delta.get(i);
-              @Nonnull
-              Tensor weights = new Tensor(FullyConnectedReferenceLayer.this.weights.getDimensions());
+      if (!isFrozen()) {
+        Tensor[] array = com.simiacryptus.ref.wrappers.RefIntStream.range(0, indata.length()).mapToObj(i -> {
+          @Nullable final Tensor inputTensor = indata.get(i);
+          @Nullable final Tensor deltaTensor = delta.get(i);
+          @Nonnull
+          Tensor weights = new Tensor(FullyConnectedReferenceLayer.this.weights.getDimensions());
+          weights.coordStream(false).forEach(c -> {
+            int[] coords = c.getCoords();
+            weights.set(c, inputTensor.get(coords[0]) * deltaTensor.get(coords[1]));
+          });
+          return weights;
+        }).toArray(i -> new Tensor[i]);
+        Tensor tensor = com.simiacryptus.ref.wrappers.RefArrays.stream(array).reduce((a, b) -> {
+          return a.addAndFree(b);
+        }).get();
+        buffer.get(this.getId(), weights.getData()).addInPlace(tensor.getData());
+      }
+      if (inputResult.isAlive()) {
+        @Nonnull final TensorList tensorList = new TensorArray(
+            com.simiacryptus.ref.wrappers.RefIntStream.range(0, indata.length()).mapToObj(i -> {
+              @Nullable final Tensor inputTensor = new Tensor(inputDims);
+              @Nullable final Tensor deltaTensor = delta.get(i);
               weights.coordStream(false).forEach(c -> {
                 int[] coords = c.getCoords();
-                weights.set(c, inputTensor.get(coords[0]) * deltaTensor.get(coords[1]));
+                inputTensor.set(coords[0],
+                    inputTensor.get(coords[0]) + weights.get(c) * deltaTensor.get(coords[1]));
               });
-              return weights;
-            }).toArray(i -> new Tensor[i]);
-            Tensor tensor = com.simiacryptus.ref.wrappers.RefArrays.stream(array).reduce((a, b) -> {
-              return a.addAndFree(b);
-            }).get();
-            buffer.get(this.getId(), weights.getData()).addInPlace(tensor.getData());
-          }
-          if (inputResult.isAlive()) {
-            @Nonnull
-            final TensorList tensorList = new TensorArray(
-                com.simiacryptus.ref.wrappers.RefIntStream.range(0, indata.length()).mapToObj(i -> {
-                  @Nullable
-                  final Tensor inputTensor = new Tensor(inputDims);
-                  @Nullable
-                  final Tensor deltaTensor = delta.get(i);
-                  weights.coordStream(false).forEach(c -> {
-                    int[] coords = c.getCoords();
-                    inputTensor.set(coords[0],
-                        inputTensor.get(coords[0]) + weights.get(c) * deltaTensor.get(coords[1]));
-                  });
-                  return inputTensor;
-                }).toArray(i -> new Tensor[i]));
-            inputResult.accumulate(buffer, tensorList);
-          }
-        }) {
+              return inputTensor;
+            }).toArray(i -> new Tensor[i]));
+        inputResult.accumulate(buffer, tensorList);
+      }
+    }) {
 
       @Override
       public boolean isAlive() {
@@ -197,9 +201,8 @@ public @com.simiacryptus.ref.lang.RefAware class FullyConnectedReferenceLayer ex
   @Nonnull
   @Override
   public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
-      @Nonnull DataSerializer dataSerializer) {
-    @Nonnull
-    final JsonObject json = super.getJsonStub();
+                            @Nonnull DataSerializer dataSerializer) {
+    @Nonnull final JsonObject json = super.getJsonStub();
     json.add("outputDims", JsonUtil.getJson(outputDims));
     json.add("inputDims", JsonUtil.getJson(inputDims));
     json.add("weights", weights.getJson(resources, dataSerializer));
@@ -239,24 +242,10 @@ public @com.simiacryptus.ref.lang.RefAware class FullyConnectedReferenceLayer ex
     super._free();
   }
 
-  public @Override @SuppressWarnings("unused") FullyConnectedReferenceLayer addRef() {
+  public @Override
+  @SuppressWarnings("unused")
+  FullyConnectedReferenceLayer addRef() {
     return (FullyConnectedReferenceLayer) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") FullyConnectedReferenceLayer[] addRefs(
-      FullyConnectedReferenceLayer[] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(FullyConnectedReferenceLayer::addRef)
-        .toArray((x) -> new FullyConnectedReferenceLayer[x]);
-  }
-
-  public static @SuppressWarnings("unused") FullyConnectedReferenceLayer[][] addRefs(
-      FullyConnectedReferenceLayer[][] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(FullyConnectedReferenceLayer::addRefs)
-        .toArray((x) -> new FullyConnectedReferenceLayer[x][]);
   }
 
 }

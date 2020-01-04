@@ -24,7 +24,8 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-public abstract @com.simiacryptus.ref.lang.RefAware class BiasLayerTest extends LayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware
+class BiasLayerTest extends LayerTestBase {
 
   private final int dimension;
 
@@ -32,10 +33,26 @@ public abstract @com.simiacryptus.ref.lang.RefAware class BiasLayerTest extends 
     this.dimension = dimension;
   }
 
+  public static @SuppressWarnings("unused")
+  BiasLayerTest[] addRefs(BiasLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BiasLayerTest::addRef)
+        .toArray((x) -> new BiasLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  BiasLayerTest[][] addRefs(BiasLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BiasLayerTest::addRefs)
+        .toArray((x) -> new BiasLayerTest[x][]);
+  }
+
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][] { { dimension } };
+    return new int[][]{{dimension}};
   }
 
   @Nonnull
@@ -44,29 +61,53 @@ public abstract @com.simiacryptus.ref.lang.RefAware class BiasLayerTest extends 
     return new BiasLayer(dimension).addWeights(this::random);
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware class Basic extends BiasLayerTest {
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  BiasLayerTest addRef() {
+    return (BiasLayerTest) super.addRef();
+  }
+
+  public static @com.simiacryptus.ref.lang.RefAware
+  class Basic extends BiasLayerTest {
     public Basic() {
       super(5);
     }
 
-    public @SuppressWarnings("unused") void _free() {
-    }
-
-    public @Override @SuppressWarnings("unused") Basic addRef() {
-      return (Basic) super.addRef();
-    }
-
-    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+    public static @SuppressWarnings("unused")
+    Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
       return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
+
+    public @SuppressWarnings("unused")
+    void _free() {
+    }
+
+    public @Override
+    @SuppressWarnings("unused")
+    Basic addRef() {
+      return (Basic) super.addRef();
+    }
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware class Reducing extends BiasLayerTest {
+  public static @com.simiacryptus.ref.lang.RefAware
+  class Reducing extends BiasLayerTest {
 
     public Reducing() {
       super(5);
+    }
+
+    public static @SuppressWarnings("unused")
+    Reducing[] addRefs(Reducing[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Reducing::addRef)
+          .toArray((x) -> new Reducing[x]);
     }
 
     @Nonnull
@@ -75,41 +116,16 @@ public abstract @com.simiacryptus.ref.lang.RefAware class BiasLayerTest extends 
       return new BiasLayer(1).addWeights(this::random);
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") Reducing addRef() {
+    public @Override
+    @SuppressWarnings("unused")
+    Reducing addRef() {
       return (Reducing) super.addRef();
     }
 
-    public static @SuppressWarnings("unused") Reducing[] addRefs(Reducing[] array) {
-      if (array == null)
-        return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Reducing::addRef)
-          .toArray((x) -> new Reducing[x]);
-    }
-
-  }
-
-  public @SuppressWarnings("unused") void _free() {
-  }
-
-  public @Override @SuppressWarnings("unused") BiasLayerTest addRef() {
-    return (BiasLayerTest) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") BiasLayerTest[] addRefs(BiasLayerTest[] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BiasLayerTest::addRef)
-        .toArray((x) -> new BiasLayerTest[x]);
-  }
-
-  public static @SuppressWarnings("unused") BiasLayerTest[][] addRefs(BiasLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BiasLayerTest::addRefs)
-        .toArray((x) -> new BiasLayerTest[x][]);
   }
 
 }

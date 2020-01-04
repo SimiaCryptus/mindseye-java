@@ -29,10 +29,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.Random;
+import java.util.UUID;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
+public @com.simiacryptus.ref.lang.RefAware
+class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
 
   public static final ThreadLocal<Random> random = new ThreadLocal<Random>() {
     @Override
@@ -76,7 +78,7 @@ public @com.simiacryptus.ref.lang.RefAware class BinaryNoiseLayer extends LayerB
 
   @SuppressWarnings("unused")
   public static BinaryNoiseLayer fromJson(@Nonnull final JsonObject json,
-      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                          com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new BinaryNoiseLayer(json);
   }
 
@@ -88,19 +90,33 @@ public @com.simiacryptus.ref.lang.RefAware class BinaryNoiseLayer extends LayerB
     return subnet;
   }
 
+  public static @SuppressWarnings("unused")
+  BinaryNoiseLayer[] addRefs(BinaryNoiseLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BinaryNoiseLayer::addRef)
+        .toArray((x) -> new BinaryNoiseLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  BinaryNoiseLayer[][] addRefs(BinaryNoiseLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BinaryNoiseLayer::addRefs)
+        .toArray((x) -> new BinaryNoiseLayer[x][]);
+  }
+
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     final Result input = inObj[0];
     TensorList inputData = input.getData();
-    @Nonnull
-    final int[] dimensions = inputData.getDimensions();
+    @Nonnull final int[] dimensions = inputData.getDimensions();
     final int length = inputData.length();
     if (maskList.size() > 0
         && !com.simiacryptus.ref.wrappers.RefArrays.equals(maskList.get(0).getDimensions(), dimensions)) {
       clear();
     }
-    @Nonnull
-    final Tensor tensorPrototype = new Tensor(dimensions);
+    @Nonnull final Tensor tensorPrototype = new Tensor(dimensions);
     double amplitude = 1.0 / getValue();
     while (length > maskList.size()) {
       if (seed == 0) {
@@ -136,9 +152,8 @@ public @com.simiacryptus.ref.lang.RefAware class BinaryNoiseLayer extends LayerB
   @Nonnull
   @Override
   public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
-      DataSerializer dataSerializer) {
-    @Nonnull
-    final JsonObject json = super.getJsonStub();
+                            DataSerializer dataSerializer) {
+    @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("value", value);
     json.addProperty("seed", seed);
     //    json.addProperty("enabled", enabled);
@@ -168,22 +183,10 @@ public @com.simiacryptus.ref.lang.RefAware class BinaryNoiseLayer extends LayerB
     super._free();
   }
 
-  public @Override @SuppressWarnings("unused") BinaryNoiseLayer addRef() {
+  public @Override
+  @SuppressWarnings("unused")
+  BinaryNoiseLayer addRef() {
     return (BinaryNoiseLayer) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") BinaryNoiseLayer[] addRefs(BinaryNoiseLayer[] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BinaryNoiseLayer::addRef)
-        .toArray((x) -> new BinaryNoiseLayer[x]);
-  }
-
-  public static @SuppressWarnings("unused") BinaryNoiseLayer[][] addRefs(BinaryNoiseLayer[][] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BinaryNoiseLayer::addRefs)
-        .toArray((x) -> new BinaryNoiseLayer[x][]);
   }
 
 }

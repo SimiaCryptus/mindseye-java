@@ -23,11 +23,10 @@ import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.DataSerializer;
 
 import javax.annotation.Nonnull;
-import java.util.Map;
-import com.simiacryptus.ref.wrappers.RefMap;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware class BoundedActivationLayer
+public @com.simiacryptus.ref.lang.RefAware
+class BoundedActivationLayer
     extends SimpleActivationLayer<BoundedActivationLayer> {
 
   private double maxValue = Double.POSITIVE_INFINITY;
@@ -63,21 +62,45 @@ public @com.simiacryptus.ref.lang.RefAware class BoundedActivationLayer
   @Nonnull
   @SuppressWarnings("unused")
   public static BoundedActivationLayer fromJson(@Nonnull final JsonObject json,
-      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
-    @Nonnull
-    final BoundedActivationLayer obj = new BoundedActivationLayer(json);
+                                                com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+    @Nonnull final BoundedActivationLayer obj = new BoundedActivationLayer(json);
     obj.maxValue = json.get("maxValue").getAsDouble();
     return obj;
+  }
+
+  public static @SuppressWarnings("unused")
+  BoundedActivationLayer[] addRefs(BoundedActivationLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BoundedActivationLayer::addRef)
+        .toArray((x) -> new BoundedActivationLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  BoundedActivationLayer[][] addRefs(BoundedActivationLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BoundedActivationLayer::addRefs)
+        .toArray((x) -> new BoundedActivationLayer[x][]);
   }
 
   @Nonnull
   @Override
   public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
-      DataSerializer dataSerializer) {
-    @Nonnull
-    final JsonObject json = super.getJsonStub();
+                            DataSerializer dataSerializer) {
+    @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("maxValue", maxValue);
     return json;
+  }
+
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  BoundedActivationLayer addRef() {
+    return (BoundedActivationLayer) super.addRef();
   }
 
   @Override
@@ -87,26 +110,5 @@ public @com.simiacryptus.ref.lang.RefAware class BoundedActivationLayer
     assert Double.isFinite(d);
     results[0] = f;
     results[1] = d;
-  }
-
-  public @SuppressWarnings("unused") void _free() {
-  }
-
-  public @Override @SuppressWarnings("unused") BoundedActivationLayer addRef() {
-    return (BoundedActivationLayer) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") BoundedActivationLayer[] addRefs(BoundedActivationLayer[] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BoundedActivationLayer::addRef)
-        .toArray((x) -> new BoundedActivationLayer[x]);
-  }
-
-  public static @SuppressWarnings("unused") BoundedActivationLayer[][] addRefs(BoundedActivationLayer[][] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BoundedActivationLayer::addRefs)
-        .toArray((x) -> new BoundedActivationLayer[x][]);
   }
 }

@@ -25,7 +25,8 @@ import com.simiacryptus.mindseye.test.ToleranceStatistics;
 import com.simiacryptus.mindseye.test.unit.ComponentTest;
 import com.simiacryptus.mindseye.test.unit.SingleDerivativeTester;
 
-public abstract @com.simiacryptus.ref.lang.RefAware class EntropyLayerTest extends ActivationLayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware
+class EntropyLayerTest extends ActivationLayerTestBase {
   public EntropyLayerTest() {
     super(new EntropyLayer());
   }
@@ -37,45 +38,55 @@ public abstract @com.simiacryptus.ref.lang.RefAware class EntropyLayerTest exten
     return new SingleDerivativeTester(1e-2, 1e-5);
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware class Basic extends EntropyLayerTest {
-    @Override
-    protected Layer lossLayer() {
-      return new EntropyLossLayer();
-    }
-
-    public @SuppressWarnings("unused") void _free() {
-    }
-
-    public @Override @SuppressWarnings("unused") Basic addRef() {
-      return (Basic) super.addRef();
-    }
-
-    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
-      if (array == null)
-        return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
-    }
-  }
-
-  public @SuppressWarnings("unused") void _free() {
-  }
-
-  public @Override @SuppressWarnings("unused") EntropyLayerTest addRef() {
-    return (EntropyLayerTest) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") EntropyLayerTest[] addRefs(EntropyLayerTest[] array) {
+  public static @SuppressWarnings("unused")
+  EntropyLayerTest[] addRefs(EntropyLayerTest[] array) {
     if (array == null)
       return null;
     return java.util.Arrays.stream(array).filter((x) -> x != null).map(EntropyLayerTest::addRef)
         .toArray((x) -> new EntropyLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused") EntropyLayerTest[][] addRefs(EntropyLayerTest[][] array) {
+  public static @SuppressWarnings("unused")
+  EntropyLayerTest[][] addRefs(EntropyLayerTest[][] array) {
     if (array == null)
       return null;
     return java.util.Arrays.stream(array).filter((x) -> x != null).map(EntropyLayerTest::addRefs)
         .toArray((x) -> new EntropyLayerTest[x][]);
+  }
+
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  EntropyLayerTest addRef() {
+    return (EntropyLayerTest) super.addRef();
+  }
+
+  public static @com.simiacryptus.ref.lang.RefAware
+  class Basic extends EntropyLayerTest {
+    public static @SuppressWarnings("unused")
+    Basic[] addRefs(Basic[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+    }
+
+    public @SuppressWarnings("unused")
+    void _free() {
+    }
+
+    public @Override
+    @SuppressWarnings("unused")
+    Basic addRef() {
+      return (Basic) super.addRef();
+    }
+
+    @Override
+    protected Layer lossLayer() {
+      return new EntropyLossLayer();
+    }
   }
 
 }

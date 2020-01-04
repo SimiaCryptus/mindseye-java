@@ -24,18 +24,11 @@ import com.simiacryptus.mindseye.lang.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
-import java.util.stream.IntStream;
-import com.simiacryptus.ref.wrappers.RefArrayList;
-import com.simiacryptus.ref.wrappers.RefList;
-import com.simiacryptus.ref.wrappers.RefMap;
-import com.simiacryptus.ref.wrappers.RefIntStream;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware class ImgReshapeLayer extends LayerBase {
+public @com.simiacryptus.ref.lang.RefAware
+class ImgReshapeLayer extends LayerBase {
 
   private final boolean expand;
   private final int kernelSizeX;
@@ -57,10 +50,8 @@ public @com.simiacryptus.ref.lang.RefAware class ImgReshapeLayer extends LayerBa
 
   @Nonnull
   public static Tensor copyCondense(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData) {
-    @Nonnull
-    final int[] inDim = inputData.getDimensions();
-    @Nonnull
-    final int[] outDim = outputData.getDimensions();
+    @Nonnull final int[] inDim = inputData.getDimensions();
+    @Nonnull final int[] outDim = outputData.getDimensions();
     assert 3 == inDim.length;
     assert 3 == outDim.length;
     assert inDim[0] >= outDim[0];
@@ -71,8 +62,7 @@ public @com.simiacryptus.ref.lang.RefAware class ImgReshapeLayer extends LayerBa
     final int kernelSizeX = inDim[0] / outDim[0];
     final int kernelSizeY = inDim[0] / outDim[0];
     int index = 0;
-    @Nullable
-    final double[] outputDataData = outputData.getData();
+    @Nullable final double[] outputDataData = outputData.getData();
     for (int z = 0; z < inDim[2]; z++) {
       for (int xx = 0; xx < kernelSizeX; xx++) {
         for (int yy = 0; yy < kernelSizeY; yy++) {
@@ -89,10 +79,8 @@ public @com.simiacryptus.ref.lang.RefAware class ImgReshapeLayer extends LayerBa
 
   @Nonnull
   public static Tensor copyExpand(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData) {
-    @Nonnull
-    final int[] inDim = inputData.getDimensions();
-    @Nonnull
-    final int[] outDim = outputData.getDimensions();
+    @Nonnull final int[] inDim = inputData.getDimensions();
+    @Nonnull final int[] outDim = outputData.getDimensions();
     assert 3 == inDim.length;
     assert 3 == outDim.length;
     assert inDim[0] <= outDim[0];
@@ -119,8 +107,24 @@ public @com.simiacryptus.ref.lang.RefAware class ImgReshapeLayer extends LayerBa
 
   @SuppressWarnings("unused")
   public static ImgReshapeLayer fromJson(@Nonnull final JsonObject json,
-      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                         com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new ImgReshapeLayer(json);
+  }
+
+  public static @SuppressWarnings("unused")
+  ImgReshapeLayer[] addRefs(ImgReshapeLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgReshapeLayer::addRef)
+        .toArray((x) -> new ImgReshapeLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  ImgReshapeLayer[][] addRefs(ImgReshapeLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgReshapeLayer::addRefs)
+        .toArray((x) -> new ImgReshapeLayer[x][]);
   }
 
   @Nonnull
@@ -129,8 +133,7 @@ public @com.simiacryptus.ref.lang.RefAware class ImgReshapeLayer extends LayerBa
     //assert Arrays.stream(inObj).flatMapToDouble(input-> input.getData().stream().flatMapToDouble(x-> Arrays.stream(x.getData()))).allMatch(v->Double.isFinite(v));
     final Result input = inObj[0];
     final TensorList batch = input.getData();
-    @Nonnull
-    final int[] inputDims = batch.getDimensions();
+    @Nonnull final int[] inputDims = batch.getDimensions();
     assert 3 == inputDims.length;
     assert expand || 0 == inputDims[0] % kernelSizeX : (inputDims[0] + " % " + kernelSizeX);
     assert expand || 0 == inputDims[1] % kernelSizeY : (inputDims[1] + " % " + kernelSizeY);
@@ -156,10 +159,8 @@ public @com.simiacryptus.ref.lang.RefAware class ImgReshapeLayer extends LayerBa
         @Nonnull
         TensorArray tensorArray = new TensorArray(
             com.simiacryptus.ref.wrappers.RefIntStream.range(0, error.length()).parallel().mapToObj(dataIndex -> {
-              @Nonnull
-              final Tensor passback = new Tensor(inputDims);
-              @Nullable
-              final Tensor err = error.get(dataIndex);
+              @Nonnull final Tensor passback = new Tensor(inputDims);
+              @Nullable final Tensor err = error.get(dataIndex);
               return expand ? ImgReshapeLayer.copyCondense(err, passback) : ImgReshapeLayer.copyExpand(err, passback);
             }).toArray(i -> new Tensor[i]));
         input.accumulate(buffer, tensorArray);
@@ -179,9 +180,8 @@ public @com.simiacryptus.ref.lang.RefAware class ImgReshapeLayer extends LayerBa
   @Nonnull
   @Override
   public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
-      DataSerializer dataSerializer) {
-    @Nonnull
-    final JsonObject json = super.getJsonStub();
+                            DataSerializer dataSerializer) {
+    @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("kernelSizeX", kernelSizeX);
     json.addProperty("kernelSizeY", kernelSizeX);
     json.addProperty("expandPlasma", expand);
@@ -194,25 +194,14 @@ public @com.simiacryptus.ref.lang.RefAware class ImgReshapeLayer extends LayerBa
     return new com.simiacryptus.ref.wrappers.RefArrayList<>();
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") ImgReshapeLayer addRef() {
+  public @Override
+  @SuppressWarnings("unused")
+  ImgReshapeLayer addRef() {
     return (ImgReshapeLayer) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") ImgReshapeLayer[] addRefs(ImgReshapeLayer[] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgReshapeLayer::addRef)
-        .toArray((x) -> new ImgReshapeLayer[x]);
-  }
-
-  public static @SuppressWarnings("unused") ImgReshapeLayer[][] addRefs(ImgReshapeLayer[][] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgReshapeLayer::addRefs)
-        .toArray((x) -> new ImgReshapeLayer[x][]);
   }
 
 }

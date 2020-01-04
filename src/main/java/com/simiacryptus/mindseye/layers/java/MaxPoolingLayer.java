@@ -29,22 +29,13 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.IntToDoubleFunction;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import com.simiacryptus.ref.wrappers.RefArrays;
-import com.simiacryptus.ref.wrappers.RefList;
-import com.simiacryptus.ref.wrappers.RefMap;
-import com.simiacryptus.ref.wrappers.RefCollectors;
-import com.simiacryptus.ref.wrappers.RefIntStream;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware class MaxPoolingLayer extends LayerBase {
+public @com.simiacryptus.ref.lang.RefAware
+class MaxPoolingLayer extends LayerBase {
 
   private static final Function<MaxPoolingLayer.CalcRegionsParameter, com.simiacryptus.ref.wrappers.RefList<Tuple2<Integer, int[]>>> calcRegionsCache = Util
       .cache(MaxPoolingLayer::calcRegions);
@@ -68,26 +59,39 @@ public @com.simiacryptus.ref.lang.RefAware class MaxPoolingLayer extends LayerBa
 
   @SuppressWarnings("unused")
   public static MaxPoolingLayer fromJson(@Nonnull final JsonObject json,
-      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                         com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new MaxPoolingLayer(json, JsonUtil.getIntArray(json.getAsJsonArray("heapCopy")));
+  }
+
+  public static @SuppressWarnings("unused")
+  MaxPoolingLayer[] addRefs(MaxPoolingLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MaxPoolingLayer::addRef)
+        .toArray((x) -> new MaxPoolingLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  MaxPoolingLayer[][] addRefs(MaxPoolingLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MaxPoolingLayer::addRefs)
+        .toArray((x) -> new MaxPoolingLayer[x][]);
   }
 
   private static com.simiacryptus.ref.wrappers.RefList<Tuple2<Integer, int[]>> calcRegions(
       @Nonnull final MaxPoolingLayer.CalcRegionsParameter p) {
-    @Nonnull
-    final Tensor input = new Tensor(p.inputDims);
+    @Nonnull final Tensor input = new Tensor(p.inputDims);
     final int[] newDims = com.simiacryptus.ref.wrappers.RefIntStream.range(0, p.inputDims.length).map(i -> {
       //assert 0 == p.inputDims[i] % p.kernelDims[i];
       return (int) Math.ceil(p.inputDims[i] * 1.0 / p.kernelDims[i]);
     }).toArray();
-    @Nonnull
-    final Tensor output = new Tensor(newDims);
+    @Nonnull final Tensor output = new Tensor(newDims);
 
     return output.coordStream(true).map(o -> {
       Tensor tensor = new Tensor(p.kernelDims);
       final int[] inCoords = tensor.coordStream(true).mapToInt(kernelCoord -> {
-        @Nonnull
-        final int[] result = new int[o.getCoords().length];
+        @Nonnull final int[] result = new int[o.getCoords().length];
         for (int index = 0; index < o.getCoords().length; index++) {
           final int outputCoordinate = o.getCoords()[index];
           final int kernelSize = p.kernelDims[index];
@@ -108,8 +112,7 @@ public @com.simiacryptus.ref.lang.RefAware class MaxPoolingLayer extends LayerBa
     final Result in = inObj[0];
     in.getData().length();
 
-    @Nonnull
-    final int[] inputDims = in.getData().getDimensions();
+    @Nonnull final int[] inputDims = in.getData().getDimensions();
     final com.simiacryptus.ref.wrappers.RefList<Tuple2<Integer, int[]>> regions = MaxPoolingLayer.calcRegionsCache
         .apply(new MaxPoolingLayer.CalcRegionsParameter(inputDims, kernelDims));
     final Tensor[] outputA = com.simiacryptus.ref.wrappers.RefIntStream.range(0, in.getData().length())
@@ -120,16 +123,12 @@ public @com.simiacryptus.ref.lang.RefAware class MaxPoolingLayer extends LayerBa
           return new Tensor(newDims);
         }).toArray(i -> new Tensor[i]);
     com.simiacryptus.ref.wrappers.RefArrays.stream(outputA).mapToInt(x -> x.length()).sum();
-    @Nonnull
-    final int[][] gradientMapA = new int[in.getData().length()][];
+    @Nonnull final int[][] gradientMapA = new int[in.getData().length()][];
     com.simiacryptus.ref.wrappers.RefIntStream.range(0, in.getData().length()).forEach(dataIndex -> {
-      @Nullable
-      final Tensor input = in.getData().get(dataIndex);
+      @Nullable final Tensor input = in.getData().get(dataIndex);
       final Tensor output = outputA[dataIndex];
-      @Nonnull
-      final IntToDoubleFunction keyExtractor = inputCoords -> input.get(inputCoords);
-      @Nonnull
-      final int[] gradientMap = new int[input.length()];
+      @Nonnull final IntToDoubleFunction keyExtractor = inputCoords -> input.get(inputCoords);
+      @Nonnull final int[] gradientMap = new int[input.length()];
       regions.parallelStream().forEach(tuple -> {
         final Integer from = tuple.getFirst();
         final int[] toList = tuple.getSecond();
@@ -153,11 +152,9 @@ public @com.simiacryptus.ref.lang.RefAware class MaxPoolingLayer extends LayerBa
             @Nonnull
             TensorArray tensorArray = new TensorArray(com.simiacryptus.ref.wrappers.RefIntStream
                 .range(0, in.getData().length()).parallel().mapToObj(dataIndex -> {
-                  @Nonnull
-                  final Tensor backSignal = new Tensor(inputDims);
+                  @Nonnull final Tensor backSignal = new Tensor(inputDims);
                   final int[] ints = gradientMapA[dataIndex];
-                  @Nullable
-                  final Tensor datum = data.get(dataIndex);
+                  @Nullable final Tensor datum = data.get(dataIndex);
                   for (int i = 0; i < datum.length(); i++) {
                     backSignal.add(ints[i], datum.get(i));
                   }
@@ -180,9 +177,8 @@ public @com.simiacryptus.ref.lang.RefAware class MaxPoolingLayer extends LayerBa
   @Nonnull
   @Override
   public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
-      DataSerializer dataSerializer) {
-    @Nonnull
-    final JsonObject json = super.getJsonStub();
+                            DataSerializer dataSerializer) {
+    @Nonnull final JsonObject json = super.getJsonStub();
     json.add("heapCopy", JsonUtil.getJson(kernelDims));
     return json;
   }
@@ -193,7 +189,18 @@ public @com.simiacryptus.ref.lang.RefAware class MaxPoolingLayer extends LayerBa
     return com.simiacryptus.ref.wrappers.RefArrays.asList();
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware class CalcRegionsParameter {
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  MaxPoolingLayer addRef() {
+    return (MaxPoolingLayer) super.addRef();
+  }
+
+  public static @com.simiacryptus.ref.lang.RefAware
+  class CalcRegionsParameter {
     public final int[] inputDims;
     public final int[] kernelDims;
 
@@ -213,8 +220,7 @@ public @com.simiacryptus.ref.lang.RefAware class MaxPoolingLayer extends LayerBa
       if (getClass() != obj.getClass()) {
         return false;
       }
-      @Nonnull
-      final MaxPoolingLayer.CalcRegionsParameter other = (MaxPoolingLayer.CalcRegionsParameter) obj;
+      @Nonnull final MaxPoolingLayer.CalcRegionsParameter other = (MaxPoolingLayer.CalcRegionsParameter) obj;
       if (!com.simiacryptus.ref.wrappers.RefArrays.equals(inputDims, other.inputDims)) {
         return false;
       }
@@ -230,26 +236,5 @@ public @com.simiacryptus.ref.lang.RefAware class MaxPoolingLayer extends LayerBa
       return result;
     }
 
-  }
-
-  public @SuppressWarnings("unused") void _free() {
-  }
-
-  public @Override @SuppressWarnings("unused") MaxPoolingLayer addRef() {
-    return (MaxPoolingLayer) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") MaxPoolingLayer[] addRefs(MaxPoolingLayer[] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MaxPoolingLayer::addRef)
-        .toArray((x) -> new MaxPoolingLayer[x]);
-  }
-
-  public static @SuppressWarnings("unused") MaxPoolingLayer[][] addRefs(MaxPoolingLayer[][] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MaxPoolingLayer::addRefs)
-        .toArray((x) -> new MaxPoolingLayer[x][]);
   }
 }

@@ -27,14 +27,11 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
-import java.util.stream.DoubleStream;
-import java.util.stream.IntStream;
-import com.simiacryptus.ref.wrappers.RefDoubleStream;
-import com.simiacryptus.ref.wrappers.RefIntStream;
+import java.util.UUID;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware class MaxImageBandLayer extends LayerBase {
+public @com.simiacryptus.ref.lang.RefAware
+class MaxImageBandLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(MaxImageBandLayer.class);
@@ -49,8 +46,24 @@ public @com.simiacryptus.ref.lang.RefAware class MaxImageBandLayer extends Layer
 
   @SuppressWarnings("unused")
   public static MaxImageBandLayer fromJson(@Nonnull final JsonObject json,
-      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                           com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new MaxImageBandLayer(json, JsonUtil.getIntArray(json.getAsJsonArray("heapCopy")));
+  }
+
+  public static @SuppressWarnings("unused")
+  MaxImageBandLayer[] addRefs(MaxImageBandLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MaxImageBandLayer::addRef)
+        .toArray((x) -> new MaxImageBandLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  MaxImageBandLayer[][] addRefs(MaxImageBandLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MaxImageBandLayer::addRefs)
+        .toArray((x) -> new MaxImageBandLayer[x][]);
   }
 
   @Nonnull
@@ -60,8 +73,7 @@ public @com.simiacryptus.ref.lang.RefAware class MaxImageBandLayer extends Layer
     assert 1 == inObj.length;
     final TensorList inputData = inObj[0].getData();
     inputData.length();
-    @Nonnull
-    final int[] inputDims = inputData.getDimensions();
+    @Nonnull final int[] inputDims = inputData.getDimensions();
     assert 3 == inputDims.length;
     final Coordinate[][] maxCoords = inputData.stream().map(data -> {
       return com.simiacryptus.ref.wrappers.RefIntStream.range(0, inputDims[2]).mapToObj(band -> {
@@ -80,22 +92,21 @@ public @com.simiacryptus.ref.lang.RefAware class MaxImageBandLayer extends Layer
               });
           return new Tensor(1, 1, inputDims[2]).set(Tensor.getDoubles(doubleStream, inputDims[2]));
         }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
-          if (inObj[0].isAlive()) {
-            @Nonnull
-            TensorArray tensorArray = new TensorArray(
-                com.simiacryptus.ref.wrappers.RefIntStream.range(0, delta.length()).parallel().mapToObj(dataIndex -> {
-                  Tensor deltaTensor = delta.get(dataIndex);
-                  @Nonnull
-                  final Tensor passback = new Tensor(inputData.getDimensions());
-                  com.simiacryptus.ref.wrappers.RefIntStream.range(0, inputDims[2]).forEach(b -> {
-                    final int[] maxCoord = maxCoords[dataIndex][b].getCoords();
-                    passback.set(new int[] { maxCoord[0], maxCoord[1], b }, deltaTensor.get(0, 0, b));
-                  });
-                  return passback;
-                }).toArray(i -> new Tensor[i]));
-            inObj[0].accumulate(buffer, tensorArray);
-          }
-        }) {
+      if (inObj[0].isAlive()) {
+        @Nonnull
+        TensorArray tensorArray = new TensorArray(
+            com.simiacryptus.ref.wrappers.RefIntStream.range(0, delta.length()).parallel().mapToObj(dataIndex -> {
+              Tensor deltaTensor = delta.get(dataIndex);
+              @Nonnull final Tensor passback = new Tensor(inputData.getDimensions());
+              com.simiacryptus.ref.wrappers.RefIntStream.range(0, inputDims[2]).forEach(b -> {
+                final int[] maxCoord = maxCoords[dataIndex][b].getCoords();
+                passback.set(new int[]{maxCoord[0], maxCoord[1], b}, deltaTensor.get(0, 0, b));
+              });
+              return passback;
+            }).toArray(i -> new Tensor[i]));
+        inObj[0].accumulate(buffer, tensorArray);
+      }
+    }) {
 
       @Override
       public boolean isAlive() {
@@ -110,7 +121,7 @@ public @com.simiacryptus.ref.lang.RefAware class MaxImageBandLayer extends Layer
   @Nonnull
   @Override
   public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
-      DataSerializer dataSerializer) {
+                            DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 
@@ -120,7 +131,18 @@ public @com.simiacryptus.ref.lang.RefAware class MaxImageBandLayer extends Layer
     return com.simiacryptus.ref.wrappers.RefArrays.asList();
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware class CalcRegionsParameter {
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  MaxImageBandLayer addRef() {
+    return (MaxImageBandLayer) super.addRef();
+  }
+
+  public static @com.simiacryptus.ref.lang.RefAware
+  class CalcRegionsParameter {
     public final int[] inputDims;
     public final int[] kernelDims;
 
@@ -140,8 +162,7 @@ public @com.simiacryptus.ref.lang.RefAware class MaxImageBandLayer extends Layer
       if (getClass() != obj.getClass()) {
         return false;
       }
-      @Nonnull
-      final MaxImageBandLayer.CalcRegionsParameter other = (MaxImageBandLayer.CalcRegionsParameter) obj;
+      @Nonnull final MaxImageBandLayer.CalcRegionsParameter other = (MaxImageBandLayer.CalcRegionsParameter) obj;
       if (!com.simiacryptus.ref.wrappers.RefArrays.equals(inputDims, other.inputDims)) {
         return false;
       }
@@ -157,26 +178,5 @@ public @com.simiacryptus.ref.lang.RefAware class MaxImageBandLayer extends Layer
       return result;
     }
 
-  }
-
-  public @SuppressWarnings("unused") void _free() {
-  }
-
-  public @Override @SuppressWarnings("unused") MaxImageBandLayer addRef() {
-    return (MaxImageBandLayer) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") MaxImageBandLayer[] addRefs(MaxImageBandLayer[] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MaxImageBandLayer::addRef)
-        .toArray((x) -> new MaxImageBandLayer[x]);
-  }
-
-  public static @SuppressWarnings("unused") MaxImageBandLayer[][] addRefs(MaxImageBandLayer[][] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MaxImageBandLayer::addRefs)
-        .toArray((x) -> new MaxImageBandLayer[x][]);
   }
 }

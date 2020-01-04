@@ -28,18 +28,11 @@ import com.simiacryptus.mindseye.layers.WrapperLayer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-import com.simiacryptus.ref.wrappers.RefArrayList;
-import com.simiacryptus.ref.wrappers.RefArrays;
-import com.simiacryptus.ref.wrappers.RefList;
-import com.simiacryptus.ref.wrappers.RefMap;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware class ImgTileSubnetLayer extends WrapperLayer {
+public @com.simiacryptus.ref.lang.RefAware
+class ImgTileSubnetLayer extends WrapperLayer {
 
   private final int height;
   private final int width;
@@ -47,7 +40,7 @@ public @com.simiacryptus.ref.lang.RefAware class ImgTileSubnetLayer extends Wrap
   private final int strideY;
 
   public ImgTileSubnetLayer(final Layer subnetwork, final int width, final int height, final int strideX,
-      final int strideY) {
+                            final int strideY) {
     super(subnetwork);
     this.height = height;
     this.width = width;
@@ -60,7 +53,7 @@ public @com.simiacryptus.ref.lang.RefAware class ImgTileSubnetLayer extends Wrap
   }
 
   protected ImgTileSubnetLayer(@Nonnull final JsonObject json,
-      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                               com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     super(json, rs);
     height = json.getAsJsonPrimitive("height").getAsInt();
     width = json.getAsJsonPrimitive("width").getAsInt();
@@ -71,8 +64,24 @@ public @com.simiacryptus.ref.lang.RefAware class ImgTileSubnetLayer extends Wrap
 
   @SuppressWarnings("unused")
   public static ImgTileSubnetLayer fromJson(@Nonnull final JsonObject json,
-      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                            com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new ImgTileSubnetLayer(json, rs);
+  }
+
+  public static @SuppressWarnings("unused")
+  ImgTileSubnetLayer[] addRefs(ImgTileSubnetLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgTileSubnetLayer::addRef)
+        .toArray((x) -> new ImgTileSubnetLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  ImgTileSubnetLayer[][] addRefs(ImgTileSubnetLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgTileSubnetLayer::addRefs)
+        .toArray((x) -> new ImgTileSubnetLayer[x][]);
   }
 
   @Nullable
@@ -81,8 +90,7 @@ public @com.simiacryptus.ref.lang.RefAware class ImgTileSubnetLayer extends Wrap
     assert 1 == inObj.length;
     Result input = inObj[0];
     final TensorList inputData = input.getData();
-    @Nonnull
-    final int[] inputDims = inputData.getDimensions();
+    @Nonnull final int[] inputDims = inputData.getDimensions();
     assert 3 == inputDims.length;
     int cols = (int) (Math.ceil((inputDims[0] - width) * 1.0 / strideX) + 1);
     int rows = (int) (Math.ceil((inputDims[1] - height) * 1.0 / strideY) + 1);
@@ -128,9 +136,8 @@ public @com.simiacryptus.ref.lang.RefAware class ImgTileSubnetLayer extends Wrap
   @Nonnull
   @Override
   public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
-      DataSerializer dataSerializer) {
-    @Nonnull
-    final JsonObject json = super.getJson(resources, dataSerializer);
+                            DataSerializer dataSerializer) {
+    @Nonnull final JsonObject json = super.getJson(resources, dataSerializer);
     json.addProperty("height", height);
     json.addProperty("width", width);
     json.addProperty("strideX", strideX);
@@ -144,25 +151,14 @@ public @com.simiacryptus.ref.lang.RefAware class ImgTileSubnetLayer extends Wrap
     return new com.simiacryptus.ref.wrappers.RefArrayList<>();
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") ImgTileSubnetLayer addRef() {
+  public @Override
+  @SuppressWarnings("unused")
+  ImgTileSubnetLayer addRef() {
     return (ImgTileSubnetLayer) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") ImgTileSubnetLayer[] addRefs(ImgTileSubnetLayer[] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgTileSubnetLayer::addRef)
-        .toArray((x) -> new ImgTileSubnetLayer[x]);
-  }
-
-  public static @SuppressWarnings("unused") ImgTileSubnetLayer[][] addRefs(ImgTileSubnetLayer[][] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgTileSubnetLayer::addRefs)
-        .toArray((x) -> new ImgTileSubnetLayer[x][]);
   }
 
 }

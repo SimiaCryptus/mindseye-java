@@ -27,12 +27,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
-import java.util.Map;
 import java.util.UUID;
-import com.simiacryptus.ref.wrappers.RefMap;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware class SignReducerLayer extends DAGNetwork {
+public @com.simiacryptus.ref.lang.RefAware
+class SignReducerLayer extends DAGNetwork {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(SignReducerLayer.class);
@@ -50,7 +49,7 @@ public @com.simiacryptus.ref.lang.RefAware class SignReducerLayer extends DAGNet
   }
 
   protected SignReducerLayer(@Nonnull final JsonObject json,
-      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                             com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     super(json, rs);
     head = getNodeById(UUID.fromString(json.getAsJsonPrimitive("head").getAsString()));
   }
@@ -62,29 +61,33 @@ public @com.simiacryptus.ref.lang.RefAware class SignReducerLayer extends DAGNet
 
   @SuppressWarnings("unused")
   public static Layer fromJson(@Nonnull final JsonObject inner,
-      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                               com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new SignReducerLayer(inner, rs);
   }
 
-  public void _free() {
-    super._free();
-  }
-
-  public @Override @SuppressWarnings("unused") SignReducerLayer addRef() {
-    return (SignReducerLayer) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") SignReducerLayer[] addRefs(SignReducerLayer[] array) {
+  public static @SuppressWarnings("unused")
+  SignReducerLayer[] addRefs(SignReducerLayer[] array) {
     if (array == null)
       return null;
     return java.util.Arrays.stream(array).filter((x) -> x != null).map(SignReducerLayer::addRef)
         .toArray((x) -> new SignReducerLayer[x]);
   }
 
-  public static @SuppressWarnings("unused") SignReducerLayer[][] addRefs(SignReducerLayer[][] array) {
+  public static @SuppressWarnings("unused")
+  SignReducerLayer[][] addRefs(SignReducerLayer[][] array) {
     if (array == null)
       return null;
     return java.util.Arrays.stream(array).filter((x) -> x != null).map(SignReducerLayer::addRefs)
         .toArray((x) -> new SignReducerLayer[x][]);
+  }
+
+  public void _free() {
+    super._free();
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  SignReducerLayer addRef() {
+    return (SignReducerLayer) super.addRef();
   }
 }

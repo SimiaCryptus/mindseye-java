@@ -24,16 +24,33 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-public abstract @com.simiacryptus.ref.lang.RefAware class StaticScalarLossLayerTest extends LayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware
+class StaticScalarLossLayerTest extends LayerTestBase {
 
   public StaticScalarLossLayerTest() {
     validateBatchExecution = false;
   }
 
+  public static @SuppressWarnings("unused")
+  StaticScalarLossLayerTest[] addRefs(StaticScalarLossLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(StaticScalarLossLayerTest::addRef)
+        .toArray((x) -> new StaticScalarLossLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  StaticScalarLossLayerTest[][] addRefs(StaticScalarLossLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(StaticScalarLossLayerTest::addRefs)
+        .toArray((x) -> new StaticScalarLossLayerTest[x][]);
+  }
+
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][] { { 1 } };
+    return new int[][]{{1}};
   }
 
   @Nonnull
@@ -42,41 +59,35 @@ public abstract @com.simiacryptus.ref.lang.RefAware class StaticScalarLossLayerT
     return new StaticScalarLossLayer();
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware class Basic extends StaticScalarLossLayerTest {
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
 
-    public @SuppressWarnings("unused") void _free() {
-    }
+  public @Override
+  @SuppressWarnings("unused")
+  StaticScalarLossLayerTest addRef() {
+    return (StaticScalarLossLayerTest) super.addRef();
+  }
 
-    public @Override @SuppressWarnings("unused") Basic addRef() {
-      return (Basic) super.addRef();
-    }
+  public static @com.simiacryptus.ref.lang.RefAware
+  class Basic extends StaticScalarLossLayerTest {
 
-    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+    public static @SuppressWarnings("unused")
+    Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
       return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
-  }
 
-  public @SuppressWarnings("unused") void _free() {
-  }
+    public @SuppressWarnings("unused")
+    void _free() {
+    }
 
-  public @Override @SuppressWarnings("unused") StaticScalarLossLayerTest addRef() {
-    return (StaticScalarLossLayerTest) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") StaticScalarLossLayerTest[] addRefs(StaticScalarLossLayerTest[] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(StaticScalarLossLayerTest::addRef)
-        .toArray((x) -> new StaticScalarLossLayerTest[x]);
-  }
-
-  public static @SuppressWarnings("unused") StaticScalarLossLayerTest[][] addRefs(StaticScalarLossLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(StaticScalarLossLayerTest::addRefs)
-        .toArray((x) -> new StaticScalarLossLayerTest[x][]);
+    public @Override
+    @SuppressWarnings("unused")
+    Basic addRef() {
+      return (Basic) super.addRef();
+    }
   }
 
 }

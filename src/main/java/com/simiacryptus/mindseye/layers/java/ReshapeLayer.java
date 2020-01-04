@@ -27,16 +27,11 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
-import com.simiacryptus.ref.wrappers.RefArrays;
-import com.simiacryptus.ref.wrappers.RefList;
-import com.simiacryptus.ref.wrappers.RefMap;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware class ReshapeLayer extends LayerBase {
+public @com.simiacryptus.ref.lang.RefAware
+class ReshapeLayer extends LayerBase {
   private static final Logger log = LoggerFactory.getLogger(ReshapeLayer.class);
   @Nullable
   public final int[] outputDims;
@@ -50,15 +45,31 @@ public @com.simiacryptus.ref.lang.RefAware class ReshapeLayer extends LayerBase 
   }
 
   protected ReshapeLayer(@Nonnull final JsonObject json,
-      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                         com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     super(json);
     outputDims = JsonUtil.getIntArray(json.getAsJsonArray("outputDims"));
   }
 
   @SuppressWarnings("unused")
   public static ReshapeLayer fromJson(@Nonnull final JsonObject json,
-      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new ReshapeLayer(json, rs);
+  }
+
+  public static @SuppressWarnings("unused")
+  ReshapeLayer[] addRefs(ReshapeLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ReshapeLayer::addRef)
+        .toArray((x) -> new ReshapeLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  ReshapeLayer[][] addRefs(ReshapeLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ReshapeLayer::addRefs)
+        .toArray((x) -> new ReshapeLayer[x][]);
   }
 
   @Nullable
@@ -89,9 +100,8 @@ public @com.simiacryptus.ref.lang.RefAware class ReshapeLayer extends LayerBase 
   @Nonnull
   @Override
   public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
-      DataSerializer dataSerializer) {
-    @Nonnull
-    final JsonObject json = super.getJsonStub();
+                            DataSerializer dataSerializer) {
+    @Nonnull final JsonObject json = super.getJsonStub();
     json.add("outputDims", JsonUtil.getJson(outputDims));
     return json;
   }
@@ -102,25 +112,14 @@ public @com.simiacryptus.ref.lang.RefAware class ReshapeLayer extends LayerBase 
     return com.simiacryptus.ref.wrappers.RefArrays.asList();
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") ReshapeLayer addRef() {
+  public @Override
+  @SuppressWarnings("unused")
+  ReshapeLayer addRef() {
     return (ReshapeLayer) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") ReshapeLayer[] addRefs(ReshapeLayer[] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ReshapeLayer::addRef)
-        .toArray((x) -> new ReshapeLayer[x]);
-  }
-
-  public static @SuppressWarnings("unused") ReshapeLayer[][] addRefs(ReshapeLayer[][] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ReshapeLayer::addRefs)
-        .toArray((x) -> new ReshapeLayer[x][]);
   }
 
 }

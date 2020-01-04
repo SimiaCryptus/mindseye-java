@@ -30,18 +30,13 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.function.DoubleSupplier;
 import java.util.function.IntToDoubleFunction;
-import com.simiacryptus.ref.wrappers.RefArrays;
-import com.simiacryptus.ref.wrappers.RefList;
-import com.simiacryptus.ref.wrappers.RefMap;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware class ImgBandBiasLayer extends LayerBase {
+public @com.simiacryptus.ref.lang.RefAware
+class ImgBandBiasLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(ImgBandBiasLayer.class);
@@ -73,8 +68,7 @@ public @com.simiacryptus.ref.lang.RefAware class ImgBandBiasLayer extends LayerB
 
   @Nonnull
   public ImgBandBiasLayer setWeights(@Nonnull final IntToDoubleFunction f) {
-    @Nullable
-    final double[] bias = getBias();
+    @Nullable final double[] bias = getBias();
     for (int i = 0; i < bias.length; i++) {
       bias[i] = f.applyAsDouble(i);
     }
@@ -92,21 +86,35 @@ public @com.simiacryptus.ref.lang.RefAware class ImgBandBiasLayer extends LayerB
 
   @SuppressWarnings("unused")
   public static ImgBandBiasLayer fromJson(@Nonnull final JsonObject json,
-      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                          com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new ImgBandBiasLayer(json);
+  }
+
+  public static @SuppressWarnings("unused")
+  ImgBandBiasLayer[] addRefs(ImgBandBiasLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgBandBiasLayer::addRef)
+        .toArray((x) -> new ImgBandBiasLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  ImgBandBiasLayer[][] addRefs(ImgBandBiasLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgBandBiasLayer::addRefs)
+        .toArray((x) -> new ImgBandBiasLayer[x][]);
   }
 
   @Nonnull
   public double[] add(@Nonnull final double[] input) {
     assert com.simiacryptus.ref.wrappers.RefArrays.stream(input).allMatch(v -> Double.isFinite(v));
     assert null != input;
-    @Nullable
-    final double[] bias = getBias();
+    @Nullable final double[] bias = getBias();
     assert null != bias;
     if (input.length % bias.length != 0)
       throw new IllegalArgumentException();
-    @Nonnull
-    final double[] array = new double[input.length];
+    @Nonnull final double[] array = new double[input.length];
     final int size = input.length / bias.length;
     for (int i = 0; i < array.length; i++) {
       array[i] = input[i] + bias[i / size];
@@ -129,8 +137,7 @@ public @com.simiacryptus.ref.lang.RefAware class ImgBandBiasLayer extends LayerB
 
   @Nonnull
   public Result eval(@Nonnull final Result input) {
-    @Nullable
-    final double[] bias = getBias();
+    @Nullable final double[] bias = getBias();
     return new Result(new TensorArray(input.getData().stream().parallel().map(r -> {
       if (r.getDimensions().length != 3) {
         throw new IllegalArgumentException(com.simiacryptus.ref.wrappers.RefArrays.toString(r.getDimensions()));
@@ -145,8 +152,7 @@ public @com.simiacryptus.ref.lang.RefAware class ImgBandBiasLayer extends LayerB
         final Delta<UUID> deltaBuffer = buffer.get(ImgBandBiasLayer.this.getId(), bias);
         data.stream().parallel().forEach(d -> {
           final double[] array = RecycleBin.DOUBLES.obtain(bias.length);
-          @Nullable
-          final double[] signal = d.getData();
+          @Nullable final double[] signal = d.getData();
           final int size = signal.length / bias.length;
           for (int i = 0; i < signal.length; i++) {
             array[i / size] += signal[i];
@@ -177,17 +183,15 @@ public @com.simiacryptus.ref.lang.RefAware class ImgBandBiasLayer extends LayerB
   @Nonnull
   @Override
   public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
-      DataSerializer dataSerializer) {
-    @Nonnull
-    final JsonObject json = super.getJsonStub();
+                            DataSerializer dataSerializer) {
+    @Nonnull final JsonObject json = super.getJsonStub();
     json.add("bias", JsonUtil.getJson(getBias()));
     return json;
   }
 
   @Nonnull
   public Layer set(@Nonnull final double[] ds) {
-    @Nullable
-    final double[] bias = getBias();
+    @Nullable final double[] bias = getBias();
     for (int i = 0; i < ds.length; i++) {
       bias[i] = ds[i];
     }
@@ -205,24 +209,13 @@ public @com.simiacryptus.ref.lang.RefAware class ImgBandBiasLayer extends LayerB
     return (ImgBandBiasLayer) set(tensor.getData());
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") ImgBandBiasLayer addRef() {
+  public @Override
+  @SuppressWarnings("unused")
+  ImgBandBiasLayer addRef() {
     return (ImgBandBiasLayer) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") ImgBandBiasLayer[] addRefs(ImgBandBiasLayer[] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgBandBiasLayer::addRef)
-        .toArray((x) -> new ImgBandBiasLayer[x]);
-  }
-
-  public static @SuppressWarnings("unused") ImgBandBiasLayer[][] addRefs(ImgBandBiasLayer[][] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgBandBiasLayer::addRefs)
-        .toArray((x) -> new ImgBandBiasLayer[x][]);
   }
 }

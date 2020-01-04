@@ -24,12 +24,29 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-public abstract @com.simiacryptus.ref.lang.RefAware class MaxPoolingLayerTest extends LayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware
+class MaxPoolingLayerTest extends LayerTestBase {
+
+  public static @SuppressWarnings("unused")
+  MaxPoolingLayerTest[] addRefs(MaxPoolingLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MaxPoolingLayerTest::addRef)
+        .toArray((x) -> new MaxPoolingLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  MaxPoolingLayerTest[][] addRefs(MaxPoolingLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MaxPoolingLayerTest::addRefs)
+        .toArray((x) -> new MaxPoolingLayerTest[x][]);
+  }
 
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][] { { 8, 8, 1 } };
+    return new int[][]{{8, 8, 1}};
   }
 
   @Nonnull
@@ -38,41 +55,35 @@ public abstract @com.simiacryptus.ref.lang.RefAware class MaxPoolingLayerTest ex
     return new MaxPoolingLayer(2, 2, 1);
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware class Basic extends MaxPoolingLayerTest {
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
 
-    public @SuppressWarnings("unused") void _free() {
-    }
+  public @Override
+  @SuppressWarnings("unused")
+  MaxPoolingLayerTest addRef() {
+    return (MaxPoolingLayerTest) super.addRef();
+  }
 
-    public @Override @SuppressWarnings("unused") Basic addRef() {
-      return (Basic) super.addRef();
-    }
+  public static @com.simiacryptus.ref.lang.RefAware
+  class Basic extends MaxPoolingLayerTest {
 
-    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+    public static @SuppressWarnings("unused")
+    Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
       return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
-  }
 
-  public @SuppressWarnings("unused") void _free() {
-  }
+    public @SuppressWarnings("unused")
+    void _free() {
+    }
 
-  public @Override @SuppressWarnings("unused") MaxPoolingLayerTest addRef() {
-    return (MaxPoolingLayerTest) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") MaxPoolingLayerTest[] addRefs(MaxPoolingLayerTest[] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MaxPoolingLayerTest::addRef)
-        .toArray((x) -> new MaxPoolingLayerTest[x]);
-  }
-
-  public static @SuppressWarnings("unused") MaxPoolingLayerTest[][] addRefs(MaxPoolingLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MaxPoolingLayerTest::addRefs)
-        .toArray((x) -> new MaxPoolingLayerTest[x][]);
+    public @Override
+    @SuppressWarnings("unused")
+    Basic addRef() {
+      return (Basic) super.addRef();
+    }
   }
 
 }

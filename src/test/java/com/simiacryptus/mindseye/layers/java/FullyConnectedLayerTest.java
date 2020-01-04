@@ -25,7 +25,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Random;
 
-public abstract @com.simiacryptus.ref.lang.RefAware class FullyConnectedLayerTest extends LayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware
+class FullyConnectedLayerTest extends LayerTestBase {
 
   @Nonnull
   private final FullyConnectedLayer fullyConnectedLayer;
@@ -33,7 +34,7 @@ public abstract @com.simiacryptus.ref.lang.RefAware class FullyConnectedLayerTes
   private final int outputs;
 
   protected FullyConnectedLayerTest(int inputs, int outputs) {
-    fullyConnectedLayer = new FullyConnectedLayer(new int[] { inputs }, new int[] { outputs });
+    fullyConnectedLayer = new FullyConnectedLayer(new int[]{inputs}, new int[]{outputs});
     this.inputs = inputs;
     this.outputs = outputs;
   }
@@ -44,10 +45,26 @@ public abstract @com.simiacryptus.ref.lang.RefAware class FullyConnectedLayerTes
     return FullyConnectedReferenceLayer.class;
   }
 
+  public static @SuppressWarnings("unused")
+  FullyConnectedLayerTest[] addRefs(FullyConnectedLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(FullyConnectedLayerTest::addRef)
+        .toArray((x) -> new FullyConnectedLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  FullyConnectedLayerTest[][] addRefs(FullyConnectedLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(FullyConnectedLayerTest::addRefs)
+        .toArray((x) -> new FullyConnectedLayerTest[x][]);
+  }
+
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][] { { inputs } };
+    return new int[][]{{inputs}};
   }
 
   @Nonnull
@@ -56,44 +73,38 @@ public abstract @com.simiacryptus.ref.lang.RefAware class FullyConnectedLayerTes
     return fullyConnectedLayer;
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware class Basic extends FullyConnectedLayerTest {
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  FullyConnectedLayerTest addRef() {
+    return (FullyConnectedLayerTest) super.addRef();
+  }
+
+  public static @com.simiacryptus.ref.lang.RefAware
+  class Basic extends FullyConnectedLayerTest {
     public Basic() {
       super(3, 3);
     }
 
-    public @SuppressWarnings("unused") void _free() {
-    }
-
-    public @Override @SuppressWarnings("unused") Basic addRef() {
-      return (Basic) super.addRef();
-    }
-
-    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+    public static @SuppressWarnings("unused")
+    Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
       return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
-  }
 
-  public @SuppressWarnings("unused") void _free() {
-  }
+    public @SuppressWarnings("unused")
+    void _free() {
+    }
 
-  public @Override @SuppressWarnings("unused") FullyConnectedLayerTest addRef() {
-    return (FullyConnectedLayerTest) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") FullyConnectedLayerTest[] addRefs(FullyConnectedLayerTest[] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(FullyConnectedLayerTest::addRef)
-        .toArray((x) -> new FullyConnectedLayerTest[x]);
-  }
-
-  public static @SuppressWarnings("unused") FullyConnectedLayerTest[][] addRefs(FullyConnectedLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(FullyConnectedLayerTest::addRefs)
-        .toArray((x) -> new FullyConnectedLayerTest[x][]);
+    public @Override
+    @SuppressWarnings("unused")
+    Basic addRef() {
+      return (Basic) super.addRef();
+    }
   }
 
   //  /**

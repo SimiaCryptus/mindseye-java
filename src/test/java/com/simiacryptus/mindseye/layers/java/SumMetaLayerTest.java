@@ -25,16 +25,33 @@ import com.simiacryptus.mindseye.layers.MetaLayerTestBase;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-public abstract @com.simiacryptus.ref.lang.RefAware class SumMetaLayerTest extends MetaLayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware
+class SumMetaLayerTest extends MetaLayerTestBase {
   public SumMetaLayerTest() {
     super();
     validateBatchExecution = false;
   }
 
+  public static @SuppressWarnings("unused")
+  SumMetaLayerTest[] addRefs(SumMetaLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SumMetaLayerTest::addRef)
+        .toArray((x) -> new SumMetaLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  SumMetaLayerTest[][] addRefs(SumMetaLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SumMetaLayerTest::addRefs)
+        .toArray((x) -> new SumMetaLayerTest[x][]);
+  }
+
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][] { { 3 } };
+    return new int[][]{{3}};
   }
 
   @Nonnull
@@ -46,7 +63,17 @@ public abstract @com.simiacryptus.ref.lang.RefAware class SumMetaLayerTest exten
   @Nonnull
   @Override
   public int[][] getLargeDims(Random random) {
-    return new int[][] { { 100 } };
+    return new int[][]{{100}};
+  }
+
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  SumMetaLayerTest addRef() {
+    return (SumMetaLayerTest) super.addRef();
   }
 
   @Override
@@ -54,41 +81,25 @@ public abstract @com.simiacryptus.ref.lang.RefAware class SumMetaLayerTest exten
     return new MeanSqLossLayer();
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware class Basic extends SumMetaLayerTest {
+  public static @com.simiacryptus.ref.lang.RefAware
+  class Basic extends SumMetaLayerTest {
 
-    public @SuppressWarnings("unused") void _free() {
-    }
-
-    public @Override @SuppressWarnings("unused") Basic addRef() {
-      return (Basic) super.addRef();
-    }
-
-    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+    public static @SuppressWarnings("unused")
+    Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
       return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
-  }
 
-  public @SuppressWarnings("unused") void _free() {
-  }
+    public @SuppressWarnings("unused")
+    void _free() {
+    }
 
-  public @Override @SuppressWarnings("unused") SumMetaLayerTest addRef() {
-    return (SumMetaLayerTest) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") SumMetaLayerTest[] addRefs(SumMetaLayerTest[] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SumMetaLayerTest::addRef)
-        .toArray((x) -> new SumMetaLayerTest[x]);
-  }
-
-  public static @SuppressWarnings("unused") SumMetaLayerTest[][] addRefs(SumMetaLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SumMetaLayerTest::addRefs)
-        .toArray((x) -> new SumMetaLayerTest[x][]);
+    public @Override
+    @SuppressWarnings("unused")
+    Basic addRef() {
+      return (Basic) super.addRef();
+    }
   }
 
 }

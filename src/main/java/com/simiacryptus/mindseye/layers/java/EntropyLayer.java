@@ -23,11 +23,10 @@ import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.DataSerializer;
 
 import javax.annotation.Nonnull;
-import java.util.Map;
-import com.simiacryptus.ref.wrappers.RefMap;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware class EntropyLayer extends SimpleActivationLayer<EntropyLayer> {
+public @com.simiacryptus.ref.lang.RefAware
+class EntropyLayer extends SimpleActivationLayer<EntropyLayer> {
 
   public EntropyLayer() {
     super();
@@ -39,15 +38,41 @@ public @com.simiacryptus.ref.lang.RefAware class EntropyLayer extends SimpleActi
 
   @SuppressWarnings("unused")
   public static EntropyLayer fromJson(final JsonObject json,
-      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new EntropyLayer(json);
+  }
+
+  public static @SuppressWarnings("unused")
+  EntropyLayer[] addRefs(EntropyLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(EntropyLayer::addRef)
+        .toArray((x) -> new EntropyLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  EntropyLayer[][] addRefs(EntropyLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(EntropyLayer::addRefs)
+        .toArray((x) -> new EntropyLayer[x][]);
   }
 
   @Nonnull
   @Override
   public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
-      DataSerializer dataSerializer) {
+                            DataSerializer dataSerializer) {
     return super.getJsonStub();
+  }
+
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  EntropyLayer addRef() {
+    return (EntropyLayer) super.addRef();
   }
 
   @Override
@@ -67,26 +92,5 @@ public @com.simiacryptus.ref.lang.RefAware class EntropyLayer extends SimpleActi
     assert minDeriv <= Math.abs(d);
     results[0] = f;
     results[1] = d;
-  }
-
-  public @SuppressWarnings("unused") void _free() {
-  }
-
-  public @Override @SuppressWarnings("unused") EntropyLayer addRef() {
-    return (EntropyLayer) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") EntropyLayer[] addRefs(EntropyLayer[] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(EntropyLayer::addRef)
-        .toArray((x) -> new EntropyLayer[x]);
-  }
-
-  public static @SuppressWarnings("unused") EntropyLayer[][] addRefs(EntropyLayer[][] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(EntropyLayer::addRefs)
-        .toArray((x) -> new EntropyLayer[x][]);
   }
 }

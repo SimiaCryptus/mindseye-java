@@ -22,50 +22,61 @@ package com.simiacryptus.mindseye.layers.java;
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 
-public abstract @com.simiacryptus.ref.lang.RefAware class LinearActivationLayerTest extends ActivationLayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware
+class LinearActivationLayerTest extends ActivationLayerTestBase {
   public LinearActivationLayerTest() {
     super(new LinearActivationLayer());
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware class Basic extends LinearActivationLayerTest {
-    @Override
-    protected Layer lossLayer() {
-      return new EntropyLossLayer();
-    }
-
-    public @SuppressWarnings("unused") void _free() {
-    }
-
-    public @Override @SuppressWarnings("unused") Basic addRef() {
-      return (Basic) super.addRef();
-    }
-
-    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
-      if (array == null)
-        return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
-    }
-  }
-
-  public @SuppressWarnings("unused") void _free() {
-  }
-
-  public @Override @SuppressWarnings("unused") LinearActivationLayerTest addRef() {
-    return (LinearActivationLayerTest) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") LinearActivationLayerTest[] addRefs(LinearActivationLayerTest[] array) {
+  public static @SuppressWarnings("unused")
+  LinearActivationLayerTest[] addRefs(LinearActivationLayerTest[] array) {
     if (array == null)
       return null;
     return java.util.Arrays.stream(array).filter((x) -> x != null).map(LinearActivationLayerTest::addRef)
         .toArray((x) -> new LinearActivationLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused") LinearActivationLayerTest[][] addRefs(LinearActivationLayerTest[][] array) {
+  public static @SuppressWarnings("unused")
+  LinearActivationLayerTest[][] addRefs(LinearActivationLayerTest[][] array) {
     if (array == null)
       return null;
     return java.util.Arrays.stream(array).filter((x) -> x != null).map(LinearActivationLayerTest::addRefs)
         .toArray((x) -> new LinearActivationLayerTest[x][]);
+  }
+
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  LinearActivationLayerTest addRef() {
+    return (LinearActivationLayerTest) super.addRef();
+  }
+
+  public static @com.simiacryptus.ref.lang.RefAware
+  class Basic extends LinearActivationLayerTest {
+    public static @SuppressWarnings("unused")
+    Basic[] addRefs(Basic[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+    }
+
+    public @SuppressWarnings("unused")
+    void _free() {
+    }
+
+    public @Override
+    @SuppressWarnings("unused")
+    Basic addRef() {
+      return (Basic) super.addRef();
+    }
+
+    @Override
+    protected Layer lossLayer() {
+      return new EntropyLossLayer();
+    }
   }
 
 }

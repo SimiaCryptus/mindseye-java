@@ -25,13 +25,12 @@ import com.simiacryptus.mindseye.lang.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.IntStream;
-import com.simiacryptus.ref.wrappers.RefIntStream;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware class ImgTileAssemblyLayer extends LayerBase {
+public @com.simiacryptus.ref.lang.RefAware
+class ImgTileAssemblyLayer extends LayerBase {
 
   private final int columns;
   private final int rows;
@@ -90,13 +89,11 @@ public @com.simiacryptus.ref.lang.RefAware class ImgTileAssemblyLayer extends La
 
   @Nonnull
   public static void copy(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData, final int offsetX,
-      final int offsetY, final int paddingX, final int paddingY, final boolean toroidal, final double rowF,
-      final double colF) {
+                          final int offsetY, final int paddingX, final int paddingY, final boolean toroidal, final double rowF,
+                          final double colF) {
     int[] inputDataDimensions = inputData.getDimensions();
-    @Nonnull
-    final int[] inDim = inputDataDimensions;
-    @Nonnull
-    final int[] outDim = outputData.getDimensions();
+    @Nonnull final int[] inDim = inputDataDimensions;
+    @Nonnull final int[] outDim = outputData.getDimensions();
     assert 3 == inDim.length;
     assert 3 == outDim.length;
     assert inDim[2] == outDim[2] : com.simiacryptus.ref.wrappers.RefArrays.toString(inDim) + "; "
@@ -158,8 +155,24 @@ public @com.simiacryptus.ref.lang.RefAware class ImgTileAssemblyLayer extends La
 
   @SuppressWarnings("unused")
   public static ImgTileAssemblyLayer fromJson(@Nonnull final JsonObject json,
-      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                              com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new ImgTileAssemblyLayer(json);
+  }
+
+  public static @SuppressWarnings("unused")
+  ImgTileAssemblyLayer[] addRefs(ImgTileAssemblyLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgTileAssemblyLayer::addRef)
+        .toArray((x) -> new ImgTileAssemblyLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  ImgTileAssemblyLayer[][] addRefs(ImgTileAssemblyLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgTileAssemblyLayer::addRefs)
+        .toArray((x) -> new ImgTileAssemblyLayer[x][]);
   }
 
   @Nonnull
@@ -169,8 +182,7 @@ public @com.simiacryptus.ref.lang.RefAware class ImgTileAssemblyLayer extends La
     int[] outputDims = getOutputDims(inObj);
     return new Result(new TensorArray(com.simiacryptus.ref.wrappers.RefIntStream.range(0, inObj[0].getData().length())
         .parallel().mapToObj(dataIndex -> {
-          @Nonnull
-          final Tensor outputData = new Tensor(outputDims);
+          @Nonnull final Tensor outputData = new Tensor(outputDims);
 
           int totalWidth = 0;
           int positionY = offsetY;
@@ -195,37 +207,35 @@ public @com.simiacryptus.ref.lang.RefAware class ImgTileAssemblyLayer extends La
 
           return outputData;
         }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
-          final AtomicInteger positionY = new AtomicInteger(offsetX);
-          int inputIndex = 0;
-          for (int row = 0; row < rows; row++) {
-            final AtomicInteger positionX = new AtomicInteger(offsetY);
-            int rowHeight = 0;
-            for (int col = 0; col < columns; col++) {
-              Result in = inObj[inputIndex++];
-              int[] inputDataDimensions = in.getData().getDimensions();
-              rowHeight = Math.max(rowHeight, inputDataDimensions[1]);
-              if (in.isAlive()) {
-                final int finalRow = row;
-                final int finalCol = col;
-                @Nonnull
-                TensorArray tensorArray = new TensorArray(com.simiacryptus.ref.wrappers.RefIntStream
-                    .range(0, delta.length()).parallel().mapToObj(dataIndex -> {
-                      @Nullable
-                      final Tensor deltaTensor = delta.get(dataIndex);
-                      @Nonnull
-                      final Tensor passbackTensor = new Tensor(inputDataDimensions);
-                      ImgTileAssemblyLayer.copy(deltaTensor, passbackTensor, -positionX.get(), -positionY.get(),
-                          0 == positionX.get() ? 0 : getPaddingX() / 2, 0 == positionY.get() ? 0 : getPaddingY() / 2,
-                          offsetX < 0 || offsetY < 0, (double) finalRow / rows, (double) finalCol / columns);
-                      return passbackTensor;
-                    }).toArray(i -> new Tensor[i]));
-                in.accumulate(buffer, tensorArray);
-              }
-              positionX.addAndGet(inputDataDimensions[0] - getPaddingX());
-            }
-            positionY.addAndGet(rowHeight - getPaddingY());
+      final AtomicInteger positionY = new AtomicInteger(offsetX);
+      int inputIndex = 0;
+      for (int row = 0; row < rows; row++) {
+        final AtomicInteger positionX = new AtomicInteger(offsetY);
+        int rowHeight = 0;
+        for (int col = 0; col < columns; col++) {
+          Result in = inObj[inputIndex++];
+          int[] inputDataDimensions = in.getData().getDimensions();
+          rowHeight = Math.max(rowHeight, inputDataDimensions[1]);
+          if (in.isAlive()) {
+            final int finalRow = row;
+            final int finalCol = col;
+            @Nonnull
+            TensorArray tensorArray = new TensorArray(com.simiacryptus.ref.wrappers.RefIntStream
+                .range(0, delta.length()).parallel().mapToObj(dataIndex -> {
+                  @Nullable final Tensor deltaTensor = delta.get(dataIndex);
+                  @Nonnull final Tensor passbackTensor = new Tensor(inputDataDimensions);
+                  ImgTileAssemblyLayer.copy(deltaTensor, passbackTensor, -positionX.get(), -positionY.get(),
+                      0 == positionX.get() ? 0 : getPaddingX() / 2, 0 == positionY.get() ? 0 : getPaddingY() / 2,
+                      offsetX < 0 || offsetY < 0, (double) finalRow / rows, (double) finalCol / columns);
+                  return passbackTensor;
+                }).toArray(i -> new Tensor[i]));
+            in.accumulate(buffer, tensorArray);
           }
-        }) {
+          positionX.addAndGet(inputDataDimensions[0] - getPaddingX());
+        }
+        positionY.addAndGet(rowHeight - getPaddingY());
+      }
+    }) {
 
       @Override
       public boolean isAlive() {
@@ -240,9 +250,8 @@ public @com.simiacryptus.ref.lang.RefAware class ImgTileAssemblyLayer extends La
   @Nonnull
   @Override
   public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
-      DataSerializer dataSerializer) {
-    @Nonnull
-    final JsonObject json = super.getJsonStub();
+                            DataSerializer dataSerializer) {
+    @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("columns", columns);
     json.addProperty("rows", rows);
     json.addProperty("paddingX", getPaddingX());
@@ -256,6 +265,16 @@ public @com.simiacryptus.ref.lang.RefAware class ImgTileAssemblyLayer extends La
   @Override
   public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
     return new com.simiacryptus.ref.wrappers.RefArrayList<>();
+  }
+
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  ImgTileAssemblyLayer addRef() {
+    return (ImgTileAssemblyLayer) super.addRef();
   }
 
   private int getInt(@Nonnull JsonObject json, String paddingX, int defaultValue) {
@@ -283,27 +302,6 @@ public @com.simiacryptus.ref.lang.RefAware class ImgTileAssemblyLayer extends La
       totalHeight += rowHeight - getPaddingY();
       totalWidth = Math.max(totalWidth, positionX);
     }
-    return new int[] { totalWidth + getPaddingX(), totalHeight + getPaddingY(), bands };
-  }
-
-  public @SuppressWarnings("unused") void _free() {
-  }
-
-  public @Override @SuppressWarnings("unused") ImgTileAssemblyLayer addRef() {
-    return (ImgTileAssemblyLayer) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") ImgTileAssemblyLayer[] addRefs(ImgTileAssemblyLayer[] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgTileAssemblyLayer::addRef)
-        .toArray((x) -> new ImgTileAssemblyLayer[x]);
-  }
-
-  public static @SuppressWarnings("unused") ImgTileAssemblyLayer[][] addRefs(ImgTileAssemblyLayer[][] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgTileAssemblyLayer::addRefs)
-        .toArray((x) -> new ImgTileAssemblyLayer[x][]);
+    return new int[]{totalWidth + getPaddingX(), totalHeight + getPaddingY(), bands};
   }
 }

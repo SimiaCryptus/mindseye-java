@@ -24,12 +24,29 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-public abstract @com.simiacryptus.ref.lang.RefAware class CrossProductLayerTest extends LayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware
+class CrossProductLayerTest extends LayerTestBase {
+
+  public static @SuppressWarnings("unused")
+  CrossProductLayerTest[] addRefs(CrossProductLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(CrossProductLayerTest::addRef)
+        .toArray((x) -> new CrossProductLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  CrossProductLayerTest[][] addRefs(CrossProductLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(CrossProductLayerTest::addRefs)
+        .toArray((x) -> new CrossProductLayerTest[x][]);
+  }
 
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][] { { 4 } };
+    return new int[][]{{4}};
   }
 
   @Nonnull
@@ -38,41 +55,35 @@ public abstract @com.simiacryptus.ref.lang.RefAware class CrossProductLayerTest 
     return new CrossProductLayer();
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware class Basic extends CrossProductLayerTest {
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
 
-    public @SuppressWarnings("unused") void _free() {
-    }
+  public @Override
+  @SuppressWarnings("unused")
+  CrossProductLayerTest addRef() {
+    return (CrossProductLayerTest) super.addRef();
+  }
 
-    public @Override @SuppressWarnings("unused") Basic addRef() {
-      return (Basic) super.addRef();
-    }
+  public static @com.simiacryptus.ref.lang.RefAware
+  class Basic extends CrossProductLayerTest {
 
-    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+    public static @SuppressWarnings("unused")
+    Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
       return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
-  }
 
-  public @SuppressWarnings("unused") void _free() {
-  }
+    public @SuppressWarnings("unused")
+    void _free() {
+    }
 
-  public @Override @SuppressWarnings("unused") CrossProductLayerTest addRef() {
-    return (CrossProductLayerTest) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") CrossProductLayerTest[] addRefs(CrossProductLayerTest[] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(CrossProductLayerTest::addRef)
-        .toArray((x) -> new CrossProductLayerTest[x]);
-  }
-
-  public static @SuppressWarnings("unused") CrossProductLayerTest[][] addRefs(CrossProductLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(CrossProductLayerTest::addRefs)
-        .toArray((x) -> new CrossProductLayerTest[x][]);
+    public @Override
+    @SuppressWarnings("unused")
+    Basic addRef() {
+      return (Basic) super.addRef();
+    }
   }
 
 }

@@ -25,18 +25,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
-import java.util.stream.IntStream;
-import com.simiacryptus.ref.wrappers.RefArrays;
-import com.simiacryptus.ref.wrappers.RefList;
-import com.simiacryptus.ref.wrappers.RefMap;
-import com.simiacryptus.ref.wrappers.RefIntStream;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware class ImgPixelSoftmaxLayer extends LayerBase {
+public @com.simiacryptus.ref.lang.RefAware
+class ImgPixelSoftmaxLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(ImgPixelSoftmaxLayer.class);
@@ -51,8 +44,24 @@ public @com.simiacryptus.ref.lang.RefAware class ImgPixelSoftmaxLayer extends La
 
   @SuppressWarnings("unused")
   public static ImgPixelSoftmaxLayer fromJson(@Nonnull final JsonObject json,
-      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                              com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new ImgPixelSoftmaxLayer(json);
+  }
+
+  public static @SuppressWarnings("unused")
+  ImgPixelSoftmaxLayer[] addRefs(ImgPixelSoftmaxLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgPixelSoftmaxLayer::addRef)
+        .toArray((x) -> new ImgPixelSoftmaxLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  ImgPixelSoftmaxLayer[][] addRefs(ImgPixelSoftmaxLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgPixelSoftmaxLayer::addRefs)
+        .toArray((x) -> new ImgPixelSoftmaxLayer[x][]);
   }
 
   @Nonnull
@@ -152,7 +161,7 @@ public @com.simiacryptus.ref.lang.RefAware class ImgPixelSoftmaxLayer extends La
   @Nonnull
   @Override
   public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
-      DataSerializer dataSerializer) {
+                            DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 
@@ -162,24 +171,13 @@ public @com.simiacryptus.ref.lang.RefAware class ImgPixelSoftmaxLayer extends La
     return com.simiacryptus.ref.wrappers.RefArrays.asList();
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") ImgPixelSoftmaxLayer addRef() {
+  public @Override
+  @SuppressWarnings("unused")
+  ImgPixelSoftmaxLayer addRef() {
     return (ImgPixelSoftmaxLayer) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") ImgPixelSoftmaxLayer[] addRefs(ImgPixelSoftmaxLayer[] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgPixelSoftmaxLayer::addRef)
-        .toArray((x) -> new ImgPixelSoftmaxLayer[x]);
-  }
-
-  public static @SuppressWarnings("unused") ImgPixelSoftmaxLayer[][] addRefs(ImgPixelSoftmaxLayer[][] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgPixelSoftmaxLayer::addRefs)
-        .toArray((x) -> new ImgPixelSoftmaxLayer[x][]);
   }
 }

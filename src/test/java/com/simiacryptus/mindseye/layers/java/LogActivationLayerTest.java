@@ -23,7 +23,8 @@ import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 import com.simiacryptus.mindseye.test.unit.SingleDerivativeTester;
 
-public abstract @com.simiacryptus.ref.lang.RefAware class LogActivationLayerTest extends ActivationLayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware
+class LogActivationLayerTest extends ActivationLayerTestBase {
   public LogActivationLayerTest() {
     super(new LogActivationLayer());
   }
@@ -33,45 +34,55 @@ public abstract @com.simiacryptus.ref.lang.RefAware class LogActivationLayerTest
     return new SingleDerivativeTester(1e-2, 1e-8);
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware class Basic extends LogActivationLayerTest {
-    @Override
-    protected Layer lossLayer() {
-      return new MeanSqLossLayer();
-    }
-
-    public @SuppressWarnings("unused") void _free() {
-    }
-
-    public @Override @SuppressWarnings("unused") Basic addRef() {
-      return (Basic) super.addRef();
-    }
-
-    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
-      if (array == null)
-        return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
-    }
-  }
-
-  public @SuppressWarnings("unused") void _free() {
-  }
-
-  public @Override @SuppressWarnings("unused") LogActivationLayerTest addRef() {
-    return (LogActivationLayerTest) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") LogActivationLayerTest[] addRefs(LogActivationLayerTest[] array) {
+  public static @SuppressWarnings("unused")
+  LogActivationLayerTest[] addRefs(LogActivationLayerTest[] array) {
     if (array == null)
       return null;
     return java.util.Arrays.stream(array).filter((x) -> x != null).map(LogActivationLayerTest::addRef)
         .toArray((x) -> new LogActivationLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused") LogActivationLayerTest[][] addRefs(LogActivationLayerTest[][] array) {
+  public static @SuppressWarnings("unused")
+  LogActivationLayerTest[][] addRefs(LogActivationLayerTest[][] array) {
     if (array == null)
       return null;
     return java.util.Arrays.stream(array).filter((x) -> x != null).map(LogActivationLayerTest::addRefs)
         .toArray((x) -> new LogActivationLayerTest[x][]);
+  }
+
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  LogActivationLayerTest addRef() {
+    return (LogActivationLayerTest) super.addRef();
+  }
+
+  public static @com.simiacryptus.ref.lang.RefAware
+  class Basic extends LogActivationLayerTest {
+    public static @SuppressWarnings("unused")
+    Basic[] addRefs(Basic[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+    }
+
+    public @SuppressWarnings("unused")
+    void _free() {
+    }
+
+    public @Override
+    @SuppressWarnings("unused")
+    Basic addRef() {
+      return (Basic) super.addRef();
+    }
+
+    @Override
+    protected Layer lossLayer() {
+      return new MeanSqLossLayer();
+    }
   }
 
 }

@@ -26,14 +26,12 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
-import java.util.stream.DoubleStream;
-import java.util.stream.IntStream;
-import com.simiacryptus.ref.wrappers.RefDoubleStream;
-import com.simiacryptus.ref.wrappers.RefIntStream;
+import java.util.DoubleSummaryStatistics;
+import java.util.UUID;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware class SoftmaxLayer extends LayerBase {
+public @com.simiacryptus.ref.lang.RefAware
+class SoftmaxLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(SoftmaxLayer.class);
@@ -48,25 +46,37 @@ public @com.simiacryptus.ref.lang.RefAware class SoftmaxLayer extends LayerBase 
 
   @SuppressWarnings("unused")
   public static SoftmaxLayer fromJson(@Nonnull final JsonObject json,
-      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new SoftmaxLayer(json);
+  }
+
+  public static @SuppressWarnings("unused")
+  SoftmaxLayer[] addRefs(SoftmaxLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SoftmaxLayer::addRef)
+        .toArray((x) -> new SoftmaxLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  SoftmaxLayer[][] addRefs(SoftmaxLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SoftmaxLayer::addRefs)
+        .toArray((x) -> new SoftmaxLayer[x][]);
   }
 
   @Nonnull
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     final int itemCnt = inObj[0].getData().length();
-    @Nonnull
-    final double[] sumA = new double[itemCnt];
-    @Nonnull
-    final Tensor expA[] = new Tensor[itemCnt];
+    @Nonnull final double[] sumA = new double[itemCnt];
+    @Nonnull final Tensor expA[] = new Tensor[itemCnt];
     final Tensor[] outputA = com.simiacryptus.ref.wrappers.RefIntStream.range(0, itemCnt).mapToObj(dataIndex -> {
-      @Nullable
-      final Tensor input = inObj[0].getData().get(dataIndex);
+      @Nullable final Tensor input = inObj[0].getData().get(dataIndex);
       assert 1 < input.length() : "input.length() = " + input.length();
 
-      @Nullable
-      final Tensor exp;
+      @Nullable final Tensor exp;
       final DoubleSummaryStatistics summaryStatistics = com.simiacryptus.ref.wrappers.RefDoubleStream
           .of(input.getData()).filter(x -> Double.isFinite(x)).summaryStatistics();
       final double max = summaryStatistics.getMax();
@@ -93,12 +103,9 @@ public @com.simiacryptus.ref.lang.RefAware class SoftmaxLayer extends LayerBase 
             final Tensor[] passbackA = com.simiacryptus.ref.wrappers.RefIntStream.range(0, itemCnt)
                 .mapToObj(dataIndex -> {
                   Tensor deltaTensor = data.get(dataIndex);
-                  @Nullable
-                  final double[] delta = deltaTensor.getData();
-                  @Nullable
-                  final double[] expdata = expA[dataIndex].getData();
-                  @Nonnull
-                  final Tensor passback = new Tensor(data.getDimensions());
+                  @Nullable final double[] delta = deltaTensor.getData();
+                  @Nullable final double[] expdata = expA[dataIndex].getData();
+                  @Nonnull final Tensor passback = new Tensor(data.getDimensions());
                   final int dim = expdata.length;
                   double dot = 0;
                   for (int i = 0; i < expdata.length; i++) {
@@ -135,7 +142,7 @@ public @com.simiacryptus.ref.lang.RefAware class SoftmaxLayer extends LayerBase 
   @Nonnull
   @Override
   public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
-      DataSerializer dataSerializer) {
+                            DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 
@@ -145,24 +152,13 @@ public @com.simiacryptus.ref.lang.RefAware class SoftmaxLayer extends LayerBase 
     return com.simiacryptus.ref.wrappers.RefArrays.asList();
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") SoftmaxLayer addRef() {
+  public @Override
+  @SuppressWarnings("unused")
+  SoftmaxLayer addRef() {
     return (SoftmaxLayer) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") SoftmaxLayer[] addRefs(SoftmaxLayer[] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SoftmaxLayer::addRef)
-        .toArray((x) -> new SoftmaxLayer[x]);
-  }
-
-  public static @SuppressWarnings("unused") SoftmaxLayer[][] addRefs(SoftmaxLayer[][] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SoftmaxLayer::addRefs)
-        .toArray((x) -> new SoftmaxLayer[x][]);
   }
 }

@@ -30,12 +30,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
-import java.util.Map;
 import java.util.UUID;
-import com.simiacryptus.ref.wrappers.RefMap;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware class TargetValueLayer extends DAGNetwork {
+public @com.simiacryptus.ref.lang.RefAware
+class TargetValueLayer extends DAGNetwork {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(TargetValueLayer.class);
@@ -49,7 +48,7 @@ public @com.simiacryptus.ref.lang.RefAware class TargetValueLayer extends DAGNet
   }
 
   protected TargetValueLayer(@Nonnull final JsonObject json,
-      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                             com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     super(json, rs);
     head = getNodeById(UUID.fromString(json.getAsJsonPrimitive("head").getAsString()));
     target = getNodeById(UUID.fromString(json.getAsJsonPrimitive("target").getAsString()));
@@ -68,13 +67,29 @@ public @com.simiacryptus.ref.lang.RefAware class TargetValueLayer extends DAGNet
 
   @SuppressWarnings("unused")
   public static Layer fromJson(@Nonnull final JsonObject inner,
-      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                               com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new TargetValueLayer(inner, rs);
+  }
+
+  public static @SuppressWarnings("unused")
+  TargetValueLayer[] addRefs(TargetValueLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(TargetValueLayer::addRef)
+        .toArray((x) -> new TargetValueLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  TargetValueLayer[][] addRefs(TargetValueLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(TargetValueLayer::addRefs)
+        .toArray((x) -> new TargetValueLayer[x][]);
   }
 
   @Override
   public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
-      DataSerializer dataSerializer) {
+                            DataSerializer dataSerializer) {
     final JsonObject json = super.getJson(resources, dataSerializer);
     json.addProperty("target", target.getId().toString());
     return json;
@@ -84,21 +99,9 @@ public @com.simiacryptus.ref.lang.RefAware class TargetValueLayer extends DAGNet
     super._free();
   }
 
-  public @Override @SuppressWarnings("unused") TargetValueLayer addRef() {
+  public @Override
+  @SuppressWarnings("unused")
+  TargetValueLayer addRef() {
     return (TargetValueLayer) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") TargetValueLayer[] addRefs(TargetValueLayer[] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(TargetValueLayer::addRef)
-        .toArray((x) -> new TargetValueLayer[x]);
-  }
-
-  public static @SuppressWarnings("unused") TargetValueLayer[][] addRefs(TargetValueLayer[][] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(TargetValueLayer::addRefs)
-        .toArray((x) -> new TargetValueLayer[x][]);
   }
 }

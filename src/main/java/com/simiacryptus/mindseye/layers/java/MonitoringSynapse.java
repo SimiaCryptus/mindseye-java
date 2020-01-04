@@ -27,10 +27,11 @@ import com.simiacryptus.util.data.PercentileStatistics;
 import com.simiacryptus.util.data.ScalarStatistics;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.UUID;
 
 @SuppressWarnings("serial")
-public final @com.simiacryptus.ref.lang.RefAware class MonitoringSynapse extends LayerBase implements MonitoredItem {
+public final @com.simiacryptus.ref.lang.RefAware
+class MonitoringSynapse extends LayerBase implements MonitoredItem {
 
   private final ScalarStatistics backpropStatistics = new PercentileStatistics();
   private final ScalarStatistics forwardStatistics = new PercentileStatistics();
@@ -48,8 +49,7 @@ public final @com.simiacryptus.ref.lang.RefAware class MonitoringSynapse extends
   @Nonnull
   @Override
   public com.simiacryptus.ref.wrappers.RefMap<CharSequence, Object> getMetrics() {
-    @Nonnull
-    final com.simiacryptus.ref.wrappers.RefHashMap<CharSequence, Object> map = new com.simiacryptus.ref.wrappers.RefHashMap<>();
+    @Nonnull final com.simiacryptus.ref.wrappers.RefHashMap<CharSequence, Object> map = new com.simiacryptus.ref.wrappers.RefHashMap<>();
     map.put("totalBatches", totalBatches);
     map.put("totalItems", totalItems);
     map.put("forward", forwardStatistics.getMetrics());
@@ -60,14 +60,29 @@ public final @com.simiacryptus.ref.lang.RefAware class MonitoringSynapse extends
   @Nonnull
   @SuppressWarnings("unused")
   public static MonitoringSynapse fromJson(@Nonnull final JsonObject json,
-      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
-    @Nonnull
-    final MonitoringSynapse obj = new MonitoringSynapse(json);
+                                           com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+    @Nonnull final MonitoringSynapse obj = new MonitoringSynapse(json);
     obj.totalBatches = json.get("totalBatches").getAsInt();
     obj.totalItems = json.get("totalItems").getAsInt();
     obj.backpropStatistics.readJson(json.getAsJsonObject("backpropStatistics"));
     obj.forwardStatistics.readJson(json.getAsJsonObject("forwardStatistics"));
     return obj;
+  }
+
+  public static @SuppressWarnings("unused")
+  MonitoringSynapse[] addRefs(MonitoringSynapse[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MonitoringSynapse::addRef)
+        .toArray((x) -> new MonitoringSynapse[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  MonitoringSynapse[][] addRefs(MonitoringSynapse[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MonitoringSynapse::addRefs)
+        .toArray((x) -> new MonitoringSynapse[x][]);
   }
 
   @Nonnull
@@ -116,9 +131,8 @@ public final @com.simiacryptus.ref.lang.RefAware class MonitoringSynapse extends
   @Nonnull
   @Override
   public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
-      DataSerializer dataSerializer) {
-    @Nonnull
-    final JsonObject json = super.getJsonStub();
+                            DataSerializer dataSerializer) {
+    @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("totalBatches", totalBatches);
     json.addProperty("totalItems", totalItems);
     return json;
@@ -129,24 +143,13 @@ public final @com.simiacryptus.ref.lang.RefAware class MonitoringSynapse extends
     return com.simiacryptus.ref.wrappers.RefArrays.asList();
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") MonitoringSynapse addRef() {
+  public @Override
+  @SuppressWarnings("unused")
+  MonitoringSynapse addRef() {
     return (MonitoringSynapse) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") MonitoringSynapse[] addRefs(MonitoringSynapse[] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MonitoringSynapse::addRef)
-        .toArray((x) -> new MonitoringSynapse[x]);
-  }
-
-  public static @SuppressWarnings("unused") MonitoringSynapse[][] addRefs(MonitoringSynapse[][] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MonitoringSynapse::addRefs)
-        .toArray((x) -> new MonitoringSynapse[x][]);
   }
 }

@@ -24,16 +24,33 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-public abstract @com.simiacryptus.ref.lang.RefAware class ImgCropLayerTest extends LayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware
+class ImgCropLayerTest extends LayerTestBase {
 
   public ImgCropLayerTest() {
     validateBatchExecution = false;
   }
 
+  public static @SuppressWarnings("unused")
+  ImgCropLayerTest[] addRefs(ImgCropLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgCropLayerTest::addRef)
+        .toArray((x) -> new ImgCropLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  ImgCropLayerTest[][] addRefs(ImgCropLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgCropLayerTest::addRefs)
+        .toArray((x) -> new ImgCropLayerTest[x][]);
+  }
+
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][] { { 8, 8, 1 } };
+    return new int[][]{{8, 8, 1}};
   }
 
   @Nonnull
@@ -42,41 +59,35 @@ public abstract @com.simiacryptus.ref.lang.RefAware class ImgCropLayerTest exten
     return new ImgCropLayer(1, 1);
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware class Basic extends ImgCropLayerTest {
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
 
-    public @SuppressWarnings("unused") void _free() {
-    }
+  public @Override
+  @SuppressWarnings("unused")
+  ImgCropLayerTest addRef() {
+    return (ImgCropLayerTest) super.addRef();
+  }
 
-    public @Override @SuppressWarnings("unused") Basic addRef() {
-      return (Basic) super.addRef();
-    }
+  public static @com.simiacryptus.ref.lang.RefAware
+  class Basic extends ImgCropLayerTest {
 
-    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+    public static @SuppressWarnings("unused")
+    Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
       return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
-  }
 
-  public @SuppressWarnings("unused") void _free() {
-  }
+    public @SuppressWarnings("unused")
+    void _free() {
+    }
 
-  public @Override @SuppressWarnings("unused") ImgCropLayerTest addRef() {
-    return (ImgCropLayerTest) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") ImgCropLayerTest[] addRefs(ImgCropLayerTest[] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgCropLayerTest::addRef)
-        .toArray((x) -> new ImgCropLayerTest[x]);
-  }
-
-  public static @SuppressWarnings("unused") ImgCropLayerTest[][] addRefs(ImgCropLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgCropLayerTest::addRefs)
-        .toArray((x) -> new ImgCropLayerTest[x][]);
+    public @Override
+    @SuppressWarnings("unused")
+    Basic addRef() {
+      return (Basic) super.addRef();
+    }
   }
 
 }

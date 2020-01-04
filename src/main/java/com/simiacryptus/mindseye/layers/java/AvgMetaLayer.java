@@ -26,19 +26,12 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.function.ToDoubleFunction;
-import java.util.stream.IntStream;
-import com.simiacryptus.ref.wrappers.RefArrays;
-import com.simiacryptus.ref.wrappers.RefList;
-import com.simiacryptus.ref.wrappers.RefMap;
-import com.simiacryptus.ref.wrappers.RefIntStream;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware class AvgMetaLayer extends LayerBase {
+public @com.simiacryptus.ref.lang.RefAware
+class AvgMetaLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(AvgMetaLayer.class);
@@ -50,7 +43,7 @@ public @com.simiacryptus.ref.lang.RefAware class AvgMetaLayer extends LayerBase 
   }
 
   protected AvgMetaLayer(@Nonnull final JsonObject json,
-      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources) {
+                         com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources) {
     super(json);
     lastResult = Tensor.fromJson(json.get("lastResult"), resources);
     minBatchCount = json.get("minBatchCount").getAsInt();
@@ -68,8 +61,24 @@ public @com.simiacryptus.ref.lang.RefAware class AvgMetaLayer extends LayerBase 
 
   @SuppressWarnings("unused")
   public static AvgMetaLayer fromJson(@Nonnull final JsonObject json,
-      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new AvgMetaLayer(json, rs);
+  }
+
+  public static @SuppressWarnings("unused")
+  AvgMetaLayer[] addRefs(AvgMetaLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(AvgMetaLayer::addRef)
+        .toArray((x) -> new AvgMetaLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  AvgMetaLayer[][] addRefs(AvgMetaLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(AvgMetaLayer::addRefs)
+        .toArray((x) -> new AvgMetaLayer[x][]);
   }
 
   @Nonnull
@@ -82,12 +91,11 @@ public @com.simiacryptus.ref.lang.RefAware class AvgMetaLayer extends LayerBase 
     Tensor thisResult;
     boolean passback;
     if (null == lastResult || inputData.length() > minBatchCount) {
-      @Nonnull
-      final ToDoubleFunction<Coordinate> f = (
+      @Nonnull final ToDoubleFunction<Coordinate> f = (
           c) -> com.simiacryptus.ref.wrappers.RefIntStream.range(0, itemCnt).mapToDouble(dataIndex -> {
-            Tensor tensor = inputData.get(dataIndex);
-            return tensor.get(c);
-          }).sum() / itemCnt;
+        Tensor tensor = inputData.get(dataIndex);
+        return tensor.get(c);
+      }).sum() / itemCnt;
       Tensor tensor = inputData.get(0);
       thisResult = tensor.mapCoords(f);
       passback = true;
@@ -99,10 +107,8 @@ public @com.simiacryptus.ref.lang.RefAware class AvgMetaLayer extends LayerBase 
     return new Result(new TensorArray(thisResult),
         (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList data) -> {
           if (passback && input.isAlive()) {
-            @Nullable
-            final Tensor delta = data.get(0);
-            @Nonnull
-            final Tensor feedback[] = new Tensor[itemCnt];
+            @Nullable final Tensor delta = data.get(0);
+            @Nonnull final Tensor feedback[] = new Tensor[itemCnt];
             com.simiacryptus.ref.wrappers.RefArrays.parallelSetAll(feedback, i -> new Tensor(delta.getDimensions()));
             thisResult.coordStream(true).forEach((inputCoord) -> {
               for (int inputItem = 0; inputItem < itemCnt; inputItem++) {
@@ -129,9 +135,8 @@ public @com.simiacryptus.ref.lang.RefAware class AvgMetaLayer extends LayerBase 
   @Nonnull
   @Override
   public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
-      @Nonnull DataSerializer dataSerializer) {
-    @Nonnull
-    final JsonObject json = super.getJsonStub();
+                            @Nonnull DataSerializer dataSerializer) {
+    @Nonnull final JsonObject json = super.getJsonStub();
     if (null != lastResult) {
       json.add("lastResult", lastResult.getJson(resources, dataSerializer));
     }
@@ -149,21 +154,9 @@ public @com.simiacryptus.ref.lang.RefAware class AvgMetaLayer extends LayerBase 
     super._free();
   }
 
-  public @Override @SuppressWarnings("unused") AvgMetaLayer addRef() {
+  public @Override
+  @SuppressWarnings("unused")
+  AvgMetaLayer addRef() {
     return (AvgMetaLayer) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") AvgMetaLayer[] addRefs(AvgMetaLayer[] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(AvgMetaLayer::addRef)
-        .toArray((x) -> new AvgMetaLayer[x]);
-  }
-
-  public static @SuppressWarnings("unused") AvgMetaLayer[][] addRefs(AvgMetaLayer[][] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(AvgMetaLayer::addRefs)
-        .toArray((x) -> new AvgMetaLayer[x][]);
   }
 }

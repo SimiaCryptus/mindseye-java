@@ -24,13 +24,22 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-public @com.simiacryptus.ref.lang.RefAware class SignReducerLayerTest {
-  public static @com.simiacryptus.ref.lang.RefAware class Normal extends LayerTestBase {
+public @com.simiacryptus.ref.lang.RefAware
+class SignReducerLayerTest {
+  public static @com.simiacryptus.ref.lang.RefAware
+  class Normal extends LayerTestBase {
+
+    public static @SuppressWarnings("unused")
+    Normal[] addRefs(Normal[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Normal::addRef).toArray((x) -> new Normal[x]);
+    }
 
     @Nonnull
     @Override
     public int[][] getSmallDims(Random random) {
-      return new int[][] { { 3 } };
+      return new int[][]{{3}};
     }
 
     @Nonnull
@@ -39,21 +48,19 @@ public @com.simiacryptus.ref.lang.RefAware class SignReducerLayerTest {
       return new SignReducerLayer();
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") Normal addRef() {
+    public @Override
+    @SuppressWarnings("unused")
+    Normal addRef() {
       return (Normal) super.addRef();
-    }
-
-    public static @SuppressWarnings("unused") Normal[] addRefs(Normal[] array) {
-      if (array == null)
-        return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Normal::addRef).toArray((x) -> new Normal[x]);
     }
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware class Basic extends SignReducerLayerTest {
+  public static @com.simiacryptus.ref.lang.RefAware
+  class Basic extends SignReducerLayerTest {
   }
 
 }

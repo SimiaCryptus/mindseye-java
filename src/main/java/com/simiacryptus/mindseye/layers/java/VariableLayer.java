@@ -24,16 +24,13 @@ import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.WrapperLayer;
 
 import javax.annotation.Nonnull;
-import java.util.List;
-import java.util.Map;
-import com.simiacryptus.ref.wrappers.RefList;
-import com.simiacryptus.ref.wrappers.RefMap;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware class VariableLayer extends WrapperLayer {
+public @com.simiacryptus.ref.lang.RefAware
+class VariableLayer extends WrapperLayer {
 
   protected VariableLayer(@Nonnull final JsonObject json,
-      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                          com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     super(json, rs);
   }
 
@@ -48,29 +45,34 @@ public @com.simiacryptus.ref.lang.RefAware class VariableLayer extends WrapperLa
 
   @SuppressWarnings("unused")
   public static VariableLayer fromJson(@Nonnull final JsonObject json,
-      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                       com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new VariableLayer(json, rs);
   }
 
-  public @SuppressWarnings("unused") void _free() {
-  }
-
-  public @Override @SuppressWarnings("unused") VariableLayer addRef() {
-    return (VariableLayer) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") VariableLayer[] addRefs(VariableLayer[] array) {
+  public static @SuppressWarnings("unused")
+  VariableLayer[] addRefs(VariableLayer[] array) {
     if (array == null)
       return null;
     return java.util.Arrays.stream(array).filter((x) -> x != null).map(VariableLayer::addRef)
         .toArray((x) -> new VariableLayer[x]);
   }
 
-  public static @SuppressWarnings("unused") VariableLayer[][] addRefs(VariableLayer[][] array) {
+  public static @SuppressWarnings("unused")
+  VariableLayer[][] addRefs(VariableLayer[][] array) {
     if (array == null)
       return null;
     return java.util.Arrays.stream(array).filter((x) -> x != null).map(VariableLayer::addRefs)
         .toArray((x) -> new VariableLayer[x][]);
+  }
+
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  VariableLayer addRef() {
+    return (VariableLayer) super.addRef();
   }
 
 }

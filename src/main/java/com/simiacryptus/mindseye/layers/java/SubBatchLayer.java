@@ -25,21 +25,14 @@ import com.simiacryptus.mindseye.layers.WrapperLayer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
-import java.util.stream.IntStream;
-import com.simiacryptus.ref.wrappers.RefArrays;
-import com.simiacryptus.ref.wrappers.RefList;
-import com.simiacryptus.ref.wrappers.RefMap;
-import com.simiacryptus.ref.wrappers.RefIntStream;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware class SubBatchLayer extends WrapperLayer {
+public @com.simiacryptus.ref.lang.RefAware
+class SubBatchLayer extends WrapperLayer {
 
   protected SubBatchLayer(@Nonnull final JsonObject json,
-      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                          com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     super(json, rs);
   }
 
@@ -54,12 +47,28 @@ public @com.simiacryptus.ref.lang.RefAware class SubBatchLayer extends WrapperLa
 
   @SuppressWarnings("unused")
   public static SubBatchLayer fromJson(@Nonnull final JsonObject json,
-      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                       com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new SubBatchLayer(json, rs);
   }
 
   public static <T extends Layer> SubBatchLayer wrap(T layer) {
     return new SubBatchLayer(layer);
+  }
+
+  public static @SuppressWarnings("unused")
+  SubBatchLayer[] addRefs(SubBatchLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SubBatchLayer::addRef)
+        .toArray((x) -> new SubBatchLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  SubBatchLayer[][] addRefs(SubBatchLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SubBatchLayer::addRefs)
+        .toArray((x) -> new SubBatchLayer[x][]);
   }
 
   @Nullable
@@ -96,25 +105,14 @@ public @com.simiacryptus.ref.lang.RefAware class SubBatchLayer extends WrapperLa
     };
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") SubBatchLayer addRef() {
+  public @Override
+  @SuppressWarnings("unused")
+  SubBatchLayer addRef() {
     return (SubBatchLayer) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") SubBatchLayer[] addRefs(SubBatchLayer[] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SubBatchLayer::addRef)
-        .toArray((x) -> new SubBatchLayer[x]);
-  }
-
-  public static @SuppressWarnings("unused") SubBatchLayer[][] addRefs(SubBatchLayer[][] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SubBatchLayer::addRefs)
-        .toArray((x) -> new SubBatchLayer[x][]);
   }
 
 }

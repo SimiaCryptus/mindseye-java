@@ -25,19 +25,20 @@ import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.lang.LayerBase;
 import com.simiacryptus.mindseye.lang.Result;
 import com.simiacryptus.mindseye.layers.StochasticComponent;
-import com.simiacryptus.mindseye.network.*;
-import org.jetbrains.annotations.NotNull;
+import com.simiacryptus.mindseye.network.CountingResult;
+import com.simiacryptus.mindseye.network.DAGNetwork;
+import com.simiacryptus.mindseye.network.DAGNode;
+import com.simiacryptus.mindseye.network.PipelineNetwork;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
-import java.util.stream.IntStream;
-import com.simiacryptus.ref.wrappers.RefIntStream;
+import java.util.Random;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware class StochasticSamplingSubnetLayer extends LayerBase
+public @com.simiacryptus.ref.lang.RefAware
+class StochasticSamplingSubnetLayer extends LayerBase
     implements StochasticComponent {
 
   @SuppressWarnings("unused")
@@ -55,7 +56,7 @@ public @com.simiacryptus.ref.lang.RefAware class StochasticSamplingSubnetLayer e
   }
 
   protected StochasticSamplingSubnetLayer(@Nonnull final JsonObject json,
-      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                          com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     super(json);
     samples = json.getAsJsonPrimitive("samples").getAsInt();
     seed = json.getAsJsonPrimitive("seed").getAsLong();
@@ -71,7 +72,7 @@ public @com.simiacryptus.ref.lang.RefAware class StochasticSamplingSubnetLayer e
 
   @SuppressWarnings("unused")
   public static StochasticSamplingSubnetLayer fromJson(@Nonnull final JsonObject json,
-      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                                       com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new StochasticSamplingSubnetLayer(json, rs);
   }
 
@@ -83,6 +84,24 @@ public @com.simiacryptus.ref.lang.RefAware class StochasticSamplingSubnetLayer e
       gateNetwork.add(new LinearActivationLayer().setScale(1.0 / samples.length).freeze());
       return gateNetwork.eval(samples);
     }
+  }
+
+  public static @SuppressWarnings("unused")
+  StochasticSamplingSubnetLayer[] addRefs(
+      StochasticSamplingSubnetLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(StochasticSamplingSubnetLayer::addRef)
+        .toArray((x) -> new StochasticSamplingSubnetLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  StochasticSamplingSubnetLayer[][] addRefs(
+      StochasticSamplingSubnetLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(StochasticSamplingSubnetLayer::addRefs)
+        .toArray((x) -> new StochasticSamplingSubnetLayer[x][]);
   }
 
   @Nullable
@@ -116,9 +135,8 @@ public @com.simiacryptus.ref.lang.RefAware class StochasticSamplingSubnetLayer e
   @Nonnull
   @Override
   public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
-      DataSerializer dataSerializer) {
-    @Nonnull
-    final JsonObject json = super.getJsonStub();
+                            DataSerializer dataSerializer) {
+    @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("samples", samples);
     json.addProperty("seed", seed);
     json.add("subnetwork", subnetwork.getJson(resources, dataSerializer));
@@ -154,24 +172,10 @@ public @com.simiacryptus.ref.lang.RefAware class StochasticSamplingSubnetLayer e
     super._free();
   }
 
-  public @Override @SuppressWarnings("unused") StochasticSamplingSubnetLayer addRef() {
+  public @Override
+  @SuppressWarnings("unused")
+  StochasticSamplingSubnetLayer addRef() {
     return (StochasticSamplingSubnetLayer) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") StochasticSamplingSubnetLayer[] addRefs(
-      StochasticSamplingSubnetLayer[] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(StochasticSamplingSubnetLayer::addRef)
-        .toArray((x) -> new StochasticSamplingSubnetLayer[x]);
-  }
-
-  public static @SuppressWarnings("unused") StochasticSamplingSubnetLayer[][] addRefs(
-      StochasticSamplingSubnetLayer[][] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(StochasticSamplingSubnetLayer::addRefs)
-        .toArray((x) -> new StochasticSamplingSubnetLayer[x][]);
   }
 
 }

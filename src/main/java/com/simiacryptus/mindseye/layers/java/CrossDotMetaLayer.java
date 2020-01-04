@@ -26,16 +26,11 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
-import com.simiacryptus.ref.wrappers.RefArrays;
-import com.simiacryptus.ref.wrappers.RefList;
-import com.simiacryptus.ref.wrappers.RefMap;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware class CrossDotMetaLayer extends LayerBase {
+public @com.simiacryptus.ref.lang.RefAware
+class CrossDotMetaLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(CrossDotMetaLayer.class);
@@ -49,8 +44,24 @@ public @com.simiacryptus.ref.lang.RefAware class CrossDotMetaLayer extends Layer
 
   @SuppressWarnings("unused")
   public static CrossDotMetaLayer fromJson(@Nonnull final JsonObject json,
-      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                           com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new CrossDotMetaLayer(json);
+  }
+
+  public static @SuppressWarnings("unused")
+  CrossDotMetaLayer[] addRefs(CrossDotMetaLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(CrossDotMetaLayer::addRef)
+        .toArray((x) -> new CrossDotMetaLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  CrossDotMetaLayer[][] addRefs(CrossDotMetaLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(CrossDotMetaLayer::addRefs)
+        .toArray((x) -> new CrossDotMetaLayer[x][]);
   }
 
   @Nullable
@@ -60,8 +71,7 @@ public @com.simiacryptus.ref.lang.RefAware class CrossDotMetaLayer extends Layer
     final TensorList indata = input.getData();
     final int itemCnt = indata.length();
     final int dim = Tensor.length(indata.getDimensions());
-    @Nonnull
-    final Tensor results = new Tensor(dim, dim);
+    @Nonnull final Tensor results = new Tensor(dim, dim);
     for (int i = 0; i < dim; i++) {
       for (int j = 0; j < dim; j++) {
         if (i == j) {
@@ -70,20 +80,17 @@ public @com.simiacryptus.ref.lang.RefAware class CrossDotMetaLayer extends Layer
         double v = 0;
         for (int k = 0; k < itemCnt; k++) {
           Tensor tensor = indata.get(k);
-          @Nullable
-          final double[] kk = tensor.getData();
+          @Nullable final double[] kk = tensor.getData();
           v += kk[i] * kk[j];
         }
-        results.set(new int[] { i, j }, v);
+        results.set(new int[]{i, j}, v);
       }
     }
     return new Result(new TensorArray(results),
         (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
           if (input.isAlive()) {
-            @Nullable
-            final Tensor deltaTensor = delta.get(0);
-            @Nonnull
-            final Tensor feedback[] = new Tensor[itemCnt];
+            @Nullable final Tensor deltaTensor = delta.get(0);
+            @Nonnull final Tensor feedback[] = new Tensor[itemCnt];
             com.simiacryptus.ref.wrappers.RefArrays.parallelSetAll(feedback, i -> new Tensor(dim));
 
             for (int i = 0; i < dim; i++) {
@@ -94,8 +101,7 @@ public @com.simiacryptus.ref.lang.RefAware class CrossDotMetaLayer extends Layer
                 final double v = deltaTensor.get(i, j);
                 for (int k = 0; k < itemCnt; k++) {
                   Tensor tensor = indata.get(k);
-                  @Nullable
-                  final double[] kk = tensor.getData();
+                  @Nullable final double[] kk = tensor.getData();
                   feedback[k].add(i, v * kk[j]);
                   feedback[k].add(j, v * kk[i]);
                 }
@@ -121,7 +127,7 @@ public @com.simiacryptus.ref.lang.RefAware class CrossDotMetaLayer extends Layer
   @Nonnull
   @Override
   public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
-      DataSerializer dataSerializer) {
+                            DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 
@@ -131,24 +137,13 @@ public @com.simiacryptus.ref.lang.RefAware class CrossDotMetaLayer extends Layer
     return com.simiacryptus.ref.wrappers.RefArrays.asList();
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") CrossDotMetaLayer addRef() {
+  public @Override
+  @SuppressWarnings("unused")
+  CrossDotMetaLayer addRef() {
     return (CrossDotMetaLayer) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") CrossDotMetaLayer[] addRefs(CrossDotMetaLayer[] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(CrossDotMetaLayer::addRef)
-        .toArray((x) -> new CrossDotMetaLayer[x]);
-  }
-
-  public static @SuppressWarnings("unused") CrossDotMetaLayer[][] addRefs(CrossDotMetaLayer[][] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(CrossDotMetaLayer::addRefs)
-        .toArray((x) -> new CrossDotMetaLayer[x][]);
   }
 }

@@ -27,12 +27,11 @@ import org.apache.commons.math3.util.FastMath;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
-import java.util.stream.IntStream;
-import com.simiacryptus.ref.wrappers.RefIntStream;
+import java.util.UUID;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware class ImgViewLayer extends LayerBase {
+public @com.simiacryptus.ref.lang.RefAware
+class ImgViewLayer extends LayerBase {
 
   private double negativeBias = 255;
   private boolean wrap;
@@ -174,12 +173,28 @@ public @com.simiacryptus.ref.lang.RefAware class ImgViewLayer extends LayerBase 
 
   @SuppressWarnings("unused")
   public static ImgViewLayer fromJson(@Nonnull final JsonObject json,
-      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new ImgViewLayer(json);
   }
 
+  public static @SuppressWarnings("unused")
+  ImgViewLayer[] addRefs(ImgViewLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgViewLayer::addRef)
+        .toArray((x) -> new ImgViewLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  ImgViewLayer[][] addRefs(ImgViewLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgViewLayer::addRefs)
+        .toArray((x) -> new ImgViewLayer[x][]);
+  }
+
   private static void set(@Nonnull Tensor tensor, int width, int height, int x, int y, int channel, boolean wrap,
-      double value) {
+                          double value) {
     assert channel >= 0 : channel;
     if (wrap) {
       while (x < 0)
@@ -230,36 +245,31 @@ public @com.simiacryptus.ref.lang.RefAware class ImgViewLayer extends LayerBase 
   public Result eval(@Nonnull final Result... inObj) {
     final Result input = inObj[0];
     final TensorList batch = input.getData();
-    @Nonnull
-    final int[] inputDims = batch.getDimensions();
+    @Nonnull final int[] inputDims = batch.getDimensions();
     assert 3 == inputDims.length;
-    @Nonnull
-    final int[] dimOut = getViewDimensions(inputDims, new int[] { getSizeX(), getSizeY(), inputDims[2] },
-        new int[] { getOffsetX(), getOffsetY(), 0 });
+    @Nonnull final int[] dimOut = getViewDimensions(inputDims, new int[]{getSizeX(), getSizeY(), inputDims[2]},
+        new int[]{getOffsetX(), getOffsetY(), 0});
     if (null != channelSelector)
       dimOut[2] = channelSelector.length;
     return new Result(
         new TensorArray(com.simiacryptus.ref.wrappers.RefIntStream.range(0, batch.length()).mapToObj(dataIndex -> {
-          @Nonnull
-          final Tensor outputData = new Tensor(dimOut);
+          @Nonnull final Tensor outputData = new Tensor(dimOut);
           Tensor inputData = batch.get(dataIndex);
           fwd(inputData, outputData);
           return outputData;
         }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList error) -> {
-          if (input.isAlive()) {
-            @Nonnull
-            TensorArray tensorArray = new TensorArray(
-                com.simiacryptus.ref.wrappers.RefIntStream.range(0, error.length()).mapToObj(dataIndex -> {
-                  @Nullable
-                  final Tensor err = error.get(dataIndex);
-                  @Nonnull
-                  final Tensor passback = new Tensor(inputDims);
-                  bck(err, passback);
-                  return passback;
-                }).toArray(i -> new Tensor[i]));
-            input.accumulate(buffer, tensorArray);
-          }
-        }) {
+      if (input.isAlive()) {
+        @Nonnull
+        TensorArray tensorArray = new TensorArray(
+            com.simiacryptus.ref.wrappers.RefIntStream.range(0, error.length()).mapToObj(dataIndex -> {
+              @Nullable final Tensor err = error.get(dataIndex);
+              @Nonnull final Tensor passback = new Tensor(inputDims);
+              bck(err, passback);
+              return passback;
+            }).toArray(i -> new Tensor[i]));
+        input.accumulate(buffer, tensorArray);
+      }
+    }) {
 
       @Override
       public boolean isAlive() {
@@ -273,8 +283,7 @@ public @com.simiacryptus.ref.lang.RefAware class ImgViewLayer extends LayerBase 
 
   @Nonnull
   public int[] getViewDimensions(int[] sourceDimensions, int[] destinationDimensions, int[] offset) {
-    @Nonnull
-    final int[] viewDim = new int[3];
+    @Nonnull final int[] viewDim = new int[3];
     com.simiacryptus.ref.wrappers.RefArrays.parallelSetAll(viewDim, i -> isWrap() ? (destinationDimensions[i])
         : (Math.min(sourceDimensions[i], destinationDimensions[i] + offset[i]) - Math.max(offset[i], 0)));
     return viewDim;
@@ -283,9 +292,8 @@ public @com.simiacryptus.ref.lang.RefAware class ImgViewLayer extends LayerBase 
   @Nonnull
   @Override
   public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
-      DataSerializer dataSerializer) {
-    @Nonnull
-    final JsonObject json = super.getJsonStub();
+                            DataSerializer dataSerializer) {
+    @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("sizeX", getSizeX());
     json.addProperty("sizeY", getSizeY());
     json.addProperty("offsetX", getOffsetX());
@@ -311,13 +319,21 @@ public @com.simiacryptus.ref.lang.RefAware class ImgViewLayer extends LayerBase 
     return new com.simiacryptus.ref.wrappers.RefArrayList<>();
   }
 
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  ImgViewLayer addRef() {
+    return (ImgViewLayer) super.addRef();
+  }
+
   @Nonnull
   protected void fwd(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData) {
     int[] inputDims = inputData.getDimensions();
-    @Nonnull
-    final int[] inDim = inputDims;
-    @Nonnull
-    final int[] outDim = outputData.getDimensions();
+    @Nonnull final int[] inDim = inputDims;
+    @Nonnull final int[] outDim = outputData.getDimensions();
     assert 3 == inDim.length;
     assert 3 == outDim.length;
     assert inDim[2] == outDim[2] : com.simiacryptus.ref.wrappers.RefArrays.toString(inDim) + "; "
@@ -343,8 +359,7 @@ public @com.simiacryptus.ref.lang.RefAware class ImgViewLayer extends LayerBase 
   @Nonnull
   protected void bck(@Nonnull final Tensor outputDelta, @Nonnull final Tensor inputDelta) {
     int[] outDeltaDims = outputDelta.getDimensions();
-    @Nonnull
-    final int[] inputDeltaDims = inputDelta.getDimensions();
+    @Nonnull final int[] inputDeltaDims = inputDelta.getDimensions();
     assert 3 == outDeltaDims.length;
     assert 3 == inputDeltaDims.length;
     assert outDeltaDims[2] == inputDeltaDims[2] : com.simiacryptus.ref.wrappers.RefArrays.toString(outDeltaDims) + "; "
@@ -381,26 +396,5 @@ public @com.simiacryptus.ref.lang.RefAware class ImgViewLayer extends LayerBase 
     xy[0] += rotationCenterX;
     xy[1] += rotationCenterY;
     return xy;
-  }
-
-  public @SuppressWarnings("unused") void _free() {
-  }
-
-  public @Override @SuppressWarnings("unused") ImgViewLayer addRef() {
-    return (ImgViewLayer) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") ImgViewLayer[] addRefs(ImgViewLayer[] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgViewLayer::addRef)
-        .toArray((x) -> new ImgViewLayer[x]);
-  }
-
-  public static @SuppressWarnings("unused") ImgViewLayer[][] addRefs(ImgViewLayer[][] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgViewLayer::addRefs)
-        .toArray((x) -> new ImgViewLayer[x][]);
   }
 }

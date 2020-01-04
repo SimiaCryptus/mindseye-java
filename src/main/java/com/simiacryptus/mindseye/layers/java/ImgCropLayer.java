@@ -24,12 +24,11 @@ import com.simiacryptus.mindseye.lang.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
-import java.util.stream.IntStream;
-import com.simiacryptus.ref.wrappers.RefIntStream;
+import java.util.UUID;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware class ImgCropLayer extends LayerBase {
+public @com.simiacryptus.ref.lang.RefAware
+class ImgCropLayer extends LayerBase {
 
   private final int sizeX;
   private final int sizeY;
@@ -48,10 +47,8 @@ public @com.simiacryptus.ref.lang.RefAware class ImgCropLayer extends LayerBase 
 
   @Nonnull
   public static void copy(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData) {
-    @Nonnull
-    final int[] inDim = inputData.getDimensions();
-    @Nonnull
-    final int[] outDim = outputData.getDimensions();
+    @Nonnull final int[] inDim = inputData.getDimensions();
+    @Nonnull final int[] outDim = outputData.getDimensions();
     assert 3 == inDim.length;
     assert 3 == outDim.length;
     assert inDim[2] == outDim[2] : com.simiacryptus.ref.wrappers.RefArrays.toString(inDim) + "; "
@@ -84,8 +81,24 @@ public @com.simiacryptus.ref.lang.RefAware class ImgCropLayer extends LayerBase 
 
   @SuppressWarnings("unused")
   public static ImgCropLayer fromJson(@Nonnull final JsonObject json,
-      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new ImgCropLayer(json);
+  }
+
+  public static @SuppressWarnings("unused")
+  ImgCropLayer[] addRefs(ImgCropLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgCropLayer::addRef)
+        .toArray((x) -> new ImgCropLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  ImgCropLayer[][] addRefs(ImgCropLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgCropLayer::addRefs)
+        .toArray((x) -> new ImgCropLayer[x][]);
   }
 
   @Nonnull
@@ -93,31 +106,27 @@ public @com.simiacryptus.ref.lang.RefAware class ImgCropLayer extends LayerBase 
   public Result eval(@Nonnull final Result... inObj) {
     final Result input = inObj[0];
     final TensorList batch = input.getData();
-    @Nonnull
-    final int[] inputDims = batch.getDimensions();
+    @Nonnull final int[] inputDims = batch.getDimensions();
     assert 3 == inputDims.length;
     return new Result(new TensorArray(
         com.simiacryptus.ref.wrappers.RefIntStream.range(0, batch.length()).parallel().mapToObj(dataIndex -> {
-          @Nonnull
-          final Tensor outputData = new Tensor(sizeX, sizeY, inputDims[2]);
+          @Nonnull final Tensor outputData = new Tensor(sizeX, sizeY, inputDims[2]);
           Tensor inputData = batch.get(dataIndex);
           ImgCropLayer.copy(inputData, outputData);
           return outputData;
         }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList error) -> {
-          if (input.isAlive()) {
-            @Nonnull
-            TensorArray tensorArray = new TensorArray(
-                com.simiacryptus.ref.wrappers.RefIntStream.range(0, error.length()).parallel().mapToObj(dataIndex -> {
-                  @Nullable
-                  final Tensor err = error.get(dataIndex);
-                  @Nonnull
-                  final Tensor passback = new Tensor(inputDims);
-                  copy(err, passback);
-                  return passback;
-                }).toArray(i -> new Tensor[i]));
-            input.accumulate(buffer, tensorArray);
-          }
-        }) {
+      if (input.isAlive()) {
+        @Nonnull
+        TensorArray tensorArray = new TensorArray(
+            com.simiacryptus.ref.wrappers.RefIntStream.range(0, error.length()).parallel().mapToObj(dataIndex -> {
+              @Nullable final Tensor err = error.get(dataIndex);
+              @Nonnull final Tensor passback = new Tensor(inputDims);
+              copy(err, passback);
+              return passback;
+            }).toArray(i -> new Tensor[i]));
+        input.accumulate(buffer, tensorArray);
+      }
+    }) {
 
       @Override
       public boolean isAlive() {
@@ -132,9 +141,8 @@ public @com.simiacryptus.ref.lang.RefAware class ImgCropLayer extends LayerBase 
   @Nonnull
   @Override
   public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
-      DataSerializer dataSerializer) {
-    @Nonnull
-    final JsonObject json = super.getJsonStub();
+                            DataSerializer dataSerializer) {
+    @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("sizeX", sizeX);
     json.addProperty("sizeY", sizeY);
     return json;
@@ -146,25 +154,14 @@ public @com.simiacryptus.ref.lang.RefAware class ImgCropLayer extends LayerBase 
     return new com.simiacryptus.ref.wrappers.RefArrayList<>();
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") ImgCropLayer addRef() {
+  public @Override
+  @SuppressWarnings("unused")
+  ImgCropLayer addRef() {
     return (ImgCropLayer) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") ImgCropLayer[] addRefs(ImgCropLayer[] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgCropLayer::addRef)
-        .toArray((x) -> new ImgCropLayer[x]);
-  }
-
-  public static @SuppressWarnings("unused") ImgCropLayer[][] addRefs(ImgCropLayer[][] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgCropLayer::addRefs)
-        .toArray((x) -> new ImgCropLayer[x][]);
   }
 
 }

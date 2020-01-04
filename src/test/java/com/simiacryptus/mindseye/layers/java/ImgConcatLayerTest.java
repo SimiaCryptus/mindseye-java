@@ -24,12 +24,29 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-public abstract @com.simiacryptus.ref.lang.RefAware class ImgConcatLayerTest extends LayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware
+class ImgConcatLayerTest extends LayerTestBase {
+
+  public static @SuppressWarnings("unused")
+  ImgConcatLayerTest[] addRefs(ImgConcatLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgConcatLayerTest::addRef)
+        .toArray((x) -> new ImgConcatLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  ImgConcatLayerTest[][] addRefs(ImgConcatLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgConcatLayerTest::addRefs)
+        .toArray((x) -> new ImgConcatLayerTest[x][]);
+  }
 
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][] { { 8, 8, 1 }, { 8, 8, 1 } };
+    return new int[][]{{8, 8, 1}, {8, 8, 1}};
   }
 
   @Nonnull
@@ -38,41 +55,35 @@ public abstract @com.simiacryptus.ref.lang.RefAware class ImgConcatLayerTest ext
     return new ImgConcatLayer();
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware class Basic extends ImgConcatLayerTest {
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
 
-    public @SuppressWarnings("unused") void _free() {
-    }
+  public @Override
+  @SuppressWarnings("unused")
+  ImgConcatLayerTest addRef() {
+    return (ImgConcatLayerTest) super.addRef();
+  }
 
-    public @Override @SuppressWarnings("unused") Basic addRef() {
-      return (Basic) super.addRef();
-    }
+  public static @com.simiacryptus.ref.lang.RefAware
+  class Basic extends ImgConcatLayerTest {
 
-    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+    public static @SuppressWarnings("unused")
+    Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
       return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
-  }
 
-  public @SuppressWarnings("unused") void _free() {
-  }
+    public @SuppressWarnings("unused")
+    void _free() {
+    }
 
-  public @Override @SuppressWarnings("unused") ImgConcatLayerTest addRef() {
-    return (ImgConcatLayerTest) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") ImgConcatLayerTest[] addRefs(ImgConcatLayerTest[] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgConcatLayerTest::addRef)
-        .toArray((x) -> new ImgConcatLayerTest[x]);
-  }
-
-  public static @SuppressWarnings("unused") ImgConcatLayerTest[][] addRefs(ImgConcatLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgConcatLayerTest::addRefs)
-        .toArray((x) -> new ImgConcatLayerTest[x][]);
+    public @Override
+    @SuppressWarnings("unused")
+    Basic addRef() {
+      return (Basic) super.addRef();
+    }
   }
 
 }

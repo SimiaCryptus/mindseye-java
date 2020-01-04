@@ -23,9 +23,11 @@ import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 import com.simiacryptus.mindseye.test.unit.SingleDerivativeTester;
 
-public @com.simiacryptus.ref.lang.RefAware class NthPowerActivationLayerTest {
+public @com.simiacryptus.ref.lang.RefAware
+class NthPowerActivationLayerTest {
 
-  public static @com.simiacryptus.ref.lang.RefAware class InvPowerTest extends ActivationLayerTestBase {
+  public static @com.simiacryptus.ref.lang.RefAware
+  class InvPowerTest extends ActivationLayerTestBase {
     public InvPowerTest() {
       super(new NthPowerActivationLayer().setPower(-1));
     }
@@ -35,6 +37,14 @@ public @com.simiacryptus.ref.lang.RefAware class NthPowerActivationLayerTest {
       return new SingleDerivativeTester(1e-2, 1e-4);
     }
 
+    public static @SuppressWarnings("unused")
+    InvPowerTest[] addRefs(InvPowerTest[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(InvPowerTest::addRef)
+          .toArray((x) -> new InvPowerTest[x]);
+    }
+
     @Override
     public double random() {
       final double v = super.random();
@@ -43,27 +53,24 @@ public @com.simiacryptus.ref.lang.RefAware class NthPowerActivationLayerTest {
       return v;
     }
 
+    public @SuppressWarnings("unused")
+    void _free() {
+    }
+
+    public @Override
+    @SuppressWarnings("unused")
+    InvPowerTest addRef() {
+      return (InvPowerTest) super.addRef();
+    }
+
     @Override
     protected Layer lossLayer() {
       return new MeanSqLossLayer();
     }
-
-    public @SuppressWarnings("unused") void _free() {
-    }
-
-    public @Override @SuppressWarnings("unused") InvPowerTest addRef() {
-      return (InvPowerTest) super.addRef();
-    }
-
-    public static @SuppressWarnings("unused") InvPowerTest[] addRefs(InvPowerTest[] array) {
-      if (array == null)
-        return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(InvPowerTest::addRef)
-          .toArray((x) -> new InvPowerTest[x]);
-    }
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware class InvSqrtPowerTest extends ActivationLayerTestBase {
+  public static @com.simiacryptus.ref.lang.RefAware
+  class InvSqrtPowerTest extends ActivationLayerTestBase {
     public InvSqrtPowerTest() {
       super(new NthPowerActivationLayer().setPower(-0.5));
     }
@@ -73,6 +80,14 @@ public @com.simiacryptus.ref.lang.RefAware class NthPowerActivationLayerTest {
       return new SingleDerivativeTester(1e-2, 1e-4);
     }
 
+    public static @SuppressWarnings("unused")
+    InvSqrtPowerTest[] addRefs(InvSqrtPowerTest[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(InvSqrtPowerTest::addRef)
+          .toArray((x) -> new InvSqrtPowerTest[x]);
+    }
+
     @Override
     public double random() {
       final double v = super.random();
@@ -81,48 +96,49 @@ public @com.simiacryptus.ref.lang.RefAware class NthPowerActivationLayerTest {
       return v;
     }
 
+    public @SuppressWarnings("unused")
+    void _free() {
+    }
+
+    public @Override
+    @SuppressWarnings("unused")
+    InvSqrtPowerTest addRef() {
+      return (InvSqrtPowerTest) super.addRef();
+    }
+
     @Override
     protected Layer lossLayer() {
       return new MeanSqLossLayer();
     }
-
-    public @SuppressWarnings("unused") void _free() {
-    }
-
-    public @Override @SuppressWarnings("unused") InvSqrtPowerTest addRef() {
-      return (InvSqrtPowerTest) super.addRef();
-    }
-
-    public static @SuppressWarnings("unused") InvSqrtPowerTest[] addRefs(InvSqrtPowerTest[] array) {
-      if (array == null)
-        return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(InvSqrtPowerTest::addRef)
-          .toArray((x) -> new InvSqrtPowerTest[x]);
-    }
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware class NthPowerTest extends ActivationLayerTestBase {
+  public static @com.simiacryptus.ref.lang.RefAware
+  class NthPowerTest extends ActivationLayerTestBase {
     public NthPowerTest() {
       super(new NthPowerActivationLayer().setPower(Math.PI));
     }
 
-    @Override
-    protected Layer lossLayer() {
-      return new MeanSqLossLayer();
-    }
-
-    public @SuppressWarnings("unused") void _free() {
-    }
-
-    public @Override @SuppressWarnings("unused") NthPowerTest addRef() {
-      return (NthPowerTest) super.addRef();
-    }
-
-    public static @SuppressWarnings("unused") NthPowerTest[] addRefs(NthPowerTest[] array) {
+    public static @SuppressWarnings("unused")
+    NthPowerTest[] addRefs(NthPowerTest[] array) {
       if (array == null)
         return null;
       return java.util.Arrays.stream(array).filter((x) -> x != null).map(NthPowerTest::addRef)
           .toArray((x) -> new NthPowerTest[x]);
+    }
+
+    public @SuppressWarnings("unused")
+    void _free() {
+    }
+
+    public @Override
+    @SuppressWarnings("unused")
+    NthPowerTest addRef() {
+      return (NthPowerTest) super.addRef();
+    }
+
+    @Override
+    protected Layer lossLayer() {
+      return new MeanSqLossLayer();
     }
   }
 
@@ -138,53 +154,63 @@ public @com.simiacryptus.ref.lang.RefAware class NthPowerActivationLayerTest {
   //    }
   //  }
 
-  public static @com.simiacryptus.ref.lang.RefAware class SquarePowerTest extends ActivationLayerTestBase {
+  public static @com.simiacryptus.ref.lang.RefAware
+  class SquarePowerTest extends ActivationLayerTestBase {
     public SquarePowerTest() {
       super(new NthPowerActivationLayer().setPower(2));
     }
 
-    @Override
-    protected Layer lossLayer() {
-      return new MeanSqLossLayer();
-    }
-
-    public @SuppressWarnings("unused") void _free() {
-    }
-
-    public @Override @SuppressWarnings("unused") SquarePowerTest addRef() {
-      return (SquarePowerTest) super.addRef();
-    }
-
-    public static @SuppressWarnings("unused") SquarePowerTest[] addRefs(SquarePowerTest[] array) {
+    public static @SuppressWarnings("unused")
+    SquarePowerTest[] addRefs(SquarePowerTest[] array) {
       if (array == null)
         return null;
       return java.util.Arrays.stream(array).filter((x) -> x != null).map(SquarePowerTest::addRef)
           .toArray((x) -> new SquarePowerTest[x]);
     }
-  }
 
-  public static @com.simiacryptus.ref.lang.RefAware class ZeroPowerTest extends ActivationLayerTestBase {
-    public ZeroPowerTest() {
-      super(new NthPowerActivationLayer().setPower(0));
+    public @SuppressWarnings("unused")
+    void _free() {
+    }
+
+    public @Override
+    @SuppressWarnings("unused")
+    SquarePowerTest addRef() {
+      return (SquarePowerTest) super.addRef();
     }
 
     @Override
     protected Layer lossLayer() {
       return new MeanSqLossLayer();
     }
+  }
 
-    public @SuppressWarnings("unused") void _free() {
+  public static @com.simiacryptus.ref.lang.RefAware
+  class ZeroPowerTest extends ActivationLayerTestBase {
+    public ZeroPowerTest() {
+      super(new NthPowerActivationLayer().setPower(0));
     }
 
-    public @Override @SuppressWarnings("unused") ZeroPowerTest addRef() {
-      return (ZeroPowerTest) super.addRef();
-    }
-
-    public static @SuppressWarnings("unused") ZeroPowerTest[] addRefs(ZeroPowerTest[] array) {
+    public static @SuppressWarnings("unused")
+    ZeroPowerTest[] addRefs(ZeroPowerTest[] array) {
       if (array == null)
         return null;
       return java.util.Arrays.stream(array).filter((x) -> x != null).map(ZeroPowerTest::addRef)
           .toArray((x) -> new ZeroPowerTest[x]);
+    }
+
+    public @SuppressWarnings("unused")
+    void _free() {
+    }
+
+    public @Override
+    @SuppressWarnings("unused")
+    ZeroPowerTest addRef() {
+      return (ZeroPowerTest) super.addRef();
+    }
+
+    @Override
+    protected Layer lossLayer() {
+      return new MeanSqLossLayer();
     }
   }
 

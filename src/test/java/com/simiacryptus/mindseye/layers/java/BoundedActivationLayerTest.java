@@ -22,9 +22,37 @@ package com.simiacryptus.mindseye.layers.java;
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 
-public abstract @com.simiacryptus.ref.lang.RefAware class BoundedActivationLayerTest extends ActivationLayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware
+class BoundedActivationLayerTest extends ActivationLayerTestBase {
   public BoundedActivationLayerTest() {
     super(new BoundedActivationLayer());
+  }
+
+  public static @SuppressWarnings("unused")
+  BoundedActivationLayerTest[] addRefs(BoundedActivationLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BoundedActivationLayerTest::addRef)
+        .toArray((x) -> new BoundedActivationLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  BoundedActivationLayerTest[][] addRefs(
+      BoundedActivationLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BoundedActivationLayerTest::addRefs)
+        .toArray((x) -> new BoundedActivationLayerTest[x][]);
+  }
+
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  BoundedActivationLayerTest addRef() {
+    return (BoundedActivationLayerTest) super.addRef();
   }
 
   @Override
@@ -32,42 +60,25 @@ public abstract @com.simiacryptus.ref.lang.RefAware class BoundedActivationLayer
     return new MeanSqLossLayer();
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware class Basic extends BoundedActivationLayerTest {
+  public static @com.simiacryptus.ref.lang.RefAware
+  class Basic extends BoundedActivationLayerTest {
 
-    public @SuppressWarnings("unused") void _free() {
-    }
-
-    public @Override @SuppressWarnings("unused") Basic addRef() {
-      return (Basic) super.addRef();
-    }
-
-    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+    public static @SuppressWarnings("unused")
+    Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
       return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
-  }
 
-  public @SuppressWarnings("unused") void _free() {
-  }
+    public @SuppressWarnings("unused")
+    void _free() {
+    }
 
-  public @Override @SuppressWarnings("unused") BoundedActivationLayerTest addRef() {
-    return (BoundedActivationLayerTest) super.addRef();
-  }
-
-  public static @SuppressWarnings("unused") BoundedActivationLayerTest[] addRefs(BoundedActivationLayerTest[] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BoundedActivationLayerTest::addRef)
-        .toArray((x) -> new BoundedActivationLayerTest[x]);
-  }
-
-  public static @SuppressWarnings("unused") BoundedActivationLayerTest[][] addRefs(
-      BoundedActivationLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BoundedActivationLayerTest::addRefs)
-        .toArray((x) -> new BoundedActivationLayerTest[x][]);
+    public @Override
+    @SuppressWarnings("unused")
+    Basic addRef() {
+      return (Basic) super.addRef();
+    }
   }
 
 }
