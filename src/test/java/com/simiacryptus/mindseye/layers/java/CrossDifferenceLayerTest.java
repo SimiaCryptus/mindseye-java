@@ -24,14 +24,12 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-public abstract class CrossDifferenceLayerTest extends LayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware class CrossDifferenceLayerTest extends LayerTestBase {
 
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{
-        {4}
-    };
+    return new int[][] { { 4 } };
   }
 
   @Nonnull
@@ -40,7 +38,41 @@ public abstract class CrossDifferenceLayerTest extends LayerTestBase {
     return new CrossDifferenceLayer();
   }
 
-  public static class Basic extends CrossDifferenceLayerTest {
+  public static @com.simiacryptus.ref.lang.RefAware class Basic extends CrossDifferenceLayerTest {
+
+    public @SuppressWarnings("unused") void _free() {
+    }
+
+    public @Override @SuppressWarnings("unused") Basic addRef() {
+      return (Basic) super.addRef();
+    }
+
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+    }
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") CrossDifferenceLayerTest addRef() {
+    return (CrossDifferenceLayerTest) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") CrossDifferenceLayerTest[] addRefs(CrossDifferenceLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(CrossDifferenceLayerTest::addRef)
+        .toArray((x) -> new CrossDifferenceLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused") CrossDifferenceLayerTest[][] addRefs(CrossDifferenceLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(CrossDifferenceLayerTest::addRefs)
+        .toArray((x) -> new CrossDifferenceLayerTest[x][]);
   }
 
 }

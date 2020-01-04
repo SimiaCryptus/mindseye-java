@@ -24,14 +24,12 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-public abstract class PhotoUnpoolingLayerTest extends LayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware class PhotoUnpoolingLayerTest extends LayerTestBase {
 
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{
-        {4, 4, 2}, {8, 8, 2}
-    };
+    return new int[][] { { 4, 4, 2 }, { 8, 8, 2 } };
   }
 
   @Nonnull
@@ -40,7 +38,41 @@ public abstract class PhotoUnpoolingLayerTest extends LayerTestBase {
     return new PhotoUnpoolingLayer(2, 2);
   }
 
-  public static class Basic extends PhotoUnpoolingLayerTest {
+  public static @com.simiacryptus.ref.lang.RefAware class Basic extends PhotoUnpoolingLayerTest {
+
+    public @SuppressWarnings("unused") void _free() {
+    }
+
+    public @Override @SuppressWarnings("unused") Basic addRef() {
+      return (Basic) super.addRef();
+    }
+
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+    }
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") PhotoUnpoolingLayerTest addRef() {
+    return (PhotoUnpoolingLayerTest) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") PhotoUnpoolingLayerTest[] addRefs(PhotoUnpoolingLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(PhotoUnpoolingLayerTest::addRef)
+        .toArray((x) -> new PhotoUnpoolingLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused") PhotoUnpoolingLayerTest[][] addRefs(PhotoUnpoolingLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(PhotoUnpoolingLayerTest::addRefs)
+        .toArray((x) -> new PhotoUnpoolingLayerTest[x][]);
   }
 
 }

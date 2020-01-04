@@ -24,14 +24,12 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-public abstract class SumReducerLayerTest extends LayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware class SumReducerLayerTest extends LayerTestBase {
 
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{
-        {3}
-    };
+    return new int[][] { { 3 } };
   }
 
   @Nonnull
@@ -43,12 +41,44 @@ public abstract class SumReducerLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public int[][] getLargeDims(Random random) {
-    return new int[][]{
-        {200, 200, 3}
-    };
+    return new int[][] { { 200, 200, 3 } };
   }
 
-  public static class Basic extends SumReducerLayerTest {
+  public static @com.simiacryptus.ref.lang.RefAware class Basic extends SumReducerLayerTest {
+
+    public @SuppressWarnings("unused") void _free() {
+    }
+
+    public @Override @SuppressWarnings("unused") Basic addRef() {
+      return (Basic) super.addRef();
+    }
+
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+    }
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") SumReducerLayerTest addRef() {
+    return (SumReducerLayerTest) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") SumReducerLayerTest[] addRefs(SumReducerLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SumReducerLayerTest::addRef)
+        .toArray((x) -> new SumReducerLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused") SumReducerLayerTest[][] addRefs(SumReducerLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SumReducerLayerTest::addRefs)
+        .toArray((x) -> new SumReducerLayerTest[x][]);
   }
 
 }

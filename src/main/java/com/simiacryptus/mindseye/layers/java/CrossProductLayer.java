@@ -29,9 +29,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.IntStream;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefList;
+import com.simiacryptus.ref.wrappers.RefMap;
+import com.simiacryptus.ref.wrappers.RefIntStream;
 
 @SuppressWarnings("serial")
-public class CrossProductLayer extends LayerBase {
+public @com.simiacryptus.ref.lang.RefAware class CrossProductLayer extends LayerBase {
 
   public CrossProductLayer() {
   }
@@ -41,7 +45,8 @@ public class CrossProductLayer extends LayerBase {
   }
 
   @SuppressWarnings("unused")
-  public static CrossProductLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+  public static CrossProductLayer fromJson(@Nonnull final JsonObject json,
+      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new CrossProductLayer(json);
   }
 
@@ -58,11 +63,14 @@ public class CrossProductLayer extends LayerBase {
     return new Result(new TensorArray(indata.stream().parallel().map(tensor -> {
       final int inputDim = tensor.length();
       final int outputDim = (inputDim * inputDim - inputDim) / 2;
-      @Nonnull final Tensor result1 = new Tensor(outputDim);
-      @Nullable final double[] inputData = tensor.getData();
-      @Nullable final double[] resultData = result1.getData();
-      IntStream.range(0, inputDim).forEach(x -> {
-        IntStream.range(x + 1, inputDim).forEach(y -> {
+      @Nonnull
+      final Tensor result1 = new Tensor(outputDim);
+      @Nullable
+      final double[] inputData = tensor.getData();
+      @Nullable
+      final double[] resultData = result1.getData();
+      com.simiacryptus.ref.wrappers.RefIntStream.range(0, inputDim).forEach(x -> {
+        com.simiacryptus.ref.wrappers.RefIntStream.range(x + 1, inputDim).forEach(y -> {
           resultData[CrossProductLayer.index(x, y, inputDim)] = inputData[x] * inputData[y];
         });
       });
@@ -71,38 +79,44 @@ public class CrossProductLayer extends LayerBase {
       if (in.isAlive()) {
         assert delta.length() == delta.length();
         @Nonnull
-        TensorArray tensorArray = new TensorArray(IntStream.range(0, delta.length()).parallel().mapToObj(batchIndex -> {
-          @Nullable final Tensor deltaTensor = delta.get(batchIndex);
-          final int outputDim = deltaTensor.length();
-          final int inputDim = (1 + (int) Math.sqrt(1 + 8 * outputDim)) / 2;
-          @Nonnull final Tensor passback = new Tensor(inputDim);
-          @Nullable final double[] passbackData = passback.getData();
-          @Nullable final double[] tensorData = deltaTensor.getData();
-          Tensor inputTensor = indata.get(batchIndex);
-          @Nullable final double[] inputData = inputTensor.getData();
-          IntStream.range(0, inputDim).forEach(x -> {
-            IntStream.range(x + 1, inputDim).forEach(y -> {
-              passbackData[x] += tensorData[CrossProductLayer.index(x, y, inputDim)] * inputData[y];
-              passbackData[y] += tensorData[CrossProductLayer.index(x, y, inputDim)] * inputData[x];
-            });
-          });
-          return passback;
-        }).toArray(i -> new Tensor[i]));
+        TensorArray tensorArray = new TensorArray(
+            com.simiacryptus.ref.wrappers.RefIntStream.range(0, delta.length()).parallel().mapToObj(batchIndex -> {
+              @Nullable
+              final Tensor deltaTensor = delta.get(batchIndex);
+              final int outputDim = deltaTensor.length();
+              final int inputDim = (1 + (int) Math.sqrt(1 + 8 * outputDim)) / 2;
+              @Nonnull
+              final Tensor passback = new Tensor(inputDim);
+              @Nullable
+              final double[] passbackData = passback.getData();
+              @Nullable
+              final double[] tensorData = deltaTensor.getData();
+              Tensor inputTensor = indata.get(batchIndex);
+              @Nullable
+              final double[] inputData = inputTensor.getData();
+              com.simiacryptus.ref.wrappers.RefIntStream.range(0, inputDim).forEach(x -> {
+                com.simiacryptus.ref.wrappers.RefIntStream.range(x + 1, inputDim).forEach(y -> {
+                  passbackData[x] += tensorData[CrossProductLayer.index(x, y, inputDim)] * inputData[y];
+                  passbackData[y] += tensorData[CrossProductLayer.index(x, y, inputDim)] * inputData[x];
+                });
+              });
+              return passback;
+            }).toArray(i -> new Tensor[i]));
         in.accumulate(buffer, tensorArray);
       }
     }) {
 
       @Override
       public boolean isAlive() {
-        for (@Nonnull final Result element : inObj)
+        for (@Nonnull
+        final Result element : inObj)
           if (element.isAlive()) {
             return true;
           }
         return false;
       }
 
-      @Override
-      protected void _free() {
+      public void _free() {
       }
 
     };
@@ -110,14 +124,36 @@ public class CrossProductLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
+  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+      DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 
   @Nonnull
   @Override
-  public List<double[]> state() {
-    return Arrays.asList();
+  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
+    return com.simiacryptus.ref.wrappers.RefArrays.asList();
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") CrossProductLayer addRef() {
+    return (CrossProductLayer) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") CrossProductLayer[] addRefs(CrossProductLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(CrossProductLayer::addRef)
+        .toArray((x) -> new CrossProductLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused") CrossProductLayer[][] addRefs(CrossProductLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(CrossProductLayer::addRefs)
+        .toArray((x) -> new CrossProductLayer[x][]);
   }
 
 }

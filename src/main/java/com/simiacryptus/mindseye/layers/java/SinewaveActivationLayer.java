@@ -24,9 +24,11 @@ import com.simiacryptus.mindseye.lang.DataSerializer;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
+import com.simiacryptus.ref.wrappers.RefMap;
 
 @SuppressWarnings("serial")
-public final class SinewaveActivationLayer extends SimpleActivationLayer<SinewaveActivationLayer> {
+public final @com.simiacryptus.ref.lang.RefAware class SinewaveActivationLayer
+    extends SimpleActivationLayer<SinewaveActivationLayer> {
 
   private boolean balanced = true;
 
@@ -49,14 +51,17 @@ public final class SinewaveActivationLayer extends SimpleActivationLayer<Sinewav
   }
 
   @SuppressWarnings("unused")
-  public static SinewaveActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+  public static SinewaveActivationLayer fromJson(@Nonnull final JsonObject json,
+      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new SinewaveActivationLayer(json);
   }
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull final JsonObject json = super.getJsonStub();
+  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+      DataSerializer dataSerializer) {
+    @Nonnull
+    final JsonObject json = super.getJsonStub();
     json.addProperty("balanced", balanced);
     return json;
   }
@@ -71,5 +76,26 @@ public final class SinewaveActivationLayer extends SimpleActivationLayer<Sinewav
     }
     results[0] = f;
     results[1] = d;
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") SinewaveActivationLayer addRef() {
+    return (SinewaveActivationLayer) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") SinewaveActivationLayer[] addRefs(SinewaveActivationLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SinewaveActivationLayer::addRef)
+        .toArray((x) -> new SinewaveActivationLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused") SinewaveActivationLayer[][] addRefs(SinewaveActivationLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SinewaveActivationLayer::addRefs)
+        .toArray((x) -> new SinewaveActivationLayer[x][]);
   }
 }

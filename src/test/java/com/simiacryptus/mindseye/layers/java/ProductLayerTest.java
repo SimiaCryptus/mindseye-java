@@ -24,14 +24,12 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-public abstract class ProductLayerTest extends LayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware class ProductLayerTest extends LayerTestBase {
 
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{
-        {3}, {3}
-    };
+    return new int[][] { { 3 }, { 3 } };
   }
 
   @Nonnull
@@ -40,7 +38,41 @@ public abstract class ProductLayerTest extends LayerTestBase {
     return new ProductLayer();
   }
 
-  public static class Basic extends ProductLayerTest {
+  public static @com.simiacryptus.ref.lang.RefAware class Basic extends ProductLayerTest {
+
+    public @SuppressWarnings("unused") void _free() {
+    }
+
+    public @Override @SuppressWarnings("unused") Basic addRef() {
+      return (Basic) super.addRef();
+    }
+
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+    }
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") ProductLayerTest addRef() {
+    return (ProductLayerTest) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") ProductLayerTest[] addRefs(ProductLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ProductLayerTest::addRef)
+        .toArray((x) -> new ProductLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused") ProductLayerTest[][] addRefs(ProductLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ProductLayerTest::addRefs)
+        .toArray((x) -> new ProductLayerTest[x][]);
   }
 
 }

@@ -24,14 +24,12 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-public abstract class MonitoringSynapseTest extends LayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware class MonitoringSynapseTest extends LayerTestBase {
 
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{
-        {3}
-    };
+    return new int[][] { { 3 } };
   }
 
   @Nonnull
@@ -40,7 +38,41 @@ public abstract class MonitoringSynapseTest extends LayerTestBase {
     return new MonitoringSynapse();
   }
 
-  public static class Basic extends MonitoringSynapseTest {
+  public static @com.simiacryptus.ref.lang.RefAware class Basic extends MonitoringSynapseTest {
+
+    public @SuppressWarnings("unused") void _free() {
+    }
+
+    public @Override @SuppressWarnings("unused") Basic addRef() {
+      return (Basic) super.addRef();
+    }
+
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+    }
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") MonitoringSynapseTest addRef() {
+    return (MonitoringSynapseTest) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") MonitoringSynapseTest[] addRefs(MonitoringSynapseTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MonitoringSynapseTest::addRef)
+        .toArray((x) -> new MonitoringSynapseTest[x]);
+  }
+
+  public static @SuppressWarnings("unused") MonitoringSynapseTest[][] addRefs(MonitoringSynapseTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MonitoringSynapseTest::addRefs)
+        .toArray((x) -> new MonitoringSynapseTest[x][]);
   }
 
 }

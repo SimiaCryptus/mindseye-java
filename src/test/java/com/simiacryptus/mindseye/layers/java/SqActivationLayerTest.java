@@ -19,11 +19,10 @@
 
 package com.simiacryptus.mindseye.layers.java;
 
-
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 
-public abstract class SqActivationLayerTest extends ActivationLayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware class SqActivationLayerTest extends ActivationLayerTestBase {
   public SqActivationLayerTest() {
     super(new SqActivationLayer());
   }
@@ -33,7 +32,41 @@ public abstract class SqActivationLayerTest extends ActivationLayerTestBase {
     return new MeanSqLossLayer();
   }
 
-  public static class Basic extends SqActivationLayerTest {
+  public static @com.simiacryptus.ref.lang.RefAware class Basic extends SqActivationLayerTest {
+
+    public @SuppressWarnings("unused") void _free() {
+    }
+
+    public @Override @SuppressWarnings("unused") Basic addRef() {
+      return (Basic) super.addRef();
+    }
+
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+    }
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") SqActivationLayerTest addRef() {
+    return (SqActivationLayerTest) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") SqActivationLayerTest[] addRefs(SqActivationLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SqActivationLayerTest::addRef)
+        .toArray((x) -> new SqActivationLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused") SqActivationLayerTest[][] addRefs(SqActivationLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SqActivationLayerTest::addRefs)
+        .toArray((x) -> new SqActivationLayerTest[x][]);
   }
 
 }

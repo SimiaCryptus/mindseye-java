@@ -24,9 +24,11 @@ import com.simiacryptus.mindseye.lang.DataSerializer;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
+import com.simiacryptus.ref.wrappers.RefMap;
 
 @SuppressWarnings("serial")
-public final class AbsActivationLayer extends SimpleActivationLayer<AbsActivationLayer> {
+public final @com.simiacryptus.ref.lang.RefAware class AbsActivationLayer
+    extends SimpleActivationLayer<AbsActivationLayer> {
 
   public AbsActivationLayer() {
   }
@@ -36,13 +38,15 @@ public final class AbsActivationLayer extends SimpleActivationLayer<AbsActivatio
   }
 
   @SuppressWarnings("unused")
-  public static AbsActivationLayer fromJson(final JsonObject json, Map<CharSequence, byte[]> rs) {
+  public static AbsActivationLayer fromJson(final JsonObject json,
+      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new AbsActivationLayer(json);
   }
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
+  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+      DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 
@@ -55,6 +59,27 @@ public final class AbsActivationLayer extends SimpleActivationLayer<AbsActivatio
     assert minDeriv <= Math.abs(d);
     results[0] = f;
     results[1] = d;
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") AbsActivationLayer addRef() {
+    return (AbsActivationLayer) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") AbsActivationLayer[] addRefs(AbsActivationLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(AbsActivationLayer::addRef)
+        .toArray((x) -> new AbsActivationLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused") AbsActivationLayer[][] addRefs(AbsActivationLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(AbsActivationLayer::addRefs)
+        .toArray((x) -> new AbsActivationLayer[x][]);
   }
 
 }

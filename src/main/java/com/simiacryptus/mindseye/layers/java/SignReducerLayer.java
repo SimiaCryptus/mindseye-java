@@ -29,9 +29,10 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nonnull;
 import java.util.Map;
 import java.util.UUID;
+import com.simiacryptus.ref.wrappers.RefMap;
 
 @SuppressWarnings("serial")
-public class SignReducerLayer extends DAGNetwork {
+public @com.simiacryptus.ref.lang.RefAware class SignReducerLayer extends DAGNetwork {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(SignReducerLayer.class);
@@ -40,10 +41,16 @@ public class SignReducerLayer extends DAGNetwork {
   public SignReducerLayer() {
     super(1);
     final DAGNode avgInput = add(new AvgReducerLayer(), getInput(0));
-    head = add(new SigmoidActivationLayer().setBalanced(false), add(new ProductInputsLayer(), avgInput, add(new NthPowerActivationLayer().setPower(-1), (DAGNode) add(new NthPowerActivationLayer().setPower(0.5), add(new SumInputsLayer(), add(new AvgReducerLayer(), add(new SqActivationLayer(), getInput(0))), add(new LinearActivationLayer().setScale(-1), add(new SqActivationLayer(), avgInput)))))));
+    head = add(new SigmoidActivationLayer().setBalanced(false),
+        add(new ProductInputsLayer(), avgInput,
+            add(new NthPowerActivationLayer().setPower(-1),
+                (DAGNode) add(new NthPowerActivationLayer().setPower(0.5),
+                    add(new SumInputsLayer(), add(new AvgReducerLayer(), add(new SqActivationLayer(), getInput(0))),
+                        add(new LinearActivationLayer().setScale(-1), add(new SqActivationLayer(), avgInput)))))));
   }
 
-  protected SignReducerLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+  protected SignReducerLayer(@Nonnull final JsonObject json,
+      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     super(json, rs);
     head = getNodeById(UUID.fromString(json.getAsJsonPrimitive("head").getAsString()));
   }
@@ -54,12 +61,30 @@ public class SignReducerLayer extends DAGNetwork {
   }
 
   @SuppressWarnings("unused")
-  public static Layer fromJson(@Nonnull final JsonObject inner, Map<CharSequence, byte[]> rs) {
+  public static Layer fromJson(@Nonnull final JsonObject inner,
+      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new SignReducerLayer(inner, rs);
   }
 
-  @Override
-  protected void _free() {
+  public void _free() {
     super._free();
+  }
+
+  public @Override @SuppressWarnings("unused") SignReducerLayer addRef() {
+    return (SignReducerLayer) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") SignReducerLayer[] addRefs(SignReducerLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SignReducerLayer::addRef)
+        .toArray((x) -> new SignReducerLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused") SignReducerLayer[][] addRefs(SignReducerLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SignReducerLayer::addRefs)
+        .toArray((x) -> new SignReducerLayer[x][]);
   }
 }

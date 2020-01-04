@@ -19,11 +19,10 @@
 
 package com.simiacryptus.mindseye.layers.java;
 
-
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 
-public abstract class ReLuActivationLayerTest extends ActivationLayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware class ReLuActivationLayerTest extends ActivationLayerTestBase {
   public ReLuActivationLayerTest() {
     super(new ReLuActivationLayer());
   }
@@ -33,7 +32,41 @@ public abstract class ReLuActivationLayerTest extends ActivationLayerTestBase {
     return new MeanSqLossLayer();
   }
 
-  public static class Basic extends ReLuActivationLayerTest {
+  public static @com.simiacryptus.ref.lang.RefAware class Basic extends ReLuActivationLayerTest {
+
+    public @SuppressWarnings("unused") void _free() {
+    }
+
+    public @Override @SuppressWarnings("unused") Basic addRef() {
+      return (Basic) super.addRef();
+    }
+
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+    }
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") ReLuActivationLayerTest addRef() {
+    return (ReLuActivationLayerTest) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") ReLuActivationLayerTest[] addRefs(ReLuActivationLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ReLuActivationLayerTest::addRef)
+        .toArray((x) -> new ReLuActivationLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused") ReLuActivationLayerTest[][] addRefs(ReLuActivationLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ReLuActivationLayerTest::addRefs)
+        .toArray((x) -> new ReLuActivationLayerTest[x][]);
   }
 
 }

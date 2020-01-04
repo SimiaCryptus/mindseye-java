@@ -26,7 +26,7 @@ import com.simiacryptus.util.Util;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-public abstract class EntropyLossLayerTest extends LayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware class EntropyLossLayerTest extends LayerTestBase {
 
   @Override
   public SingleDerivativeTester getDerivativeTester() {
@@ -36,9 +36,7 @@ public abstract class EntropyLossLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{
-        {4}, {4}
-    };
+    return new int[][] { { 4 }, { 4 } };
   }
 
   @Nonnull
@@ -52,7 +50,41 @@ public abstract class EntropyLossLayerTest extends LayerTestBase {
     return Util.R.get().nextDouble();
   }
 
-  public static class Basic extends EntropyLossLayerTest {
+  public static @com.simiacryptus.ref.lang.RefAware class Basic extends EntropyLossLayerTest {
+
+    public @SuppressWarnings("unused") void _free() {
+    }
+
+    public @Override @SuppressWarnings("unused") Basic addRef() {
+      return (Basic) super.addRef();
+    }
+
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+    }
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") EntropyLossLayerTest addRef() {
+    return (EntropyLossLayerTest) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") EntropyLossLayerTest[] addRefs(EntropyLossLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(EntropyLossLayerTest::addRef)
+        .toArray((x) -> new EntropyLossLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused") EntropyLossLayerTest[][] addRefs(EntropyLossLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(EntropyLossLayerTest::addRefs)
+        .toArray((x) -> new EntropyLossLayerTest[x][]);
   }
 
 }

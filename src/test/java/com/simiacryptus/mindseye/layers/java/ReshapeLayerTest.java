@@ -28,7 +28,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Random;
 
-public abstract class ReshapeLayerTest extends LayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware class ReshapeLayerTest extends LayerTestBase {
 
   private final int[] outputDims;
   private final int[] inputDims;
@@ -41,9 +41,7 @@ public abstract class ReshapeLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{
-        inputDims
-    };
+    return new int[][] { inputDims };
   }
 
   @Nonnull
@@ -52,41 +50,106 @@ public abstract class ReshapeLayerTest extends LayerTestBase {
     return new ReshapeLayer(outputDims);
   }
 
-  public static class Basic extends ReshapeLayerTest {
+  public static @com.simiacryptus.ref.lang.RefAware class Basic extends ReshapeLayerTest {
     public Basic() {
-      super(new int[]{6, 6, 1}, new int[]{1, 1, 36});
+      super(new int[] { 6, 6, 1 }, new int[] { 1, 1, 36 });
+    }
+
+    public @SuppressWarnings("unused") void _free() {
+    }
+
+    public @Override @SuppressWarnings("unused") Basic addRef() {
+      return (Basic) super.addRef();
+    }
+
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
   }
 
-  public static class Basic1 extends ReshapeLayerTest {
+  public static @com.simiacryptus.ref.lang.RefAware class Basic1 extends ReshapeLayerTest {
     public Basic1() {
-      super(new int[]{1, 1, 32}, new int[]{1, 1, 32});
+      super(new int[] { 1, 1, 32 }, new int[] { 1, 1, 32 });
+    }
+
+    public @SuppressWarnings("unused") void _free() {
+    }
+
+    public @Override @SuppressWarnings("unused") Basic1 addRef() {
+      return (Basic1) super.addRef();
+    }
+
+    public static @SuppressWarnings("unused") Basic1[] addRefs(Basic1[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic1::addRef).toArray((x) -> new Basic1[x]);
     }
   }
 
-  public static class Big0 extends Big {
+  public static @com.simiacryptus.ref.lang.RefAware class Big0 extends Big {
     public Big0() {
       super(256);
     }
 
+    public @SuppressWarnings("unused") void _free() {
+    }
+
+    public @Override @SuppressWarnings("unused") Big0 addRef() {
+      return (Big0) super.addRef();
+    }
+
+    public static @SuppressWarnings("unused") Big0[] addRefs(Big0[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Big0::addRef).toArray((x) -> new Big0[x]);
+    }
+
   }
 
-  public static class Big1 extends Big {
+  public static @com.simiacryptus.ref.lang.RefAware class Big1 extends Big {
     public Big1() {
-      super(new int[]{4, 4, 256}, new int[]{1, 1, 2 * 2048});
+      super(new int[] { 4, 4, 256 }, new int[] { 1, 1, 2 * 2048 });
+    }
+
+    public @SuppressWarnings("unused") void _free() {
+    }
+
+    public @Override @SuppressWarnings("unused") Big1 addRef() {
+      return (Big1) super.addRef();
+    }
+
+    public static @SuppressWarnings("unused") Big1[] addRefs(Big1[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Big1::addRef).toArray((x) -> new Big1[x]);
     }
   }
 
-  public static class Big2 extends Big {
+  public static @com.simiacryptus.ref.lang.RefAware class Big2 extends Big {
     public Big2() {
-      super(new int[]{1, 1, 2 * 2048}, new int[]{4, 4, 256});
+      super(new int[] { 1, 1, 2 * 2048 }, new int[] { 4, 4, 256 });
+    }
+
+    public @SuppressWarnings("unused") void _free() {
+    }
+
+    public @Override @SuppressWarnings("unused") Big2 addRef() {
+      return (Big2) super.addRef();
+    }
+
+    public static @SuppressWarnings("unused") Big2[] addRefs(Big2[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Big2::addRef).toArray((x) -> new Big2[x]);
     }
   }
 
-  public abstract static class Big extends ReshapeLayerTest {
+  public abstract static @com.simiacryptus.ref.lang.RefAware class Big extends ReshapeLayerTest {
 
     public Big(int size) {
-      this(new int[]{1, 1, size}, new int[]{1, 1, size});
+      this(new int[] { 1, 1, size }, new int[] { 1, 1, size });
     }
 
     public Big(int[] inputDims, int[] outputDims) {
@@ -96,11 +159,15 @@ public abstract class ReshapeLayerTest extends LayerTestBase {
 
     @Override
     public ComponentTest<ToleranceStatistics> getBatchingTester() {
-      if (!validateBatchExecution) return null;
+      if (!validateBatchExecution)
+        return null;
       return (new BatchingTester(1e-2, true) {
         @Override
         public double getRandom() {
           return random();
+        }
+
+        public @SuppressWarnings("unused") void _free() {
         }
       }).setBatchSize(5);
     }
@@ -125,5 +192,39 @@ public abstract class ReshapeLayerTest extends LayerTestBase {
     public Class<? extends Layer> getReferenceLayerClass() {
       return null;
     }
+
+    public @SuppressWarnings("unused") void _free() {
+    }
+
+    public @Override @SuppressWarnings("unused") Big addRef() {
+      return (Big) super.addRef();
+    }
+
+    public static @SuppressWarnings("unused") Big[] addRefs(Big[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Big::addRef).toArray((x) -> new Big[x]);
+    }
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") ReshapeLayerTest addRef() {
+    return (ReshapeLayerTest) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") ReshapeLayerTest[] addRefs(ReshapeLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ReshapeLayerTest::addRef)
+        .toArray((x) -> new ReshapeLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused") ReshapeLayerTest[][] addRefs(ReshapeLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ReshapeLayerTest::addRefs)
+        .toArray((x) -> new ReshapeLayerTest[x][]);
   }
 }

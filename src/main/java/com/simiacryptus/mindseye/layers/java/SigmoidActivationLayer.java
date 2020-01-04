@@ -24,9 +24,11 @@ import com.simiacryptus.mindseye.lang.DataSerializer;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
+import com.simiacryptus.ref.wrappers.RefMap;
 
 @SuppressWarnings("serial")
-public final class SigmoidActivationLayer extends SimpleActivationLayer<SigmoidActivationLayer> {
+public final @com.simiacryptus.ref.lang.RefAware class SigmoidActivationLayer
+    extends SimpleActivationLayer<SigmoidActivationLayer> {
 
   private static final double MIN_X = -20;
   private static final double MAX_X = -SigmoidActivationLayer.MIN_X;
@@ -53,14 +55,17 @@ public final class SigmoidActivationLayer extends SimpleActivationLayer<SigmoidA
   }
 
   @SuppressWarnings("unused")
-  public static SigmoidActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+  public static SigmoidActivationLayer fromJson(@Nonnull final JsonObject json,
+      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new SigmoidActivationLayer(json);
   }
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull final JsonObject json = super.getJsonStub();
+  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+      DataSerializer dataSerializer) {
+    @Nonnull
+    final JsonObject json = super.getJsonStub();
     json.addProperty("balanced", balanced);
     return json;
   }
@@ -94,5 +99,26 @@ public final class SigmoidActivationLayer extends SimpleActivationLayer<SigmoidA
       return SigmoidActivationLayer.MAX_F;
     }
     return Math.exp(x);
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") SigmoidActivationLayer addRef() {
+    return (SigmoidActivationLayer) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") SigmoidActivationLayer[] addRefs(SigmoidActivationLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SigmoidActivationLayer::addRef)
+        .toArray((x) -> new SigmoidActivationLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused") SigmoidActivationLayer[][] addRefs(SigmoidActivationLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SigmoidActivationLayer::addRefs)
+        .toArray((x) -> new SigmoidActivationLayer[x][]);
   }
 }

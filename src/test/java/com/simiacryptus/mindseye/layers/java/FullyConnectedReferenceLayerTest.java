@@ -24,7 +24,7 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-public abstract class FullyConnectedReferenceLayerTest extends LayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware class FullyConnectedReferenceLayerTest extends LayerTestBase {
   @Nonnull
   private final int[] outputDims;
   private final int[] inputDims;
@@ -40,7 +40,7 @@ public abstract class FullyConnectedReferenceLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{inputDims};
+    return new int[][] { inputDims };
   }
 
   @Nonnull
@@ -49,16 +49,65 @@ public abstract class FullyConnectedReferenceLayerTest extends LayerTestBase {
     return layer;
   }
 
-  public static class Basic extends FullyConnectedReferenceLayerTest {
+  public static @com.simiacryptus.ref.lang.RefAware class Basic extends FullyConnectedReferenceLayerTest {
     public Basic() {
-      super(new int[]{2}, new int[]{2});
+      super(new int[] { 2 }, new int[] { 2 });
+    }
+
+    public @SuppressWarnings("unused") void _free() {
+    }
+
+    public @Override @SuppressWarnings("unused") Basic addRef() {
+      return (Basic) super.addRef();
+    }
+
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
   }
 
-  public static class Image extends FullyConnectedReferenceLayerTest {
+  public static @com.simiacryptus.ref.lang.RefAware class Image extends FullyConnectedReferenceLayerTest {
     public Image() {
-      super(new int[]{3, 3, 3}, new int[]{2, 2, 4});
+      super(new int[] { 3, 3, 3 }, new int[] { 2, 2, 4 });
     }
+
+    public @SuppressWarnings("unused") void _free() {
+    }
+
+    public @Override @SuppressWarnings("unused") Image addRef() {
+      return (Image) super.addRef();
+    }
+
+    public static @SuppressWarnings("unused") Image[] addRefs(Image[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Image::addRef).toArray((x) -> new Image[x]);
+    }
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") FullyConnectedReferenceLayerTest addRef() {
+    return (FullyConnectedReferenceLayerTest) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") FullyConnectedReferenceLayerTest[] addRefs(
+      FullyConnectedReferenceLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(FullyConnectedReferenceLayerTest::addRef)
+        .toArray((x) -> new FullyConnectedReferenceLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused") FullyConnectedReferenceLayerTest[][] addRefs(
+      FullyConnectedReferenceLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(FullyConnectedReferenceLayerTest::addRefs)
+        .toArray((x) -> new FullyConnectedReferenceLayerTest[x][]);
   }
 
 }

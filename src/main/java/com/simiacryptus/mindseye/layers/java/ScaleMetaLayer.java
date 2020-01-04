@@ -31,9 +31,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.IntStream;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefList;
+import com.simiacryptus.ref.wrappers.RefMap;
+import com.simiacryptus.ref.wrappers.RefIntStream;
 
 @SuppressWarnings("serial")
-public class ScaleMetaLayer extends LayerBase {
+public @com.simiacryptus.ref.lang.RefAware class ScaleMetaLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(ScaleMetaLayer.class);
@@ -46,7 +50,8 @@ public class ScaleMetaLayer extends LayerBase {
   }
 
   @SuppressWarnings("unused")
-  public static ScaleMetaLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+  public static ScaleMetaLayer fromJson(@Nonnull final JsonObject json,
+      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new ScaleMetaLayer(json);
   }
 
@@ -59,7 +64,7 @@ public class ScaleMetaLayer extends LayerBase {
     final TensorList data1 = in1.getData();
     final int itemCnt = data0.length();
     final Tensor data10 = data1.get(0);
-    final Tensor[] tensors = IntStream.range(0, itemCnt)
+    final Tensor[] tensors = com.simiacryptus.ref.wrappers.RefIntStream.range(0, itemCnt)
         .mapToObj(dataIndex -> data0.get(dataIndex).mapIndex((v, c) -> v * data10.get(c))).toArray(i -> new Tensor[i]);
     Tensor tensor0 = tensors[0];
     return new Result(new TensorArray(tensors),
@@ -74,11 +79,13 @@ public class ScaleMetaLayer extends LayerBase {
             in0.accumulate(buffer, tensorArray);
           }
           if (in1.isAlive()) {
-            @Nullable final Tensor passback = tensor0.mapIndex((v, c) -> {
-              return IntStream.range(0, itemCnt).mapToDouble(i -> data.get(i).get(c) * data.get(i).get(c)).sum();
+            @Nullable
+            final Tensor passback = tensor0.mapIndex((v, c) -> {
+              return com.simiacryptus.ref.wrappers.RefIntStream.range(0, itemCnt)
+                  .mapToDouble(i -> data.get(i).get(c) * data.get(i).get(c)).sum();
             });
             @Nonnull
-            TensorArray tensorArray = new TensorArray(IntStream.range(0, data.length())
+            TensorArray tensorArray = new TensorArray(com.simiacryptus.ref.wrappers.RefIntStream.range(0, data.length())
                 .mapToObj(i -> i == 0 ? passback : passback.map(v -> 0)).toArray(i -> new Tensor[i]));
             in1.accumulate(buffer, tensorArray);
           }
@@ -89,8 +96,7 @@ public class ScaleMetaLayer extends LayerBase {
         return in0.isAlive() || in1.isAlive();
       }
 
-      @Override
-      protected void _free() {
+      public void _free() {
       }
 
     };
@@ -98,13 +104,35 @@ public class ScaleMetaLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
+  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+      DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 
   @Nonnull
   @Override
-  public List<double[]> state() {
-    return Arrays.asList();
+  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
+    return com.simiacryptus.ref.wrappers.RefArrays.asList();
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") ScaleMetaLayer addRef() {
+    return (ScaleMetaLayer) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") ScaleMetaLayer[] addRefs(ScaleMetaLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ScaleMetaLayer::addRef)
+        .toArray((x) -> new ScaleMetaLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused") ScaleMetaLayer[][] addRefs(ScaleMetaLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ScaleMetaLayer::addRefs)
+        .toArray((x) -> new ScaleMetaLayer[x][]);
   }
 }

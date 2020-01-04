@@ -19,14 +19,13 @@
 
 package com.simiacryptus.mindseye.layers.java;
 
-
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-public abstract class MaxDropoutNoiseLayerTest extends ActivationLayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware class MaxDropoutNoiseLayerTest extends ActivationLayerTestBase {
   public MaxDropoutNoiseLayerTest() {
     super(new MaxDropoutNoiseLayer(2, 2, 1));
   }
@@ -34,9 +33,7 @@ public abstract class MaxDropoutNoiseLayerTest extends ActivationLayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{
-        {8, 8, 1}
-    };
+    return new int[][] { { 8, 8, 1 } };
   }
 
   @Override
@@ -44,7 +41,41 @@ public abstract class MaxDropoutNoiseLayerTest extends ActivationLayerTestBase {
     return new MeanSqLossLayer();
   }
 
-  public static class Basic extends MaxDropoutNoiseLayerTest {
+  public static @com.simiacryptus.ref.lang.RefAware class Basic extends MaxDropoutNoiseLayerTest {
+
+    public @SuppressWarnings("unused") void _free() {
+    }
+
+    public @Override @SuppressWarnings("unused") Basic addRef() {
+      return (Basic) super.addRef();
+    }
+
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+    }
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") MaxDropoutNoiseLayerTest addRef() {
+    return (MaxDropoutNoiseLayerTest) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") MaxDropoutNoiseLayerTest[] addRefs(MaxDropoutNoiseLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MaxDropoutNoiseLayerTest::addRef)
+        .toArray((x) -> new MaxDropoutNoiseLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused") MaxDropoutNoiseLayerTest[][] addRefs(MaxDropoutNoiseLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MaxDropoutNoiseLayerTest::addRefs)
+        .toArray((x) -> new MaxDropoutNoiseLayerTest[x][]);
   }
 
 }

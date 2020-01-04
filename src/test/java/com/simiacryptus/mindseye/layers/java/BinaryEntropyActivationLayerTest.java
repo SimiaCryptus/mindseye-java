@@ -19,13 +19,15 @@
 
 package com.simiacryptus.mindseye.layers.java;
 
-
 import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
+import com.simiacryptus.ref.wrappers.RefDoubleStream;
+import com.simiacryptus.ref.wrappers.RefIntStream;
 
-public abstract class BinaryEntropyActivationLayerTest extends ActivationLayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware class BinaryEntropyActivationLayerTest
+    extends ActivationLayerTestBase {
   public BinaryEntropyActivationLayerTest() {
     super(new BinaryEntropyActivationLayer());
   }
@@ -36,14 +38,37 @@ public abstract class BinaryEntropyActivationLayerTest extends ActivationLayerTe
   }
 
   @Override
-  public DoubleStream scan() {
-    return IntStream.range(50, 450).mapToDouble(x -> x * 1.0 / 500.0);
+  public com.simiacryptus.ref.wrappers.RefDoubleStream scan() {
+    return com.simiacryptus.ref.wrappers.RefIntStream.range(50, 450).mapToDouble(x -> x * 1.0 / 500.0);
   }
 
-//  /**
-//   * Basic Test
-//   */
-//  public static class Basic extends BinaryEntropyActivationLayerTest {
-//  }
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") BinaryEntropyActivationLayerTest addRef() {
+    return (BinaryEntropyActivationLayerTest) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") BinaryEntropyActivationLayerTest[] addRefs(
+      BinaryEntropyActivationLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BinaryEntropyActivationLayerTest::addRef)
+        .toArray((x) -> new BinaryEntropyActivationLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused") BinaryEntropyActivationLayerTest[][] addRefs(
+      BinaryEntropyActivationLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BinaryEntropyActivationLayerTest::addRefs)
+        .toArray((x) -> new BinaryEntropyActivationLayerTest[x][]);
+  }
+
+  //  /**
+  //   * Basic Test
+  //   */
+  //  public static class Basic extends BinaryEntropyActivationLayerTest {
+  //  }
 
 }

@@ -28,9 +28,12 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import com.simiacryptus.ref.wrappers.RefArrayList;
+import com.simiacryptus.ref.wrappers.RefList;
+import com.simiacryptus.ref.wrappers.RefMap;
 
 @SuppressWarnings("serial")
-public class ImgZeroPaddingLayer extends LayerBase {
+public @com.simiacryptus.ref.lang.RefAware class ImgZeroPaddingLayer extends LayerBase {
 
   private final int sizeX;
   private final int sizeY;
@@ -48,7 +51,8 @@ public class ImgZeroPaddingLayer extends LayerBase {
   }
 
   @SuppressWarnings("unused")
-  public static ImgZeroPaddingLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+  public static ImgZeroPaddingLayer fromJson(@Nonnull final JsonObject json,
+      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new ImgZeroPaddingLayer(json);
   }
 
@@ -64,8 +68,10 @@ public class ImgZeroPaddingLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull final JsonObject json = super.getJsonStub();
+  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+      DataSerializer dataSerializer) {
+    @Nonnull
+    final JsonObject json = super.getJsonStub();
     json.addProperty("sizeX", sizeX);
     json.addProperty("sizeY", sizeX);
     return json;
@@ -73,8 +79,29 @@ public class ImgZeroPaddingLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public List<double[]> state() {
-    return new ArrayList<>();
+  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
+    return new com.simiacryptus.ref.wrappers.RefArrayList<>();
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") ImgZeroPaddingLayer addRef() {
+    return (ImgZeroPaddingLayer) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") ImgZeroPaddingLayer[] addRefs(ImgZeroPaddingLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgZeroPaddingLayer::addRef)
+        .toArray((x) -> new ImgZeroPaddingLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused") ImgZeroPaddingLayer[][] addRefs(ImgZeroPaddingLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgZeroPaddingLayer::addRefs)
+        .toArray((x) -> new ImgZeroPaddingLayer[x][]);
   }
 
 }

@@ -24,14 +24,12 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-public abstract class MeanSqLossLayerTest extends LayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware class MeanSqLossLayerTest extends LayerTestBase {
 
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{
-        {8, 8, 1}, {8, 8, 1}
-    };
+    return new int[][] { { 8, 8, 1 }, { 8, 8, 1 } };
   }
 
   @Nonnull
@@ -40,7 +38,41 @@ public abstract class MeanSqLossLayerTest extends LayerTestBase {
     return new MeanSqLossLayer();
   }
 
-  public static class Basic extends MeanSqLossLayerTest {
+  public static @com.simiacryptus.ref.lang.RefAware class Basic extends MeanSqLossLayerTest {
+
+    public @SuppressWarnings("unused") void _free() {
+    }
+
+    public @Override @SuppressWarnings("unused") Basic addRef() {
+      return (Basic) super.addRef();
+    }
+
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+    }
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") MeanSqLossLayerTest addRef() {
+    return (MeanSqLossLayerTest) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") MeanSqLossLayerTest[] addRefs(MeanSqLossLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MeanSqLossLayerTest::addRef)
+        .toArray((x) -> new MeanSqLossLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused") MeanSqLossLayerTest[][] addRefs(MeanSqLossLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MeanSqLossLayerTest::addRefs)
+        .toArray((x) -> new MeanSqLossLayerTest[x][]);
   }
 
 }

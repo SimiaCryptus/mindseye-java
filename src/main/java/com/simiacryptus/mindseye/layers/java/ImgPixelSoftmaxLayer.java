@@ -30,9 +30,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.IntStream;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefList;
+import com.simiacryptus.ref.wrappers.RefMap;
+import com.simiacryptus.ref.wrappers.RefIntStream;
 
 @SuppressWarnings("serial")
-public class ImgPixelSoftmaxLayer extends LayerBase {
+public @com.simiacryptus.ref.lang.RefAware class ImgPixelSoftmaxLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(ImgPixelSoftmaxLayer.class);
@@ -46,7 +50,8 @@ public class ImgPixelSoftmaxLayer extends LayerBase {
   }
 
   @SuppressWarnings("unused")
-  public static ImgPixelSoftmaxLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+  public static ImgPixelSoftmaxLayer fromJson(@Nonnull final JsonObject json,
+      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new ImgPixelSoftmaxLayer(json);
   }
 
@@ -67,64 +72,68 @@ public class ImgPixelSoftmaxLayer extends LayerBase {
     final int height = inputDims[1];
     TensorArray maxima = new TensorArray(inputData.stream().map(inputTensor -> {
       return new Tensor(width, height, 1).setByCoord(c -> {
-        return IntStream.range(0, inputBands).mapToDouble(band -> {
+        return com.simiacryptus.ref.wrappers.RefIntStream.range(0, inputBands).mapToDouble(band -> {
           int[] coords = c.getCoords();
           return inputTensor.get(coords[0], coords[1], band);
         }).max().getAsDouble();
       });
     }).toArray(i -> new Tensor[i]));
-    TensorArray exps = new TensorArray(IntStream.range(0, inputData.length()).mapToObj(index -> {
-      final Tensor inputTensor = inputData.get(index);
-      Tensor maxTensor = maxima.get(index);
-      return new Tensor(inputDims).setByCoord(c -> {
-        int[] coords = c.getCoords();
-        return Math.exp(inputTensor.get(c) - maxTensor.get(coords[0], coords[1], 0));
-      });
-    }).toArray(i -> new Tensor[i]));
+    TensorArray exps = new TensorArray(
+        com.simiacryptus.ref.wrappers.RefIntStream.range(0, inputData.length()).mapToObj(index -> {
+          final Tensor inputTensor = inputData.get(index);
+          Tensor maxTensor = maxima.get(index);
+          return new Tensor(inputDims).setByCoord(c -> {
+            int[] coords = c.getCoords();
+            return Math.exp(inputTensor.get(c) - maxTensor.get(coords[0], coords[1], 0));
+          });
+        }).toArray(i -> new Tensor[i]));
     TensorArray sums = new TensorArray(exps.stream().map(expTensor -> {
       return new Tensor(width, height, 1).setByCoord(c -> {
-        return IntStream.range(0, inputBands).mapToDouble(band -> {
+        return com.simiacryptus.ref.wrappers.RefIntStream.range(0, inputBands).mapToDouble(band -> {
           int[] coords = c.getCoords();
           return expTensor.get(coords[0], coords[1], band);
         }).sum();
       });
     }).toArray(i -> new Tensor[i]));
-    TensorArray output = new TensorArray(IntStream.range(0, inputData.length()).mapToObj(index -> {
-      Tensor sumTensor = sums.get(index);
-      Tensor expTensor = exps.get(index);
-      return new Tensor(inputDims).setByCoord(c -> {
-        int[] coords = c.getCoords();
-        return (expTensor.get(c) / sumTensor.get(coords[0], coords[1], 0));
-      });
-    }).toArray(i -> new Tensor[i]));
+    TensorArray output = new TensorArray(
+        com.simiacryptus.ref.wrappers.RefIntStream.range(0, inputData.length()).mapToObj(index -> {
+          Tensor sumTensor = sums.get(index);
+          Tensor expTensor = exps.get(index);
+          return new Tensor(inputDims).setByCoord(c -> {
+            int[] coords = c.getCoords();
+            return (expTensor.get(c) / sumTensor.get(coords[0], coords[1], 0));
+          });
+        }).toArray(i -> new Tensor[i]));
     return new Result(output, (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
       if (input.isAlive()) {
 
-        TensorArray dots = new TensorArray(IntStream.range(0, inputData.length()).mapToObj(index -> {
-          final Tensor deltaTensor = delta.get(index);
-          Tensor expTensor = exps.get(index);
-          return new Tensor(width, height, 1).setByCoord(c -> {
-            return IntStream.range(0, inputBands).mapToDouble(band -> {
-              int[] coords = c.getCoords();
-              return expTensor.get(coords[0], coords[1], band) * deltaTensor.get(coords[0], coords[1], band);
-            }).sum();
-          });
-        }).toArray(i -> new Tensor[i]));
+        TensorArray dots = new TensorArray(
+            com.simiacryptus.ref.wrappers.RefIntStream.range(0, inputData.length()).mapToObj(index -> {
+              final Tensor deltaTensor = delta.get(index);
+              Tensor expTensor = exps.get(index);
+              return new Tensor(width, height, 1).setByCoord(c -> {
+                return com.simiacryptus.ref.wrappers.RefIntStream.range(0, inputBands).mapToDouble(band -> {
+                  int[] coords = c.getCoords();
+                  return expTensor.get(coords[0], coords[1], band) * deltaTensor.get(coords[0], coords[1], band);
+                }).sum();
+              });
+            }).toArray(i -> new Tensor[i]));
 
-        TensorArray passback = new TensorArray(IntStream.range(0, inputData.length()).mapToObj(index -> {
-          final Tensor deltaTensor = delta.get(index);
-          final Tensor expTensor = exps.get(index);
-          Tensor sumTensor = sums.get(index);
-          Tensor dotTensor = dots.get(index);
-          return new Tensor(inputDims).setByCoord(c -> {
-            int[] coords = c.getCoords();
-            double sum = sumTensor.get(coords[0], coords[1], 0);
-            double dot = dotTensor.get(coords[0], coords[1], 0);
-            double deltaValue = deltaTensor.get(c);
-            double expValue = expTensor.get(c);
-            return (sum * deltaValue - dot) * expValue / (sum * sum);
-          });
-        }).toArray(i -> new Tensor[i]));
+        TensorArray passback = new TensorArray(
+            com.simiacryptus.ref.wrappers.RefIntStream.range(0, inputData.length()).mapToObj(index -> {
+              final Tensor deltaTensor = delta.get(index);
+              final Tensor expTensor = exps.get(index);
+              Tensor sumTensor = sums.get(index);
+              Tensor dotTensor = dots.get(index);
+              return new Tensor(inputDims).setByCoord(c -> {
+                int[] coords = c.getCoords();
+                double sum = sumTensor.get(coords[0], coords[1], 0);
+                double dot = dotTensor.get(coords[0], coords[1], 0);
+                double deltaValue = deltaTensor.get(c);
+                double expValue = expTensor.get(c);
+                return (sum * deltaValue - dot) * expValue / (sum * sum);
+              });
+            }).toArray(i -> new Tensor[i]));
 
         input.accumulate(buffer, passback);
       }
@@ -135,21 +144,42 @@ public class ImgPixelSoftmaxLayer extends LayerBase {
         return input.isAlive() || !isFrozen();
       }
 
-      @Override
-      protected void _free() {
+      public void _free() {
       }
     };
   }
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
+  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+      DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 
   @Nonnull
   @Override
-  public List<double[]> state() {
-    return Arrays.asList();
+  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
+    return com.simiacryptus.ref.wrappers.RefArrays.asList();
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") ImgPixelSoftmaxLayer addRef() {
+    return (ImgPixelSoftmaxLayer) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") ImgPixelSoftmaxLayer[] addRefs(ImgPixelSoftmaxLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgPixelSoftmaxLayer::addRef)
+        .toArray((x) -> new ImgPixelSoftmaxLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused") ImgPixelSoftmaxLayer[][] addRefs(ImgPixelSoftmaxLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgPixelSoftmaxLayer::addRefs)
+        .toArray((x) -> new ImgPixelSoftmaxLayer[x][]);
   }
 }

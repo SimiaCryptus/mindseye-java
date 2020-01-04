@@ -29,9 +29,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.IntStream;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefList;
+import com.simiacryptus.ref.wrappers.RefMap;
+import com.simiacryptus.ref.wrappers.RefIntStream;
 
 @SuppressWarnings("serial")
-public final class NthPowerActivationLayer extends LayerBase {
+public final @com.simiacryptus.ref.lang.RefAware class NthPowerActivationLayer extends LayerBase {
 
   private double power = 1.0;
 
@@ -54,12 +58,13 @@ public final class NthPowerActivationLayer extends LayerBase {
   }
 
   @SuppressWarnings("unused")
-  public static NthPowerActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+  public static NthPowerActivationLayer fromJson(@Nonnull final JsonObject json,
+      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new NthPowerActivationLayer(json);
   }
 
   private static void nthPower(final double power, @Nonnull final Tensor input, final double[] inputData,
-                               final double[] gradientData, final double[] outputData) {
+      final double[] gradientData, final double[] outputData) {
     for (int i = 0; i < input.length(); i++) {
       final double x = inputData[i];
       final boolean isZero = Math.abs(x) < 1e-20;
@@ -77,7 +82,7 @@ public final class NthPowerActivationLayer extends LayerBase {
   }
 
   private static void square(@Nonnull final Tensor input, final double[] inputData, final double[] gradientData,
-                             final double[] outputData) {
+      final double[] outputData) {
     for (int i = 0; i < input.length(); i++) {
       final double x = inputData[i];
       gradientData[i] = 2 * x;
@@ -86,7 +91,7 @@ public final class NthPowerActivationLayer extends LayerBase {
   }
 
   private static void squareRoot(@Nonnull final Tensor input, final double[] inputData, final double[] gradientData,
-                                 final double[] outputData) {
+      final double[] outputData) {
     for (int i = 0; i < input.length(); i++) {
       final double x = inputData[i];
       final boolean isZero = Math.abs(x) < 1e-20;
@@ -106,7 +111,7 @@ public final class NthPowerActivationLayer extends LayerBase {
   }
 
   private static void unity(@Nonnull final Tensor input, final double[] inputData, final double[] gradientData,
-                            final double[] outputData) {
+      final double[] outputData) {
     for (int i = 0; i < input.length(); i++) {
       gradientData[i] = 0;
       outputData[i] = 1;
@@ -117,68 +122,102 @@ public final class NthPowerActivationLayer extends LayerBase {
   public Result eval(@Nonnull final Result... inObj) {
     final int itemCnt = inObj[0].getData().length();
     assert 0 < itemCnt;
-    @Nonnull final Tensor inputGradientA[] = new Tensor[itemCnt];
-    return new Result(new TensorArray(IntStream.range(0, itemCnt).parallel().mapToObj(dataIndex -> {
-      @Nullable final Tensor input = inObj[0].getData().get(dataIndex);
-      @Nonnull final Tensor output = new Tensor(inObj[0].getData().getDimensions());
-      @Nonnull final Tensor gradient = new Tensor(input.length());
-      @Nullable final double[] inputData = input.getData();
-      @Nullable final double[] gradientData = gradient.getData();
-      @Nullable final double[] outputData = output.getData();
-      inputGradientA[dataIndex] = gradient;
-      if (power == 2) {
-        NthPowerActivationLayer.square(input, inputData, gradientData, outputData);
-      } else if (power == 0.5) {
-        NthPowerActivationLayer.squareRoot(input, inputData, gradientData, outputData);
-      } else if (power == 0.0) {
-        NthPowerActivationLayer.unity(input, inputData, gradientData, outputData);
-      } else {
-        NthPowerActivationLayer.nthPower(power, input, inputData, gradientData, outputData);
-      }
-      return output;
-    }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList data) -> {
-      if (inObj[0].isAlive()) {
-        @Nonnull
-        TensorArray tensorArray = new TensorArray(IntStream.range(0, itemCnt).parallel().mapToObj(dataIndex -> {
-          @Nonnull final Tensor passback = new Tensor(data.getDimensions());
-          @Nullable final Tensor tensor = data.get(dataIndex);
+    @Nonnull
+    final Tensor inputGradientA[] = new Tensor[itemCnt];
+    return new Result(
+        new TensorArray(com.simiacryptus.ref.wrappers.RefIntStream.range(0, itemCnt).parallel().mapToObj(dataIndex -> {
           @Nullable
-          double[] tensorData = tensor.getData();
-          @Nullable final double[] gradientData = inputGradientA[dataIndex].getData();
-          IntStream.range(0, passback.length()).forEach(i -> {
-            final double v = gradientData[i];
-            if (Double.isFinite(v)) {
-              passback.set(i, tensorData[i] * v);
-            }
-          });
-          return passback;
-        }).toArray(i -> new Tensor[i]));
-        inObj[0].accumulate(buffer, tensorArray);
-      }
-    }) {
+          final Tensor input = inObj[0].getData().get(dataIndex);
+          @Nonnull
+          final Tensor output = new Tensor(inObj[0].getData().getDimensions());
+          @Nonnull
+          final Tensor gradient = new Tensor(input.length());
+          @Nullable
+          final double[] inputData = input.getData();
+          @Nullable
+          final double[] gradientData = gradient.getData();
+          @Nullable
+          final double[] outputData = output.getData();
+          inputGradientA[dataIndex] = gradient;
+          if (power == 2) {
+            NthPowerActivationLayer.square(input, inputData, gradientData, outputData);
+          } else if (power == 0.5) {
+            NthPowerActivationLayer.squareRoot(input, inputData, gradientData, outputData);
+          } else if (power == 0.0) {
+            NthPowerActivationLayer.unity(input, inputData, gradientData, outputData);
+          } else {
+            NthPowerActivationLayer.nthPower(power, input, inputData, gradientData, outputData);
+          }
+          return output;
+        }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList data) -> {
+          if (inObj[0].isAlive()) {
+            @Nonnull
+            TensorArray tensorArray = new TensorArray(
+                com.simiacryptus.ref.wrappers.RefIntStream.range(0, itemCnt).parallel().mapToObj(dataIndex -> {
+                  @Nonnull
+                  final Tensor passback = new Tensor(data.getDimensions());
+                  @Nullable
+                  final Tensor tensor = data.get(dataIndex);
+                  @Nullable
+                  double[] tensorData = tensor.getData();
+                  @Nullable
+                  final double[] gradientData = inputGradientA[dataIndex].getData();
+                  com.simiacryptus.ref.wrappers.RefIntStream.range(0, passback.length()).forEach(i -> {
+                    final double v = gradientData[i];
+                    if (Double.isFinite(v)) {
+                      passback.set(i, tensorData[i] * v);
+                    }
+                  });
+                  return passback;
+                }).toArray(i -> new Tensor[i]));
+            inObj[0].accumulate(buffer, tensorArray);
+          }
+        }) {
 
       @Override
       public boolean isAlive() {
         return 0.0 != power && inObj[0].isAlive();
       }
 
-      @Override
-      protected void _free() {
+      public void _free() {
       }
     };
   }
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull final JsonObject json = super.getJsonStub();
+  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+      DataSerializer dataSerializer) {
+    @Nonnull
+    final JsonObject json = super.getJsonStub();
     json.addProperty("power", power);
     return json;
   }
 
   @Override
-  public List<double[]> state() {
-    return Arrays.asList();
+  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
+    return com.simiacryptus.ref.wrappers.RefArrays.asList();
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") NthPowerActivationLayer addRef() {
+    return (NthPowerActivationLayer) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") NthPowerActivationLayer[] addRefs(NthPowerActivationLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(NthPowerActivationLayer::addRef)
+        .toArray((x) -> new NthPowerActivationLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused") NthPowerActivationLayer[][] addRefs(NthPowerActivationLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(NthPowerActivationLayer::addRefs)
+        .toArray((x) -> new NthPowerActivationLayer[x][]);
   }
 
 }

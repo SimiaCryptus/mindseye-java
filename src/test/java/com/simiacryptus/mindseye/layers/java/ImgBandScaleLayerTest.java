@@ -24,14 +24,12 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-public abstract class ImgBandScaleLayerTest extends LayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware class ImgBandScaleLayerTest extends LayerTestBase {
 
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{
-        {2, 2, 3}
-    };
+    return new int[][] { { 2, 2, 3 } };
   }
 
   @Nonnull
@@ -40,7 +38,41 @@ public abstract class ImgBandScaleLayerTest extends LayerTestBase {
     return new ImgBandScaleLayer(0.0, 0.0, 0.0).addWeights(this::random);
   }
 
-  public static class Basic extends ImgBandScaleLayerTest {
+  public static @com.simiacryptus.ref.lang.RefAware class Basic extends ImgBandScaleLayerTest {
+
+    public @SuppressWarnings("unused") void _free() {
+    }
+
+    public @Override @SuppressWarnings("unused") Basic addRef() {
+      return (Basic) super.addRef();
+    }
+
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+    }
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") ImgBandScaleLayerTest addRef() {
+    return (ImgBandScaleLayerTest) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") ImgBandScaleLayerTest[] addRefs(ImgBandScaleLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgBandScaleLayerTest::addRef)
+        .toArray((x) -> new ImgBandScaleLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused") ImgBandScaleLayerTest[][] addRefs(ImgBandScaleLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgBandScaleLayerTest::addRefs)
+        .toArray((x) -> new ImgBandScaleLayerTest[x][]);
   }
 
 }

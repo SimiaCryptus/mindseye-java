@@ -24,8 +24,7 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-
-public abstract class ImgTileAssemblyLayerTest extends LayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware class ImgTileAssemblyLayerTest extends LayerTestBase {
 
   public ImgTileAssemblyLayerTest() {
     validateBatchExecution = false;
@@ -34,9 +33,7 @@ public abstract class ImgTileAssemblyLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{
-        {2, 2, 1}, {1, 2, 1}, {2, 2, 1}, {1, 2, 1}, {2, 1, 1}, {1, 1, 1}
-    };
+    return new int[][] { { 2, 2, 1 }, { 1, 2, 1 }, { 2, 2, 1 }, { 1, 2, 1 }, { 2, 1, 1 }, { 1, 1, 1 } };
   }
 
   @Nonnull
@@ -45,7 +42,41 @@ public abstract class ImgTileAssemblyLayerTest extends LayerTestBase {
     return new ImgTileAssemblyLayer(2, 3);
   }
 
-  public static class Basic extends ImgTileAssemblyLayerTest {
+  public static @com.simiacryptus.ref.lang.RefAware class Basic extends ImgTileAssemblyLayerTest {
+
+    public @SuppressWarnings("unused") void _free() {
+    }
+
+    public @Override @SuppressWarnings("unused") Basic addRef() {
+      return (Basic) super.addRef();
+    }
+
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+    }
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") ImgTileAssemblyLayerTest addRef() {
+    return (ImgTileAssemblyLayerTest) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") ImgTileAssemblyLayerTest[] addRefs(ImgTileAssemblyLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgTileAssemblyLayerTest::addRef)
+        .toArray((x) -> new ImgTileAssemblyLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused") ImgTileAssemblyLayerTest[][] addRefs(ImgTileAssemblyLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgTileAssemblyLayerTest::addRefs)
+        .toArray((x) -> new ImgTileAssemblyLayerTest[x][]);
   }
 
 }

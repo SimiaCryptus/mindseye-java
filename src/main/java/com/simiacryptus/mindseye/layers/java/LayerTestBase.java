@@ -25,7 +25,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public abstract class LayerTestBase extends StandardLayerTests {
+public abstract @com.simiacryptus.ref.lang.RefAware class LayerTestBase extends StandardLayerTests {
 
   @Test(timeout = 15 * 60 * 1000)
   public void test() {
@@ -38,10 +38,10 @@ public abstract class LayerTestBase extends StandardLayerTests {
     //GpuController.remove();
   }
 
-//  @Test(timeout = 15 * 60 * 1000)
-//  public void testMonteCarlo() throws Throwable {
-//    apply(this::monteCarlo);
-//  }
+  //  @Test(timeout = 15 * 60 * 1000)
+  //  public void testMonteCarlo() throws Throwable {
+  //    apply(this::monteCarlo);
+  //  }
 
   @After
   public void cleanup() {
@@ -52,6 +52,27 @@ public abstract class LayerTestBase extends StandardLayerTests {
   @Override
   protected Layer lossLayer() {
     return new EntropyLossLayer();
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") LayerTestBase addRef() {
+    return (LayerTestBase) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") LayerTestBase[] addRefs(LayerTestBase[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(LayerTestBase::addRef)
+        .toArray((x) -> new LayerTestBase[x]);
+  }
+
+  public static @SuppressWarnings("unused") LayerTestBase[][] addRefs(LayerTestBase[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(LayerTestBase::addRefs)
+        .toArray((x) -> new LayerTestBase[x][]);
   }
 
 }

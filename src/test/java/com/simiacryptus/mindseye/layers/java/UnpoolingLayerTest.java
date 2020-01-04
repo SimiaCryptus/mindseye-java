@@ -24,14 +24,12 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-public abstract class UnpoolingLayerTest extends LayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware class UnpoolingLayerTest extends LayerTestBase {
 
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{
-        {4, 4, 2}
-    };
+    return new int[][] { { 4, 4, 2 } };
   }
 
   @Nonnull
@@ -40,7 +38,41 @@ public abstract class UnpoolingLayerTest extends LayerTestBase {
     return new UnpoolingLayer(2, 2);
   }
 
-  public static class Basic extends UnpoolingLayerTest {
+  public static @com.simiacryptus.ref.lang.RefAware class Basic extends UnpoolingLayerTest {
+
+    public @SuppressWarnings("unused") void _free() {
+    }
+
+    public @Override @SuppressWarnings("unused") Basic addRef() {
+      return (Basic) super.addRef();
+    }
+
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+    }
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") UnpoolingLayerTest addRef() {
+    return (UnpoolingLayerTest) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") UnpoolingLayerTest[] addRefs(UnpoolingLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(UnpoolingLayerTest::addRef)
+        .toArray((x) -> new UnpoolingLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused") UnpoolingLayerTest[][] addRefs(UnpoolingLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(UnpoolingLayerTest::addRefs)
+        .toArray((x) -> new UnpoolingLayerTest[x][]);
   }
 
 }

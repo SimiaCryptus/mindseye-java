@@ -24,14 +24,12 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-public abstract class ImgPixelGateLayerTest extends LayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware class ImgPixelGateLayerTest extends LayerTestBase {
 
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{
-        {2, 2, 3}, {2, 2, 1}
-    };
+    return new int[][] { { 2, 2, 3 }, { 2, 2, 1 } };
   }
 
   @Nonnull
@@ -40,7 +38,41 @@ public abstract class ImgPixelGateLayerTest extends LayerTestBase {
     return new ImgPixelGateLayer();
   }
 
-  public static class Basic extends ImgPixelGateLayerTest {
+  public static @com.simiacryptus.ref.lang.RefAware class Basic extends ImgPixelGateLayerTest {
+
+    public @SuppressWarnings("unused") void _free() {
+    }
+
+    public @Override @SuppressWarnings("unused") Basic addRef() {
+      return (Basic) super.addRef();
+    }
+
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+    }
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") ImgPixelGateLayerTest addRef() {
+    return (ImgPixelGateLayerTest) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") ImgPixelGateLayerTest[] addRefs(ImgPixelGateLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgPixelGateLayerTest::addRef)
+        .toArray((x) -> new ImgPixelGateLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused") ImgPixelGateLayerTest[][] addRefs(ImgPixelGateLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgPixelGateLayerTest::addRefs)
+        .toArray((x) -> new ImgPixelGateLayerTest[x][]);
   }
 
 }

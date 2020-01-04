@@ -27,7 +27,7 @@ import com.simiacryptus.mindseye.test.unit.ComponentTest;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-public abstract class NormalizationMetaLayerTest extends MetaLayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware class NormalizationMetaLayerTest extends MetaLayerTestBase {
   @Override
   public ComponentTest<ToleranceStatistics> getDerivativeTester() {
     return null;
@@ -37,9 +37,7 @@ public abstract class NormalizationMetaLayerTest extends MetaLayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{
-        {3}
-    };
+    return new int[][] { { 3 } };
   }
 
   @Nonnull
@@ -51,9 +49,7 @@ public abstract class NormalizationMetaLayerTest extends MetaLayerTestBase {
   @Nonnull
   @Override
   public int[][] getLargeDims(Random random) {
-    return new int[][]{
-        {10}
-    };
+    return new int[][] { { 10 } };
   }
 
   @Override
@@ -61,7 +57,42 @@ public abstract class NormalizationMetaLayerTest extends MetaLayerTestBase {
     return new MeanSqLossLayer();
   }
 
-  public static class Basic extends NormalizationMetaLayerTest {
+  public static @com.simiacryptus.ref.lang.RefAware class Basic extends NormalizationMetaLayerTest {
+
+    public @SuppressWarnings("unused") void _free() {
+    }
+
+    public @Override @SuppressWarnings("unused") Basic addRef() {
+      return (Basic) super.addRef();
+    }
+
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+    }
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") NormalizationMetaLayerTest addRef() {
+    return (NormalizationMetaLayerTest) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") NormalizationMetaLayerTest[] addRefs(NormalizationMetaLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(NormalizationMetaLayerTest::addRef)
+        .toArray((x) -> new NormalizationMetaLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused") NormalizationMetaLayerTest[][] addRefs(
+      NormalizationMetaLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(NormalizationMetaLayerTest::addRefs)
+        .toArray((x) -> new NormalizationMetaLayerTest[x][]);
   }
 
 }

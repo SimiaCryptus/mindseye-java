@@ -24,7 +24,7 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-public abstract class CrossDotMetaLayerTest extends LayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware class CrossDotMetaLayerTest extends LayerTestBase {
 
   public CrossDotMetaLayerTest() {
     validateBatchExecution = false;
@@ -33,9 +33,7 @@ public abstract class CrossDotMetaLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{
-        {3}
-    };
+    return new int[][] { { 3 } };
   }
 
   @Nonnull
@@ -44,7 +42,41 @@ public abstract class CrossDotMetaLayerTest extends LayerTestBase {
     return new CrossDotMetaLayer();
   }
 
-  public static class Basic extends CrossDotMetaLayerTest {
+  public static @com.simiacryptus.ref.lang.RefAware class Basic extends CrossDotMetaLayerTest {
+
+    public @SuppressWarnings("unused") void _free() {
+    }
+
+    public @Override @SuppressWarnings("unused") Basic addRef() {
+      return (Basic) super.addRef();
+    }
+
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+    }
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") CrossDotMetaLayerTest addRef() {
+    return (CrossDotMetaLayerTest) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") CrossDotMetaLayerTest[] addRefs(CrossDotMetaLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(CrossDotMetaLayerTest::addRef)
+        .toArray((x) -> new CrossDotMetaLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused") CrossDotMetaLayerTest[][] addRefs(CrossDotMetaLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(CrossDotMetaLayerTest::addRefs)
+        .toArray((x) -> new CrossDotMetaLayerTest[x][]);
   }
 
 }

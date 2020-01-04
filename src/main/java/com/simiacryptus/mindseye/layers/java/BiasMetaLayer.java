@@ -31,9 +31,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.IntStream;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefList;
+import com.simiacryptus.ref.wrappers.RefMap;
+import com.simiacryptus.ref.wrappers.RefIntStream;
 
 @SuppressWarnings("serial")
-public class BiasMetaLayer extends LayerBase {
+public @com.simiacryptus.ref.lang.RefAware class BiasMetaLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(BiasMetaLayer.class);
@@ -46,7 +50,8 @@ public class BiasMetaLayer extends LayerBase {
   }
 
   @SuppressWarnings("unused")
-  public static BiasMetaLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+  public static BiasMetaLayer fromJson(@Nonnull final JsonObject json,
+      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new BiasMetaLayer(json);
   }
 
@@ -59,29 +64,31 @@ public class BiasMetaLayer extends LayerBase {
     final int itemCnt = data0.length();
     final TensorList data1 = in1.getData();
     Tensor tensor1 = data1.get(0);
-    final Tensor[] tensors = IntStream.range(0, itemCnt).parallel().mapToObj(dataIndex -> {
-      Tensor tensor = data0.get(dataIndex);
-      return tensor.mapIndex((v, c) -> {
-        return v + tensor1.get(c);
-      });
-    }).toArray(i -> new Tensor[i]);
+    final Tensor[] tensors = com.simiacryptus.ref.wrappers.RefIntStream.range(0, itemCnt).parallel()
+        .mapToObj(dataIndex -> {
+          Tensor tensor = data0.get(dataIndex);
+          return tensor.mapIndex((v, c) -> {
+            return v + tensor1.get(c);
+          });
+        }).toArray(i -> new Tensor[i]);
     Tensor tensor0 = tensors[0];
     return new Result(new TensorArray(tensors),
         (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList data) -> {
           if (in1.isAlive()) {
             @Nonnull
-            TensorArray tensorArray = new TensorArray(IntStream.range(0, data.length()).mapToObj(i -> {
-              if (i == 0)
-                return tensor0.mapCoords((c) -> {
-                  return IntStream.range(0, itemCnt).mapToDouble(j -> {
-                    Tensor tensor = data.get(j);
-                    return tensor.get(c);
-                  }).sum();
-                });
-              else {
-                return tensor0.mapCoords(v -> 0);
-              }
-            }).toArray(i -> new Tensor[i]));
+            TensorArray tensorArray = new TensorArray(
+                com.simiacryptus.ref.wrappers.RefIntStream.range(0, data.length()).mapToObj(i -> {
+                  if (i == 0)
+                    return tensor0.mapCoords((c) -> {
+                      return com.simiacryptus.ref.wrappers.RefIntStream.range(0, itemCnt).mapToDouble(j -> {
+                        Tensor tensor = data.get(j);
+                        return tensor.get(c);
+                      }).sum();
+                    });
+                  else {
+                    return tensor0.mapCoords(v -> 0);
+                  }
+                }).toArray(i -> new Tensor[i]));
             in1.accumulate(buffer, tensorArray);
           }
           if (in0.isAlive()) {
@@ -94,8 +101,7 @@ public class BiasMetaLayer extends LayerBase {
         return in0.isAlive() || in1.isAlive();
       }
 
-      @Override
-      protected void _free() {
+      public void _free() {
       }
 
     };
@@ -103,13 +109,35 @@ public class BiasMetaLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
+  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+      DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 
   @Nonnull
   @Override
-  public List<double[]> state() {
-    return Arrays.asList();
+  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
+    return com.simiacryptus.ref.wrappers.RefArrays.asList();
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") BiasMetaLayer addRef() {
+    return (BiasMetaLayer) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") BiasMetaLayer[] addRefs(BiasMetaLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BiasMetaLayer::addRef)
+        .toArray((x) -> new BiasMetaLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused") BiasMetaLayer[][] addRefs(BiasMetaLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BiasMetaLayer::addRefs)
+        .toArray((x) -> new BiasMetaLayer[x][]);
   }
 }

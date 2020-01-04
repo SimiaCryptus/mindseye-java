@@ -32,9 +32,13 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.ToDoubleFunction;
 import java.util.stream.IntStream;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefList;
+import com.simiacryptus.ref.wrappers.RefMap;
+import com.simiacryptus.ref.wrappers.RefIntStream;
 
 @SuppressWarnings("serial")
-public class SumMetaLayer extends LayerBase {
+public @com.simiacryptus.ref.lang.RefAware class SumMetaLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(SumMetaLayer.class);
@@ -45,7 +49,8 @@ public class SumMetaLayer extends LayerBase {
   public SumMetaLayer() {
   }
 
-  protected SumMetaLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> resources) {
+  protected SumMetaLayer(@Nonnull final JsonObject json,
+      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources) {
     super(json);
     lastResult = Tensor.fromJson(json.get("lastResult"), resources);
     minBatches = json.get("minBatches").getAsInt();
@@ -62,7 +67,8 @@ public class SumMetaLayer extends LayerBase {
   }
 
   @SuppressWarnings("unused")
-  public static SumMetaLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+  public static SumMetaLayer fromJson(@Nonnull final JsonObject json,
+      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new SumMetaLayer(json, rs);
   }
 
@@ -75,18 +81,22 @@ public class SumMetaLayer extends LayerBase {
     TensorList inputData = input.getData();
     final int itemCnt = inputData.length();
     if (null == lastResult || minBatches < itemCnt) {
-      @Nonnull final ToDoubleFunction<Coordinate> f = (c) -> IntStream.range(0, itemCnt).mapToDouble(dataIndex -> {
-        Tensor tensor = inputData.get(dataIndex);
-        return tensor.get(c);
-      }).sum();
+      @Nonnull
+      final ToDoubleFunction<Coordinate> f = (c) -> com.simiacryptus.ref.wrappers.RefIntStream.range(0, itemCnt)
+          .mapToDouble(dataIndex -> {
+            Tensor tensor = inputData.get(dataIndex);
+            return tensor.get(c);
+          }).sum();
       lastResult = inputData.get(0).mapCoords(f);
     }
     return new Result(new TensorArray(lastResult),
         (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList data) -> {
           if (input.isAlive()) {
-            @Nullable final Tensor delta = data.get(0);
-            @Nonnull final Tensor feedback[] = new Tensor[itemCnt];
-            Arrays.parallelSetAll(feedback, i -> new Tensor(delta.getDimensions()));
+            @Nullable
+            final Tensor delta = data.get(0);
+            @Nonnull
+            final Tensor feedback[] = new Tensor[itemCnt];
+            com.simiacryptus.ref.wrappers.RefArrays.parallelSetAll(feedback, i -> new Tensor(delta.getDimensions()));
             delta.coordStream(false).forEach((inputCoord) -> {
               for (int inputItem = 0; inputItem < itemCnt; inputItem++) {
                 feedback[inputItem].add(inputCoord, delta.get(inputCoord));
@@ -103,8 +113,7 @@ public class SumMetaLayer extends LayerBase {
         return input.isAlive();
       }
 
-      @Override
-      protected void _free() {
+      public void _free() {
       }
 
     };
@@ -112,8 +121,10 @@ public class SumMetaLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, @Nonnull DataSerializer dataSerializer) {
-    @Nonnull final JsonObject json = super.getJsonStub();
+  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+      @Nonnull DataSerializer dataSerializer) {
+    @Nonnull
+    final JsonObject json = super.getJsonStub();
     if (null != lastResult) {
       json.add("lastResult", lastResult.getJson(resources, dataSerializer));
     }
@@ -123,12 +134,29 @@ public class SumMetaLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public List<double[]> state() {
-    return Arrays.asList();
+  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
+    return com.simiacryptus.ref.wrappers.RefArrays.asList();
   }
 
-  @Override
-  protected void _free() {
+  public void _free() {
     super._free();
+  }
+
+  public @Override @SuppressWarnings("unused") SumMetaLayer addRef() {
+    return (SumMetaLayer) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") SumMetaLayer[] addRefs(SumMetaLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SumMetaLayer::addRef)
+        .toArray((x) -> new SumMetaLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused") SumMetaLayer[][] addRefs(SumMetaLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SumMetaLayer::addRefs)
+        .toArray((x) -> new SumMetaLayer[x][]);
   }
 }

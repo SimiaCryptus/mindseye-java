@@ -26,11 +26,14 @@ import com.simiacryptus.mindseye.layers.WrapperLayer;
 import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Map;
+import com.simiacryptus.ref.wrappers.RefList;
+import com.simiacryptus.ref.wrappers.RefMap;
 
 @SuppressWarnings("serial")
-public class VariableLayer extends WrapperLayer {
+public @com.simiacryptus.ref.lang.RefAware class VariableLayer extends WrapperLayer {
 
-  protected VariableLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+  protected VariableLayer(@Nonnull final JsonObject json,
+      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     super(json, rs);
   }
 
@@ -39,13 +42,35 @@ public class VariableLayer extends WrapperLayer {
   }
 
   @Override
-  public List<Layer> getChildren() {
+  public com.simiacryptus.ref.wrappers.RefList<Layer> getChildren() {
     return super.getChildren();
   }
 
   @SuppressWarnings("unused")
-  public static VariableLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+  public static VariableLayer fromJson(@Nonnull final JsonObject json,
+      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new VariableLayer(json, rs);
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") VariableLayer addRef() {
+    return (VariableLayer) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") VariableLayer[] addRefs(VariableLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(VariableLayer::addRef)
+        .toArray((x) -> new VariableLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused") VariableLayer[][] addRefs(VariableLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(VariableLayer::addRefs)
+        .toArray((x) -> new VariableLayer[x][]);
   }
 
 }

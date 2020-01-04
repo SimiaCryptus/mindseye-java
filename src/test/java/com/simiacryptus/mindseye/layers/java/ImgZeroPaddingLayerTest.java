@@ -24,8 +24,7 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-
-public abstract class ImgZeroPaddingLayerTest extends LayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware class ImgZeroPaddingLayerTest extends LayerTestBase {
 
   public ImgZeroPaddingLayerTest() {
     validateBatchExecution = false;
@@ -34,9 +33,7 @@ public abstract class ImgZeroPaddingLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{
-        {8, 8, 1}
-    };
+    return new int[][] { { 8, 8, 1 } };
   }
 
   @Nonnull
@@ -45,7 +42,41 @@ public abstract class ImgZeroPaddingLayerTest extends LayerTestBase {
     return new ImgZeroPaddingLayer(1, 1);
   }
 
-  public static class Basic extends ImgZeroPaddingLayerTest {
+  public static @com.simiacryptus.ref.lang.RefAware class Basic extends ImgZeroPaddingLayerTest {
+
+    public @SuppressWarnings("unused") void _free() {
+    }
+
+    public @Override @SuppressWarnings("unused") Basic addRef() {
+      return (Basic) super.addRef();
+    }
+
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+    }
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") ImgZeroPaddingLayerTest addRef() {
+    return (ImgZeroPaddingLayerTest) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") ImgZeroPaddingLayerTest[] addRefs(ImgZeroPaddingLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgZeroPaddingLayerTest::addRef)
+        .toArray((x) -> new ImgZeroPaddingLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused") ImgZeroPaddingLayerTest[][] addRefs(ImgZeroPaddingLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgZeroPaddingLayerTest::addRefs)
+        .toArray((x) -> new ImgZeroPaddingLayerTest[x][]);
   }
 
 }

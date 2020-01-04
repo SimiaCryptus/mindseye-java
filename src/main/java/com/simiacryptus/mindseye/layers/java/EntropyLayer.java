@@ -24,9 +24,10 @@ import com.simiacryptus.mindseye.lang.DataSerializer;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
+import com.simiacryptus.ref.wrappers.RefMap;
 
 @SuppressWarnings("serial")
-public class EntropyLayer extends SimpleActivationLayer<EntropyLayer> {
+public @com.simiacryptus.ref.lang.RefAware class EntropyLayer extends SimpleActivationLayer<EntropyLayer> {
 
   public EntropyLayer() {
     super();
@@ -37,13 +38,15 @@ public class EntropyLayer extends SimpleActivationLayer<EntropyLayer> {
   }
 
   @SuppressWarnings("unused")
-  public static EntropyLayer fromJson(final JsonObject json, Map<CharSequence, byte[]> rs) {
+  public static EntropyLayer fromJson(final JsonObject json,
+      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new EntropyLayer(json);
   }
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
+  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+      DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 
@@ -64,5 +67,26 @@ public class EntropyLayer extends SimpleActivationLayer<EntropyLayer> {
     assert minDeriv <= Math.abs(d);
     results[0] = f;
     results[1] = d;
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") EntropyLayer addRef() {
+    return (EntropyLayer) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") EntropyLayer[] addRefs(EntropyLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(EntropyLayer::addRef)
+        .toArray((x) -> new EntropyLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused") EntropyLayer[][] addRefs(EntropyLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(EntropyLayer::addRefs)
+        .toArray((x) -> new EntropyLayer[x][]);
   }
 }

@@ -33,15 +33,18 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import com.simiacryptus.ref.wrappers.RefCollectors;
+import com.simiacryptus.ref.wrappers.RefIntStream;
 
 @SuppressWarnings("serial")
-public class MaxDropoutNoiseLayer extends LayerBase {
+public @com.simiacryptus.ref.lang.RefAware class MaxDropoutNoiseLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(MaxDropoutNoiseLayer.class);
   @Nullable
   private final int[] kernelSize;
-  private final Function<IntArray, List<List<Coordinate>>> getCellMap_cached = Util.cache(this::getCellMap);
+  private final Function<IntArray, com.simiacryptus.ref.wrappers.RefList<com.simiacryptus.ref.wrappers.RefList<Coordinate>>> getCellMap_cached = Util
+      .cache(this::getCellMap);
 
   public MaxDropoutNoiseLayer() {
     this(2, 2);
@@ -58,7 +61,8 @@ public class MaxDropoutNoiseLayer extends LayerBase {
   }
 
   @SuppressWarnings("unused")
-  public static MaxDropoutNoiseLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+  public static MaxDropoutNoiseLayer fromJson(@Nonnull final JsonObject json,
+      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new MaxDropoutNoiseLayer(json);
   }
 
@@ -68,50 +72,63 @@ public class MaxDropoutNoiseLayer extends LayerBase {
     final Result in0 = inObj[0];
     final TensorList data0 = in0.getData();
     final int itemCnt = data0.length();
-    final Tensor[] mask = IntStream.range(0, itemCnt).mapToObj(dataIndex -> {
-      @Nullable final Tensor input = data0.get(dataIndex);
-      @Nullable final Tensor output = input.map(x -> 0);
-      final List<List<Coordinate>> cells = getCellMap_cached.apply(new IntArray(output.getDimensions()));
+    final Tensor[] mask = com.simiacryptus.ref.wrappers.RefIntStream.range(0, itemCnt).mapToObj(dataIndex -> {
+      @Nullable
+      final Tensor input = data0.get(dataIndex);
+      @Nullable
+      final Tensor output = input.map(x -> 0);
+      final com.simiacryptus.ref.wrappers.RefList<com.simiacryptus.ref.wrappers.RefList<Coordinate>> cells = getCellMap_cached
+          .apply(new IntArray(output.getDimensions()));
       cells.forEach(cell -> {
-        output.set(cell.stream().max(Comparator.comparingDouble(c -> input.get(c))).get(), 1);
+        output.set(
+            cell.stream().max(com.simiacryptus.ref.wrappers.RefComparator.comparingDouble(c -> input.get(c))).get(), 1);
       });
       return output;
     }).toArray(i -> new Tensor[i]);
-    return new Result(new TensorArray(IntStream.range(0, itemCnt).mapToObj(dataIndex -> {
-      Tensor inputData = data0.get(dataIndex);
-      @Nullable final double[] input = inputData.getData();
-      @Nullable final double[] maskT = mask[dataIndex].getData();
-      @Nonnull final Tensor output = new Tensor(inputData.getDimensions());
-      @Nullable final double[] outputData = output.getData();
-      for (int i = 0; i < outputData.length; i++) {
-        outputData[i] = input[i] * maskT[i];
-      }
-      return output;
-    }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
-      if (in0.isAlive()) {
-        @Nonnull
-        TensorArray tensorArray = new TensorArray(IntStream.range(0, delta.length()).mapToObj(dataIndex -> {
-          Tensor deltaTensor = delta.get(dataIndex);
-          @Nullable final double[] deltaData = deltaTensor.getData();
-          @Nonnull final int[] dims = data0.getDimensions();
-          @Nullable final double[] maskData = mask[dataIndex].getData();
-          @Nonnull final Tensor passback = new Tensor(dims);
-          for (int i = 0; i < passback.length(); i++) {
-            passback.set(i, maskData[i] * deltaData[i]);
+    return new Result(
+        new TensorArray(com.simiacryptus.ref.wrappers.RefIntStream.range(0, itemCnt).mapToObj(dataIndex -> {
+          Tensor inputData = data0.get(dataIndex);
+          @Nullable
+          final double[] input = inputData.getData();
+          @Nullable
+          final double[] maskT = mask[dataIndex].getData();
+          @Nonnull
+          final Tensor output = new Tensor(inputData.getDimensions());
+          @Nullable
+          final double[] outputData = output.getData();
+          for (int i = 0; i < outputData.length; i++) {
+            outputData[i] = input[i] * maskT[i];
           }
-          return passback;
-        }).toArray(i -> new Tensor[i]));
-        in0.accumulate(buffer, tensorArray);
-      }
-    }) {
+          return output;
+        }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
+          if (in0.isAlive()) {
+            @Nonnull
+            TensorArray tensorArray = new TensorArray(
+                com.simiacryptus.ref.wrappers.RefIntStream.range(0, delta.length()).mapToObj(dataIndex -> {
+                  Tensor deltaTensor = delta.get(dataIndex);
+                  @Nullable
+                  final double[] deltaData = deltaTensor.getData();
+                  @Nonnull
+                  final int[] dims = data0.getDimensions();
+                  @Nullable
+                  final double[] maskData = mask[dataIndex].getData();
+                  @Nonnull
+                  final Tensor passback = new Tensor(dims);
+                  for (int i = 0; i < passback.length(); i++) {
+                    passback.set(i, maskData[i] * deltaData[i]);
+                  }
+                  return passback;
+                }).toArray(i -> new Tensor[i]));
+            in0.accumulate(buffer, tensorArray);
+          }
+        }) {
 
       @Override
       public boolean isAlive() {
         return in0.isAlive() || !isFrozen();
       }
 
-      @Override
-      protected void _free() {
+      public void _free() {
       }
 
     };
@@ -119,30 +136,55 @@ public class MaxDropoutNoiseLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull final JsonObject json = super.getJsonStub();
+  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+      DataSerializer dataSerializer) {
+    @Nonnull
+    final JsonObject json = super.getJsonStub();
     json.add("kernelSize", JsonUtil.getJson(kernelSize));
     return json;
   }
 
   @Nonnull
   @Override
-  public List<double[]> state() {
-    return Arrays.asList();
+  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
+    return com.simiacryptus.ref.wrappers.RefArrays.asList();
   }
 
-  private List<List<Coordinate>> getCellMap(@Nonnull final IntArray dims) {
+  private com.simiacryptus.ref.wrappers.RefList<com.simiacryptus.ref.wrappers.RefList<Coordinate>> getCellMap(
+      @Nonnull final IntArray dims) {
     Tensor tensor = new Tensor(dims.data);
-    return new ArrayList<>(tensor.coordStream(true).collect(Collectors.groupingBy((@Nonnull final Coordinate c) -> {
-      int cellId = 0;
-      int max = 0;
-      for (int dim = 0; dim < dims.size(); dim++) {
-        final int pos = c.getCoords()[dim] / kernelSize[dim];
-        cellId = cellId * max + pos;
-        max = dims.get(dim) / kernelSize[dim];
-      }
-      return cellId;
-    })).values());
+    return new com.simiacryptus.ref.wrappers.RefArrayList<>(tensor.coordStream(true)
+        .collect(com.simiacryptus.ref.wrappers.RefCollectors.groupingBy((@Nonnull final Coordinate c) -> {
+          int cellId = 0;
+          int max = 0;
+          for (int dim = 0; dim < dims.size(); dim++) {
+            final int pos = c.getCoords()[dim] / kernelSize[dim];
+            cellId = cellId * max + pos;
+            max = dims.get(dim) / kernelSize[dim];
+          }
+          return cellId;
+        })).values());
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") MaxDropoutNoiseLayer addRef() {
+    return (MaxDropoutNoiseLayer) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") MaxDropoutNoiseLayer[] addRefs(MaxDropoutNoiseLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MaxDropoutNoiseLayer::addRef)
+        .toArray((x) -> new MaxDropoutNoiseLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused") MaxDropoutNoiseLayer[][] addRefs(MaxDropoutNoiseLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MaxDropoutNoiseLayer::addRefs)
+        .toArray((x) -> new MaxDropoutNoiseLayer[x][]);
   }
 
 }

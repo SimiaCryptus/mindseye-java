@@ -24,12 +24,12 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-public abstract class L1NormalizationLayerTest extends LayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware class L1NormalizationLayerTest extends LayerTestBase {
 
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{{4}};
+    return new int[][] { { 4 } };
   }
 
   @Nonnull
@@ -43,7 +43,41 @@ public abstract class L1NormalizationLayerTest extends LayerTestBase {
     return super.random() * 100;
   }
 
-  public static class Basic extends L1NormalizationLayerTest {
+  public static @com.simiacryptus.ref.lang.RefAware class Basic extends L1NormalizationLayerTest {
+
+    public @SuppressWarnings("unused") void _free() {
+    }
+
+    public @Override @SuppressWarnings("unused") Basic addRef() {
+      return (Basic) super.addRef();
+    }
+
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+    }
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") L1NormalizationLayerTest addRef() {
+    return (L1NormalizationLayerTest) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") L1NormalizationLayerTest[] addRefs(L1NormalizationLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(L1NormalizationLayerTest::addRef)
+        .toArray((x) -> new L1NormalizationLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused") L1NormalizationLayerTest[][] addRefs(L1NormalizationLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(L1NormalizationLayerTest::addRefs)
+        .toArray((x) -> new L1NormalizationLayerTest[x][]);
   }
 
 }

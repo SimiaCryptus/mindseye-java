@@ -25,7 +25,7 @@ import com.simiacryptus.mindseye.layers.LoggingWrapperLayer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-public abstract class LoggingWrapperLayerTest extends LayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware class LoggingWrapperLayerTest extends LayerTestBase {
 
   public LoggingWrapperLayerTest() {
     validateBatchExecution = false;
@@ -34,7 +34,7 @@ public abstract class LoggingWrapperLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{{3}};
+    return new int[][] { { 3 } };
   }
 
   @Nonnull
@@ -44,7 +44,41 @@ public abstract class LoggingWrapperLayerTest extends LayerTestBase {
     return new LoggingWrapperLayer(inner);
   }
 
-  public static class Basic extends LoggingWrapperLayerTest {
+  public static @com.simiacryptus.ref.lang.RefAware class Basic extends LoggingWrapperLayerTest {
+
+    public @SuppressWarnings("unused") void _free() {
+    }
+
+    public @Override @SuppressWarnings("unused") Basic addRef() {
+      return (Basic) super.addRef();
+    }
+
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+    }
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") LoggingWrapperLayerTest addRef() {
+    return (LoggingWrapperLayerTest) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") LoggingWrapperLayerTest[] addRefs(LoggingWrapperLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(LoggingWrapperLayerTest::addRef)
+        .toArray((x) -> new LoggingWrapperLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused") LoggingWrapperLayerTest[][] addRefs(LoggingWrapperLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(LoggingWrapperLayerTest::addRefs)
+        .toArray((x) -> new LoggingWrapperLayerTest[x][]);
   }
 
 }

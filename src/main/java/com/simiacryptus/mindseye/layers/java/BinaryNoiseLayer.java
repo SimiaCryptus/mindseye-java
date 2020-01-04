@@ -32,7 +32,7 @@ import javax.annotation.Nonnull;
 import java.util.*;
 
 @SuppressWarnings("serial")
-public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
+public @com.simiacryptus.ref.lang.RefAware class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
 
   public static final ThreadLocal<Random> random = new ThreadLocal<Random>() {
     @Override
@@ -43,8 +43,7 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(BinaryNoiseLayer.class);
   @Nonnull
-  final
-  List<Tensor> maskList = new ArrayList<>();
+  final com.simiacryptus.ref.wrappers.RefList<Tensor> maskList = new com.simiacryptus.ref.wrappers.RefArrayList<>();
   private double value;
   private long seed = System.nanoTime();
 
@@ -76,14 +75,16 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
   }
 
   @SuppressWarnings("unused")
-  public static BinaryNoiseLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+  public static BinaryNoiseLayer fromJson(@Nonnull final JsonObject json,
+      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new BinaryNoiseLayer(json);
   }
 
   @NotNull
   public static Layer maskLayer(double density) {
     PipelineNetwork subnet = new PipelineNetwork(1);
-    subnet.add(new ProductInputsLayer(), subnet.add(new BinaryNoiseLayer(density), subnet.getInput(0)), subnet.getInput(0));
+    subnet.add(new ProductInputsLayer(), subnet.add(new BinaryNoiseLayer(density), subnet.getInput(0)),
+        subnet.getInput(0));
     return subnet;
   }
 
@@ -91,12 +92,15 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
   public Result eval(@Nonnull final Result... inObj) {
     final Result input = inObj[0];
     TensorList inputData = input.getData();
-    @Nonnull final int[] dimensions = inputData.getDimensions();
+    @Nonnull
+    final int[] dimensions = inputData.getDimensions();
     final int length = inputData.length();
-    if (maskList.size() > 0 && !Arrays.equals(maskList.get(0).getDimensions(), dimensions)) {
+    if (maskList.size() > 0
+        && !com.simiacryptus.ref.wrappers.RefArrays.equals(maskList.get(0).getDimensions(), dimensions)) {
       clear();
     }
-    @Nonnull final Tensor tensorPrototype = new Tensor(dimensions);
+    @Nonnull
+    final Tensor tensorPrototype = new Tensor(dimensions);
     double amplitude = 1.0 / getValue();
     while (length > maskList.size()) {
       if (seed == 0) {
@@ -109,8 +113,7 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
     TensorArray data = new TensorArray(maskList.stream().limit(length).toArray(i -> new Tensor[i]));
     assert inputData.length() == data.length() : (inputData.length() + " != " + data.length());
     return new Result(data, (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
-      input.accumulate(buffer,
-          new TensorArray(delta.stream().map(t -> t.map(x -> 0)).toArray(i -> new Tensor[i])));
+      input.accumulate(buffer, new TensorArray(delta.stream().map(t -> t.map(x -> 0)).toArray(i -> new Tensor[i])));
     }) {
 
       @Override
@@ -118,14 +121,13 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
         return input.isAlive();
       }
 
-      @Override
-      protected void _free() {
+      public void _free() {
       }
     };
   }
 
   public void clear() {
-    final List<Tensor> maskList = this.maskList;
+    final com.simiacryptus.ref.wrappers.RefList<Tensor> maskList = this.maskList;
     synchronized (maskList) {
       maskList.clear();
     }
@@ -133,8 +135,10 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull final JsonObject json = super.getJsonStub();
+  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+      DataSerializer dataSerializer) {
+    @Nonnull
+    final JsonObject json = super.getJsonStub();
     json.addProperty("value", value);
     json.addProperty("seed", seed);
     //    json.addProperty("enabled", enabled);
@@ -155,14 +159,31 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
 
   @Nonnull
   @Override
-  public List<double[]> state() {
-    return Arrays.asList();
+  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
+    return com.simiacryptus.ref.wrappers.RefArrays.asList();
   }
 
-  @Override
-  protected void _free() {
+  public void _free() {
     clear();
     super._free();
+  }
+
+  public @Override @SuppressWarnings("unused") BinaryNoiseLayer addRef() {
+    return (BinaryNoiseLayer) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") BinaryNoiseLayer[] addRefs(BinaryNoiseLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BinaryNoiseLayer::addRef)
+        .toArray((x) -> new BinaryNoiseLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused") BinaryNoiseLayer[][] addRefs(BinaryNoiseLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BinaryNoiseLayer::addRefs)
+        .toArray((x) -> new BinaryNoiseLayer[x][]);
   }
 
 }

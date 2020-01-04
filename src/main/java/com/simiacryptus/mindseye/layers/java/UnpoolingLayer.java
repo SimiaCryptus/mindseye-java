@@ -29,9 +29,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.IntStream;
+import com.simiacryptus.ref.wrappers.RefArrayList;
+import com.simiacryptus.ref.wrappers.RefList;
+import com.simiacryptus.ref.wrappers.RefMap;
+import com.simiacryptus.ref.wrappers.RefIntStream;
 
 @SuppressWarnings("serial")
-public class UnpoolingLayer extends LayerBase {
+public @com.simiacryptus.ref.lang.RefAware class UnpoolingLayer extends LayerBase {
 
   private final int sizeX;
   private final int sizeY;
@@ -50,8 +54,10 @@ public class UnpoolingLayer extends LayerBase {
 
   @Nonnull
   public static Tensor copyCondense(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData) {
-    @Nonnull final int[] inDim = inputData.getDimensions();
-    @Nonnull final int[] outDim = outputData.getDimensions();
+    @Nonnull
+    final int[] inDim = inputData.getDimensions();
+    @Nonnull
+    final int[] outDim = outputData.getDimensions();
     assert 3 == inDim.length;
     assert 3 == outDim.length;
     assert inDim[0] >= outDim[0];
@@ -62,7 +68,8 @@ public class UnpoolingLayer extends LayerBase {
     final int kernelSizeX = inDim[0] / outDim[0];
     final int kernelSizeY = inDim[0] / outDim[0];
     int index = 0;
-    @Nullable final double[] outputDataData = outputData.getData();
+    @Nullable
+    final double[] outputDataData = outputData.getData();
     for (int z = 0; z < inDim[2]; z++) {
       for (int y = 0; y < inDim[1]; y += kernelSizeY) {
         for (int x = 0; x < inDim[0]; x += kernelSizeX) {
@@ -83,8 +90,10 @@ public class UnpoolingLayer extends LayerBase {
 
   @Nonnull
   public static Tensor copyExpand(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData) {
-    @Nonnull final int[] inDim = inputData.getDimensions();
-    @Nonnull final int[] outDim = outputData.getDimensions();
+    @Nonnull
+    final int[] inDim = inputData.getDimensions();
+    @Nonnull
+    final int[] outDim = outputData.getDimensions();
     assert 3 == inDim.length;
     assert 3 == outDim.length;
     assert inDim[0] <= outDim[0];
@@ -113,7 +122,8 @@ public class UnpoolingLayer extends LayerBase {
   }
 
   @SuppressWarnings("unused")
-  public static UnpoolingLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+  public static UnpoolingLayer fromJson(@Nonnull final JsonObject json,
+      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new UnpoolingLayer(json);
   }
 
@@ -123,23 +133,28 @@ public class UnpoolingLayer extends LayerBase {
     //assert Arrays.stream(inObj).flatMapToDouble(input-> input.getData().stream().flatMapToDouble(x-> Arrays.stream(x.getData()))).allMatch(v->Double.isFinite(v));
     final Result input = inObj[0];
     final TensorList batch = input.getData();
-    @Nonnull final int[] inputDims = batch.getDimensions();
+    @Nonnull
+    final int[] inputDims = batch.getDimensions();
     assert 3 == inputDims.length;
     Tensor outputDims;
     outputDims = new Tensor(inputDims[0] * sizeX, inputDims[1] * sizeY, inputDims[2]);
-    TensorArray data = new TensorArray(IntStream.range(0, batch.length()).parallel().mapToObj(dataIndex -> {
-      Tensor inputData = batch.get(dataIndex);
-      return UnpoolingLayer.copyExpand(inputData, outputDims.copy());
-    }).toArray(i -> new Tensor[i]));
+    TensorArray data = new TensorArray(
+        com.simiacryptus.ref.wrappers.RefIntStream.range(0, batch.length()).parallel().mapToObj(dataIndex -> {
+          Tensor inputData = batch.get(dataIndex);
+          return UnpoolingLayer.copyExpand(inputData, outputDims.copy());
+        }).toArray(i -> new Tensor[i]));
     return new Result(data, (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList error) -> {
       //assert error.stream().flatMapToDouble(x-> Arrays.stream(x.getData())).allMatch(v->Double.isFinite(v));
       if (input.isAlive()) {
         @Nonnull
-        TensorArray tensorArray = new TensorArray(IntStream.range(0, error.length()).parallel().mapToObj(dataIndex -> {
-          @Nonnull final Tensor passback = new Tensor(inputDims);
-          @Nullable final Tensor err = error.get(dataIndex);
-          return UnpoolingLayer.copyCondense(err, passback);
-        }).toArray(i -> new Tensor[i]));
+        TensorArray tensorArray = new TensorArray(
+            com.simiacryptus.ref.wrappers.RefIntStream.range(0, error.length()).parallel().mapToObj(dataIndex -> {
+              @Nonnull
+              final Tensor passback = new Tensor(inputDims);
+              @Nullable
+              final Tensor err = error.get(dataIndex);
+              return UnpoolingLayer.copyCondense(err, passback);
+            }).toArray(i -> new Tensor[i]));
         input.accumulate(buffer, tensorArray);
       }
     }) {
@@ -149,16 +164,17 @@ public class UnpoolingLayer extends LayerBase {
         return input.isAlive() || !isFrozen();
       }
 
-      @Override
-      protected void _free() {
+      public void _free() {
       }
     };
   }
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull final JsonObject json = super.getJsonStub();
+  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+      DataSerializer dataSerializer) {
+    @Nonnull
+    final JsonObject json = super.getJsonStub();
     json.addProperty("sizeX", sizeX);
     json.addProperty("sizeY", sizeX);
     return json;
@@ -166,8 +182,29 @@ public class UnpoolingLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public List<double[]> state() {
-    return new ArrayList<>();
+  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
+    return new com.simiacryptus.ref.wrappers.RefArrayList<>();
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") UnpoolingLayer addRef() {
+    return (UnpoolingLayer) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") UnpoolingLayer[] addRefs(UnpoolingLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(UnpoolingLayer::addRef)
+        .toArray((x) -> new UnpoolingLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused") UnpoolingLayer[][] addRefs(UnpoolingLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(UnpoolingLayer::addRefs)
+        .toArray((x) -> new UnpoolingLayer[x][]);
   }
 
 }

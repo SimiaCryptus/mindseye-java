@@ -24,14 +24,12 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-public abstract class MaxImageBandLayerTest extends LayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware class MaxImageBandLayerTest extends LayerTestBase {
 
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{
-        {2, 2, 3}
-    };
+    return new int[][] { { 2, 2, 3 } };
   }
 
   @Nonnull
@@ -40,7 +38,41 @@ public abstract class MaxImageBandLayerTest extends LayerTestBase {
     return new MaxImageBandLayer();
   }
 
-  public static class Basic extends MaxImageBandLayerTest {
+  public static @com.simiacryptus.ref.lang.RefAware class Basic extends MaxImageBandLayerTest {
+
+    public @SuppressWarnings("unused") void _free() {
+    }
+
+    public @Override @SuppressWarnings("unused") Basic addRef() {
+      return (Basic) super.addRef();
+    }
+
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+    }
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") MaxImageBandLayerTest addRef() {
+    return (MaxImageBandLayerTest) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") MaxImageBandLayerTest[] addRefs(MaxImageBandLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MaxImageBandLayerTest::addRef)
+        .toArray((x) -> new MaxImageBandLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused") MaxImageBandLayerTest[][] addRefs(MaxImageBandLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MaxImageBandLayerTest::addRefs)
+        .toArray((x) -> new MaxImageBandLayerTest[x][]);
   }
 
 }

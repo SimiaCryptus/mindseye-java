@@ -31,9 +31,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.IntStream;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefList;
+import com.simiacryptus.ref.wrappers.RefMap;
+import com.simiacryptus.ref.wrappers.RefIntStream;
 
 @SuppressWarnings("serial")
-public class LinearActivationLayer extends LayerBase {
+public @com.simiacryptus.ref.lang.RefAware class LinearActivationLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(LinearActivationLayer.class);
@@ -47,7 +51,8 @@ public class LinearActivationLayer extends LayerBase {
     weights.set(1, 0.);
   }
 
-  protected LinearActivationLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> resources) {
+  protected LinearActivationLayer(@Nonnull final JsonObject json,
+      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources) {
     super(json);
     weights = Tensor.fromJson(json.get("weights"), resources);
   }
@@ -90,7 +95,8 @@ public class LinearActivationLayer extends LayerBase {
   }
 
   @SuppressWarnings("unused")
-  public static LinearActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+  public static LinearActivationLayer fromJson(@Nonnull final JsonObject json,
+      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new LinearActivationLayer(json, rs);
   }
 
@@ -102,49 +108,55 @@ public class LinearActivationLayer extends LayerBase {
     final int itemCnt = inData.length();
     final double scale = weights.get(0);
     final double bias = weights.get(1);
-    return new Result(
-        new TensorArray(IntStream.range(0, itemCnt).mapToObj(dataIndex -> inData.get(dataIndex).map(v -> {
+    return new Result(new TensorArray(com.simiacryptus.ref.wrappers.RefIntStream.range(0, itemCnt)
+        .mapToObj(dataIndex -> inData.get(dataIndex).map(v -> {
           final double r = scale * v + bias;
           return Double.isFinite(r) ? r : 0;
         })).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
-      if (!isFrozen()) {
-        IntStream.range(0, delta.length()).forEach(dataIndex -> {
-          @Nullable
-          Tensor deltaT = delta.get(dataIndex);
-          @Nullable
-          Tensor inputT = inData.get(dataIndex);
-          @Nullable final double[] deltaData = deltaT.getData();
-          @Nullable final double[] inputData = inputT.getData();
-          @Nonnull final Tensor weightDelta = new Tensor(weights.getDimensions());
-          for (int i = 0; i < deltaData.length; i++) {
-            weightDelta.add(0, deltaData[i] * inputData[inputData.length == 1 ? 0 : i]);
-            weightDelta.add(1, deltaData[i]);
+          if (!isFrozen()) {
+            com.simiacryptus.ref.wrappers.RefIntStream.range(0, delta.length()).forEach(dataIndex -> {
+              @Nullable
+              Tensor deltaT = delta.get(dataIndex);
+              @Nullable
+              Tensor inputT = inData.get(dataIndex);
+              @Nullable
+              final double[] deltaData = deltaT.getData();
+              @Nullable
+              final double[] inputData = inputT.getData();
+              @Nonnull
+              final Tensor weightDelta = new Tensor(weights.getDimensions());
+              for (int i = 0; i < deltaData.length; i++) {
+                weightDelta.add(0, deltaData[i] * inputData[inputData.length == 1 ? 0 : i]);
+                weightDelta.add(1, deltaData[i]);
+              }
+              buffer.get(LinearActivationLayer.this.getId(), weights.getData()).addInPlace(weightDelta.getData());
+            });
           }
-          buffer.get(LinearActivationLayer.this.getId(), weights.getData()).addInPlace(weightDelta.getData());
-        });
-      }
-      if (in0.isAlive()) {
-        @Nonnull final TensorList tensorList = new TensorArray(IntStream.range(0, delta.length()).mapToObj(dataIndex -> {
-          @Nullable
-          Tensor tensor = delta.get(dataIndex);
-          @Nullable final double[] deltaData = tensor.getData();
-          @Nonnull final Tensor passback = new Tensor(inData.getDimensions());
-          for (int i = 0; i < passback.length(); i++) {
-            passback.set(i, deltaData[i] * weights.getData()[0]);
+          if (in0.isAlive()) {
+            @Nonnull
+            final TensorList tensorList = new TensorArray(
+                com.simiacryptus.ref.wrappers.RefIntStream.range(0, delta.length()).mapToObj(dataIndex -> {
+                  @Nullable
+                  Tensor tensor = delta.get(dataIndex);
+                  @Nullable
+                  final double[] deltaData = tensor.getData();
+                  @Nonnull
+                  final Tensor passback = new Tensor(inData.getDimensions());
+                  for (int i = 0; i < passback.length(); i++) {
+                    passback.set(i, deltaData[i] * weights.getData()[0]);
+                  }
+                  return passback;
+                }).toArray(i -> new Tensor[i]));
+            in0.accumulate(buffer, tensorList);
           }
-          return passback;
-        }).toArray(i -> new Tensor[i]));
-        in0.accumulate(buffer, tensorList);
-      }
-    }) {
+        }) {
 
       @Override
       public boolean isAlive() {
         return in0.isAlive() || !isFrozen();
       }
 
-      @Override
-      protected void _free() {
+      public void _free() {
       }
 
     };
@@ -152,21 +164,40 @@ public class LinearActivationLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, @Nonnull DataSerializer dataSerializer) {
-    @Nonnull final JsonObject json = super.getJsonStub();
+  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+      @Nonnull DataSerializer dataSerializer) {
+    @Nonnull
+    final JsonObject json = super.getJsonStub();
     json.add("weights", weights.getJson(resources, dataSerializer));
     return json;
   }
 
   @Nonnull
   @Override
-  public List<double[]> state() {
-    return Arrays.asList(weights.getData());
+  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
+    return com.simiacryptus.ref.wrappers.RefArrays.asList(weights.getData());
   }
 
-  @Override
-  protected void _free() {
+  public void _free() {
     super._free();
+  }
+
+  public @Override @SuppressWarnings("unused") LinearActivationLayer addRef() {
+    return (LinearActivationLayer) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") LinearActivationLayer[] addRefs(LinearActivationLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(LinearActivationLayer::addRef)
+        .toArray((x) -> new LinearActivationLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused") LinearActivationLayer[][] addRefs(LinearActivationLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(LinearActivationLayer::addRefs)
+        .toArray((x) -> new LinearActivationLayer[x][]);
   }
 
 }

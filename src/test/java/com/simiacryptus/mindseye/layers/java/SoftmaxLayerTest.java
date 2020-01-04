@@ -24,12 +24,12 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-public abstract class SoftmaxLayerTest extends LayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware class SoftmaxLayerTest extends LayerTestBase {
 
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{{4}};
+    return new int[][] { { 4 } };
   }
 
   @Nonnull
@@ -38,7 +38,41 @@ public abstract class SoftmaxLayerTest extends LayerTestBase {
     return new SoftmaxLayer();
   }
 
-  public static class Basic extends SoftmaxLayerTest {
+  public static @com.simiacryptus.ref.lang.RefAware class Basic extends SoftmaxLayerTest {
+
+    public @SuppressWarnings("unused") void _free() {
+    }
+
+    public @Override @SuppressWarnings("unused") Basic addRef() {
+      return (Basic) super.addRef();
+    }
+
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+    }
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") SoftmaxLayerTest addRef() {
+    return (SoftmaxLayerTest) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") SoftmaxLayerTest[] addRefs(SoftmaxLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SoftmaxLayerTest::addRef)
+        .toArray((x) -> new SoftmaxLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused") SoftmaxLayerTest[][] addRefs(SoftmaxLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SoftmaxLayerTest::addRefs)
+        .toArray((x) -> new SoftmaxLayerTest[x][]);
   }
 
 }

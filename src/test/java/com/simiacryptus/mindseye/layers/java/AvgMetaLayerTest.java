@@ -25,13 +25,11 @@ import com.simiacryptus.mindseye.layers.MetaLayerTestBase;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-public abstract class AvgMetaLayerTest extends MetaLayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware class AvgMetaLayerTest extends MetaLayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{
-        {3}
-    };
+    return new int[][] { { 3 } };
   }
 
   @Nonnull
@@ -43,9 +41,7 @@ public abstract class AvgMetaLayerTest extends MetaLayerTestBase {
   @Nonnull
   @Override
   public int[][] getLargeDims(Random random) {
-    return new int[][]{
-        {100}
-    };
+    return new int[][] { { 100 } };
   }
 
   @Override
@@ -53,12 +49,46 @@ public abstract class AvgMetaLayerTest extends MetaLayerTestBase {
     return new MeanSqLossLayer();
   }
 
-  public static class Basic extends AvgMetaLayerTest {
+  public static @com.simiacryptus.ref.lang.RefAware class Basic extends AvgMetaLayerTest {
 
     @Override
     protected Layer lossLayer() {
       return new EntropyLossLayer();
     }
+
+    public @SuppressWarnings("unused") void _free() {
+    }
+
+    public @Override @SuppressWarnings("unused") Basic addRef() {
+      return (Basic) super.addRef();
+    }
+
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+    }
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") AvgMetaLayerTest addRef() {
+    return (AvgMetaLayerTest) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") AvgMetaLayerTest[] addRefs(AvgMetaLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(AvgMetaLayerTest::addRef)
+        .toArray((x) -> new AvgMetaLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused") AvgMetaLayerTest[][] addRefs(AvgMetaLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(AvgMetaLayerTest::addRefs)
+        .toArray((x) -> new AvgMetaLayerTest[x][]);
   }
 
 }

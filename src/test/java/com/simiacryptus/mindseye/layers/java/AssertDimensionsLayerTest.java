@@ -24,14 +24,12 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-public abstract class AssertDimensionsLayerTest extends LayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware class AssertDimensionsLayerTest extends LayerTestBase {
 
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{
-        {2, 2}
-    };
+    return new int[][] { { 2, 2 } };
   }
 
   @Nonnull
@@ -40,8 +38,42 @@ public abstract class AssertDimensionsLayerTest extends LayerTestBase {
     return new AssertDimensionsLayer(2, 2);
   }
 
-  public static class Basic extends AssertDimensionsLayerTest {
+  public static @com.simiacryptus.ref.lang.RefAware class Basic extends AssertDimensionsLayerTest {
 
+    public @SuppressWarnings("unused") void _free() {
+    }
+
+    public @Override @SuppressWarnings("unused") Basic addRef() {
+      return (Basic) super.addRef();
+    }
+
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+    }
+
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") AssertDimensionsLayerTest addRef() {
+    return (AssertDimensionsLayerTest) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") AssertDimensionsLayerTest[] addRefs(AssertDimensionsLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(AssertDimensionsLayerTest::addRef)
+        .toArray((x) -> new AssertDimensionsLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused") AssertDimensionsLayerTest[][] addRefs(AssertDimensionsLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(AssertDimensionsLayerTest::addRefs)
+        .toArray((x) -> new AssertDimensionsLayerTest[x][]);
   }
 
 }

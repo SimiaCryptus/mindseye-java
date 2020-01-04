@@ -28,9 +28,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.IntStream;
+import com.simiacryptus.ref.wrappers.RefIntStream;
 
 @SuppressWarnings("serial")
-public class ImgTileSelectLayer extends LayerBase {
+public @com.simiacryptus.ref.lang.RefAware class ImgTileSelectLayer extends LayerBase {
 
   private final boolean toroidal;
   private final int sizeX;
@@ -43,7 +44,7 @@ public class ImgTileSelectLayer extends LayerBase {
   }
 
   public ImgTileSelectLayer(final int sizeX, final int sizeY, final int positionX, final int positionY,
-                            final boolean toroidal) {
+      final boolean toroidal) {
     super();
     this.sizeX = sizeX;
     this.sizeY = sizeY;
@@ -64,12 +65,15 @@ public class ImgTileSelectLayer extends LayerBase {
 
   @Nonnull
   public static void copy(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData, final int posX,
-                          final int posY, final boolean toroidal) {
-    @Nonnull final int[] inDim = inputData.getDimensions();
-    @Nonnull final int[] outDim = outputData.getDimensions();
+      final int posY, final boolean toroidal) {
+    @Nonnull
+    final int[] inDim = inputData.getDimensions();
+    @Nonnull
+    final int[] outDim = outputData.getDimensions();
     assert 3 == inDim.length;
     assert 3 == outDim.length;
-    assert inDim[2] == outDim[2] : Arrays.toString(inDim) + "; " + Arrays.toString(outDim);
+    assert inDim[2] == outDim[2] : com.simiacryptus.ref.wrappers.RefArrays.toString(inDim) + "; "
+        + com.simiacryptus.ref.wrappers.RefArrays.toString(outDim);
     outputData.coordStream(true).forEach((c) -> {
       int x = c.getCoords()[0] + posX;
       int y = c.getCoords()[1] + posY;
@@ -101,15 +105,17 @@ public class ImgTileSelectLayer extends LayerBase {
   }
 
   @SuppressWarnings("unused")
-  public static ImgTileSelectLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+  public static ImgTileSelectLayer fromJson(@Nonnull final JsonObject json,
+      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new ImgTileSelectLayer(json);
   }
 
   @Nonnull
   public static Tensor[] toTiles(final NotebookOutput log, final Tensor canvas, final int width, final int height,
-                                 final int strideX, final int strideY, final int offsetX, final int offsetY) {
+      final int strideX, final int strideY, final int offsetX, final int offsetY) {
 
-    @Nonnull final int[] inputDims = canvas.getDimensions();
+    @Nonnull
+    final int[] inputDims = canvas.getDimensions();
     int cols = (int) (Math.ceil((inputDims[0] - width - offsetX) * 1.0 / strideX) + 1);
     int rows = (int) (Math.ceil((inputDims[1] - height - offsetY) * 1.0 / strideY) + 1);
     log.p(String.format(
@@ -131,9 +137,10 @@ public class ImgTileSelectLayer extends LayerBase {
 
   @Nonnull
   public static ImgTileSelectLayer[] tileSelectors(final NotebookOutput log, final Tensor canvas, final int width,
-                                                   final int height, final int strideX, final int strideY, final int offsetX, final int offsetY) {
+      final int height, final int strideX, final int strideY, final int offsetX, final int offsetY) {
 
-    @Nonnull final int[] inputDims = canvas.getDimensions();
+    @Nonnull
+    final int[] inputDims = canvas.getDimensions();
     int cols = (int) (Math.ceil((inputDims[0] - width - offsetX) * 1.0 / strideX) + 1);
     int rows = (int) (Math.ceil((inputDims[1] - height - offsetY) * 1.0 / strideY) + 1);
     log.p(String.format(
@@ -158,51 +165,60 @@ public class ImgTileSelectLayer extends LayerBase {
   public Result eval(@Nonnull final Result... inObj) {
     final Result input = inObj[0];
     final TensorList batch = input.getData();
-    @Nonnull final int[] inputDims = batch.getDimensions();
+    @Nonnull
+    final int[] inputDims = batch.getDimensions();
     assert 3 == inputDims.length;
-    @Nonnull final int[] dimOut = getViewDimensions(inputDims, new int[]{sizeX, sizeY, inputDims[2]},
-        new int[]{positionX, positionY, 0});
-    return new Result(new TensorArray(IntStream.range(0, batch.length()).mapToObj(dataIndex -> {
-      @Nonnull final Tensor outputData = new Tensor(dimOut);
-      Tensor inputData = batch.get(dataIndex);
-      copy(inputData, outputData, positionX, positionY, toroidal);
-      return outputData;
-    }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList error) -> {
-      if (input.isAlive()) {
-        @Nonnull
-        TensorArray tensorArray = new TensorArray(IntStream.range(0, error.length()).mapToObj(dataIndex -> {
-          @Nullable final Tensor err = error.get(dataIndex);
-          @Nonnull final Tensor passback = new Tensor(inputDims);
-          copy(err, passback, -positionX, -positionY, toroidal);
-          return passback;
-        }).toArray(i -> new Tensor[i]));
-        input.accumulate(buffer, tensorArray);
-      }
-    }) {
+    @Nonnull
+    final int[] dimOut = getViewDimensions(inputDims, new int[] { sizeX, sizeY, inputDims[2] },
+        new int[] { positionX, positionY, 0 });
+    return new Result(
+        new TensorArray(com.simiacryptus.ref.wrappers.RefIntStream.range(0, batch.length()).mapToObj(dataIndex -> {
+          @Nonnull
+          final Tensor outputData = new Tensor(dimOut);
+          Tensor inputData = batch.get(dataIndex);
+          copy(inputData, outputData, positionX, positionY, toroidal);
+          return outputData;
+        }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList error) -> {
+          if (input.isAlive()) {
+            @Nonnull
+            TensorArray tensorArray = new TensorArray(
+                com.simiacryptus.ref.wrappers.RefIntStream.range(0, error.length()).mapToObj(dataIndex -> {
+                  @Nullable
+                  final Tensor err = error.get(dataIndex);
+                  @Nonnull
+                  final Tensor passback = new Tensor(inputDims);
+                  copy(err, passback, -positionX, -positionY, toroidal);
+                  return passback;
+                }).toArray(i -> new Tensor[i]));
+            input.accumulate(buffer, tensorArray);
+          }
+        }) {
 
       @Override
       public boolean isAlive() {
         return input.isAlive() || !isFrozen();
       }
 
-      @Override
-      protected void _free() {
+      public void _free() {
       }
     };
   }
 
   @Nonnull
   public int[] getViewDimensions(int[] sourceDimensions, int[] destinationDimensions, int[] offset) {
-    @Nonnull final int[] viewDim = new int[3];
-    Arrays.parallelSetAll(viewDim, i -> toroidal ? (destinationDimensions[i])
+    @Nonnull
+    final int[] viewDim = new int[3];
+    com.simiacryptus.ref.wrappers.RefArrays.parallelSetAll(viewDim, i -> toroidal ? (destinationDimensions[i])
         : (Math.min(sourceDimensions[i], destinationDimensions[i] + offset[i]) - Math.max(offset[i], 0)));
     return viewDim;
   }
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull final JsonObject json = super.getJsonStub();
+  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+      DataSerializer dataSerializer) {
+    @Nonnull
+    final JsonObject json = super.getJsonStub();
     json.addProperty("sizeX", sizeX);
     json.addProperty("sizeY", sizeY);
     json.addProperty("positionX", positionX);
@@ -213,8 +229,29 @@ public class ImgTileSelectLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public List<double[]> state() {
-    return new ArrayList<>();
+  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
+    return new com.simiacryptus.ref.wrappers.RefArrayList<>();
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") ImgTileSelectLayer addRef() {
+    return (ImgTileSelectLayer) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") ImgTileSelectLayer[] addRefs(ImgTileSelectLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgTileSelectLayer::addRef)
+        .toArray((x) -> new ImgTileSelectLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused") ImgTileSelectLayer[][] addRefs(ImgTileSelectLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgTileSelectLayer::addRefs)
+        .toArray((x) -> new ImgTileSelectLayer[x][]);
   }
 
 }

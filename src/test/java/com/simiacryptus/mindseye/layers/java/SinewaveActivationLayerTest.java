@@ -19,11 +19,10 @@
 
 package com.simiacryptus.mindseye.layers.java;
 
-
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 
-public abstract class SinewaveActivationLayerTest extends ActivationLayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware class SinewaveActivationLayerTest extends ActivationLayerTestBase {
   public SinewaveActivationLayerTest() {
     super(new SinewaveActivationLayer());
   }
@@ -33,7 +32,42 @@ public abstract class SinewaveActivationLayerTest extends ActivationLayerTestBas
     return new MeanSqLossLayer();
   }
 
-  public static class Basic extends SinewaveActivationLayerTest {
+  public static @com.simiacryptus.ref.lang.RefAware class Basic extends SinewaveActivationLayerTest {
+
+    public @SuppressWarnings("unused") void _free() {
+    }
+
+    public @Override @SuppressWarnings("unused") Basic addRef() {
+      return (Basic) super.addRef();
+    }
+
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+    }
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") SinewaveActivationLayerTest addRef() {
+    return (SinewaveActivationLayerTest) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") SinewaveActivationLayerTest[] addRefs(SinewaveActivationLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SinewaveActivationLayerTest::addRef)
+        .toArray((x) -> new SinewaveActivationLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused") SinewaveActivationLayerTest[][] addRefs(
+      SinewaveActivationLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SinewaveActivationLayerTest::addRefs)
+        .toArray((x) -> new SinewaveActivationLayerTest[x][]);
   }
 
 }

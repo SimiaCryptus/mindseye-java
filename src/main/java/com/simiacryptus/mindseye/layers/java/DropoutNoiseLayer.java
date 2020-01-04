@@ -29,9 +29,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.IntStream;
+import com.simiacryptus.ref.wrappers.RefIntStream;
 
 @SuppressWarnings("serial")
-public class DropoutNoiseLayer extends LayerBase implements StochasticComponent {
+public @com.simiacryptus.ref.lang.RefAware class DropoutNoiseLayer extends LayerBase implements StochasticComponent {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(DropoutNoiseLayer.class);
@@ -63,7 +64,8 @@ public class DropoutNoiseLayer extends LayerBase implements StochasticComponent 
   }
 
   @SuppressWarnings("unused")
-  public static DropoutNoiseLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+  public static DropoutNoiseLayer fromJson(@Nonnull final JsonObject json,
+      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new DropoutNoiseLayer(json);
   }
 
@@ -73,49 +75,59 @@ public class DropoutNoiseLayer extends LayerBase implements StochasticComponent 
     final Result inputResult = inObj[0];
     final TensorList inputData = inputResult.getData();
     final int itemCnt = inputData.length();
-    final Tensor[] mask = IntStream.range(0, itemCnt).mapToObj(dataIndex -> {
-      @Nonnull final Random random = new Random(seed);
-      @Nullable final Tensor input = inputData.get(dataIndex);
+    final Tensor[] mask = com.simiacryptus.ref.wrappers.RefIntStream.range(0, itemCnt).mapToObj(dataIndex -> {
+      @Nonnull
+      final Random random = new Random(seed);
+      @Nullable
+      final Tensor input = inputData.get(dataIndex);
       return input.map(x -> {
         if (seed == -1)
           return 1;
         return random.nextDouble() < getValue() ? 0 : (1.0 / getValue());
       });
     }).toArray(i -> new Tensor[i]);
-    return new Result(new TensorArray(IntStream.range(0, itemCnt).mapToObj(dataIndex -> {
-      Tensor inputTensor = inputData.get(dataIndex);
-      @Nullable final double[] input = inputTensor.getData();
-      @Nullable final double[] maskT = mask[dataIndex].getData();
-      @Nonnull final Tensor output = new Tensor(inputTensor.getDimensions());
-      @Nullable final double[] outputData = output.getData();
-      for (int i = 0; i < outputData.length; i++) {
-        outputData[i] = input[i] * maskT[i];
-      }
-      return output;
-    }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
-      if (inputResult.isAlive()) {
-        @Nonnull
-        TensorArray tensorArray = new TensorArray(IntStream.range(0, delta.length()).mapToObj(dataIndex -> {
-          Tensor deltaTensor = delta.get(dataIndex);
-          @Nullable final double[] deltaData = deltaTensor.getData();
-          @Nullable final double[] maskData = mask[dataIndex].getData();
-          @Nonnull final Tensor passback = new Tensor(deltaTensor.getDimensions());
-          for (int i = 0; i < passback.length(); i++) {
-            passback.set(i, maskData[i] * deltaData[i]);
+    return new Result(
+        new TensorArray(com.simiacryptus.ref.wrappers.RefIntStream.range(0, itemCnt).mapToObj(dataIndex -> {
+          Tensor inputTensor = inputData.get(dataIndex);
+          @Nullable
+          final double[] input = inputTensor.getData();
+          @Nullable
+          final double[] maskT = mask[dataIndex].getData();
+          @Nonnull
+          final Tensor output = new Tensor(inputTensor.getDimensions());
+          @Nullable
+          final double[] outputData = output.getData();
+          for (int i = 0; i < outputData.length; i++) {
+            outputData[i] = input[i] * maskT[i];
           }
-          return passback;
-        }).toArray(i -> new Tensor[i]));
-        inputResult.accumulate(buffer, tensorArray);
-      }
-    }) {
+          return output;
+        }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
+          if (inputResult.isAlive()) {
+            @Nonnull
+            TensorArray tensorArray = new TensorArray(
+                com.simiacryptus.ref.wrappers.RefIntStream.range(0, delta.length()).mapToObj(dataIndex -> {
+                  Tensor deltaTensor = delta.get(dataIndex);
+                  @Nullable
+                  final double[] deltaData = deltaTensor.getData();
+                  @Nullable
+                  final double[] maskData = mask[dataIndex].getData();
+                  @Nonnull
+                  final Tensor passback = new Tensor(deltaTensor.getDimensions());
+                  for (int i = 0; i < passback.length(); i++) {
+                    passback.set(i, maskData[i] * deltaData[i]);
+                  }
+                  return passback;
+                }).toArray(i -> new Tensor[i]));
+            inputResult.accumulate(buffer, tensorArray);
+          }
+        }) {
 
       @Override
       public boolean isAlive() {
         return inputResult.isAlive() || !isFrozen();
       }
 
-      @Override
-      protected void _free() {
+      public void _free() {
       }
 
     };
@@ -123,8 +135,10 @@ public class DropoutNoiseLayer extends LayerBase implements StochasticComponent 
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull final JsonObject json = super.getJsonStub();
+  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+      DataSerializer dataSerializer) {
+    @Nonnull
+    final JsonObject json = super.getJsonStub();
     json.addProperty("value", value);
     return json;
   }
@@ -143,8 +157,29 @@ public class DropoutNoiseLayer extends LayerBase implements StochasticComponent 
 
   @Nonnull
   @Override
-  public List<double[]> state() {
-    return Arrays.asList();
+  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
+    return com.simiacryptus.ref.wrappers.RefArrays.asList();
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") DropoutNoiseLayer addRef() {
+    return (DropoutNoiseLayer) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") DropoutNoiseLayer[] addRefs(DropoutNoiseLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(DropoutNoiseLayer::addRef)
+        .toArray((x) -> new DropoutNoiseLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused") DropoutNoiseLayer[][] addRefs(DropoutNoiseLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(DropoutNoiseLayer::addRefs)
+        .toArray((x) -> new DropoutNoiseLayer[x][]);
   }
 
 }

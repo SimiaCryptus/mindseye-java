@@ -24,14 +24,12 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-public abstract class AvgReducerLayerTest extends LayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware class AvgReducerLayerTest extends LayerTestBase {
 
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{
-        {3}
-    };
+    return new int[][] { { 3 } };
   }
 
   @Nonnull
@@ -43,14 +41,45 @@ public abstract class AvgReducerLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public int[][] getLargeDims(Random random) {
-    return new int[][]{
-        {200, 200, 3}
-    };
+    return new int[][] { { 200, 200, 3 } };
   }
 
-  public static class Basic extends AvgMetaLayerTest {
+  public static @com.simiacryptus.ref.lang.RefAware class Basic extends AvgMetaLayerTest {
+
+    public @SuppressWarnings("unused") void _free() {
+    }
+
+    public @Override @SuppressWarnings("unused") Basic addRef() {
+      return (Basic) super.addRef();
+    }
+
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+    }
 
   }
 
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") AvgReducerLayerTest addRef() {
+    return (AvgReducerLayerTest) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") AvgReducerLayerTest[] addRefs(AvgReducerLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(AvgReducerLayerTest::addRef)
+        .toArray((x) -> new AvgReducerLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused") AvgReducerLayerTest[][] addRefs(AvgReducerLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(AvgReducerLayerTest::addRefs)
+        .toArray((x) -> new AvgReducerLayerTest[x][]);
+  }
 
 }

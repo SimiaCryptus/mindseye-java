@@ -19,20 +19,53 @@
 
 package com.simiacryptus.mindseye.layers.java;
 
-
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 
-public abstract class GaussianNoiseLayerTest extends ActivationLayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware class GaussianNoiseLayerTest extends ActivationLayerTestBase {
   public GaussianNoiseLayerTest() {
     super(new GaussianNoiseLayer());
   }
 
-  public static class Basic extends GaussianNoiseLayerTest {
+  public static @com.simiacryptus.ref.lang.RefAware class Basic extends GaussianNoiseLayerTest {
     @Override
     protected Layer lossLayer() {
       return new MeanSqLossLayer();
     }
+
+    public @SuppressWarnings("unused") void _free() {
+    }
+
+    public @Override @SuppressWarnings("unused") Basic addRef() {
+      return (Basic) super.addRef();
+    }
+
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+    }
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") GaussianNoiseLayerTest addRef() {
+    return (GaussianNoiseLayerTest) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") GaussianNoiseLayerTest[] addRefs(GaussianNoiseLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(GaussianNoiseLayerTest::addRef)
+        .toArray((x) -> new GaussianNoiseLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused") GaussianNoiseLayerTest[][] addRefs(GaussianNoiseLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(GaussianNoiseLayerTest::addRefs)
+        .toArray((x) -> new GaussianNoiseLayerTest[x][]);
   }
 
 }

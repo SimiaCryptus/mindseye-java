@@ -40,9 +40,13 @@ import java.util.function.IntToDoubleFunction;
 import java.util.function.ToDoubleBiFunction;
 import java.util.function.ToDoubleFunction;
 import java.util.stream.IntStream;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefList;
+import com.simiacryptus.ref.wrappers.RefMap;
+import com.simiacryptus.ref.wrappers.RefIntStream;
 
 @SuppressWarnings("serial")
-public class FullyConnectedLayer extends LayerBase {
+public @com.simiacryptus.ref.lang.RefAware class FullyConnectedLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(FullyConnectedLayer.class);
@@ -62,8 +66,8 @@ public class FullyConnectedLayer extends LayerBase {
 
   public FullyConnectedLayer(@Nonnull final int[] inputDims, @Nonnull final int[] outputDims) {
     final int inputs = Tensor.length(inputDims);
-    this.inputDims = Arrays.copyOf(inputDims, inputDims.length);
-    this.outputDims = Arrays.copyOf(outputDims, outputDims.length);
+    this.inputDims = com.simiacryptus.ref.wrappers.RefArrays.copyOf(inputDims, inputDims.length);
+    this.outputDims = com.simiacryptus.ref.wrappers.RefArrays.copyOf(outputDims, outputDims.length);
     final int outs = Tensor.length(outputDims);
     weights = new Tensor(inputs, outs);
     set(() -> {
@@ -73,7 +77,8 @@ public class FullyConnectedLayer extends LayerBase {
     });
   }
 
-  protected FullyConnectedLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> resources) {
+  protected FullyConnectedLayer(@Nonnull final JsonObject json,
+      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources) {
     super(json);
     outputDims = JsonUtil.getIntArray(json.getAsJsonArray("outputDims"));
     inputDims = JsonUtil.getIntArray(json.getAsJsonArray("inputDims"));
@@ -105,7 +110,7 @@ public class FullyConnectedLayer extends LayerBase {
   public void setByCoord(@Nonnull final ToDoubleBiFunction<Coordinate, Coordinate> f) {
     new Tensor(inputDims).coordStream(true).forEach(in -> {
       new Tensor(outputDims).coordStream(true).forEach(out -> {
-        getWeights().set(new int[]{in.getIndex(), out.getIndex()}, f.applyAsDouble(in, out));
+        getWeights().set(new int[] { in.getIndex(), out.getIndex() }, f.applyAsDouble(in, out));
       });
     });
   }
@@ -137,26 +142,30 @@ public class FullyConnectedLayer extends LayerBase {
   }
 
   @SuppressWarnings("unused")
-  public static FullyConnectedLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+  public static FullyConnectedLayer fromJson(@Nonnull final JsonObject json,
+      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new FullyConnectedLayer(json, rs);
   }
 
   public static void multiply(final double[] matrix, @Nonnull final double[] in, @Nonnull final double[] out) {
-    @Nonnull final DoubleMatrix matrixObj = new DoubleMatrix(out.length, in.length, matrix);
+    @Nonnull
+    final DoubleMatrix matrixObj = new DoubleMatrix(out.length, in.length, matrix);
     matrixObj.mmuli(new DoubleMatrix(in.length, 1, in), new DoubleMatrix(out.length, 1, out));
   }
 
   public static void multiplyT(final double[] matrix, @Nonnull final double[] in, @Nonnull final double[] out) {
     @Nonnull
     DoubleMatrix doubleMatrix = new DoubleMatrix(in.length, out.length, matrix);
-    @Nonnull final DoubleMatrix matrixObj = FullyConnectedLayer.transpose(doubleMatrix);
+    @Nonnull
+    final DoubleMatrix matrixObj = FullyConnectedLayer.transpose(doubleMatrix);
     matrixObj.mmuli(new DoubleMatrix(in.length, 1, in), new DoubleMatrix(out.length, 1, out));
     RecycleBin.DOUBLES.recycle(matrixObj.data, matrixObj.data.length);
   }
 
   @Nonnull
   public static DoubleMatrix transpose(@Nonnull final DoubleMatrix doubleMatrix) {
-    @Nonnull final DoubleMatrix result = new DoubleMatrix(doubleMatrix.columns, doubleMatrix.rows,
+    @Nonnull
+    final DoubleMatrix result = new DoubleMatrix(doubleMatrix.columns, doubleMatrix.rows,
         RecycleBin.DOUBLES.obtain(doubleMatrix.length));
     for (int i = 0; i < doubleMatrix.rows; ++i) {
       for (int j = 0; j < doubleMatrix.columns; ++j) {
@@ -170,33 +179,40 @@ public class FullyConnectedLayer extends LayerBase {
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     final TensorList indata = inObj[0].getData();
-    assert Tensor.length(indata.getDimensions()) == Tensor.length(this.inputDims) : Arrays
-        .toString(indata.getDimensions()) + " == " + Arrays.toString(this.inputDims);
+    assert Tensor.length(indata.getDimensions()) == Tensor
+        .length(this.inputDims) : com.simiacryptus.ref.wrappers.RefArrays.toString(indata.getDimensions()) + " == "
+            + com.simiacryptus.ref.wrappers.RefArrays.toString(this.inputDims);
     @Nonnull
     DoubleMatrix doubleMatrix = new DoubleMatrix(Tensor.length(indata.getDimensions()), Tensor.length(outputDims),
         this.weights.getData());
-    @Nonnull final DoubleMatrix matrixObj = FullyConnectedLayer.transpose(doubleMatrix);
     @Nonnull
-    TensorArray tensorArray = new TensorArray(IntStream.range(0, indata.length()).parallel().mapToObj(dataIndex -> {
-      @Nullable final Tensor input = indata.get(dataIndex);
-      @Nullable final Tensor output = new Tensor(outputDims);
-      matrixObj.mmuli(new DoubleMatrix(input.length(), 1, input.getData()),
-          new DoubleMatrix(output.length(), 1, output.getData()));
-      return output;
-    }).toArray(i -> new Tensor[i]));
+    final DoubleMatrix matrixObj = FullyConnectedLayer.transpose(doubleMatrix);
+    @Nonnull
+    TensorArray tensorArray = new TensorArray(
+        com.simiacryptus.ref.wrappers.RefIntStream.range(0, indata.length()).parallel().mapToObj(dataIndex -> {
+          @Nullable
+          final Tensor input = indata.get(dataIndex);
+          @Nullable
+          final Tensor output = new Tensor(outputDims);
+          matrixObj.mmuli(new DoubleMatrix(input.length(), 1, input.getData()),
+              new DoubleMatrix(output.length(), 1, output.getData()));
+          return output;
+        }).toArray(i -> new Tensor[i]));
     RecycleBin.DOUBLES.recycle(matrixObj.data, matrixObj.data.length);
     return new Result(tensorArray, (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
       if (!isFrozen()) {
         final Delta<UUID> deltaBuffer = buffer.get(FullyConnectedLayer.this.getId(), this.weights.getData());
         final int threads = 4;
-        IntStream.range(0, threads).parallel().mapToObj(x -> x).flatMap(thread -> {
-          return IntStream.range(0, indata.length()).filter(i -> thread == i % threads).mapToObj(dataIndex -> {
-            @Nonnull final Tensor weightDelta = new Tensor(Tensor.length(inputDims), Tensor.length(outputDims));
-            Tensor deltaTensor = delta.get(dataIndex);
-            Tensor inputTensor = indata.get(dataIndex);
-            FullyConnectedLayer.crossMultiplyT(deltaTensor.getData(), inputTensor.getData(), weightDelta.getData());
-            return weightDelta;
-          });
+        com.simiacryptus.ref.wrappers.RefIntStream.range(0, threads).parallel().mapToObj(x -> x).flatMap(thread -> {
+          return com.simiacryptus.ref.wrappers.RefIntStream.range(0, indata.length()).filter(i -> thread == i % threads)
+              .mapToObj(dataIndex -> {
+                @Nonnull
+                final Tensor weightDelta = new Tensor(Tensor.length(inputDims), Tensor.length(outputDims));
+                Tensor deltaTensor = delta.get(dataIndex);
+                Tensor inputTensor = indata.get(dataIndex);
+                FullyConnectedLayer.crossMultiplyT(deltaTensor.getData(), inputTensor.getData(), weightDelta.getData());
+                return weightDelta;
+              });
         }).reduce((a, b) -> {
           return a.addAndFree(b);
         }).map(data -> {
@@ -204,23 +220,25 @@ public class FullyConnectedLayer extends LayerBase {
         });
       }
       if (inObj[0].isAlive()) {
-        @Nonnull final TensorList tensorList = new TensorArray(IntStream.range(0, indata.length()).parallel().mapToObj(dataIndex -> {
-          Tensor deltaTensor = delta.get(dataIndex);
-          @Nonnull final Tensor passback = new Tensor(indata.getDimensions());
-          FullyConnectedLayer.multiply(this.weights.getData(), deltaTensor.getData(), passback.getData());
-          return passback;
-        }).toArray(i -> new Tensor[i]));
+        @Nonnull
+        final TensorList tensorList = new TensorArray(
+            com.simiacryptus.ref.wrappers.RefIntStream.range(0, indata.length()).parallel().mapToObj(dataIndex -> {
+              Tensor deltaTensor = delta.get(dataIndex);
+              @Nonnull
+              final Tensor passback = new Tensor(indata.getDimensions());
+              FullyConnectedLayer.multiply(this.weights.getData(), deltaTensor.getData(), passback.getData());
+              return passback;
+            }).toArray(i -> new Tensor[i]));
         inObj[0].accumulate(buffer, tensorList);
       }
     }) {
 
       @Override
       public boolean isAlive() {
-        return !isFrozen() || Arrays.stream(inObj).anyMatch(x -> x.isAlive());
+        return !isFrozen() || com.simiacryptus.ref.wrappers.RefArrays.stream(inObj).anyMatch(x -> x.isAlive());
       }
 
-      @Override
-      protected void _free() {
+      public void _free() {
       }
 
     };
@@ -228,8 +246,10 @@ public class FullyConnectedLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, @Nonnull DataSerializer dataSerializer) {
-    @Nonnull final JsonObject json = super.getJsonStub();
+  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+      @Nonnull DataSerializer dataSerializer) {
+    @Nonnull
+    final JsonObject json = super.getJsonStub();
     json.add("outputDims", JsonUtil.getJson(outputDims));
     json.add("inputDims", JsonUtil.getJson(inputDims));
     json.add("weights", getWeights().getJson(resources, dataSerializer));
@@ -238,7 +258,7 @@ public class FullyConnectedLayer extends LayerBase {
 
   @Nonnull
   public FullyConnectedLayer set(@Nonnull final DoubleSupplier f) {
-    Arrays.parallelSetAll(getWeights().getData(), i -> f.getAsDouble());
+    com.simiacryptus.ref.wrappers.RefArrays.parallelSetAll(getWeights().getData(), i -> f.getAsDouble());
     return this;
   }
 
@@ -250,12 +270,13 @@ public class FullyConnectedLayer extends LayerBase {
 
   public void initSpacial(final double radius, final double stiffness, final double peak) {
     setByCoord((@Nonnull final Coordinate in, @Nonnull final Coordinate out) -> {
-      final double[] doubleCoords = IntStream.range(0, in.getCoords().length).mapToDouble(d -> {
-        final double from = in.getCoords()[d] * 1.0 / FullyConnectedLayer.this.inputDims[d];
-        final double to = out.getCoords()[d] * 1.0 / FullyConnectedLayer.this.outputDims[d];
-        return from - to;
-      }).toArray();
-      final double dist = Math.sqrt(Arrays.stream(doubleCoords).map(x -> x * x).sum());
+      final double[] doubleCoords = com.simiacryptus.ref.wrappers.RefIntStream.range(0, in.getCoords().length)
+          .mapToDouble(d -> {
+            final double from = in.getCoords()[d] * 1.0 / FullyConnectedLayer.this.inputDims[d];
+            final double to = out.getCoords()[d] * 1.0 / FullyConnectedLayer.this.outputDims[d];
+            return from - to;
+          }).toArray();
+      final double dist = Math.sqrt(com.simiacryptus.ref.wrappers.RefArrays.stream(doubleCoords).map(x -> x * x).sum());
       final double factor = (1 + Math.tanh(stiffness * (radius - dist))) / 2;
       return peak * factor;
     });
@@ -281,8 +302,8 @@ public class FullyConnectedLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public List<double[]> state() {
-    return Arrays.asList(getWeights().getData());
+  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
+    return com.simiacryptus.ref.wrappers.RefArrays.asList(getWeights().getData());
   }
 
   public FullyConnectedLayer randomize(double amplitude) {
@@ -290,8 +311,25 @@ public class FullyConnectedLayer extends LayerBase {
     return this;
   }
 
-  @Override
-  protected void _free() {
+  public void _free() {
     super._free();
+  }
+
+  public @Override @SuppressWarnings("unused") FullyConnectedLayer addRef() {
+    return (FullyConnectedLayer) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") FullyConnectedLayer[] addRefs(FullyConnectedLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(FullyConnectedLayer::addRef)
+        .toArray((x) -> new FullyConnectedLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused") FullyConnectedLayer[][] addRefs(FullyConnectedLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(FullyConnectedLayer::addRefs)
+        .toArray((x) -> new FullyConnectedLayer[x][]);
   }
 }

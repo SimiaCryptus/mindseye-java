@@ -27,9 +27,10 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
+import com.simiacryptus.ref.wrappers.RefMap;
 
 @SuppressWarnings("serial")
-public class NormalizationMetaLayer extends PipelineNetwork {
+public @com.simiacryptus.ref.lang.RefAware class NormalizationMetaLayer extends PipelineNetwork {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(NormalizationMetaLayer.class);
@@ -43,13 +44,36 @@ public class NormalizationMetaLayer extends PipelineNetwork {
     add(new ProductInputsLayer(), getHead(), getInput(0));
   }
 
-  protected NormalizationMetaLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+  protected NormalizationMetaLayer(@Nonnull final JsonObject json,
+      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     super(json, rs);
   }
 
   @SuppressWarnings("unused")
-  public static NormalizationMetaLayer fromJson(@NotNull final JsonObject json, Map<CharSequence, byte[]> rs) {
+  public static NormalizationMetaLayer fromJson(@NotNull final JsonObject json,
+      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new NormalizationMetaLayer(json, rs);
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") NormalizationMetaLayer addRef() {
+    return (NormalizationMetaLayer) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") NormalizationMetaLayer[] addRefs(NormalizationMetaLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(NormalizationMetaLayer::addRef)
+        .toArray((x) -> new NormalizationMetaLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused") NormalizationMetaLayer[][] addRefs(NormalizationMetaLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(NormalizationMetaLayer::addRefs)
+        .toArray((x) -> new NormalizationMetaLayer[x][]);
   }
 
 }

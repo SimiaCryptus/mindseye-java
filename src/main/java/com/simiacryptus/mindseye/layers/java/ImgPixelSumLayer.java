@@ -30,9 +30,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.IntStream;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefList;
+import com.simiacryptus.ref.wrappers.RefMap;
+import com.simiacryptus.ref.wrappers.RefIntStream;
 
 @SuppressWarnings("serial")
-public class ImgPixelSumLayer extends LayerBase {
+public @com.simiacryptus.ref.lang.RefAware class ImgPixelSumLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(ImgPixelSumLayer.class);
@@ -46,7 +50,8 @@ public class ImgPixelSumLayer extends LayerBase {
   }
 
   @SuppressWarnings("unused")
-  public static ImgPixelSumLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+  public static ImgPixelSumLayer fromJson(@Nonnull final JsonObject json,
+      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new ImgPixelSumLayer(json);
   }
 
@@ -64,7 +69,7 @@ public class ImgPixelSumLayer extends LayerBase {
     assert 3 == inputDims.length;
     return new Result(new TensorArray(inputData.stream().map(tensor -> {
       return new Tensor(inputDims[0], inputDims[1], 1).setByCoord(c -> {
-        return IntStream.range(0, inputDims[2]).mapToDouble(i -> {
+        return com.simiacryptus.ref.wrappers.RefIntStream.range(0, inputDims[2]).mapToDouble(i -> {
           int[] coords = c.getCoords();
           return tensor.get(coords[0], coords[1], i);
         }).sum();
@@ -88,21 +93,42 @@ public class ImgPixelSumLayer extends LayerBase {
         return input.isAlive() || !isFrozen();
       }
 
-      @Override
-      protected void _free() {
+      public void _free() {
       }
     };
   }
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
+  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+      DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 
   @Nonnull
   @Override
-  public List<double[]> state() {
-    return Arrays.asList();
+  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
+    return com.simiacryptus.ref.wrappers.RefArrays.asList();
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") ImgPixelSumLayer addRef() {
+    return (ImgPixelSumLayer) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") ImgPixelSumLayer[] addRefs(ImgPixelSumLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgPixelSumLayer::addRef)
+        .toArray((x) -> new ImgPixelSumLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused") ImgPixelSumLayer[][] addRefs(ImgPixelSumLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgPixelSumLayer::addRefs)
+        .toArray((x) -> new ImgPixelSumLayer[x][]);
   }
 }

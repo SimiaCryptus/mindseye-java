@@ -25,13 +25,11 @@ import com.simiacryptus.mindseye.layers.MetaLayerTestBase;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-public abstract class MaxMetaLayerTest extends MetaLayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware class MaxMetaLayerTest extends MetaLayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{
-        {3}
-    };
+    return new int[][] { { 3 } };
   }
 
   @Nonnull
@@ -43,9 +41,7 @@ public abstract class MaxMetaLayerTest extends MetaLayerTestBase {
   @Nonnull
   @Override
   public int[][] getLargeDims(Random random) {
-    return new int[][]{
-        {3}
-    };
+    return new int[][] { { 3 } };
   }
 
   @Override
@@ -53,7 +49,41 @@ public abstract class MaxMetaLayerTest extends MetaLayerTestBase {
     return new MeanSqLossLayer();
   }
 
-  public static class Basic extends MaxMetaLayerTest {
+  public static @com.simiacryptus.ref.lang.RefAware class Basic extends MaxMetaLayerTest {
+
+    public @SuppressWarnings("unused") void _free() {
+    }
+
+    public @Override @SuppressWarnings("unused") Basic addRef() {
+      return (Basic) super.addRef();
+    }
+
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+    }
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") MaxMetaLayerTest addRef() {
+    return (MaxMetaLayerTest) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") MaxMetaLayerTest[] addRefs(MaxMetaLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MaxMetaLayerTest::addRef)
+        .toArray((x) -> new MaxMetaLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused") MaxMetaLayerTest[][] addRefs(MaxMetaLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MaxMetaLayerTest::addRefs)
+        .toArray((x) -> new MaxMetaLayerTest[x][]);
   }
 
 }

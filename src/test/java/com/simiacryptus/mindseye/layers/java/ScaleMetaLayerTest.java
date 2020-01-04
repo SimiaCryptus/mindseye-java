@@ -24,7 +24,7 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-public abstract class ScaleMetaLayerTest extends LayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware class ScaleMetaLayerTest extends LayerTestBase {
 
   public ScaleMetaLayerTest() {
     validateBatchExecution = false;
@@ -33,9 +33,7 @@ public abstract class ScaleMetaLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{
-        {3}, {3}
-    };
+    return new int[][] { { 3 }, { 3 } };
   }
 
   @Nonnull
@@ -44,7 +42,41 @@ public abstract class ScaleMetaLayerTest extends LayerTestBase {
     return new ScaleMetaLayer();
   }
 
-  public static class Basic extends ScaleMetaLayerTest {
+  public static @com.simiacryptus.ref.lang.RefAware class Basic extends ScaleMetaLayerTest {
+
+    public @SuppressWarnings("unused") void _free() {
+    }
+
+    public @Override @SuppressWarnings("unused") Basic addRef() {
+      return (Basic) super.addRef();
+    }
+
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+    }
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") ScaleMetaLayerTest addRef() {
+    return (ScaleMetaLayerTest) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") ScaleMetaLayerTest[] addRefs(ScaleMetaLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ScaleMetaLayerTest::addRef)
+        .toArray((x) -> new ScaleMetaLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused") ScaleMetaLayerTest[][] addRefs(ScaleMetaLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ScaleMetaLayerTest::addRefs)
+        .toArray((x) -> new ScaleMetaLayerTest[x][]);
   }
 
 }

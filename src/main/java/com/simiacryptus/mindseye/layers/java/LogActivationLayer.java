@@ -24,9 +24,11 @@ import com.simiacryptus.mindseye.lang.DataSerializer;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
+import com.simiacryptus.ref.wrappers.RefMap;
 
 @SuppressWarnings("serial")
-public final class LogActivationLayer extends SimpleActivationLayer<LogActivationLayer> {
+public final @com.simiacryptus.ref.lang.RefAware class LogActivationLayer
+    extends SimpleActivationLayer<LogActivationLayer> {
 
   public LogActivationLayer() {
   }
@@ -36,13 +38,15 @@ public final class LogActivationLayer extends SimpleActivationLayer<LogActivatio
   }
 
   @SuppressWarnings("unused")
-  public static LogActivationLayer fromJson(final JsonObject json, Map<CharSequence, byte[]> rs) {
+  public static LogActivationLayer fromJson(final JsonObject json,
+      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new LogActivationLayer(json);
   }
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
+  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+      DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 
@@ -64,6 +68,27 @@ public final class LogActivationLayer extends SimpleActivationLayer<LogActivatio
       results[0] = 0;
       results[1] = 0;
     }
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") LogActivationLayer addRef() {
+    return (LogActivationLayer) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") LogActivationLayer[] addRefs(LogActivationLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(LogActivationLayer::addRef)
+        .toArray((x) -> new LogActivationLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused") LogActivationLayer[][] addRefs(LogActivationLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(LogActivationLayer::addRefs)
+        .toArray((x) -> new LogActivationLayer[x][]);
   }
 
 }

@@ -26,13 +26,13 @@ import com.simiacryptus.mindseye.layers.ValueLayer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-public class ValueLayerTest {
-  public static class Normal extends LayerTestBase {
+public @com.simiacryptus.ref.lang.RefAware class ValueLayerTest {
+  public static @com.simiacryptus.ref.lang.RefAware class Normal extends LayerTestBase {
 
     @Nonnull
     @Override
     public int[][] getSmallDims(Random random) {
-      return new int[][]{};
+      return new int[][] {};
     }
 
     @Nonnull
@@ -40,6 +40,19 @@ public class ValueLayerTest {
     public Layer getLayer(final int[][] inputSize, Random random) {
       Tensor tensor = new Tensor(0.1);
       return new ValueLayer(tensor);
+    }
+
+    public @SuppressWarnings("unused") void _free() {
+    }
+
+    public @Override @SuppressWarnings("unused") Normal addRef() {
+      return (Normal) super.addRef();
+    }
+
+    public static @SuppressWarnings("unused") Normal[] addRefs(Normal[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Normal::addRef).toArray((x) -> new Normal[x]);
     }
   }
 

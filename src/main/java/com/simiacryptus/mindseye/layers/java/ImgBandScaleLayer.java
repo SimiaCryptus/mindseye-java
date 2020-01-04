@@ -37,9 +37,13 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Function;
 import java.util.function.IntToDoubleFunction;
 import java.util.stream.IntStream;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefList;
+import com.simiacryptus.ref.wrappers.RefMap;
+import com.simiacryptus.ref.wrappers.RefIntStream;
 
 @SuppressWarnings("serial")
-public class ImgBandScaleLayer extends LayerBase {
+public @com.simiacryptus.ref.lang.RefAware class ImgBandScaleLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(ImgBandScaleLayer.class);
@@ -63,24 +67,26 @@ public class ImgBandScaleLayer extends LayerBase {
 
   @Nullable
   public double[] getWeights() {
-    if (!Arrays.stream(weights).allMatch(v -> Double.isFinite(v))) {
-      throw new IllegalStateException(Arrays.toString(weights));
+    if (!com.simiacryptus.ref.wrappers.RefArrays.stream(weights).allMatch(v -> Double.isFinite(v))) {
+      throw new IllegalStateException(com.simiacryptus.ref.wrappers.RefArrays.toString(weights));
     }
     return weights;
   }
 
   @Nonnull
   public ImgBandScaleLayer setWeights(@Nonnull final IntToDoubleFunction f) {
-    @Nullable final double[] bias = getWeights();
+    @Nullable
+    final double[] bias = getWeights();
     for (int i = 0; i < bias.length; i++) {
       bias[i] = f.applyAsDouble(i);
     }
-    assert Arrays.stream(bias).allMatch(v -> Double.isFinite(v));
+    assert com.simiacryptus.ref.wrappers.RefArrays.stream(bias).allMatch(v -> Double.isFinite(v));
     return this;
   }
 
   @SuppressWarnings("unused")
-  public static ImgBandScaleLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+  public static ImgBandScaleLayer fromJson(@Nonnull final JsonObject json,
+      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new ImgBandScaleLayer(json);
   }
 
@@ -98,16 +104,17 @@ public class ImgBandScaleLayer extends LayerBase {
 
   @Nonnull
   public Result eval(@Nonnull final Result input) {
-    @Nullable final double[] weights = getWeights();
+    @Nullable
+    final double[] weights = getWeights();
     final TensorList inData = input.getData();
     @Nullable
     Function<Tensor, Tensor> tensorTensorFunction = tensor -> {
       if (tensor.getDimensions().length != 3) {
-        throw new IllegalArgumentException(Arrays.toString(tensor.getDimensions()));
+        throw new IllegalArgumentException(com.simiacryptus.ref.wrappers.RefArrays.toString(tensor.getDimensions()));
       }
       if (tensor.getDimensions()[2] != weights.length) {
         throw new IllegalArgumentException(String.format("%s: %s does not have %s bands", getName(),
-            Arrays.toString(tensor.getDimensions()), weights.length));
+            com.simiacryptus.ref.wrappers.RefArrays.toString(tensor.getDimensions()), weights.length));
       }
       return tensor.mapCoords(c -> tensor.get(c) * weights[c.getCoords()[2]]);
     };
@@ -116,7 +123,7 @@ public class ImgBandScaleLayer extends LayerBase {
         (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
           if (!isFrozen()) {
             final Delta<UUID> deltaBuffer = buffer.get(ImgBandScaleLayer.this.getId(), weights);
-            IntStream.range(0, delta.length()).forEach(index -> {
+            com.simiacryptus.ref.wrappers.RefIntStream.range(0, delta.length()).forEach(index -> {
               @Nonnull
               int[] dimensions = delta.getDimensions();
               int z = dimensions[2];
@@ -124,16 +131,18 @@ public class ImgBandScaleLayer extends LayerBase {
               int x = dimensions[0];
               final double[] array = RecycleBin.DOUBLES.obtain(z);
               Tensor deltaTensor = delta.get(index);
-              @Nullable final double[] deltaArray = deltaTensor.getData();
+              @Nullable
+              final double[] deltaArray = deltaTensor.getData();
               Tensor inputTensor = inData.get(index);
-              @Nullable final double[] inputData = inputTensor.getData();
+              @Nullable
+              final double[] inputData = inputTensor.getData();
               for (int i = 0; i < z; i++) {
                 for (int j = 0; j < y * x; j++) {
                   //array[i] += deltaArray[i + z * j];
                   array[i] += deltaArray[i * x * y + j] * inputData[i * x * y + j];
                 }
               }
-              assert Arrays.stream(array).allMatch(v -> Double.isFinite(v));
+              assert com.simiacryptus.ref.wrappers.RefArrays.stream(array).allMatch(v -> Double.isFinite(v));
               deltaBuffer.addInPlace(array);
               RecycleBin.DOUBLES.recycle(array, array.length);
             });
@@ -153,33 +162,56 @@ public class ImgBandScaleLayer extends LayerBase {
         return input.isAlive() || !isFrozen();
       }
 
-      @Override
-      protected void _free() {
+      public void _free() {
       }
     };
   }
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull final JsonObject json = super.getJsonStub();
+  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+      DataSerializer dataSerializer) {
+    @Nonnull
+    final JsonObject json = super.getJsonStub();
     json.add("bias", JsonUtil.getJson(getWeights()));
     return json;
   }
 
   @Nonnull
   public Layer set(@Nonnull final double[] ds) {
-    @Nullable final double[] bias = getWeights();
+    @Nullable
+    final double[] bias = getWeights();
     for (int i = 0; i < ds.length; i++) {
       bias[i] = ds[i];
     }
-    assert Arrays.stream(bias).allMatch(v -> Double.isFinite(v));
+    assert com.simiacryptus.ref.wrappers.RefArrays.stream(bias).allMatch(v -> Double.isFinite(v));
     return this;
   }
 
   @Nonnull
   @Override
-  public List<double[]> state() {
-    return Arrays.asList(getWeights());
+  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
+    return com.simiacryptus.ref.wrappers.RefArrays.asList(getWeights());
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") ImgBandScaleLayer addRef() {
+    return (ImgBandScaleLayer) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") ImgBandScaleLayer[] addRefs(ImgBandScaleLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgBandScaleLayer::addRef)
+        .toArray((x) -> new ImgBandScaleLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused") ImgBandScaleLayer[][] addRefs(ImgBandScaleLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgBandScaleLayer::addRefs)
+        .toArray((x) -> new ImgBandScaleLayer[x][]);
   }
 }

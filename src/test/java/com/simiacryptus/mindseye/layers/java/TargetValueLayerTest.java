@@ -24,21 +24,32 @@ import com.simiacryptus.mindseye.lang.Layer;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-public class TargetValueLayerTest {
-  public static class Normal extends LayerTestBase {
+public @com.simiacryptus.ref.lang.RefAware class TargetValueLayerTest {
+  public static @com.simiacryptus.ref.lang.RefAware class Normal extends LayerTestBase {
 
     @Nonnull
     @Override
     public int[][] getSmallDims(Random random) {
-      return new int[][]{
-          {3}
-      };
+      return new int[][] { { 3 } };
     }
 
     @Nonnull
     @Override
     public Layer getLayer(final int[][] inputSize, Random random) {
       return new TargetValueLayer(0.0, 0.1, 0.2);
+    }
+
+    public @SuppressWarnings("unused") void _free() {
+    }
+
+    public @Override @SuppressWarnings("unused") Normal addRef() {
+      return (Normal) super.addRef();
+    }
+
+    public static @SuppressWarnings("unused") Normal[] addRefs(Normal[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Normal::addRef).toArray((x) -> new Normal[x]);
     }
   }
 

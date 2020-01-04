@@ -29,9 +29,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.IntStream;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefList;
+import com.simiacryptus.ref.wrappers.RefMap;
+import com.simiacryptus.ref.wrappers.RefIntStream;
 
 @SuppressWarnings("serial")
-public class CrossDifferenceLayer extends LayerBase {
+public @com.simiacryptus.ref.lang.RefAware class CrossDifferenceLayer extends LayerBase {
 
   public CrossDifferenceLayer() {
   }
@@ -41,7 +45,8 @@ public class CrossDifferenceLayer extends LayerBase {
   }
 
   @SuppressWarnings("unused")
-  public static CrossDifferenceLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+  public static CrossDifferenceLayer fromJson(@Nonnull final JsonObject json,
+      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new CrossDifferenceLayer(json);
   }
 
@@ -56,11 +61,14 @@ public class CrossDifferenceLayer extends LayerBase {
     return new Result(new TensorArray(inObj[0].getData().stream().parallel().map(tensor -> {
       final int inputDim = tensor.length();
       final int outputDim = (inputDim * inputDim - inputDim) / 2;
-      @Nonnull final Tensor result1 = new Tensor(outputDim);
-      @Nullable final double[] inputData = tensor.getData();
-      @Nullable final double[] resultData = result1.getData();
-      IntStream.range(0, inputDim).forEach(x -> {
-        IntStream.range(x + 1, inputDim).forEach(y -> {
+      @Nonnull
+      final Tensor result1 = new Tensor(outputDim);
+      @Nullable
+      final double[] inputData = tensor.getData();
+      @Nullable
+      final double[] resultData = result1.getData();
+      com.simiacryptus.ref.wrappers.RefIntStream.range(0, inputDim).forEach(x -> {
+        com.simiacryptus.ref.wrappers.RefIntStream.range(x + 1, inputDim).forEach(y -> {
           resultData[CrossDifferenceLayer.index(x, y, inputDim)] = inputData[x] - inputData[y];
         });
       });
@@ -72,11 +80,14 @@ public class CrossDifferenceLayer extends LayerBase {
         TensorArray tensorArray = new TensorArray(data.stream().parallel().map(tensor -> {
           final int outputDim = tensor.length();
           final int inputDim = (1 + (int) Math.sqrt(1 + 8 * outputDim)) / 2;
-          @Nonnull final Tensor passback = new Tensor(inputDim);
-          @Nullable final double[] passbackData = passback.getData();
-          @Nullable final double[] tensorData = tensor.getData();
-          IntStream.range(0, inputDim).forEach(x -> {
-            IntStream.range(x + 1, inputDim).forEach(y -> {
+          @Nonnull
+          final Tensor passback = new Tensor(inputDim);
+          @Nullable
+          final double[] passbackData = passback.getData();
+          @Nullable
+          final double[] tensorData = tensor.getData();
+          com.simiacryptus.ref.wrappers.RefIntStream.range(0, inputDim).forEach(x -> {
+            com.simiacryptus.ref.wrappers.RefIntStream.range(x + 1, inputDim).forEach(y -> {
               passbackData[x] += tensorData[CrossDifferenceLayer.index(x, y, inputDim)];
               passbackData[y] += -tensorData[CrossDifferenceLayer.index(x, y, inputDim)];
             });
@@ -89,15 +100,15 @@ public class CrossDifferenceLayer extends LayerBase {
 
       @Override
       public boolean isAlive() {
-        for (@Nonnull final Result element : inObj)
+        for (@Nonnull
+        final Result element : inObj)
           if (element.isAlive()) {
             return true;
           }
         return false;
       }
 
-      @Override
-      protected void _free() {
+      public void _free() {
       }
 
     };
@@ -105,14 +116,36 @@ public class CrossDifferenceLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
+  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+      DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 
   @Nonnull
   @Override
-  public List<double[]> state() {
-    return Arrays.asList();
+  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
+    return com.simiacryptus.ref.wrappers.RefArrays.asList();
+  }
+
+  public @SuppressWarnings("unused") void _free() {
+  }
+
+  public @Override @SuppressWarnings("unused") CrossDifferenceLayer addRef() {
+    return (CrossDifferenceLayer) super.addRef();
+  }
+
+  public static @SuppressWarnings("unused") CrossDifferenceLayer[] addRefs(CrossDifferenceLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(CrossDifferenceLayer::addRef)
+        .toArray((x) -> new CrossDifferenceLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused") CrossDifferenceLayer[][] addRefs(CrossDifferenceLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(CrossDifferenceLayer::addRefs)
+        .toArray((x) -> new CrossDifferenceLayer[x][]);
   }
 
 }
