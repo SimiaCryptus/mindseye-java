@@ -29,8 +29,7 @@ import java.util.Map;
 
 @SuppressWarnings("serial")
 public final @RefAware
-class SigmoidActivationLayer
-    extends SimpleActivationLayer<SigmoidActivationLayer> {
+class SigmoidActivationLayer extends SimpleActivationLayer<SigmoidActivationLayer> {
 
   private static final double MIN_X = -20;
   private static final double MAX_X = -SigmoidActivationLayer.MIN_X;
@@ -53,12 +52,11 @@ class SigmoidActivationLayer
   @Nonnull
   public SigmoidActivationLayer setBalanced(final boolean balanced) {
     this.balanced = balanced;
-    return this;
+    return this.addRef();
   }
 
   @SuppressWarnings("unused")
-  public static SigmoidActivationLayer fromJson(@Nonnull final JsonObject json,
-                                                Map<CharSequence, byte[]> rs) {
+  public static SigmoidActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new SigmoidActivationLayer(json);
   }
 
@@ -80,8 +78,7 @@ class SigmoidActivationLayer
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources,
-                            DataSerializer dataSerializer) {
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
     @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("balanced", balanced);
     return json;

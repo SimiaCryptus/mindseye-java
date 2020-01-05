@@ -22,6 +22,8 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.lang.RefUtil;
+import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefHashMap;
 import com.simiacryptus.ref.wrappers.RefList;
@@ -66,8 +68,7 @@ class MonitoringSynapse extends LayerBase implements MonitoredItem {
 
   @Nonnull
   @SuppressWarnings("unused")
-  public static MonitoringSynapse fromJson(@Nonnull final JsonObject json,
-                                           Map<CharSequence, byte[]> rs) {
+  public static MonitoringSynapse fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     @Nonnull final MonitoringSynapse obj = new MonitoringSynapse(json);
     obj.totalBatches = json.get("totalBatches").getAsInt();
     obj.totalItems = json.get("totalItems").getAsInt();
@@ -94,20 +95,23 @@ class MonitoringSynapse extends LayerBase implements MonitoredItem {
 
   @Nonnull
   public MonitoringSynapse addTo(@Nonnull final MonitoredObject obj) {
-    return addTo(obj, getName());
+    MonitoringSynapse temp_37_0003 = addTo(obj == null ? null : obj, getName());
+    return temp_37_0003;
   }
 
   @Nonnull
   public MonitoringSynapse addTo(@Nonnull final MonitoredObject obj, final String name) {
-    setName(name);
-    obj.addObj(getName(), this);
-    return this;
+    RefUtil.freeRef(setName(name));
+    RefUtil.freeRef(obj.addObj(getName(), this.addRef()));
+    obj.freeRef();
+    return this.addRef();
   }
 
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     assert 1 == inObj.length;
-    final Result input = inObj[0];
+    final Result input = inObj[0].addRef();
+    ReferenceCounting.freeRefs(inObj);
     final TensorList inputdata = input.getData();
     System.nanoTime();
     System.nanoTime();
@@ -116,32 +120,59 @@ class MonitoringSynapse extends LayerBase implements MonitoredItem {
     forwardStatistics.clear();
     inputdata.stream().parallel().forEach(t -> {
       forwardStatistics.add(t.getData());
+      if (null != t)
+        t.freeRef();
     });
-    return new Result(inputdata, new Result.Accumulator() {
-      @Override
-      public void accept(DeltaSet<UUID> buffer, TensorList data) {
-        backpropStatistics.clear();
-        input.accumulate(buffer, data);
-        data.stream().parallel().forEach(t -> {
-          backpropStatistics.add(t.getData());
-        });
-      }
-    }) {
+    try {
+      try {
+        return new Result(inputdata, new Result.Accumulator() {
+          {
+          }
 
-      @Override
-      public boolean isAlive() {
-        return input.isAlive();
-      }
+          @Override
+          public void accept(DeltaSet<UUID> buffer, TensorList data) {
+            backpropStatistics.clear();
+            input.accumulate(buffer == null ? null : buffer.addRef(), data == null ? null : data.addRef());
+            if (null != buffer)
+              buffer.freeRef();
+            data.stream().parallel().forEach(t -> {
+              backpropStatistics.add(t.getData());
+              if (null != t)
+                t.freeRef();
+            });
+            if (null != data)
+              data.freeRef();
+          }
 
-      public void _free() {
+          public @SuppressWarnings("unused")
+          void _free() {
+          }
+        }) {
+
+          {
+          }
+
+          @Override
+          public boolean isAlive() {
+            return input.isAlive();
+          }
+
+          public void _free() {
+          }
+        };
+      } finally {
+        if (null != inputdata)
+          inputdata.freeRef();
       }
-    };
+    } finally {
+      if (null != input)
+        input.freeRef();
+    }
   }
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources,
-                            DataSerializer dataSerializer) {
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
     @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("totalBatches", totalBatches);
     json.addProperty("totalItems", totalItems);

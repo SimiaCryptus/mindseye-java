@@ -29,8 +29,7 @@ import java.util.Map;
 
 @SuppressWarnings("serial")
 public @RefAware
-class BoundedActivationLayer
-    extends SimpleActivationLayer<BoundedActivationLayer> {
+class BoundedActivationLayer extends SimpleActivationLayer<BoundedActivationLayer> {
 
   private double maxValue = Double.POSITIVE_INFINITY;
   private double minValue = Double.NEGATIVE_INFINITY;
@@ -50,7 +49,7 @@ class BoundedActivationLayer
   @Nonnull
   public BoundedActivationLayer setMaxValue(final double maxValue) {
     this.maxValue = maxValue;
-    return this;
+    return this.addRef();
   }
 
   public double getMinValue() {
@@ -59,13 +58,12 @@ class BoundedActivationLayer
 
   public BoundedActivationLayer setMinValue(double minValue) {
     this.minValue = minValue;
-    return this;
+    return this.addRef();
   }
 
   @Nonnull
   @SuppressWarnings("unused")
-  public static BoundedActivationLayer fromJson(@Nonnull final JsonObject json,
-                                                Map<CharSequence, byte[]> rs) {
+  public static BoundedActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     @Nonnull final BoundedActivationLayer obj = new BoundedActivationLayer(json);
     obj.maxValue = json.get("maxValue").getAsDouble();
     return obj;
@@ -89,8 +87,7 @@ class BoundedActivationLayer
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources,
-                            DataSerializer dataSerializer) {
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
     @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("maxValue", maxValue);
     return json;

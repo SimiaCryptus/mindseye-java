@@ -55,7 +55,11 @@ class RescaledSubnetLayerTest extends LayerTestBase {
   @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
     SigmoidActivationLayer subnetwork = new SigmoidActivationLayer();
-    return new RescaledSubnetLayer(2, subnetwork);
+    RescaledSubnetLayer temp_60_0001 = new RescaledSubnetLayer(2,
+        subnetwork == null ? null : subnetwork.addRef());
+    if (null != subnetwork)
+      subnetwork.freeRef();
+    return temp_60_0001;
   }
 
   public @SuppressWarnings("unused")

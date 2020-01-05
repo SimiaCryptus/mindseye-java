@@ -29,8 +29,7 @@ import java.util.Map;
 
 @SuppressWarnings("serial")
 public final @RefAware
-class AbsActivationLayer
-    extends SimpleActivationLayer<AbsActivationLayer> {
+class AbsActivationLayer extends SimpleActivationLayer<AbsActivationLayer> {
 
   public AbsActivationLayer() {
   }
@@ -40,8 +39,7 @@ class AbsActivationLayer
   }
 
   @SuppressWarnings("unused")
-  public static AbsActivationLayer fromJson(final JsonObject json,
-                                            Map<CharSequence, byte[]> rs) {
+  public static AbsActivationLayer fromJson(final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new AbsActivationLayer(json);
   }
 
@@ -63,8 +61,7 @@ class AbsActivationLayer
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources,
-                            DataSerializer dataSerializer) {
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 

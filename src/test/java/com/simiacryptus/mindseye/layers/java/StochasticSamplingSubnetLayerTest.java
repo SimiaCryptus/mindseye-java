@@ -22,6 +22,7 @@ package com.simiacryptus.mindseye.layers.java;
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
 import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
@@ -58,10 +59,14 @@ class StochasticSamplingSubnetLayerTest extends LayerTestBase {
   @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
     PipelineNetwork subnetwork = new PipelineNetwork(1);
-    subnetwork.add(new ProductLayer(), subnetwork.getInput(0),
-        subnetwork.add(new BinaryNoiseLayer(0.5), subnetwork.getInput(0)));
+    RefUtil.freeRef(subnetwork.add(new ProductLayer(), subnetwork.getInput(0),
+        subnetwork.add(new BinaryNoiseLayer(0.5), subnetwork.getInput(0))));
 
-    return new StochasticSamplingSubnetLayer(subnetwork, 2);
+    StochasticSamplingSubnetLayer temp_38_0001 = new StochasticSamplingSubnetLayer(
+        subnetwork == null ? null : subnetwork.addRef(), 2);
+    if (null != subnetwork)
+      subnetwork.freeRef();
+    return temp_38_0001;
   }
 
   public @SuppressWarnings("unused")

@@ -106,7 +106,11 @@ class ImgViewLayerTest extends LayerTestBase {
     @Nonnull
     @Override
     public Layer getLayer(final int[][] inputSize, Random random) {
-      return new ImgViewLayer(3, 2, 2, 3).setRotationRadians(Math.PI / 2);
+      ImgViewLayer temp_72_0002 = new ImgViewLayer(3, 2, 2, 3);
+      ImgViewLayer temp_72_0001 = temp_72_0002.setRotationRadians(Math.PI / 2);
+      if (null != temp_72_0002)
+        temp_72_0002.freeRef();
+      return temp_72_0001;
     }
 
     public @SuppressWarnings("unused")
@@ -134,7 +138,14 @@ class ImgViewLayerTest extends LayerTestBase {
     @Nonnull
     @Override
     public Layer getLayer(final int[][] inputSize, Random random) {
-      return new ImgViewLayer(3, 2, 2, 3).setRotationRadians(Math.PI / 2).setChannelSelector(2, -1);
+      ImgViewLayer temp_72_0004 = new ImgViewLayer(3, 2, 2, 3);
+      ImgViewLayer temp_72_0005 = temp_72_0004.setRotationRadians(Math.PI / 2);
+      ImgViewLayer temp_72_0003 = temp_72_0005.setChannelSelector(2, -1);
+      if (null != temp_72_0005)
+        temp_72_0005.freeRef();
+      if (null != temp_72_0004)
+        temp_72_0004.freeRef();
+      return temp_72_0003;
     }
 
     public @SuppressWarnings("unused")

@@ -46,31 +46,55 @@ class TargetValueLayer extends DAGNetwork {
 
   public TargetValueLayer(final double... values) {
     super(1);
-    target = add(new ValueLayer(new Tensor(values)));
-    head = add(new MeanSqLossLayer(), getInput(0), target);
+    {
+      DAGNode temp_05_0001 = add(new ValueLayer(new Tensor(values)));
+      target = temp_05_0001 == null ? null : temp_05_0001.addRef();
+      if (null != temp_05_0001)
+        temp_05_0001.freeRef();
+    }
+    {
+      DAGNode temp_05_0002 = add(new MeanSqLossLayer(), getInput(0),
+          target == null ? null : target.addRef());
+      head = temp_05_0002 == null ? null : temp_05_0002.addRef();
+      if (null != temp_05_0002)
+        temp_05_0002.freeRef();
+    }
   }
 
-  protected TargetValueLayer(@Nonnull final JsonObject json,
-                             Map<CharSequence, byte[]> rs) {
+  protected TargetValueLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json, rs);
-    head = getNodeById(UUID.fromString(json.getAsJsonPrimitive("head").getAsString()));
-    target = getNodeById(UUID.fromString(json.getAsJsonPrimitive("target").getAsString()));
+    {
+      DAGNode temp_05_0003 = getNodeById(
+          UUID.fromString(json.getAsJsonPrimitive("head").getAsString()));
+      head = temp_05_0003 == null ? null : temp_05_0003.addRef();
+      if (null != temp_05_0003)
+        temp_05_0003.freeRef();
+    }
+    {
+      DAGNode temp_05_0004 = getNodeById(
+          UUID.fromString(json.getAsJsonPrimitive("target").getAsString()));
+      target = temp_05_0004 == null ? null : temp_05_0004.addRef();
+      if (null != temp_05_0004)
+        temp_05_0004.freeRef();
+    }
   }
 
   @Override
   public DAGNode getHead() {
-    return head;
+    return head == null ? null : head.addRef();
   }
 
   @Nonnull
   public TargetValueLayer setTarget(final double... value) {
-    target.<ValueLayer>getLayer().setData(new Tensor(value));
-    return this;
+    ValueLayer temp_05_0005 = target.<ValueLayer>getLayer();
+    temp_05_0005.setData(new Tensor(value));
+    if (null != temp_05_0005)
+      temp_05_0005.freeRef();
+    return this.addRef();
   }
 
   @SuppressWarnings("unused")
-  public static Layer fromJson(@Nonnull final JsonObject inner,
-                               Map<CharSequence, byte[]> rs) {
+  public static Layer fromJson(@Nonnull final JsonObject inner, Map<CharSequence, byte[]> rs) {
     return new TargetValueLayer(inner, rs);
   }
 
@@ -91,14 +115,17 @@ class TargetValueLayer extends DAGNetwork {
   }
 
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources,
-                            DataSerializer dataSerializer) {
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
     final JsonObject json = super.getJson(resources, dataSerializer);
     json.addProperty("target", target.getId().toString());
     return json;
   }
 
   public void _free() {
+    if (null != target)
+      target.freeRef();
+    if (null != head)
+      head.freeRef();
     super._free();
   }
 

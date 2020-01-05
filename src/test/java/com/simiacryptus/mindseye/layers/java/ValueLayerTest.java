@@ -50,7 +50,11 @@ class ValueLayerTest {
     @Override
     public Layer getLayer(final int[][] inputSize, Random random) {
       Tensor tensor = new Tensor(0.1);
-      return new ValueLayer(tensor);
+      ValueLayer temp_46_0001 = new ValueLayer(
+          tensor == null ? null : tensor.addRef());
+      if (null != tensor)
+        tensor.freeRef();
+      return temp_46_0001;
     }
 
     public @SuppressWarnings("unused")

@@ -33,13 +33,14 @@ import java.util.Map;
 public @RefAware
 class VariableLayer extends WrapperLayer {
 
-  protected VariableLayer(@Nonnull final JsonObject json,
-                          Map<CharSequence, byte[]> rs) {
+  protected VariableLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json, rs);
   }
 
   public VariableLayer(final Layer inner) {
     super(inner);
+    if (null != inner)
+      inner.freeRef();
   }
 
   @Override
@@ -48,8 +49,7 @@ class VariableLayer extends WrapperLayer {
   }
 
   @SuppressWarnings("unused")
-  public static VariableLayer fromJson(@Nonnull final JsonObject json,
-                                       Map<CharSequence, byte[]> rs) {
+  public static VariableLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new VariableLayer(json, rs);
   }
 

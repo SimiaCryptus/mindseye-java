@@ -56,7 +56,11 @@ class MonitoringWrapperTest extends LayerTestBase {
   @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
     MonitoringSynapse inner = new MonitoringSynapse();
-    return new MonitoringWrapperLayer(inner);
+    MonitoringWrapperLayer temp_54_0001 = new MonitoringWrapperLayer(
+        inner == null ? null : inner.addRef());
+    if (null != inner)
+      inner.freeRef();
+    return temp_54_0001;
   }
 
   public @SuppressWarnings("unused")

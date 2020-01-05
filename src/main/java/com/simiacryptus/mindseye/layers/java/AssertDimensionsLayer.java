@@ -24,6 +24,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefList;
@@ -46,8 +47,7 @@ class AssertDimensionsLayer extends LayerBase {
   protected AssertDimensionsLayer(@Nonnull final JsonObject json) {
     super(json);
     final JsonArray dimsJson = json.get("dims").getAsJsonArray();
-    dims = RefIntStream.range(0, dimsJson.size()).map(i -> dimsJson.get(i).getAsInt())
-        .toArray();
+    dims = RefIntStream.range(0, dimsJson.size()).map(i -> dimsJson.get(i).getAsInt()).toArray();
   }
 
   @Override
@@ -56,8 +56,7 @@ class AssertDimensionsLayer extends LayerBase {
   }
 
   @SuppressWarnings("unused")
-  public static AssertDimensionsLayer fromJson(@Nonnull final JsonObject json,
-                                               Map<CharSequence, byte[]> rs) {
+  public static AssertDimensionsLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new AssertDimensionsLayer(json);
   }
 
@@ -80,24 +79,35 @@ class AssertDimensionsLayer extends LayerBase {
   @Override
   public Result eval(@Nonnull final Result... array) {
     if (0 == array.length) {
+      ReferenceCounting.freeRefs(array);
       throw new IllegalArgumentException(getName());
     }
-    Result input = array[0];
-    if (0 == input.getData().length()) {
+    Result input = array[0].addRef();
+    ReferenceCounting.freeRefs(array);
+    TensorList temp_77_0001 = input.getData();
+    if (0 == temp_77_0001.length()) {
+      if (null != input)
+        input.freeRef();
       throw new IllegalArgumentException(getName());
     }
-    @Nonnull final int[] inputDims = input.getData().getDimensions();
+    if (null != temp_77_0001)
+      temp_77_0001.freeRef();
+    TensorList temp_77_0002 = input.getData();
+    @Nonnull final int[] inputDims = temp_77_0002.getDimensions();
+    if (null != temp_77_0002)
+      temp_77_0002.freeRef();
     if (Tensor.length(inputDims) != Tensor.length(dims)) {
-      throw new IllegalArgumentException(getName() + ": " + RefArrays.toString(inputDims)
-          + " != " + RefArrays.toString(dims));
+      if (null != input)
+        input.freeRef();
+      throw new IllegalArgumentException(
+          getName() + ": " + RefArrays.toString(inputDims) + " != " + RefArrays.toString(dims));
     }
     return input;
   }
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources,
-                            DataSerializer dataSerializer) {
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
     @Nonnull final JsonObject json = super.getJsonStub();
     @Nonnull final JsonArray dimsJson = new JsonArray();
     for (final int dim : dims) {

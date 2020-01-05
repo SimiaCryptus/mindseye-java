@@ -32,7 +32,7 @@ class NthPowerActivationLayerTest {
   public static @RefAware
   class InvPowerTest extends ActivationLayerTestBase {
     public InvPowerTest() {
-      super(new NthPowerActivationLayer().setPower(-1));
+      super(new NthPowerActivationLayer(-1));
     }
 
     @Override
@@ -75,7 +75,7 @@ class NthPowerActivationLayerTest {
   public static @RefAware
   class InvSqrtPowerTest extends ActivationLayerTestBase {
     public InvSqrtPowerTest() {
-      super(new NthPowerActivationLayer().setPower(-0.5));
+      super(new NthPowerActivationLayer(-0.5));
     }
 
     @Override
@@ -118,7 +118,7 @@ class NthPowerActivationLayerTest {
   public static @RefAware
   class NthPowerTest extends ActivationLayerTestBase {
     public NthPowerTest() {
-      super(new NthPowerActivationLayer().setPower(Math.PI));
+      super(new NthPowerActivationLayer(Math.PI));
     }
 
     public static @SuppressWarnings("unused")
@@ -160,7 +160,7 @@ class NthPowerActivationLayerTest {
   public static @RefAware
   class SquarePowerTest extends ActivationLayerTestBase {
     public SquarePowerTest() {
-      super(new NthPowerActivationLayer().setPower(2));
+      super(new NthPowerActivationLayer(2));
     }
 
     public static @SuppressWarnings("unused")
@@ -190,7 +190,7 @@ class NthPowerActivationLayerTest {
   public static @RefAware
   class ZeroPowerTest extends ActivationLayerTestBase {
     public ZeroPowerTest() {
-      super(new NthPowerActivationLayer().setPower(0));
+      super(new NthPowerActivationLayer(0));
     }
 
     public static @SuppressWarnings("unused")

@@ -24,6 +24,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.lang.RefUtil;
+import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrayList;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
@@ -35,6 +37,8 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.function.IntFunction;
 
 @SuppressWarnings("serial")
 public @RefAware
@@ -65,22 +69,37 @@ class ImgViewLayer extends LayerBase {
 
   public ImgViewLayer(final int sizeX, final int sizeY, final int offsetX, final int offsetY, final boolean wrap) {
     super();
-    setSizeX(sizeX).setSizeY(sizeY).setOffsetX(offsetX).setOffsetY(offsetY).setWrap(wrap);
+    ImgViewLayer temp_33_0004 = setSizeX(sizeX);
+    ImgViewLayer temp_33_0005 = temp_33_0004.setSizeY(sizeY);
+    ImgViewLayer temp_33_0006 = temp_33_0005.setOffsetX(offsetX);
+    ImgViewLayer temp_33_0007 = temp_33_0006.setOffsetY(offsetY);
+    temp_33_0007.setWrap(wrap);
+    if (null != temp_33_0007)
+      temp_33_0007.freeRef();
+    if (null != temp_33_0006)
+      temp_33_0006.freeRef();
+    if (null != temp_33_0005)
+      temp_33_0005.freeRef();
+    if (null != temp_33_0004)
+      temp_33_0004.freeRef();
   }
 
   protected ImgViewLayer(@Nonnull final JsonObject json) {
     super(json);
-    setSizeX(json.getAsJsonPrimitive("sizeX").getAsInt());
-    setSizeY(json.getAsJsonPrimitive("sizeY").getAsInt());
-    setOffsetX(json.getAsJsonPrimitive("offsetX").getAsInt());
-    setOffsetY(json.getAsJsonPrimitive("offsetY").getAsInt());
+    RefUtil.freeRef(setSizeX(json.getAsJsonPrimitive("sizeX").getAsInt()));
+    RefUtil.freeRef(setSizeY(json.getAsJsonPrimitive("sizeY").getAsInt()));
+    RefUtil.freeRef(setOffsetX(json.getAsJsonPrimitive("offsetX").getAsInt()));
+    RefUtil.freeRef(setOffsetY(json.getAsJsonPrimitive("offsetY").getAsInt()));
     setNegativeBias(json.getAsJsonPrimitive("negativeBias").getAsDouble());
-    setRotationCenterX(json.getAsJsonPrimitive("rotationCenterX").getAsInt());
-    setRotationCenterY(json.getAsJsonPrimitive("rotationCenterY").getAsInt());
-    setRotationRadians(json.getAsJsonPrimitive("rotationRadians").getAsDouble());
+    RefUtil
+        .freeRef(setRotationCenterX(json.getAsJsonPrimitive("rotationCenterX").getAsInt()));
+    RefUtil
+        .freeRef(setRotationCenterY(json.getAsJsonPrimitive("rotationCenterY").getAsInt()));
+    RefUtil
+        .freeRef(setRotationRadians(json.getAsJsonPrimitive("rotationRadians").getAsDouble()));
     JsonArray _channelPermutationFilter = json.getAsJsonArray("channelPermutationFilter");
     if (null != _channelPermutationFilter) {
-      setChannelSelector(new int[_channelPermutationFilter.size()]);
+      RefUtil.freeRef(setChannelSelector(new int[_channelPermutationFilter.size()]));
       for (int i = 0; i < getChannelSelector().length; i++) {
         getChannelSelector()[i] = _channelPermutationFilter.get(i).getAsInt();
       }
@@ -96,7 +115,7 @@ class ImgViewLayer extends LayerBase {
 
   public ImgViewLayer setChannelSelector(int... channelSelector) {
     this.channelSelector = channelSelector;
-    return this;
+    return this.addRef();
   }
 
   public double getNegativeBias() {
@@ -113,7 +132,7 @@ class ImgViewLayer extends LayerBase {
 
   public ImgViewLayer setOffsetX(int offsetX) {
     this.offsetX = offsetX;
-    return this;
+    return this.addRef();
   }
 
   public int getOffsetY() {
@@ -122,7 +141,7 @@ class ImgViewLayer extends LayerBase {
 
   public ImgViewLayer setOffsetY(int offsetY) {
     this.offsetY = offsetY;
-    return this;
+    return this.addRef();
   }
 
   public int getRotationCenterX() {
@@ -131,7 +150,7 @@ class ImgViewLayer extends LayerBase {
 
   public ImgViewLayer setRotationCenterX(int rotationCenterX) {
     this.rotationCenterX = rotationCenterX;
-    return this;
+    return this.addRef();
   }
 
   public int getRotationCenterY() {
@@ -140,7 +159,7 @@ class ImgViewLayer extends LayerBase {
 
   public ImgViewLayer setRotationCenterY(int rotationCenterY) {
     this.rotationCenterY = rotationCenterY;
-    return this;
+    return this.addRef();
   }
 
   public double getRotationRadians() {
@@ -149,7 +168,7 @@ class ImgViewLayer extends LayerBase {
 
   public ImgViewLayer setRotationRadians(double rotationRadians) {
     this.rotationRadians = rotationRadians;
-    return this;
+    return this.addRef();
   }
 
   public int getSizeX() {
@@ -158,7 +177,7 @@ class ImgViewLayer extends LayerBase {
 
   public ImgViewLayer setSizeX(int sizeX) {
     this.sizeX = sizeX;
-    return this;
+    return this.addRef();
   }
 
   public int getSizeY() {
@@ -167,7 +186,7 @@ class ImgViewLayer extends LayerBase {
 
   public ImgViewLayer setSizeY(int sizeY) {
     this.sizeY = sizeY;
-    return this;
+    return this.addRef();
   }
 
   public boolean isWrap() {
@@ -179,8 +198,7 @@ class ImgViewLayer extends LayerBase {
   }
 
   @SuppressWarnings("unused")
-  public static ImgViewLayer fromJson(@Nonnull final JsonObject json,
-                                      Map<CharSequence, byte[]> rs) {
+  public static ImgViewLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ImgViewLayer(json);
   }
 
@@ -212,16 +230,19 @@ class ImgViewLayer extends LayerBase {
       y %= height;
     }
     if (x < 0) {
+      tensor.freeRef();
       return;
     } else if (x >= width) {
       return;
     }
     if (y < 0) {
+      tensor.freeRef();
       return;
     } else if (y >= height) {
       return;
     }
     tensor.set(x, y, channel, value);
+    tensor.freeRef();
   }
 
   private static double get(@Nonnull Tensor tensor, int width, int height, int x, int y, int channel, boolean wrap) {
@@ -235,22 +256,27 @@ class ImgViewLayer extends LayerBase {
       y %= height;
     }
     if (x < 0) {
+      tensor.freeRef();
       return 0.0;
     } else if (x >= width) {
       return 0.0;
     }
     if (y < 0) {
+      tensor.freeRef();
       return 0.0;
     } else if (y >= height) {
       return 0.0;
     }
-    return tensor.get(x, y, channel);
+    double temp_33_0003 = tensor.get(x, y, channel);
+    tensor.freeRef();
+    return temp_33_0003;
   }
 
   @Nonnull
   @Override
   public Result eval(@Nonnull final Result... inObj) {
-    final Result input = inObj[0];
+    final Result input = inObj[0].addRef();
+    ReferenceCounting.freeRefs(inObj);
     final TensorList batch = input.getData();
     @Nonnull final int[] inputDims = batch.getDimensions();
     assert 3 == inputDims.length;
@@ -258,37 +284,69 @@ class ImgViewLayer extends LayerBase {
         new int[]{getOffsetX(), getOffsetY(), 0});
     if (null != channelSelector)
       dimOut[2] = channelSelector.length;
-    return new Result(
-        new TensorArray(RefIntStream.range(0, batch.length()).mapToObj(dataIndex -> {
-          @Nonnull final Tensor outputData = new Tensor(dimOut);
-          Tensor inputData = batch.get(dataIndex);
-          fwd(inputData, outputData);
-          return outputData;
-        }).toArray(i -> new Tensor[i])), new Result.Accumulator() {
-      @Override
-      public void accept(DeltaSet<UUID> buffer, TensorList error) {
-        if (input.isAlive()) {
-          @Nonnull
-          TensorArray tensorArray = new TensorArray(
-              RefIntStream.range(0, error.length()).mapToObj(dataIndex -> {
-                @Nullable final Tensor err = error.get(dataIndex);
-                @Nonnull final Tensor passback = new Tensor(inputDims);
-                ImgViewLayer.this.bck(err, passback);
-                return passback;
-              }).toArray(i -> new Tensor[i]));
-          input.accumulate(buffer, tensorArray);
-        }
-      }
-    }) {
+    try {
+      try {
+        return new Result(new TensorArray(
+            RefIntStream.range(0, batch.length()).mapToObj(RefUtil.wrapInterface(
+                (IntFunction<? extends Tensor>) dataIndex -> {
+                  @Nonnull final Tensor outputData = new Tensor(dimOut);
+                  Tensor inputData = batch.get(dataIndex);
+                  fwd(inputData == null ? null : inputData.addRef(), outputData == null ? null : outputData.addRef());
+                  if (null != inputData)
+                    inputData.freeRef();
+                  return outputData;
+                }, batch == null ? null : batch.addRef())).toArray(i -> new Tensor[i])),
+            new Result.Accumulator() {
+              {
+              }
 
-      @Override
-      public boolean isAlive() {
-        return input.isAlive() || !isFrozen();
-      }
+              @Override
+              public void accept(DeltaSet<UUID> buffer, TensorList error) {
+                if (input.isAlive()) {
+                  @Nonnull
+                  TensorArray tensorArray = new TensorArray(
+                      RefIntStream.range(0, error.length()).mapToObj(RefUtil.wrapInterface(
+                          (IntFunction<? extends Tensor>) dataIndex -> {
+                            @Nullable final Tensor err = error.get(dataIndex);
+                            @Nonnull final Tensor passback = new Tensor(inputDims);
+                            ImgViewLayer.this.bck(err == null ? null : err.addRef(),
+                                passback == null ? null : passback.addRef());
+                            if (null != err)
+                              err.freeRef();
+                            return passback;
+                          }, error == null ? null : error.addRef())).toArray(i -> new Tensor[i]));
+                  input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray == null ? null : tensorArray);
+                }
+                if (null != error)
+                  error.freeRef();
+                if (null != buffer)
+                  buffer.freeRef();
+              }
 
-      public void _free() {
+              public @SuppressWarnings("unused")
+              void _free() {
+              }
+            }) {
+
+          {
+          }
+
+          @Override
+          public boolean isAlive() {
+            return input.isAlive() || !isFrozen();
+          }
+
+          public void _free() {
+          }
+        };
+      } finally {
+        if (null != batch)
+          batch.freeRef();
       }
-    };
+    } finally {
+      if (null != input)
+        input.freeRef();
+    }
   }
 
   @Nonnull
@@ -301,8 +359,7 @@ class ImgViewLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources,
-                            DataSerializer dataSerializer) {
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
     @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("sizeX", getSizeX());
     json.addProperty("sizeY", getSizeY());
@@ -346,24 +403,28 @@ class ImgViewLayer extends LayerBase {
     @Nonnull final int[] outDim = outputData.getDimensions();
     assert 3 == inDim.length;
     assert 3 == outDim.length;
-    assert inDim[2] == outDim[2] : RefArrays.toString(inDim) + "; "
-        + RefArrays.toString(outDim);
-    outputData.coordStream(true).forEach((c) -> {
-      int[] coords = c.getCoords();
-      double[] xy = coordinateMapping(coords[0], coords[1]);
-      int x = (int) Math.round(xy[0]);
-      int y = (int) Math.round(xy[1]);
-      int channel;
-      if (null != channelSelector)
-        channel = channelSelector[coords[2]];
-      else
-        channel = coords[2] + 1;
-      if (0 < channel) {
-        outputData.set(c, get(inputData, inputDims[0], inputDims[1], x, y, channel - 1, wrap));
-      } else {
-        outputData.set(c, getNegativeBias() - get(inputData, inputDims[0], inputDims[1], x, y, -channel - 1, wrap));
-      }
-    });
+    assert inDim[2] == outDim[2] : RefArrays.toString(inDim) + "; " + RefArrays.toString(outDim);
+    outputData.coordStream(true).forEach(RefUtil
+        .wrapInterface((Consumer<? super Coordinate>) (c) -> {
+          int[] coords = c.getCoords();
+          double[] xy = coordinateMapping(coords[0], coords[1]);
+          int x = (int) Math.round(xy[0]);
+          int y = (int) Math.round(xy[1]);
+          int channel;
+          if (null != channelSelector)
+            channel = channelSelector[coords[2]];
+          else
+            channel = coords[2] + 1;
+          if (0 < channel) {
+            RefUtil
+                .freeRef(outputData.set(c, get(inputData == null ? null : inputData.addRef(), inputDims[0],
+                    inputDims[1], x, y, channel - 1, wrap)));
+          } else {
+            RefUtil
+                .freeRef(outputData.set(c, getNegativeBias() - get(inputData == null ? null : inputData.addRef(),
+                    inputDims[0], inputDims[1], x, y, -channel - 1, wrap)));
+          }
+        }, inputData == null ? null : inputData, outputData == null ? null : outputData));
   }
 
   @Nonnull
@@ -374,22 +435,25 @@ class ImgViewLayer extends LayerBase {
     assert 3 == inputDeltaDims.length;
     assert outDeltaDims[2] == inputDeltaDims[2] : RefArrays.toString(outDeltaDims) + "; "
         + RefArrays.toString(inputDeltaDims);
-    outputDelta.coordStream(true).forEach((c) -> {
-      int[] outCoord = c.getCoords();
-      double[] inCoords = coordinateMapping(outCoord[0], outCoord[1]);
-      int x = (int) Math.round(inCoords[0]);
-      int y = (int) Math.round(inCoords[1]);
-      int channel;
-      if (null != channelSelector)
-        channel = channelSelector[outCoord[2]];
-      else
-        channel = outCoord[2] + 1;
-      if (0 < channel) {
-        set(inputDelta, inputDeltaDims[0], inputDeltaDims[1], x, y, channel - 1, wrap, outputDelta.get(c));
-      } else {
-        set(inputDelta, inputDeltaDims[0], inputDeltaDims[1], x, y, -channel - 1, wrap, -outputDelta.get(c));
-      }
-    });
+    outputDelta.coordStream(true).forEach(RefUtil
+        .wrapInterface((Consumer<? super Coordinate>) (c) -> {
+          int[] outCoord = c.getCoords();
+          double[] inCoords = coordinateMapping(outCoord[0], outCoord[1]);
+          int x = (int) Math.round(inCoords[0]);
+          int y = (int) Math.round(inCoords[1]);
+          int channel;
+          if (null != channelSelector)
+            channel = channelSelector[outCoord[2]];
+          else
+            channel = outCoord[2] + 1;
+          if (0 < channel) {
+            set(inputDelta == null ? null : inputDelta.addRef(), inputDeltaDims[0], inputDeltaDims[1], x, y,
+                channel - 1, wrap, outputDelta.get(c));
+          } else {
+            set(inputDelta == null ? null : inputDelta.addRef(), inputDeltaDims[0], inputDeltaDims[1], x, y,
+                -channel - 1, wrap, -outputDelta.get(c));
+          }
+        }, inputDelta == null ? null : inputDelta, outputDelta == null ? null : outputDelta));
   }
 
   protected double[] coordinateMapping(double... xy) {

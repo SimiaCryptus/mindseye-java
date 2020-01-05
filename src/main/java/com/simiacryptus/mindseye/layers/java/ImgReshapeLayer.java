@@ -22,6 +22,8 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.lang.RefUtil;
+import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrayList;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefList;
@@ -31,6 +33,7 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.IntFunction;
 
 @SuppressWarnings("serial")
 public @RefAware
@@ -80,6 +83,7 @@ class ImgReshapeLayer extends LayerBase {
         }
       }
     }
+    inputData.freeRef();
     return outputData;
   }
 
@@ -108,12 +112,12 @@ class ImgReshapeLayer extends LayerBase {
         }
       }
     }
+    inputData.freeRef();
     return outputData;
   }
 
   @SuppressWarnings("unused")
-  public static ImgReshapeLayer fromJson(@Nonnull final JsonObject json,
-                                         Map<CharSequence, byte[]> rs) {
+  public static ImgReshapeLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ImgReshapeLayer(json);
   }
 
@@ -137,7 +141,8 @@ class ImgReshapeLayer extends LayerBase {
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     //assert Arrays.stream(inObj).flatMapToDouble(input-> input.getData().stream().flatMapToDouble(x-> Arrays.stream(x.getData()))).allMatch(v->Double.isFinite(v));
-    final Result input = inObj[0];
+    final Result input = inObj[0].addRef();
+    ReferenceCounting.freeRefs(inObj);
     final TensorList batch = input.getData();
     @Nonnull final int[] inputDims = batch.getDimensions();
     assert 3 == inputDims.length;
@@ -154,42 +159,84 @@ class ImgReshapeLayer extends LayerBase {
           inputDims[2] * kernelSizeX * kernelSizeY);
     }
     TensorArray data = new TensorArray(
-        RefIntStream.range(0, batch.length()).parallel().mapToObj(dataIndex -> {
-          Tensor inputData = batch.get(dataIndex);
-          return expand ? ImgReshapeLayer.copyExpand(inputData, outputDims.copy())
-              : ImgReshapeLayer.copyCondense(inputData, outputDims.copy());
-        }).toArray(i -> new Tensor[i]));
-    return new Result(data, new Result.Accumulator() {
-      @Override
-      public void accept(DeltaSet<UUID> buffer, TensorList error) {
-        //assert error.stream().flatMapToDouble(x-> Arrays.stream(x.getData())).allMatch(v->Double.isFinite(v));
-        if (input.isAlive()) {
-          @Nonnull
-          TensorArray tensorArray = new TensorArray(
-              RefIntStream.range(0, error.length()).parallel().mapToObj(dataIndex -> {
-                @Nonnull final Tensor passback = new Tensor(inputDims);
-                @Nullable final Tensor err = error.get(dataIndex);
-                return expand ? ImgReshapeLayer.copyCondense(err, passback) : ImgReshapeLayer.copyExpand(err, passback);
-              }).toArray(i -> new Tensor[i]));
-          input.accumulate(buffer, tensorArray);
-        }
-      }
-    }) {
+        RefIntStream.range(0, batch.length()).parallel().mapToObj(RefUtil.wrapInterface(
+            (IntFunction<? extends Tensor>) dataIndex -> {
+              Tensor inputData = batch.get(dataIndex);
+              Tensor temp_43_0002 = expand
+                  ? ImgReshapeLayer.copyExpand(inputData == null ? null : inputData.addRef(), outputDims.copy())
+                  : ImgReshapeLayer.copyCondense(inputData == null ? null : inputData.addRef(), outputDims.copy());
+              if (null != inputData)
+                inputData.freeRef();
+              return temp_43_0002;
+            }, outputDims == null ? null : outputDims.addRef(), batch == null ? null : batch.addRef()))
+            .toArray(i -> new Tensor[i]));
+    if (null != outputDims)
+      outputDims.freeRef();
+    if (null != batch)
+      batch.freeRef();
+    try {
+      try {
+        return new Result(data, new Result.Accumulator() {
+          {
+          }
 
-      @Override
-      public boolean isAlive() {
-        return input.isAlive() || !isFrozen();
-      }
+          @Override
+          public void accept(DeltaSet<UUID> buffer, TensorList error) {
+            //assert error.stream().flatMapToDouble(x-> Arrays.stream(x.getData())).allMatch(v->Double.isFinite(v));
+            if (input.isAlive()) {
+              @Nonnull
+              TensorArray tensorArray = new TensorArray(RefIntStream.range(0, error.length()).parallel()
+                  .mapToObj(RefUtil.wrapInterface(
+                      (IntFunction<? extends Tensor>) dataIndex -> {
+                        @Nonnull final Tensor passback = new Tensor(inputDims);
+                        @Nullable final Tensor err = error.get(dataIndex);
+                        Tensor temp_43_0004 = expand
+                            ? ImgReshapeLayer.copyCondense(err == null ? null : err.addRef(),
+                            passback == null ? null : passback)
+                            : ImgReshapeLayer.copyExpand(err == null ? null : err.addRef(),
+                            passback == null ? null : passback.addRef());
+                        if (null != err)
+                          err.freeRef();
+                        return temp_43_0004;
+                      }, error == null ? null : error.addRef()))
+                  .toArray(i -> new Tensor[i]));
+              input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray == null ? null : tensorArray);
+            }
+            if (null != error)
+              error.freeRef();
+            if (null != buffer)
+              buffer.freeRef();
+          }
 
-      public void _free() {
+          public @SuppressWarnings("unused")
+          void _free() {
+          }
+        }) {
+
+          {
+          }
+
+          @Override
+          public boolean isAlive() {
+            return input.isAlive() || !isFrozen();
+          }
+
+          public void _free() {
+          }
+        };
+      } finally {
+        if (null != data)
+          data.freeRef();
       }
-    };
+    } finally {
+      if (null != input)
+        input.freeRef();
+    }
   }
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources,
-                            DataSerializer dataSerializer) {
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
     @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("kernelSizeX", kernelSizeX);
     json.addProperty("kernelSizeY", kernelSizeX);

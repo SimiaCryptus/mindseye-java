@@ -54,7 +54,11 @@ class ImgBandScaleLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
-    return new ImgBandScaleLayer(0.0, 0.0, 0.0).addWeights(this::random);
+    ImgBandScaleLayer temp_76_0002 = new ImgBandScaleLayer(0.0, 0.0, 0.0);
+    ImgBandScaleLayer temp_76_0001 = temp_76_0002.addWeights(this::random);
+    if (null != temp_76_0002)
+      temp_76_0002.freeRef();
+    return temp_76_0001;
   }
 
   public @SuppressWarnings("unused")

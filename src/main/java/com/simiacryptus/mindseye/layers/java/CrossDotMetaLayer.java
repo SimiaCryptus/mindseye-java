@@ -22,6 +22,7 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefList;
 import org.slf4j.Logger;
@@ -48,8 +49,7 @@ class CrossDotMetaLayer extends LayerBase {
   }
 
   @SuppressWarnings("unused")
-  public static CrossDotMetaLayer fromJson(@Nonnull final JsonObject json,
-                                           Map<CharSequence, byte[]> rs) {
+  public static CrossDotMetaLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new CrossDotMetaLayer(json);
   }
 
@@ -72,7 +72,8 @@ class CrossDotMetaLayer extends LayerBase {
   @Nullable
   @Override
   public Result eval(@Nonnull final Result... inObj) {
-    final Result input = inObj[0];
+    final Result input = inObj[0].addRef();
+    ReferenceCounting.freeRefs(inObj);
     final TensorList indata = input.getData();
     final int itemCnt = indata.length();
     final int dim = Tensor.length(indata.getDimensions());
@@ -86,56 +87,89 @@ class CrossDotMetaLayer extends LayerBase {
         for (int k = 0; k < itemCnt; k++) {
           Tensor tensor = indata.get(k);
           @Nullable final double[] kk = tensor.getData();
+          if (null != tensor)
+            tensor.freeRef();
           v += kk[i] * kk[j];
         }
         results.set(new int[]{i, j}, v);
       }
     }
-    return new Result(new TensorArray(results),
-        new Result.Accumulator() {
-          @Override
-          public void accept(DeltaSet<UUID> buffer, TensorList delta) {
-            if (input.isAlive()) {
-              @Nullable final Tensor deltaTensor = delta.get(0);
-              @Nonnull final Tensor feedback[] = new Tensor[itemCnt];
-              RefArrays.parallelSetAll(feedback, i -> new Tensor(dim));
+    try {
+      try {
+        try {
+          return new Result(new TensorArray(results == null ? null : results.addRef()), new Result.Accumulator() {
+            {
+            }
 
-              for (int i = 0; i < dim; i++) {
-                for (int j = 0; j < dim; j++) {
-                  if (i == j) {
-                    continue;
-                  }
-                  final double v = deltaTensor.get(i, j);
-                  for (int k = 0; k < itemCnt; k++) {
-                    Tensor tensor = indata.get(k);
-                    @Nullable final double[] kk = tensor.getData();
-                    feedback[k].add(i, v * kk[j]);
-                    feedback[k].add(j, v * kk[i]);
+            @Override
+            public void accept(DeltaSet<UUID> buffer, TensorList delta) {
+              if (input.isAlive()) {
+                @Nullable final Tensor deltaTensor = delta.get(0);
+                @Nonnull final Tensor feedback[] = new Tensor[itemCnt];
+                RefArrays.parallelSetAll(Tensor.addRefs(feedback), i -> new Tensor(dim));
+
+                for (int i = 0; i < dim; i++) {
+                  for (int j = 0; j < dim; j++) {
+                    if (i == j) {
+                      continue;
+                    }
+                    final double v = deltaTensor.get(i, j);
+                    for (int k = 0; k < itemCnt; k++) {
+                      Tensor tensor = indata.get(k);
+                      @Nullable final double[] kk = tensor.getData();
+                      if (null != tensor)
+                        tensor.freeRef();
+                      feedback[k].add(i, v * kk[j]);
+                      feedback[k].add(j, v * kk[i]);
+                    }
                   }
                 }
+                if (null != deltaTensor)
+                  deltaTensor.freeRef();
+                @Nonnull
+                TensorArray tensorArray = new TensorArray(Tensor.addRefs(feedback));
+                ReferenceCounting.freeRefs(feedback);
+                input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray == null ? null : tensorArray);
               }
-              @Nonnull
-              TensorArray tensorArray = new TensorArray(feedback);
-              input.accumulate(buffer, tensorArray);
+              if (null != delta)
+                delta.freeRef();
+              if (null != buffer)
+                buffer.freeRef();
             }
-          }
-        }) {
 
-      @Override
-      public boolean isAlive() {
-        return input.isAlive();
+            public @SuppressWarnings("unused")
+            void _free() {
+            }
+          }) {
+
+            {
+            }
+
+            @Override
+            public boolean isAlive() {
+              return input.isAlive();
+            }
+
+            public void _free() {
+            }
+
+          };
+        } finally {
+          results.freeRef();
+        }
+      } finally {
+        if (null != indata)
+          indata.freeRef();
       }
-
-      public void _free() {
-      }
-
-    };
+    } finally {
+      if (null != input)
+        input.freeRef();
+    }
   }
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources,
-                            DataSerializer dataSerializer) {
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 

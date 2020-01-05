@@ -40,8 +40,7 @@ class EntropyLayer extends SimpleActivationLayer<EntropyLayer> {
   }
 
   @SuppressWarnings("unused")
-  public static EntropyLayer fromJson(final JsonObject json,
-                                      Map<CharSequence, byte[]> rs) {
+  public static EntropyLayer fromJson(final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new EntropyLayer(json);
   }
 
@@ -63,8 +62,7 @@ class EntropyLayer extends SimpleActivationLayer<EntropyLayer> {
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources,
-                            DataSerializer dataSerializer) {
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 

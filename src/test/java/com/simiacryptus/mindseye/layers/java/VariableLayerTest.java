@@ -55,7 +55,11 @@ class VariableLayerTest extends LayerTestBase {
   @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
     MonitoringSynapse inner = new MonitoringSynapse();
-    return new VariableLayer(inner);
+    VariableLayer temp_44_0001 = new VariableLayer(
+        inner == null ? null : inner.addRef());
+    if (null != inner)
+      inner.freeRef();
+    return temp_44_0001;
   }
 
   public @SuppressWarnings("unused")

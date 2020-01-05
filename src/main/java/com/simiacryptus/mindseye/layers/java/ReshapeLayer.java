@@ -22,6 +22,7 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefList;
 import com.simiacryptus.util.JsonUtil;
@@ -49,15 +50,13 @@ class ReshapeLayer extends LayerBase {
     this.outputDims = RefArrays.copyOf(outputDims, outputDims.length);
   }
 
-  protected ReshapeLayer(@Nonnull final JsonObject json,
-                         Map<CharSequence, byte[]> rs) {
+  protected ReshapeLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json);
     outputDims = JsonUtil.getIntArray(json.getAsJsonArray("outputDims"));
   }
 
   @SuppressWarnings("unused")
-  public static ReshapeLayer fromJson(@Nonnull final JsonObject json,
-                                      Map<CharSequence, byte[]> rs) {
+  public static ReshapeLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ReshapeLayer(json, rs);
   }
 
@@ -84,31 +83,59 @@ class ReshapeLayer extends LayerBase {
     TensorList data = inObj[0].getData();
     @Nonnull
     int[] inputDims = data.getDimensions();
-    ReshapedTensorList reshapedTensorList = new ReshapedTensorList(data, outputDims);
-    return new Result(reshapedTensorList, new Result.Accumulator() {
-      @Override
-      public void accept(DeltaSet<UUID> buffer, TensorList delta) {
-        @Nonnull
-        ReshapedTensorList tensorList = new ReshapedTensorList(delta, inputDims);
-        inObj[0].accumulate(buffer, tensorList);
-      }
-    }) {
+    ReshapedTensorList reshapedTensorList = new ReshapedTensorList(data == null ? null : data.addRef(), outputDims);
+    if (null != data)
+      data.freeRef();
+    try {
+      try {
+        return new Result(reshapedTensorList, new Result.Accumulator() {
+          {
+            Result.addRefs(inObj);
+          }
 
-      @Override
-      public boolean isAlive() {
-        return inObj[0].isAlive();
-      }
+          @Override
+          public void accept(DeltaSet<UUID> buffer, TensorList delta) {
+            @Nonnull
+            ReshapedTensorList tensorList = new ReshapedTensorList(delta == null ? null : delta.addRef(), inputDims);
+            if (null != delta)
+              delta.freeRef();
+            inObj[0].accumulate(buffer == null ? null : buffer.addRef(), tensorList == null ? null : tensorList);
+            if (null != buffer)
+              buffer.freeRef();
+          }
 
-      public void _free() {
+          public @SuppressWarnings("unused")
+          void _free() {
+            ReferenceCounting.freeRefs(inObj);
+          }
+        }) {
+
+          {
+            Result.addRefs(inObj);
+          }
+
+          @Override
+          public boolean isAlive() {
+            return inObj[0].isAlive();
+          }
+
+          public void _free() {
+            ReferenceCounting.freeRefs(inObj);
+          }
+        };
+      } finally {
+        ReferenceCounting.freeRefs(inObj);
       }
-    };
+    } finally {
+      if (null != reshapedTensorList)
+        reshapedTensorList.freeRef();
+    }
 
   }
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources,
-                            DataSerializer dataSerializer) {
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
     @Nonnull final JsonObject json = super.getJsonStub();
     json.add("outputDims", JsonUtil.getJson(outputDims));
     return json;

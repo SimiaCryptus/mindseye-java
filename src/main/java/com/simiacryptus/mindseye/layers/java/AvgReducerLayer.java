@@ -22,6 +22,8 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.lang.RefUtil;
+import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefList;
@@ -33,6 +35,8 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.IntFunction;
+import java.util.function.IntToDoubleFunction;
 
 @SuppressWarnings("serial")
 public @RefAware
@@ -49,8 +53,7 @@ class AvgReducerLayer extends LayerBase {
   }
 
   @SuppressWarnings("unused")
-  public static AvgReducerLayer fromJson(@Nonnull final JsonObject json,
-                                         Map<CharSequence, byte[]> rs) {
+  public static AvgReducerLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new AvgReducerLayer(json);
   }
 
@@ -73,60 +76,95 @@ class AvgReducerLayer extends LayerBase {
   @Nonnull
   @Override
   public Result eval(@Nonnull final Result... inObj) {
-    return new Result(new TensorArray(RefIntStream.range(0, inObj[0].getData().length())
-        .parallel().mapToDouble(dataIndex -> {
-          double sum = 0;
-          for (@Nonnull final Result element : inObj) {
-            Tensor tensor = element.getData().get(dataIndex);
-            @Nullable final double[] input = tensor.getData();
-            for (final double element2 : input) {
-              sum += element2 / input.length;
+    try {
+      TensorList temp_64_0003 = inObj[0].getData();
+      Result temp_64_0002 = new Result(
+          new TensorArray(RefIntStream.range(0, temp_64_0003.length()).parallel().mapToDouble(
+              RefUtil.wrapInterface((IntToDoubleFunction) dataIndex -> {
+                double sum = 0;
+                for (@Nonnull final Result element : inObj) {
+                  Tensor tensor = element.getData().get(dataIndex);
+                  @Nullable final double[] input = tensor.getData();
+                  if (null != tensor)
+                    tensor.freeRef();
+                  for (final double element2 : input) {
+                    sum += element2 / input.length;
+                  }
+                }
+                return sum;
+              }, Result.addRefs(inObj)))
+              .mapToObj(x -> new Tensor(new double[]{x}, new int[]{1})).toArray(i -> new Tensor[i])),
+          new Result.Accumulator() {
+            {
+              Result.addRefs(inObj);
             }
-          }
-          return sum;
-        }).mapToObj(x -> new Tensor(new double[]{x}, new int[]{1})).toArray(i -> new Tensor[i])),
-        new Result.Accumulator() {
-          @Override
-          public void accept(DeltaSet<UUID> buffer, TensorList delta) {
-            for (@Nonnull final Result in_l : inObj) {
-              if (in_l.isAlive()) {
-                TensorList inData = in_l.getData();
-                @Nonnull final TensorList tensorList = new TensorArray(RefIntStream
-                    .range(0, inData.length()).parallel().mapToObj(dataIndex -> {
-                      Tensor deltaTensor = delta.get(dataIndex);
-                      final double deltaV = deltaTensor.get(0);
-                      @Nonnull final Tensor passback = new Tensor(inData.getDimensions());
-                      final int dim = passback.length();
-                      for (int i = 0; i < dim; i++) {
-                        passback.set(i, deltaV / dim);
-                      }
-                      return passback;
-                    }).toArray(i -> new Tensor[i]));
-                in_l.accumulate(buffer, tensorList);
+
+            @Override
+            public void accept(DeltaSet<UUID> buffer, TensorList delta) {
+              for (@Nonnull final Result in_l : inObj) {
+                if (in_l.isAlive()) {
+                  TensorList inData = in_l.getData();
+                  @Nonnull final TensorList tensorList = new TensorArray(RefIntStream.range(0, inData.length()).parallel()
+                      .mapToObj(RefUtil.wrapInterface(
+                          (IntFunction<? extends Tensor>) dataIndex -> {
+                            Tensor deltaTensor = delta.get(dataIndex);
+                            final double deltaV = deltaTensor.get(0);
+                            if (null != deltaTensor)
+                              deltaTensor.freeRef();
+                            @Nonnull final Tensor passback = new Tensor(inData.getDimensions());
+                            final int dim = passback.length();
+                            for (int i = 0; i < dim; i++) {
+                              passback.set(i, deltaV / dim);
+                            }
+                            return passback;
+                          }, delta == null ? null : delta.addRef(), inData == null ? null : inData.addRef()))
+                      .toArray(i -> new Tensor[i]));
+                  if (null != inData)
+                    inData.freeRef();
+                  in_l.accumulate(buffer == null ? null : buffer.addRef(), tensorList == null ? null : tensorList);
+                }
               }
+              if (null != delta)
+                delta.freeRef();
+              if (null != buffer)
+                buffer.freeRef();
             }
-          }
-        }) {
 
-      @Override
-      public boolean isAlive() {
-        for (@Nonnull final Result element : inObj)
-          if (element.isAlive()) {
-            return true;
-          }
-        return false;
-      }
+            public @SuppressWarnings("unused")
+            void _free() {
+              ReferenceCounting.freeRefs(inObj);
+            }
+          }) {
 
-      public void _free() {
-      }
+        {
+          Result.addRefs(inObj);
+        }
 
-    };
+        @Override
+        public boolean isAlive() {
+          for (@Nonnull final Result element : inObj)
+            if (element.isAlive()) {
+              return true;
+            }
+          return false;
+        }
+
+        public void _free() {
+          ReferenceCounting.freeRefs(inObj);
+        }
+
+      };
+      if (null != temp_64_0003)
+        temp_64_0003.freeRef();
+      return temp_64_0002;
+    } finally {
+      ReferenceCounting.freeRefs(inObj);
+    }
   }
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources,
-                            DataSerializer dataSerializer) {
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 

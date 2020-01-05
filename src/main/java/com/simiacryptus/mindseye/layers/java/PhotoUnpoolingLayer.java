@@ -22,6 +22,8 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.lang.RefUtil;
+import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrayList;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
@@ -32,6 +34,7 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.IntFunction;
 
 @SuppressWarnings("serial")
 public @RefAware
@@ -84,6 +87,9 @@ class PhotoUnpoolingLayer extends LayerBase {
         }
       }
     }
+    if (null != referenceData)
+      referenceData.freeRef();
+    inputData.freeRef();
     return outputData;
   }
 
@@ -97,9 +103,8 @@ class PhotoUnpoolingLayer extends LayerBase {
     assert inDim[0] <= outDim[0];
     assert inDim[1] <= outDim[1];
     assert inDim[2] == outDim[2];
-    assert RefArrays.equals(referenceData.getDimensions(), outDim) : String.format(
-        "%s != %s", RefArrays.toString(referenceData.getDimensions()),
-        RefArrays.toString(outDim));
+    assert RefArrays.equals(referenceData.getDimensions(), outDim) : String.format("%s != %s",
+        RefArrays.toString(referenceData.getDimensions()), RefArrays.toString(outDim));
     final int kernelSizeX = outDim[0] / inDim[0];
     final int kernelSizeY = outDim[0] / inDim[0];
     final int[] referenceDataDimensions = referenceData.getDimensions();
@@ -125,12 +130,14 @@ class PhotoUnpoolingLayer extends LayerBase {
         }
       }
     }
+    if (null != referenceData)
+      referenceData.freeRef();
+    inputData.freeRef();
     return outputData;
   }
 
   @SuppressWarnings("unused")
-  public static PhotoUnpoolingLayer fromJson(@Nonnull final JsonObject json,
-                                             Map<CharSequence, byte[]> rs) {
+  public static PhotoUnpoolingLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new PhotoUnpoolingLayer(json);
   }
 
@@ -154,51 +161,106 @@ class PhotoUnpoolingLayer extends LayerBase {
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     //assert Arrays.stream(inObj).flatMapToDouble(input-> input.getData().stream().flatMapToDouble(x-> Arrays.stream(x.getData()))).allMatch(v->Double.isFinite(v));
-    final Result input = inObj[0];
+    final Result input = inObj[0].addRef();
     final TensorList batch = input.getData();
     final TensorList referencebatch = inObj[1].getData();
     @Nonnull final int[] inputDims = batch.getDimensions();
     assert 3 == inputDims.length;
     Tensor outputDims;
-    outputDims = new Tensor(inObj[1].getData().getDimensions());
+    TensorList temp_34_0006 = inObj[1].getData();
+    outputDims = new Tensor(temp_34_0006.getDimensions());
+    if (null != temp_34_0006)
+      temp_34_0006.freeRef();
+    ReferenceCounting.freeRefs(inObj);
     TensorArray data = new TensorArray(
-        RefIntStream.range(0, batch.length()).parallel().mapToObj(dataIndex -> {
-          Tensor inputData = batch.get(dataIndex);
-          Tensor referenceData = referencebatch.get(dataIndex);
-          return PhotoUnpoolingLayer.copyExpand(inputData, outputDims.copy(), referenceData);
-        }).toArray(i -> new Tensor[i]));
-    return new Result(data, new Result.Accumulator() {
-      @Override
-      public void accept(DeltaSet<UUID> buffer, TensorList error) {
-        //assert error.stream().flatMapToDouble(x-> Arrays.stream(x.getData())).allMatch(v->Double.isFinite(v));
-        if (input.isAlive()) {
-          @Nonnull
-          TensorArray tensorArray = new TensorArray(
-              RefIntStream.range(0, error.length()).parallel().mapToObj(dataIndex -> {
-                @Nonnull final Tensor passback = new Tensor(inputDims);
-                @Nullable final Tensor err = error.get(dataIndex);
-                Tensor referenceData = referencebatch.get(dataIndex);
-                return PhotoUnpoolingLayer.copyCondense(err, passback, referenceData);
-              }).toArray(i -> new Tensor[i]));
-          input.accumulate(buffer, tensorArray);
+        RefIntStream.range(0, batch.length()).parallel().mapToObj(RefUtil.wrapInterface(
+            (IntFunction<? extends Tensor>) dataIndex -> {
+              Tensor inputData = batch.get(dataIndex);
+              Tensor referenceData = referencebatch.get(dataIndex);
+              Tensor temp_34_0003 = PhotoUnpoolingLayer.copyExpand(
+                  inputData == null ? null : inputData.addRef(), outputDims.copy(),
+                  referenceData == null ? null : referenceData.addRef());
+              if (null != referenceData)
+                referenceData.freeRef();
+              if (null != inputData)
+                inputData.freeRef();
+              return temp_34_0003;
+            }, outputDims == null ? null : outputDims.addRef(), referencebatch == null ? null : referencebatch.addRef(),
+            batch == null ? null : batch.addRef())).toArray(i -> new Tensor[i]));
+    if (null != outputDims)
+      outputDims.freeRef();
+    if (null != batch)
+      batch.freeRef();
+    try {
+      try {
+        try {
+          return new Result(data, new Result.Accumulator() {
+            {
+            }
+
+            @Override
+            public void accept(DeltaSet<UUID> buffer, TensorList error) {
+              //assert error.stream().flatMapToDouble(x-> Arrays.stream(x.getData())).allMatch(v->Double.isFinite(v));
+              if (input.isAlive()) {
+                @Nonnull
+                TensorArray tensorArray = new TensorArray(RefIntStream.range(0, error.length()).parallel()
+                    .mapToObj(RefUtil.wrapInterface(
+                        (IntFunction<? extends Tensor>) dataIndex -> {
+                          @Nonnull final Tensor passback = new Tensor(inputDims);
+                          @Nullable final Tensor err = error.get(dataIndex);
+                          Tensor referenceData = referencebatch.get(dataIndex);
+                          Tensor temp_34_0005 = PhotoUnpoolingLayer.copyCondense(
+                              err == null ? null : err.addRef(), passback == null ? null : passback,
+                              referenceData == null ? null : referenceData.addRef());
+                          if (null != referenceData)
+                            referenceData.freeRef();
+                          if (null != err)
+                            err.freeRef();
+                          return temp_34_0005;
+                        }, referencebatch == null ? null : referencebatch.addRef(),
+                        error == null ? null : error.addRef()))
+                    .toArray(i -> new Tensor[i]));
+                input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray == null ? null : tensorArray);
+              }
+              if (null != error)
+                error.freeRef();
+              if (null != buffer)
+                buffer.freeRef();
+            }
+
+            public @SuppressWarnings("unused")
+            void _free() {
+            }
+          }) {
+
+            {
+            }
+
+            @Override
+            public boolean isAlive() {
+              return input.isAlive() || !isFrozen();
+            }
+
+            public void _free() {
+            }
+          };
+        } finally {
+          if (null != data)
+            data.freeRef();
         }
+      } finally {
+        if (null != referencebatch)
+          referencebatch.freeRef();
       }
-    }) {
-
-      @Override
-      public boolean isAlive() {
-        return input.isAlive() || !isFrozen();
-      }
-
-      public void _free() {
-      }
-    };
+    } finally {
+      if (null != input)
+        input.freeRef();
+    }
   }
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources,
-                            DataSerializer dataSerializer) {
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 

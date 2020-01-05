@@ -27,8 +27,7 @@ import com.simiacryptus.ref.wrappers.RefIntStream;
 import java.util.Arrays;
 
 public abstract @RefAware
-class BinaryEntropyActivationLayerTest
-    extends ActivationLayerTestBase {
+class BinaryEntropyActivationLayerTest extends ActivationLayerTestBase {
   public BinaryEntropyActivationLayerTest() {
     super(new BinaryEntropyActivationLayer());
   }

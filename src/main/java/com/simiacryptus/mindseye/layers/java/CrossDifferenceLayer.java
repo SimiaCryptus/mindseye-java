@@ -22,6 +22,7 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefList;
@@ -44,8 +45,7 @@ class CrossDifferenceLayer extends LayerBase {
   }
 
   @SuppressWarnings("unused")
-  public static CrossDifferenceLayer fromJson(@Nonnull final JsonObject json,
-                                              Map<CharSequence, byte[]> rs) {
+  public static CrossDifferenceLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new CrossDifferenceLayer(json);
   }
 
@@ -73,62 +73,94 @@ class CrossDifferenceLayer extends LayerBase {
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     assert 1 == inObj.length;
-    return new Result(new TensorArray(inObj[0].getData().stream().parallel().map(tensor -> {
-      final int inputDim = tensor.length();
-      final int outputDim = (inputDim * inputDim - inputDim) / 2;
-      @Nonnull final Tensor result1 = new Tensor(outputDim);
-      @Nullable final double[] inputData = tensor.getData();
-      @Nullable final double[] resultData = result1.getData();
-      RefIntStream.range(0, inputDim).forEach(x -> {
-        RefIntStream.range(x + 1, inputDim).forEach(y -> {
-          resultData[CrossDifferenceLayer.index(x, y, inputDim)] = inputData[x] - inputData[y];
-        });
-      });
-      return result1;
-    }).toArray(i -> new Tensor[i])), new Result.Accumulator() {
-      @Override
-      public void accept(DeltaSet<UUID> buffer, TensorList data) {
-        final Result input = inObj[0];
-        if (input.isAlive()) {
-          @Nonnull
-          TensorArray tensorArray = new TensorArray(data.stream().parallel().map(tensor -> {
-            final int outputDim = tensor.length();
-            final int inputDim = (1 + (int) Math.sqrt(1 + 8 * outputDim)) / 2;
-            @Nonnull final Tensor passback = new Tensor(inputDim);
-            @Nullable final double[] passbackData = passback.getData();
-            @Nullable final double[] tensorData = tensor.getData();
+    try {
+      TensorList temp_65_0003 = inObj[0].getData();
+      Result temp_65_0002 = new Result(
+          new TensorArray(temp_65_0003.stream().parallel().map(tensor -> {
+            final int inputDim = tensor.length();
+            final int outputDim = (inputDim * inputDim - inputDim) / 2;
+            @Nonnull final Tensor result1 = new Tensor(outputDim);
+            @Nullable final double[] inputData = tensor.getData();
+            if (null != tensor)
+              tensor.freeRef();
+            @Nullable final double[] resultData = result1.getData();
             RefIntStream.range(0, inputDim).forEach(x -> {
               RefIntStream.range(x + 1, inputDim).forEach(y -> {
-                passbackData[x] += tensorData[CrossDifferenceLayer.index(x, y, inputDim)];
-                passbackData[y] += -tensorData[CrossDifferenceLayer.index(x, y, inputDim)];
+                resultData[CrossDifferenceLayer.index(x, y, inputDim)] = inputData[x] - inputData[y];
               });
             });
-            return passback;
-          }).toArray(i -> new Tensor[i]));
-          input.accumulate(buffer, tensorArray);
+            return result1;
+          }).toArray(i -> new Tensor[i])), new Result.Accumulator() {
+        {
+          Result.addRefs(inObj);
         }
-      }
-    }) {
 
-      @Override
-      public boolean isAlive() {
-        for (@Nonnull final Result element : inObj)
-          if (element.isAlive()) {
-            return true;
+        @Override
+        public void accept(DeltaSet<UUID> buffer, TensorList data) {
+          final Result input = inObj[0].addRef();
+          if (input.isAlive()) {
+            @Nonnull
+            TensorArray tensorArray = new TensorArray(data.stream().parallel().map(tensor -> {
+              final int outputDim = tensor.length();
+              final int inputDim = (1 + (int) Math.sqrt(1 + 8 * outputDim)) / 2;
+              @Nonnull final Tensor passback = new Tensor(inputDim);
+              @Nullable final double[] passbackData = passback.getData();
+              @Nullable final double[] tensorData = tensor.getData();
+              if (null != tensor)
+                tensor.freeRef();
+              RefIntStream.range(0, inputDim).forEach(x -> {
+                RefIntStream.range(x + 1, inputDim).forEach(y -> {
+                  passbackData[x] += tensorData[CrossDifferenceLayer.index(x, y, inputDim)];
+                  passbackData[y] += -tensorData[CrossDifferenceLayer.index(x, y, inputDim)];
+                });
+              });
+              return passback;
+            }).toArray(i -> new Tensor[i]));
+            input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray == null ? null : tensorArray);
           }
-        return false;
-      }
+          if (null != data)
+            data.freeRef();
+          if (null != buffer)
+            buffer.freeRef();
+          if (null != input)
+            input.freeRef();
+        }
 
-      public void _free() {
-      }
+        public @SuppressWarnings("unused")
+        void _free() {
+          ReferenceCounting.freeRefs(inObj);
+        }
+      }) {
 
-    };
+        {
+          Result.addRefs(inObj);
+        }
+
+        @Override
+        public boolean isAlive() {
+          for (@Nonnull final Result element : inObj)
+            if (element.isAlive()) {
+              return true;
+            }
+          return false;
+        }
+
+        public void _free() {
+          ReferenceCounting.freeRefs(inObj);
+        }
+
+      };
+      if (null != temp_65_0003)
+        temp_65_0003.freeRef();
+      return temp_65_0002;
+    } finally {
+      ReferenceCounting.freeRefs(inObj);
+    }
   }
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources,
-                            DataSerializer dataSerializer) {
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 

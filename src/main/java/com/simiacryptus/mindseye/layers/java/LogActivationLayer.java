@@ -29,8 +29,7 @@ import java.util.Map;
 
 @SuppressWarnings("serial")
 public final @RefAware
-class LogActivationLayer
-    extends SimpleActivationLayer<LogActivationLayer> {
+class LogActivationLayer extends SimpleActivationLayer<LogActivationLayer> {
 
   public LogActivationLayer() {
   }
@@ -40,8 +39,7 @@ class LogActivationLayer
   }
 
   @SuppressWarnings("unused")
-  public static LogActivationLayer fromJson(final JsonObject json,
-                                            Map<CharSequence, byte[]> rs) {
+  public static LogActivationLayer fromJson(final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new LogActivationLayer(json);
   }
 
@@ -63,8 +61,7 @@ class LogActivationLayer
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources,
-                            DataSerializer dataSerializer) {
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 

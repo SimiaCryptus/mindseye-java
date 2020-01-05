@@ -29,8 +29,7 @@ import java.util.Map;
 
 @SuppressWarnings("serial")
 public final @RefAware
-class SinewaveActivationLayer
-    extends SimpleActivationLayer<SinewaveActivationLayer> {
+class SinewaveActivationLayer extends SimpleActivationLayer<SinewaveActivationLayer> {
 
   private boolean balanced = true;
 
@@ -49,12 +48,11 @@ class SinewaveActivationLayer
   @Nonnull
   public SinewaveActivationLayer setBalanced(final boolean balanced) {
     this.balanced = balanced;
-    return this;
+    return this.addRef();
   }
 
   @SuppressWarnings("unused")
-  public static SinewaveActivationLayer fromJson(@Nonnull final JsonObject json,
-                                                 Map<CharSequence, byte[]> rs) {
+  public static SinewaveActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new SinewaveActivationLayer(json);
   }
 
@@ -76,8 +74,7 @@ class SinewaveActivationLayer
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources,
-                            DataSerializer dataSerializer) {
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
     @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("balanced", balanced);
     return json;

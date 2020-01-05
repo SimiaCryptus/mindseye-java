@@ -29,8 +29,7 @@ import java.util.Map;
 
 @SuppressWarnings("serial")
 public final @RefAware
-class SqActivationLayer
-    extends SimpleActivationLayer<SqActivationLayer> {
+class SqActivationLayer extends SimpleActivationLayer<SqActivationLayer> {
 
   public SqActivationLayer() {
   }
@@ -40,8 +39,7 @@ class SqActivationLayer
   }
 
   @SuppressWarnings("unused")
-  public static SqActivationLayer fromJson(final JsonObject json,
-                                           Map<CharSequence, byte[]> rs) {
+  public static SqActivationLayer fromJson(final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new SqActivationLayer(json);
   }
 
@@ -63,8 +61,7 @@ class SqActivationLayer
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources,
-                            DataSerializer dataSerializer) {
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 

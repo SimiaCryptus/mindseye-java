@@ -23,6 +23,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrayList;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefList;
@@ -64,8 +65,7 @@ class ImgConcatLayer extends LayerBase {
   }
 
   @SuppressWarnings("unused")
-  public static ImgConcatLayer fromJson(@Nonnull final JsonObject json,
-                                        Map<CharSequence, byte[]> rs) {
+  public static ImgConcatLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ImgConcatLayer(json);
   }
 
@@ -88,20 +88,61 @@ class ImgConcatLayer extends LayerBase {
   @Nullable
   @Override
   public Result eval(@Nonnull final Result... inObj) {
-    assert RefArrays.stream(inObj).allMatch(
-        x -> x.getData().getDimensions().length == 3) : "This component is for use mapCoords 3d png tensors only";
-    final int numBatches = inObj[0].getData().length();
-    assert RefArrays.stream(inObj)
-        .allMatch(x -> x.getData().length() == numBatches) : "All inputs must use same batch size";
-    @Nonnull final int[] outputDims = RefArrays.copyOf(inObj[0].getData().getDimensions(), 3);
-    outputDims[2] = RefArrays.stream(inObj).mapToInt(x -> x.getData().getDimensions()[2])
-        .sum();
+    assert RefArrays.stream(Result.addRefs(inObj)).allMatch(x -> {
+      TensorList temp_18_0011 = x.getData();
+      boolean temp_18_0004 = temp_18_0011.getDimensions().length == 3;
+      if (null != temp_18_0011)
+        temp_18_0011.freeRef();
+      if (null != x)
+        x.freeRef();
+      return temp_18_0004;
+    }) : "This component is for use mapCoords 3d png tensors only";
+    TensorList temp_18_0012 = inObj[0].getData();
+    final int numBatches = temp_18_0012.length();
+    if (null != temp_18_0012)
+      temp_18_0012.freeRef();
+    assert RefArrays.stream(Result.addRefs(inObj)).allMatch(x -> {
+      TensorList temp_18_0013 = x.getData();
+      boolean temp_18_0005 = temp_18_0013.length() == numBatches;
+      if (null != temp_18_0013)
+        temp_18_0013.freeRef();
+      if (null != x)
+        x.freeRef();
+      return temp_18_0005;
+    }) : "All inputs must use same batch size";
+    TensorList temp_18_0014 = inObj[0].getData();
+    @Nonnull final int[] outputDims = RefArrays.copyOf(temp_18_0014.getDimensions(), 3);
+    if (null != temp_18_0014)
+      temp_18_0014.freeRef();
+    outputDims[2] = RefArrays.stream(Result.addRefs(inObj)).mapToInt(x -> {
+      TensorList temp_18_0015 = x.getData();
+      int temp_18_0006 = temp_18_0015.getDimensions()[2];
+      if (null != temp_18_0015)
+        temp_18_0015.freeRef();
+      if (null != x)
+        x.freeRef();
+      return temp_18_0006;
+    }).sum();
     if (maxBands > 0)
       outputDims[2] = Math.min(maxBands, outputDims[2]);
-    assert RefArrays.stream(inObj)
-        .allMatch(x -> x.getData().getDimensions()[0] == outputDims[0]) : "Inputs must be same size";
-    assert RefArrays.stream(inObj)
-        .allMatch(x -> x.getData().getDimensions()[1] == outputDims[1]) : "Inputs must be same size";
+    assert RefArrays.stream(Result.addRefs(inObj)).allMatch(x -> {
+      TensorList temp_18_0016 = x.getData();
+      boolean temp_18_0007 = temp_18_0016.getDimensions()[0] == outputDims[0];
+      if (null != temp_18_0016)
+        temp_18_0016.freeRef();
+      if (null != x)
+        x.freeRef();
+      return temp_18_0007;
+    }) : "Inputs must be same size";
+    assert RefArrays.stream(Result.addRefs(inObj)).allMatch(x -> {
+      TensorList temp_18_0017 = x.getData();
+      boolean temp_18_0008 = temp_18_0017.getDimensions()[1] == outputDims[1];
+      if (null != temp_18_0017)
+        temp_18_0017.freeRef();
+      if (null != x)
+        x.freeRef();
+      return temp_18_0008;
+    }) : "Inputs must be same size";
 
     @Nonnull final RefList<Tensor> outputTensors = new RefArrayList<>();
     for (int b = 0; b < numBatches; b++) {
@@ -109,16 +150,26 @@ class ImgConcatLayer extends LayerBase {
       int pos = 0;
       @Nullable final double[] outputTensorData = outputTensor.getData();
       for (int i = 0; i < inObj.length; i++) {
+        TensorList temp_18_0018 = inObj[i].getData();
         @Nullable
-        Tensor tensor = inObj[i].getData().get(b);
+        Tensor tensor = temp_18_0018.get(b);
+        if (null != temp_18_0018)
+          temp_18_0018.freeRef();
         @Nullable final double[] data = tensor.getData();
+        if (null != tensor)
+          tensor.freeRef();
         System.arraycopy(data, 0, outputTensorData, pos, Math.min(data.length, outputTensorData.length - pos));
         pos += data.length;
       }
-      outputTensors.add(outputTensor);
+      outputTensors.add(outputTensor == null ? null : outputTensor);
     }
-    return new Result(new TensorArray(outputTensors.toArray(new Tensor[]{})),
-        new Result.Accumulator() {
+    try {
+      try {
+        return new Result(new TensorArray(outputTensors.toArray(new Tensor[]{})), new Result.Accumulator() {
+          {
+            Result.addRefs(inObj);
+          }
+
           @Override
           public void accept(DeltaSet<UUID> buffer, TensorList data) {
             assert numBatches == data.length();
@@ -129,53 +180,102 @@ class ImgConcatLayer extends LayerBase {
               @Nonnull final Tensor[] outputTensors2 = new Tensor[inObj.length];
               int pos = 0;
               for (int i = 0; i < inObj.length; i++) {
-                @Nonnull final Tensor dest = new Tensor(inObj[i].getData().getDimensions());
+                TensorList temp_18_0019 = inObj[i].getData();
+                @Nonnull final Tensor dest = new Tensor(temp_18_0019.getDimensions());
+                if (null != temp_18_0019)
+                  temp_18_0019.freeRef();
                 @Nullable
                 double[] tensorData = tensor.getData();
                 System.arraycopy(tensorData, pos, dest.getData(), 0, Math.min(dest.length(), tensorData.length - pos));
                 pos += dest.length();
-                outputTensors2[i] = dest;
+                {
+                  Tensor temp_18_0001 = dest == null ? null : dest.addRef();
+                  if (null != outputTensors2[i])
+                    outputTensors2[i].freeRef();
+                  outputTensors2[i] = temp_18_0001 == null ? null : temp_18_0001.addRef();
+                  if (null != temp_18_0001)
+                    temp_18_0001.freeRef();
+                }
+                dest.freeRef();
               }
-              splitBatches.add(outputTensors2);
+              if (null != tensor)
+                tensor.freeRef();
+              splitBatches.add(Tensor.addRefs(outputTensors2));
+              ReferenceCounting.freeRefs(outputTensors2);
             }
 
+            if (null != data)
+              data.freeRef();
             @Nonnull final Tensor[][] splitData = new Tensor[inObj.length][];
             for (int i = 0; i < splitData.length; i++) {
-              splitData[i] = new Tensor[numBatches];
+              {
+                Tensor[] temp_18_0002 = new Tensor[numBatches];
+                if (null != splitData[i])
+                  ReferenceCounting.freeRefs(splitData[i]);
+                splitData[i] = Tensor.addRefs(temp_18_0002);
+                if (null != temp_18_0002)
+                  ReferenceCounting.freeRefs(temp_18_0002);
+              }
             }
             for (int i = 0; i < inObj.length; i++) {
               for (int b = 0; b < numBatches; b++) {
-                splitData[i][b] = splitBatches.get(b)[i];
+                {
+                  Tensor temp_18_0003 = splitBatches.get(b)[i].addRef();
+                  if (null != splitData[i][b])
+                    splitData[i][b].freeRef();
+                  splitData[i][b] = temp_18_0003 == null ? null : temp_18_0003.addRef();
+                  if (null != temp_18_0003)
+                    temp_18_0003.freeRef();
+                }
               }
             }
 
+            splitBatches.freeRef();
             for (int i = 0; i < inObj.length; i++) {
               @Nonnull
-              TensorArray tensorArray = new TensorArray(splitData[i]);
-              inObj[i].accumulate(buffer, tensorArray);
+              TensorArray tensorArray = new TensorArray(Tensor.addRefs(splitData[i]));
+              inObj[i].accumulate(buffer == null ? null : buffer.addRef(), tensorArray == null ? null : tensorArray);
             }
+            if (null != buffer)
+              buffer.freeRef();
+            ReferenceCounting.freeRefs(splitData);
+          }
+
+          public @SuppressWarnings("unused")
+          void _free() {
+            ReferenceCounting.freeRefs(inObj);
           }
         }) {
 
-      @Override
-      public boolean isAlive() {
-        for (@Nonnull final Result element : inObj)
-          if (element.isAlive()) {
-            return true;
+          {
+            Result.addRefs(inObj);
           }
-        return false;
-      }
 
-      public void _free() {
-      }
+          @Override
+          public boolean isAlive() {
+            for (@Nonnull final Result element : inObj)
+              if (element.isAlive()) {
+                return true;
+              }
+            return false;
+          }
 
-    };
+          public void _free() {
+            ReferenceCounting.freeRefs(inObj);
+          }
+
+        };
+      } finally {
+        ReferenceCounting.freeRefs(inObj);
+      }
+    } finally {
+      outputTensors.freeRef();
+    }
   }
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources,
-                            DataSerializer dataSerializer) {
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
     @Nonnull
     JsonObject json = super.getJsonStub();
     json.addProperty("maxBands", maxBands);

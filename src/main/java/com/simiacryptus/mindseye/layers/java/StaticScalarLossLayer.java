@@ -22,6 +22,8 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.lang.RefUtil;
+import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefList;
@@ -33,6 +35,7 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.IntFunction;
 
 @SuppressWarnings("serial")
 public @RefAware
@@ -56,12 +59,11 @@ class StaticScalarLossLayer extends LayerBase {
   @Nonnull
   public StaticScalarLossLayer setTarget(final double target) {
     this.target = target;
-    return this;
+    return this.addRef();
   }
 
   @SuppressWarnings("unused")
-  public static StaticScalarLossLayer fromJson(@Nonnull final JsonObject json,
-                                               Map<CharSequence, byte[]> rs) {
+  public static StaticScalarLossLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new StaticScalarLossLayer(json);
   }
 
@@ -84,48 +86,85 @@ class StaticScalarLossLayer extends LayerBase {
   @Nonnull
   @Override
   public Result eval(@Nonnull final Result... inObj) {
-    if (1 != inObj.length)
+    if (1 != inObj.length) {
+      ReferenceCounting.freeRefs(inObj);
       throw new IllegalArgumentException();
+    }
     //if (inObj[0].getData().length() != 1) throw new IllegalArgumentException();
-    final Result in0 = inObj[0];
+    final Result in0 = inObj[0].addRef();
+    ReferenceCounting.freeRefs(inObj);
     TensorList indata = in0.getData();
-    return new Result(new TensorArray(
-        RefIntStream.range(0, indata.length()).parallel().mapToObj(dataIndex -> {
-          @Nullable final Tensor a = indata.get(dataIndex);
-          final double diff = Math.abs(a.get(0) - getTarget());
-          return new Tensor(new double[]{diff}, 1);
-        }).toArray(i -> new Tensor[i])), new Result.Accumulator() {
-      @Override
-      public void accept(DeltaSet<UUID> buffer, TensorList data) {
-        if (in0.isAlive()) {
-          @Nonnull
-          TensorArray tensorArray = new TensorArray(
-              RefIntStream.range(0, data.length()).parallel().mapToObj(dataIndex -> {
-                @Nullable final Tensor a = indata.get(dataIndex);
-                Tensor tensor = data.get(dataIndex);
-                final double deriv = tensor.get(0) * (a.get(0) - StaticScalarLossLayer.this.getTarget() < 0 ? -1 : 1);
-                return new Tensor(new double[]{deriv}, 1);
-              }).toArray(i -> new Tensor[i]));
-          in0.accumulate(buffer, tensorArray);
-        }
-      }
-    }) {
+    try {
+      try {
+        return new Result(new TensorArray(
+            RefIntStream.range(0, indata.length()).parallel().mapToObj(RefUtil.wrapInterface(
+                (IntFunction<? extends Tensor>) dataIndex -> {
+                  @Nullable final Tensor a = indata.get(dataIndex);
+                  final double diff = Math.abs(a.get(0) - getTarget());
+                  if (null != a)
+                    a.freeRef();
+                  return new Tensor(new double[]{diff}, 1);
+                }, indata == null ? null : indata.addRef())).toArray(i -> new Tensor[i])),
+            new Result.Accumulator() {
+              {
+              }
 
-      @Override
-      public boolean isAlive() {
-        return in0.isAlive();
-      }
+              @Override
+              public void accept(DeltaSet<UUID> buffer, TensorList data) {
+                if (in0.isAlive()) {
+                  @Nonnull
+                  TensorArray tensorArray = new TensorArray(RefIntStream.range(0, data.length()).parallel()
+                      .mapToObj(RefUtil.wrapInterface(
+                          (IntFunction<? extends Tensor>) dataIndex -> {
+                            @Nullable final Tensor a = indata.get(dataIndex);
+                            Tensor tensor = data.get(dataIndex);
+                            final double deriv = tensor.get(0)
+                                * (a.get(0) - StaticScalarLossLayer.this.getTarget() < 0 ? -1 : 1);
+                            if (null != tensor)
+                              tensor.freeRef();
+                            if (null != a)
+                              a.freeRef();
+                            return new Tensor(new double[]{deriv}, 1);
+                          }, indata == null ? null : indata.addRef(), data == null ? null : data.addRef()))
+                      .toArray(i -> new Tensor[i]));
+                  in0.accumulate(buffer == null ? null : buffer.addRef(), tensorArray == null ? null : tensorArray);
+                }
+                if (null != data)
+                  data.freeRef();
+                if (null != buffer)
+                  buffer.freeRef();
+              }
 
-      public void _free() {
-      }
+              public @SuppressWarnings("unused")
+              void _free() {
+              }
+            }) {
 
-    };
+          {
+          }
+
+          @Override
+          public boolean isAlive() {
+            return in0.isAlive();
+          }
+
+          public void _free() {
+          }
+
+        };
+      } finally {
+        if (null != indata)
+          indata.freeRef();
+      }
+    } finally {
+      if (null != in0)
+        in0.freeRef();
+    }
   }
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources,
-                            DataSerializer dataSerializer) {
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 

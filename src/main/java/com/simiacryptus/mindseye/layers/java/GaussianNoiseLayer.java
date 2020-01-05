@@ -22,6 +22,8 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.lang.RefUtil;
+import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefList;
@@ -34,6 +36,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
+import java.util.function.IntFunction;
 
 @SuppressWarnings("serial")
 public @RefAware
@@ -52,7 +55,7 @@ class GaussianNoiseLayer extends LayerBase {
 
   public GaussianNoiseLayer() {
     super();
-    setValue(1.0);
+    RefUtil.freeRef(setValue(1.0));
   }
 
   protected GaussianNoiseLayer(@Nonnull final JsonObject json) {
@@ -67,12 +70,11 @@ class GaussianNoiseLayer extends LayerBase {
   @Nonnull
   public GaussianNoiseLayer setValue(final double value) {
     this.value = value;
-    return this;
+    return this.addRef();
   }
 
   @SuppressWarnings("unused")
-  public static GaussianNoiseLayer fromJson(@Nonnull final JsonObject json,
-                                            Map<CharSequence, byte[]> rs) {
+  public static GaussianNoiseLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new GaussianNoiseLayer(json);
   }
 
@@ -95,52 +97,86 @@ class GaussianNoiseLayer extends LayerBase {
   @Nonnull
   @Override
   public Result eval(final Result... inObj) {
-    final Result in0 = inObj[0];
+    final Result in0 = inObj[0].addRef();
+    if (null != inObj)
+      ReferenceCounting.freeRefs(inObj);
     final TensorList inputData = in0.getData();
     final int itemCnt = inputData.length();
-    final Tensor[] outputA = RefIntStream.range(0, itemCnt).mapToObj(dataIndex -> {
-      @Nonnull final Random random = new Random(seed);
-      @Nullable final Tensor input = inputData.get(dataIndex);
-      return input.map(x -> {
-        return x + random.nextGaussian() * getValue();
-      });
-    }).toArray(i -> new Tensor[i]);
+    final Tensor[] outputA = RefIntStream.range(0, itemCnt).mapToObj(RefUtil
+        .wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+          @Nonnull final Random random = new Random(seed);
+          @Nullable final Tensor input = inputData.get(dataIndex);
+          Tensor temp_59_0002 = input.map(x -> {
+            return x + random.nextGaussian() * getValue();
+          });
+          if (null != input)
+            input.freeRef();
+          return temp_59_0002;
+        }, inputData == null ? null : inputData.addRef())).toArray(i -> new Tensor[i]);
     int[] dimensions = inputData.getDimensions();
-    return new Result(new TensorArray(outputA),
-        new Result.Accumulator() {
-          @Override
-          public void accept(DeltaSet<UUID> buffer, TensorList delta) {
-            if (in0.isAlive()) {
-              @Nonnull
-              TensorArray tensorArray = new TensorArray(
-                  RefIntStream.range(0, delta.length()).mapToObj(dataIndex -> {
-                    Tensor tensor = delta.get(dataIndex);
-                    @Nullable final double[] deltaData = tensor.getData();
-                    @Nonnull final Tensor passback = new Tensor(dimensions);
-                    for (int i = 0; i < passback.length(); i++) {
-                      passback.set(i, deltaData[i]);
-                    }
-                    return passback;
-                  }).toArray(i -> new Tensor[i]));
-              in0.accumulate(buffer, tensorArray);
-            }
+    if (null != inputData)
+      inputData.freeRef();
+    try {
+      try {
+        return new Result(new TensorArray(Tensor.addRefs(outputA)),
+            new Result.Accumulator() {
+              {
+              }
+
+              @Override
+              public void accept(DeltaSet<UUID> buffer, TensorList delta) {
+                if (in0.isAlive()) {
+                  @Nonnull
+                  TensorArray tensorArray = new TensorArray(
+                      RefIntStream.range(0, delta.length()).mapToObj(RefUtil.wrapInterface(
+                          (IntFunction<? extends Tensor>) dataIndex -> {
+                            Tensor tensor = delta.get(dataIndex);
+                            @Nullable final double[] deltaData = tensor.getData();
+                            if (null != tensor)
+                              tensor.freeRef();
+                            @Nonnull final Tensor passback = new Tensor(dimensions);
+                            for (int i = 0; i < passback.length(); i++) {
+                              RefUtil.freeRef(passback.set(i, deltaData[i]));
+                            }
+                            return passback;
+                          }, delta == null ? null : delta.addRef())).toArray(i -> new Tensor[i]));
+                  in0.accumulate(buffer == null ? null : buffer.addRef(), tensorArray == null ? null : tensorArray);
+                }
+                if (null != delta)
+                  delta.freeRef();
+                if (null != buffer)
+                  buffer.freeRef();
+              }
+
+              public @SuppressWarnings("unused")
+              void _free() {
+              }
+            }) {
+
+          {
           }
-        }) {
 
-      @Override
-      public boolean isAlive() {
-        return in0.isAlive() || !isFrozen();
-      }
+          @Override
+          public boolean isAlive() {
+            return in0.isAlive() || !isFrozen();
+          }
 
-      public void _free() {
+          public void _free() {
+          }
+        };
+      } finally {
+        if (null != outputA)
+          ReferenceCounting.freeRefs(outputA);
       }
-    };
+    } finally {
+      if (null != in0)
+        in0.freeRef();
+    }
   }
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources,
-                            DataSerializer dataSerializer) {
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
     @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("value", value);
     return json;

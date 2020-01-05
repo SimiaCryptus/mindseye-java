@@ -60,7 +60,11 @@ class LoggingWrapperLayerTest extends LayerTestBase {
   @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
     LinearActivationLayer inner = new LinearActivationLayer();
-    return new LoggingWrapperLayer(inner);
+    LoggingWrapperLayer temp_27_0001 = new LoggingWrapperLayer(
+        inner == null ? null : inner.addRef());
+    if (null != inner)
+      inner.freeRef();
+    return temp_27_0001;
   }
 
   public @SuppressWarnings("unused")

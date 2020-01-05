@@ -23,6 +23,7 @@ import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.network.DAGNode;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
 import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
@@ -142,7 +143,10 @@ class SumInputsLayerTest {
       @Nonnull
       PipelineNetwork network = new PipelineNetwork();
       DAGNode input = network.getInput(0);
-      network.add(new SumInputsLayer(), input, input);
+      RefUtil.freeRef(network.add(new SumInputsLayer(), input == null ? null : input.addRef(),
+          input == null ? null : input.addRef()));
+      if (null != input)
+        input.freeRef();
       return network;
     }
 

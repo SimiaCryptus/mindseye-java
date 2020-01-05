@@ -31,6 +31,11 @@ import java.util.Arrays;
 public abstract @RefAware
 class LayerTestBase extends StandardLayerTests {
 
+  //  @Test(timeout = 15 * 60 * 1000)
+  //  public void testMonteCarlo() throws Throwable {
+  //    apply(this::monteCarlo);
+  //  }
+
   public static @SuppressWarnings("unused")
   LayerTestBase[] addRefs(LayerTestBase[] array) {
     if (array == null)
@@ -46,11 +51,6 @@ class LayerTestBase extends StandardLayerTests {
     return Arrays.stream(array).filter((x) -> x != null).map(LayerTestBase::addRefs)
         .toArray((x) -> new LayerTestBase[x][]);
   }
-
-  //  @Test(timeout = 15 * 60 * 1000)
-  //  public void testMonteCarlo() throws Throwable {
-  //    apply(this::monteCarlo);
-  //  }
 
   @Test(timeout = 15 * 60 * 1000)
   public void test() {

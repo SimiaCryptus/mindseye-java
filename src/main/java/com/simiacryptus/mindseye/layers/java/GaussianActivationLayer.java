@@ -29,8 +29,7 @@ import java.util.Map;
 
 @SuppressWarnings("serial")
 public final @RefAware
-class GaussianActivationLayer
-    extends SimpleActivationLayer<GaussianActivationLayer> {
+class GaussianActivationLayer extends SimpleActivationLayer<GaussianActivationLayer> {
 
   private static final double MIN_X = -20;
   private static final double MAX_X = -GaussianActivationLayer.MIN_X;
@@ -51,8 +50,7 @@ class GaussianActivationLayer
   }
 
   @SuppressWarnings("unused")
-  public static GaussianActivationLayer fromJson(@Nonnull final JsonObject json,
-                                                 Map<CharSequence, byte[]> rs) {
+  public static GaussianActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new GaussianActivationLayer(json);
   }
 
@@ -74,8 +72,7 @@ class GaussianActivationLayer
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources,
-                            DataSerializer dataSerializer) {
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
     @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("mean", mean);
     json.addProperty("stddev", stddev);

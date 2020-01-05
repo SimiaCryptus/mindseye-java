@@ -22,6 +22,8 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.lang.RefUtil;
+import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefList;
@@ -33,6 +35,7 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.IntFunction;
 
 @SuppressWarnings("serial")
 public @RefAware
@@ -49,8 +52,7 @@ class BiasMetaLayer extends LayerBase {
   }
 
   @SuppressWarnings("unused")
-  public static BiasMetaLayer fromJson(@Nonnull final JsonObject json,
-                                       Map<CharSequence, byte[]> rs) {
+  public static BiasMetaLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new BiasMetaLayer(json);
   }
 
@@ -73,62 +75,117 @@ class BiasMetaLayer extends LayerBase {
   @Nullable
   @Override
   public Result eval(@Nonnull final Result... inObj) {
-    final Result in0 = inObj[0];
-    final Result in1 = inObj[1];
+    final Result in0 = inObj[0].addRef();
+    final Result in1 = inObj[1].addRef();
+    ReferenceCounting.freeRefs(inObj);
     TensorList data0 = in0.getData();
     final int itemCnt = data0.length();
     final TensorList data1 = in1.getData();
     Tensor tensor1 = data1.get(0);
-    final Tensor[] tensors = RefIntStream.range(0, itemCnt).parallel()
-        .mapToObj(dataIndex -> {
+    if (null != data1)
+      data1.freeRef();
+    final Tensor[] tensors = RefIntStream.range(0, itemCnt).parallel().mapToObj(RefUtil
+        .wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
           Tensor tensor = data0.get(dataIndex);
-          return tensor.mapIndex((v, c) -> {
-            return v + tensor1.get(c);
-          });
-        }).toArray(i -> new Tensor[i]);
-    Tensor tensor0 = tensors[0];
-    return new Result(new TensorArray(tensors),
-        new Result.Accumulator() {
-          @Override
-          public void accept(DeltaSet<UUID> buffer, TensorList data) {
-            if (in1.isAlive()) {
-              @Nonnull
-              TensorArray tensorArray = new TensorArray(
-                  RefIntStream.range(0, data.length()).mapToObj(i -> {
-                    if (i == 0)
-                      return tensor0.mapCoords((c) -> {
-                        return RefIntStream.range(0, itemCnt).mapToDouble(j -> {
-                          Tensor tensor = data.get(j);
-                          return tensor.get(c);
-                        }).sum();
-                      });
-                    else {
-                      return tensor0.mapCoords(v -> 0);
+          Tensor temp_48_0003 = tensor.mapIndex(RefUtil
+              .wrapInterface((v, c) -> {
+                return v + tensor1.get(c);
+              }, tensor1 == null ? null : tensor1.addRef()));
+          if (null != tensor)
+            tensor.freeRef();
+          return temp_48_0003;
+        }, tensor1 == null ? null : tensor1.addRef(), data0 == null ? null : data0.addRef()))
+        .toArray(i -> new Tensor[i]);
+    if (null != tensor1)
+      tensor1.freeRef();
+    if (null != data0)
+      data0.freeRef();
+    Tensor tensor0 = tensors[0].addRef();
+    try {
+      try {
+        try {
+          try {
+            return new Result(new TensorArray(Tensor.addRefs(tensors)),
+                new Result.Accumulator() {
+                  {
+                  }
+
+                  @Override
+                  public void accept(DeltaSet<UUID> buffer, TensorList data) {
+                    if (in1.isAlive()) {
+                      @Nonnull
+                      TensorArray tensorArray = new TensorArray(
+                          RefIntStream.range(0, data.length()).mapToObj(RefUtil.wrapInterface(
+                              (IntFunction<? extends Tensor>) i -> {
+                                if (i == 0)
+                                  return tensor0.mapCoords(RefUtil.wrapInterface(
+                                      (
+                                          c) -> {
+                                        return RefIntStream.range(0, itemCnt)
+                                            .mapToDouble(RefUtil
+                                                .wrapInterface(j -> {
+                                                  Tensor tensor = data.get(j);
+                                                  double temp_48_0006 = tensor.get(c);
+                                                  if (null != tensor)
+                                                    tensor.freeRef();
+                                                  return temp_48_0006;
+                                                }, data == null ? null : data.addRef()))
+                                            .sum();
+                                      }, data == null ? null : data.addRef()));
+                                else {
+                                  return tensor0.mapCoords(v -> 0);
+                                }
+                              }, data == null ? null : data.addRef(), tensor0 == null ? null : tensor0.addRef()))
+                              .toArray(i -> new Tensor[i]));
+                      in1.accumulate(buffer == null ? null : buffer.addRef(), tensorArray == null ? null : tensorArray);
                     }
-                  }).toArray(i -> new Tensor[i]));
-              in1.accumulate(buffer, tensorArray);
-            }
-            if (in0.isAlive()) {
-              in0.accumulate(buffer, data);
-            }
+                    if (in0.isAlive()) {
+                      in0.accumulate(buffer == null ? null : buffer.addRef(), data == null ? null : data.addRef());
+                    }
+                    if (null != data)
+                      data.freeRef();
+                    if (null != buffer)
+                      buffer.freeRef();
+                  }
+
+                  public @SuppressWarnings("unused")
+                  void _free() {
+                  }
+                }) {
+
+              {
+              }
+
+              @Override
+              public boolean isAlive() {
+                return in0.isAlive() || in1.isAlive();
+              }
+
+              public void _free() {
+              }
+
+            };
+          } finally {
+            if (null != tensor0)
+              tensor0.freeRef();
           }
-        }) {
-
-      @Override
-      public boolean isAlive() {
-        return in0.isAlive() || in1.isAlive();
+        } finally {
+          if (null != tensors)
+            ReferenceCounting.freeRefs(tensors);
+        }
+      } finally {
+        if (null != in1)
+          in1.freeRef();
       }
-
-      public void _free() {
-      }
-
-    };
+    } finally {
+      if (null != in0)
+        in0.freeRef();
+    }
   }
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources,
-                            DataSerializer dataSerializer) {
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 

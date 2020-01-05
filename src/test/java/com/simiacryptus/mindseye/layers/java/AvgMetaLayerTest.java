@@ -54,7 +54,11 @@ class AvgMetaLayerTest extends MetaLayerTestBase {
   @Nonnull
   @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
-    return new AvgMetaLayer().setMinBatchCount(0);
+    AvgMetaLayer temp_66_0002 = new AvgMetaLayer();
+    AvgMetaLayer temp_66_0001 = temp_66_0002.setMinBatchCount(0);
+    if (null != temp_66_0002)
+      temp_66_0002.freeRef();
+    return temp_66_0001;
   }
 
   @Nonnull

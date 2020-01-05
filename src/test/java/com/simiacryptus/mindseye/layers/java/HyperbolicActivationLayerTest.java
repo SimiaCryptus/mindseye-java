@@ -25,27 +25,27 @@ import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 import com.simiacryptus.mindseye.test.unit.ComponentTest;
 import com.simiacryptus.mindseye.test.unit.TrainingTester;
 import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.RefHashMap;
 
 import java.util.Arrays;
 
 public abstract @RefAware
-class HyperbolicActivationLayerTest
-    extends ActivationLayerTestBase {
+class HyperbolicActivationLayerTest extends ActivationLayerTestBase {
   public HyperbolicActivationLayerTest() {
     super(new HyperbolicActivationLayer());
   }
 
   @Override
   protected RefHashMap<Tensor[], Tensor> getReferenceIO() {
-    final RefHashMap<Tensor[], Tensor> map = super.getReferenceIO();
-    map.put(new Tensor[]{new Tensor(0.0)}, new Tensor(0.0));
+    final RefHashMap<Tensor[], Tensor> map = RefUtil.addRef(super.getReferenceIO());
+    RefUtil.freeRef(map.put(new Tensor[]{new Tensor(0.0)}, new Tensor(0.0)));
     return map;
   }
 
   @Override
   public ComponentTest<TrainingTester.ComponentResult> getTrainingTester() {
-    return new TrainingTester() {
+    TrainingTester temp_69_0002 = new TrainingTester() {
 
       public @SuppressWarnings("unused")
       void _free() {
@@ -55,7 +55,12 @@ class HyperbolicActivationLayerTest
       protected Layer lossLayer() {
         return HyperbolicActivationLayerTest.this.lossLayer();
       }
-    }.setRandomizationMode(TrainingTester.RandomizationMode.Random);
+    };
+    TrainingTester temp_69_0001 = temp_69_0002
+        .setRandomizationMode(TrainingTester.RandomizationMode.Random);
+    if (null != temp_69_0002)
+      temp_69_0002.freeRef();
+    return temp_69_0001;
   }
 
   public static @SuppressWarnings("unused")

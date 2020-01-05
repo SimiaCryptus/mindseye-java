@@ -54,7 +54,11 @@ class ImgBandBiasLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
-    return new ImgBandBiasLayer(3).addWeights(this::random);
+    ImgBandBiasLayer temp_68_0002 = new ImgBandBiasLayer(3);
+    ImgBandBiasLayer temp_68_0001 = temp_68_0002.addWeights(this::random);
+    if (null != temp_68_0002)
+      temp_68_0002.freeRef();
+    return temp_68_0001;
   }
 
   public @SuppressWarnings("unused")

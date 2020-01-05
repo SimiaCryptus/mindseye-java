@@ -23,6 +23,7 @@ import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.network.InnerNode;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
 import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.lang.RefUtil;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,24 +45,41 @@ class StdDevMetaLayer extends PipelineNetwork {
 
   public StdDevMetaLayer(final int minBatchCount) {
     super(1);
-    add(new AvgMetaLayer().setMinBatchCount(minBatchCount));
-    add(new AvgReducerLayer());
+    AvgMetaLayer temp_70_0001 = new AvgMetaLayer();
+    RefUtil.freeRef(add(temp_70_0001.setMinBatchCount(minBatchCount)));
+    if (null != temp_70_0001)
+      temp_70_0001.freeRef();
+    RefUtil.freeRef(add(new AvgReducerLayer()));
     InnerNode square = add(new SqActivationLayer());
-    add(new SqActivationLayer(), getInput(0), square);
-    add(new AvgMetaLayer().setMinBatchCount(minBatchCount));
-    add(new AvgReducerLayer());
-    add(new SumInputsLayer(), getHead(), add(new LinearActivationLayer().setScale(-1).freeze(), square));
-    add(new NthPowerActivationLayer().setPower(0.5));
+    RefUtil
+        .freeRef(add(new SqActivationLayer(), getInput(0), square == null ? null : square.addRef()));
+    AvgMetaLayer temp_70_0002 = new AvgMetaLayer();
+    RefUtil.freeRef(add(temp_70_0002.setMinBatchCount(minBatchCount)));
+    if (null != temp_70_0002)
+      temp_70_0002.freeRef();
+    RefUtil.freeRef(add(new AvgReducerLayer()));
+    LinearActivationLayer temp_70_0003 = new LinearActivationLayer();
+    LinearActivationLayer temp_70_0005 = temp_70_0003.setScale(-1);
+    RefUtil.freeRef(
+        add(new SumInputsLayer(), getHead(), add(temp_70_0005.freeze(), square == null ? null : square.addRef())));
+    if (null != temp_70_0005)
+      temp_70_0005.freeRef();
+    if (null != temp_70_0003)
+      temp_70_0003.freeRef();
+    if (null != square)
+      square.freeRef();
+    NthPowerActivationLayer temp_70_0004 = new NthPowerActivationLayer();
+    RefUtil.freeRef(add(temp_70_0004.setPower(0.5)));
+    if (null != temp_70_0004)
+      temp_70_0004.freeRef();
   }
 
-  protected StdDevMetaLayer(@Nonnull final JsonObject json,
-                            Map<CharSequence, byte[]> rs) {
+  protected StdDevMetaLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json, rs);
   }
 
   @SuppressWarnings("unused")
-  public static StdDevMetaLayer fromJson(@NotNull final JsonObject json,
-                                         Map<CharSequence, byte[]> rs) {
+  public static StdDevMetaLayer fromJson(@NotNull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new StdDevMetaLayer(json, rs);
   }
 

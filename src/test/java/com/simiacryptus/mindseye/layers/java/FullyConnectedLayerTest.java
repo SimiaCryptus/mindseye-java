@@ -36,7 +36,13 @@ class FullyConnectedLayerTest extends LayerTestBase {
   private final int outputs;
 
   protected FullyConnectedLayerTest(int inputs, int outputs) {
-    fullyConnectedLayer = new FullyConnectedLayer(new int[]{inputs}, new int[]{outputs});
+    {
+      FullyConnectedLayer temp_19_0001 = new FullyConnectedLayer(
+          new int[]{inputs}, new int[]{outputs});
+      fullyConnectedLayer = temp_19_0001 == null ? null : temp_19_0001.addRef();
+      if (null != temp_19_0001)
+        temp_19_0001.freeRef();
+    }
     this.inputs = inputs;
     this.outputs = outputs;
   }
@@ -72,11 +78,12 @@ class FullyConnectedLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
-    return fullyConnectedLayer;
+    return fullyConnectedLayer == null ? null : fullyConnectedLayer.addRef();
   }
 
   public @SuppressWarnings("unused")
   void _free() {
+    fullyConnectedLayer.freeRef();
   }
 
   public @Override

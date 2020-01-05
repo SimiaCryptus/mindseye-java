@@ -32,7 +32,7 @@ public abstract @RefAware
 class ProductInputsLayerTest extends LayerTestBase {
   @Override
   public ComponentTest<TrainingTester.ComponentResult> getTrainingTester() {
-    return new TrainingTester() {
+    TrainingTester temp_67_0002 = new TrainingTester() {
 
       public @SuppressWarnings("unused")
       void _free() {
@@ -42,7 +42,12 @@ class ProductInputsLayerTest extends LayerTestBase {
       protected Layer lossLayer() {
         return ProductInputsLayerTest.this.lossLayer();
       }
-    }.setRandomizationMode(TrainingTester.RandomizationMode.Random);
+    };
+    TrainingTester temp_67_0001 = temp_67_0002
+        .setRandomizationMode(TrainingTester.RandomizationMode.Random);
+    if (null != temp_67_0002)
+      temp_67_0002.freeRef();
+    return temp_67_0001;
   }
 
   public static @SuppressWarnings("unused")

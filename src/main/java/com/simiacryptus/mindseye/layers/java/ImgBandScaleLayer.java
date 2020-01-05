@@ -23,6 +23,8 @@ import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RecycleBin;
 import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.lang.RefUtil;
+import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefList;
@@ -79,12 +81,11 @@ class ImgBandScaleLayer extends LayerBase {
       bias[i] = f.applyAsDouble(i);
     }
     assert RefArrays.stream(bias).allMatch(v -> Double.isFinite(v));
-    return this;
+    return this.addRef();
   }
 
   @SuppressWarnings("unused")
-  public static ImgBandScaleLayer fromJson(@Nonnull final JsonObject json,
-                                           Map<CharSequence, byte[]> rs) {
+  public static ImgBandScaleLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ImgBandScaleLayer(json);
   }
 
@@ -107,13 +108,16 @@ class ImgBandScaleLayer extends LayerBase {
   @Nonnull
   public ImgBandScaleLayer addWeights(@Nonnull final DoubleSupplier f) {
     Util.add(f, getWeights());
-    return this;
+    return this.addRef();
   }
 
   @Nonnull
   @Override
   public Result eval(final Result... inObj) {
-    return eval(inObj[0]);
+    Result temp_50_0008 = eval(inObj[0].addRef());
+    if (null != inObj)
+      ReferenceCounting.freeRefs(inObj);
+    return temp_50_0008;
   }
 
   @Nonnull
@@ -123,69 +127,137 @@ class ImgBandScaleLayer extends LayerBase {
     @Nullable
     Function<Tensor, Tensor> tensorTensorFunction = tensor -> {
       if (tensor.getDimensions().length != 3) {
-        throw new IllegalArgumentException(RefArrays.toString(tensor.getDimensions()));
+        IllegalArgumentException temp_50_0003 = new IllegalArgumentException(
+            RefArrays.toString(tensor.getDimensions()));
+        if (null != tensor)
+          tensor.freeRef();
+        throw temp_50_0003;
       }
       if (tensor.getDimensions()[2] != weights.length) {
-        throw new IllegalArgumentException(String.format("%s: %s does not have %s bands", getName(),
-            RefArrays.toString(tensor.getDimensions()), weights.length));
+        IllegalArgumentException temp_50_0004 = new IllegalArgumentException(String.format(
+            "%s: %s does not have %s bands", getName(), RefArrays.toString(tensor.getDimensions()), weights.length));
+        if (null != tensor)
+          tensor.freeRef();
+        throw temp_50_0004;
       }
-      return tensor.mapCoords(c -> tensor.get(c) * weights[c.getCoords()[2]]);
+      Tensor temp_50_0002 = tensor
+          .mapCoords(RefUtil.wrapInterface(
+              c -> tensor.get(c)
+                  * weights[c.getCoords()[2]],
+              tensor == null ? null : tensor.addRef()));
+      if (null != tensor)
+        tensor.freeRef();
+      return temp_50_0002;
     };
     Tensor[] data = inData.stream().parallel().map(tensorTensorFunction).toArray(i -> new Tensor[i]);
-    final ImgBandScaleLayer imgBandScaleLayer = ImgBandScaleLayer.this;
-    return new Result(new TensorArray(data),
-        new Result.Accumulator() {
-          @Override
-          public void accept(DeltaSet<UUID> buffer, TensorList delta) {
-            if (!ImgBandScaleLayer.this.isFrozen()) {
-              final Delta<UUID> deltaBuffer = buffer.get(imgBandScaleLayer.getId(), weights);
-              RefIntStream.range(0, delta.length()).forEach(index -> {
-                @Nonnull
-                int[] dimensions = delta.getDimensions();
-                int z = dimensions[2];
-                int y = dimensions[1];
-                int x = dimensions[0];
-                final double[] array = RecycleBin.DOUBLES.obtain(z);
-                Tensor deltaTensor = delta.get(index);
-                @Nullable final double[] deltaArray = deltaTensor.getData();
-                Tensor inputTensor = inData.get(index);
-                @Nullable final double[] inputData = inputTensor.getData();
-                for (int i = 0; i < z; i++) {
-                  for (int j = 0; j < y * x; j++) {
-                    //array[i] += deltaArray[i + z * j];
-                    array[i] += deltaArray[i * x * y + j] * inputData[i * x * y + j];
+    final ImgBandScaleLayer imgBandScaleLayer = ImgBandScaleLayer.this.addRef();
+    try {
+      try {
+        try {
+          try {
+            return new Result(new TensorArray(Tensor.addRefs(data)),
+                new Result.Accumulator() {
+                  {
+                    input.addRef();
                   }
-                }
-                assert RefArrays.stream(array).allMatch(v -> Double.isFinite(v));
-                deltaBuffer.addInPlace(array);
-                RecycleBin.DOUBLES.recycle(array, array.length);
-              });
-            }
-            if (input.isAlive()) {
-              Tensor[] tensors = delta.stream().map(t -> {
-                return t.mapCoords((c) -> t.get(c) * weights[c.getCoords()[2]]);
-              }).toArray(i -> new Tensor[i]);
-              @Nonnull
-              TensorArray tensorArray = new TensorArray(tensors);
-              input.accumulate(buffer, tensorArray);
-            }
+
+                  @Override
+                  public void accept(DeltaSet<UUID> buffer, TensorList delta) {
+                    if (!ImgBandScaleLayer.this.isFrozen()) {
+                      final Delta<UUID> deltaBuffer = buffer.get(imgBandScaleLayer.getId(), weights);
+                      RefIntStream.range(0, delta.length()).forEach(
+                          RefUtil.wrapInterface(index -> {
+                                @Nonnull
+                                int[] dimensions = delta.getDimensions();
+                                int z = dimensions[2];
+                                int y = dimensions[1];
+                                int x = dimensions[0];
+                                final double[] array = RecycleBin.DOUBLES.obtain(z);
+                                Tensor deltaTensor = delta.get(index);
+                                @Nullable final double[] deltaArray = deltaTensor.getData();
+                                if (null != deltaTensor)
+                                  deltaTensor.freeRef();
+                                Tensor inputTensor = inData.get(index);
+                                @Nullable final double[] inputData = inputTensor.getData();
+                                if (null != inputTensor)
+                                  inputTensor.freeRef();
+                                for (int i = 0; i < z; i++) {
+                                  for (int j = 0; j < y * x; j++) {
+                                    //array[i] += deltaArray[i + z * j];
+                                    array[i] += deltaArray[i * x * y + j] * inputData[i * x * y + j];
+                                  }
+                                }
+                                assert RefArrays.stream(array).allMatch(v -> Double.isFinite(v));
+                                RefUtil.freeRef(deltaBuffer.addInPlace(array));
+                                RecycleBin.DOUBLES.recycle(array, array.length);
+                              }, inData == null ? null : inData.addRef(), delta == null ? null : delta.addRef(),
+                              deltaBuffer == null ? null : deltaBuffer.addRef()));
+                      if (null != deltaBuffer)
+                        deltaBuffer.freeRef();
+                    }
+                    if (input.isAlive()) {
+                      Tensor[] tensors = delta.stream().map(t -> {
+                        Tensor temp_50_0007 = t
+                            .mapCoords(RefUtil.wrapInterface(
+                                (
+                                    c) -> t.get(c) * weights[c.getCoords()[2]],
+                                t == null ? null : t.addRef()));
+                        if (null != t)
+                          t.freeRef();
+                        return temp_50_0007;
+                      }).toArray(i -> new Tensor[i]);
+                      @Nonnull
+                      TensorArray tensorArray = new TensorArray(Tensor.addRefs(tensors));
+                      if (null != tensors)
+                        ReferenceCounting.freeRefs(tensors);
+                      input.accumulate(buffer == null ? null : buffer.addRef(),
+                          tensorArray == null ? null : tensorArray);
+                    }
+                    if (null != delta)
+                      delta.freeRef();
+                    if (null != buffer)
+                      buffer.freeRef();
+                  }
+
+                  public @SuppressWarnings("unused")
+                  void _free() {
+                    input.freeRef();
+                  }
+                }) {
+
+              {
+                input.addRef();
+              }
+
+              @Override
+              public boolean isAlive() {
+                return input.isAlive() || !isFrozen();
+              }
+
+              public void _free() {
+                input.freeRef();
+              }
+            };
+          } finally {
+            input.freeRef();
           }
-        }) {
-
-      @Override
-      public boolean isAlive() {
-        return input.isAlive() || !isFrozen();
+        } finally {
+          if (null != imgBandScaleLayer)
+            imgBandScaleLayer.freeRef();
+        }
+      } finally {
+        if (null != data)
+          ReferenceCounting.freeRefs(data);
       }
-
-      public void _free() {
-      }
-    };
+    } finally {
+      if (null != inData)
+        inData.freeRef();
+    }
   }
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources,
-                            DataSerializer dataSerializer) {
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
     @Nonnull final JsonObject json = super.getJsonStub();
     json.add("bias", JsonUtil.getJson(getWeights()));
     return json;
@@ -198,7 +270,7 @@ class ImgBandScaleLayer extends LayerBase {
       bias[i] = ds[i];
     }
     assert RefArrays.stream(bias).allMatch(v -> Double.isFinite(v));
-    return this;
+    return this.addRef();
   }
 
   @Nonnull

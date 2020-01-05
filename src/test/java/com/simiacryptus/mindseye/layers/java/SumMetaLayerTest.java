@@ -59,7 +59,11 @@ class SumMetaLayerTest extends MetaLayerTestBase {
   @Nonnull
   @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
-    return new SumMetaLayer().setMinBatches(0);
+    SumMetaLayer temp_73_0002 = new SumMetaLayer();
+    SumMetaLayer temp_73_0001 = temp_73_0002.setMinBatches(0);
+    if (null != temp_73_0002)
+      temp_73_0002.freeRef();
+    return temp_73_0001;
   }
 
   @Nonnull

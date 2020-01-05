@@ -23,6 +23,7 @@ import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.network.DAGNode;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
 import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.lang.RefUtil;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,17 +42,18 @@ class AutoEntropyLayer extends PipelineNetwork {
   public AutoEntropyLayer() {
     super(1);
     DAGNode input = getInput(0);
-    add(new EntropyLossLayer(), input, input);
+    RefUtil.freeRef(
+        add(new EntropyLossLayer(), input == null ? null : input.addRef(), input == null ? null : input.addRef()));
+    if (null != input)
+      input.freeRef();
   }
 
-  protected AutoEntropyLayer(@Nonnull final JsonObject json,
-                             Map<CharSequence, byte[]> rs) {
+  protected AutoEntropyLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json, rs);
   }
 
   @SuppressWarnings("unused")
-  public static AutoEntropyLayer fromJson(@NotNull final JsonObject json,
-                                          Map<CharSequence, byte[]> rs) {
+  public static AutoEntropyLayer fromJson(@NotNull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new AutoEntropyLayer(json, rs);
   }
 

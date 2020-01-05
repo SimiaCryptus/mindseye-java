@@ -37,7 +37,16 @@ class FullyConnectedReferenceLayerTest extends LayerTestBase {
   public FullyConnectedReferenceLayerTest(int[] inputDims, @Nonnull int[] outputDims) {
     this.outputDims = outputDims;
     this.inputDims = inputDims;
-    this.layer = new FullyConnectedReferenceLayer(getSmallDims(new Random())[0], outputDims).set(i -> random());
+    {
+      FullyConnectedReferenceLayer temp_00_0002 = new FullyConnectedReferenceLayer(
+          getSmallDims(new Random())[0], outputDims);
+      FullyConnectedReferenceLayer temp_00_0001 = temp_00_0002.set(i -> random());
+      if (null != temp_00_0002)
+        temp_00_0002.freeRef();
+      this.layer = temp_00_0001 == null ? null : temp_00_0001.addRef();
+      if (null != temp_00_0001)
+        temp_00_0001.freeRef();
+    }
   }
 
   public static @SuppressWarnings("unused")
@@ -67,11 +76,12 @@ class FullyConnectedReferenceLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
-    return layer;
+    return layer == null ? null : layer.addRef();
   }
 
   public @SuppressWarnings("unused")
   void _free() {
+    layer.freeRef();
   }
 
   public @Override

@@ -23,6 +23,8 @@ import com.google.gson.JsonObject;
 import com.simiacryptus.lang.Tuple2;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.lang.RefUtil;
+import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefCollectors;
 import com.simiacryptus.ref.wrappers.RefIntStream;
@@ -37,8 +39,7 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.Function;
-import java.util.function.IntToDoubleFunction;
+import java.util.function.*;
 
 @SuppressWarnings("serial")
 public @RefAware
@@ -65,8 +66,7 @@ class MaxPoolingLayer extends LayerBase {
   }
 
   @SuppressWarnings("unused")
-  public static MaxPoolingLayer fromJson(@Nonnull final JsonObject json,
-                                         Map<CharSequence, byte[]> rs) {
+  public static MaxPoolingLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new MaxPoolingLayer(json, JsonUtil.getIntArray(json.getAsJsonArray("heapCopy")));
   }
 
@@ -86,8 +86,7 @@ class MaxPoolingLayer extends LayerBase {
         .toArray((x) -> new MaxPoolingLayer[x][]);
   }
 
-  private static RefList<Tuple2<Integer, int[]>> calcRegions(
-      @Nonnull final MaxPoolingLayer.CalcRegionsParameter p) {
+  private static RefList<Tuple2<Integer, int[]>> calcRegions(@Nonnull final MaxPoolingLayer.CalcRegionsParameter p) {
     @Nonnull final Tensor input = new Tensor(p.inputDims);
     final int[] newDims = RefIntStream.range(0, p.inputDims.length).map(i -> {
       //assert 0 == p.inputDims[i] % p.kernelDims[i];
@@ -95,99 +94,172 @@ class MaxPoolingLayer extends LayerBase {
     }).toArray();
     @Nonnull final Tensor output = new Tensor(newDims);
 
-    return output.coordStream(true).map(o -> {
-      Tensor tensor = new Tensor(p.kernelDims);
-      final int[] inCoords = tensor.coordStream(true).mapToInt(kernelCoord -> {
-        @Nonnull final int[] result = new int[o.getCoords().length];
-        for (int index = 0; index < o.getCoords().length; index++) {
-          final int outputCoordinate = o.getCoords()[index];
-          final int kernelSize = p.kernelDims[index];
-          final int baseCoordinate = Math.min(outputCoordinate * kernelSize, p.inputDims[index] - kernelSize);
-          final int kernelCoordinate = kernelCoord.getCoords()[index];
-          result[index] = baseCoordinate + kernelCoordinate;
-        }
-        return input.index(result);
-      }).toArray();
-      return new Tuple2<>(o.getIndex(), inCoords);
-    }).collect(RefCollectors.toList());
+    RefList<Tuple2<Integer, int[]>> temp_53_0001 = output
+        .coordStream(true).map(RefUtil.wrapInterface(
+            (Function<? super Coordinate, ? extends Tuple2<Integer, int[]>>) o -> {
+              Tensor tensor = new Tensor(p.kernelDims);
+              final int[] inCoords = tensor.coordStream(true).mapToInt(RefUtil.wrapInterface(
+                  (ToIntFunction<? super Coordinate>) kernelCoord -> {
+                    @Nonnull final int[] result = new int[o.getCoords().length];
+                    for (int index = 0; index < o.getCoords().length; index++) {
+                      final int outputCoordinate = o.getCoords()[index];
+                      final int kernelSize = p.kernelDims[index];
+                      final int baseCoordinate = Math.min(outputCoordinate * kernelSize,
+                          p.inputDims[index] - kernelSize);
+                      final int kernelCoordinate = kernelCoord.getCoords()[index];
+                      result[index] = baseCoordinate + kernelCoordinate;
+                    }
+                    return input.index(result);
+                  }, input == null ? null : input.addRef())).toArray();
+              if (null != tensor)
+                tensor.freeRef();
+              return new Tuple2<>(o.getIndex(), inCoords);
+            }, input == null ? null : input))
+        .collect(RefCollectors.toList());
+    output.freeRef();
+    return temp_53_0001;
   }
 
   @Nonnull
   @Override
   public Result eval(@Nonnull final Result... inObj) {
 
-    final Result in = inObj[0];
-    in.getData().length();
+    final Result in = inObj[0].addRef();
+    ReferenceCounting.freeRefs(inObj);
+    TensorList temp_53_0005 = in.getData();
+    temp_53_0005.length();
 
-    @Nonnull final int[] inputDims = in.getData().getDimensions();
+    if (null != temp_53_0005)
+      temp_53_0005.freeRef();
+    TensorList temp_53_0006 = in.getData();
+    @Nonnull final int[] inputDims = temp_53_0006.getDimensions();
+    if (null != temp_53_0006)
+      temp_53_0006.freeRef();
     final RefList<Tuple2<Integer, int[]>> regions = MaxPoolingLayer.calcRegionsCache
         .apply(new MaxPoolingLayer.CalcRegionsParameter(inputDims, kernelDims));
-    final Tensor[] outputA = RefIntStream.range(0, in.getData().length())
-        .mapToObj(dataIndex -> {
-          final int[] newDims = RefIntStream.range(0, inputDims.length).map(i -> {
-            return (int) Math.ceil(inputDims[i] * 1.0 / kernelDims[i]);
-          }).toArray();
-          return new Tensor(newDims);
-        }).toArray(i -> new Tensor[i]);
-    RefArrays.stream(outputA).mapToInt(x -> x.length()).sum();
-    @Nonnull final int[][] gradientMapA = new int[in.getData().length()][];
-    RefIntStream.range(0, in.getData().length()).forEach(dataIndex -> {
-      @Nullable final Tensor input = in.getData().get(dataIndex);
-      final Tensor output = outputA[dataIndex];
-      @Nonnull final IntToDoubleFunction keyExtractor = inputCoords -> input.get(inputCoords);
-      @Nonnull final int[] gradientMap = new int[input.length()];
-      regions.parallelStream().forEach(tuple -> {
-        final Integer from = tuple.getFirst();
-        final int[] toList = tuple.getSecond();
-        int toMax = -1;
-        double bestValue = Double.NEGATIVE_INFINITY;
-        for (final int c : toList) {
-          final double value = keyExtractor.applyAsDouble(c);
-          if (-1 == toMax || bestValue < value) {
-            bestValue = value;
-            toMax = c;
-          }
-        }
-        gradientMap[from] = toMax;
-        output.set(from, input.get(toMax));
-      });
-      gradientMapA[dataIndex] = gradientMap;
-    });
-    return new Result(new TensorArray(outputA),
-        new Result.Accumulator() {
-          @Override
-          public void accept(DeltaSet<UUID> buffer, TensorList data) {
-            if (in.isAlive()) {
-              @Nonnull
-              TensorArray tensorArray = new TensorArray(RefIntStream
-                  .range(0, in.getData().length()).parallel().mapToObj(dataIndex -> {
-                    @Nonnull final Tensor backSignal = new Tensor(inputDims);
-                    final int[] ints = gradientMapA[dataIndex];
-                    @Nullable final Tensor datum = data.get(dataIndex);
-                    for (int i = 0; i < datum.length(); i++) {
-                      backSignal.add(ints[i], datum.get(i));
+    TensorList temp_53_0007 = in.getData();
+    final Tensor[] outputA = RefIntStream.range(0, temp_53_0007.length()).mapToObj(dataIndex -> {
+      final int[] newDims = RefIntStream.range(0, inputDims.length).map(i -> {
+        return (int) Math.ceil(inputDims[i] * 1.0 / kernelDims[i]);
+      }).toArray();
+      return new Tensor(newDims);
+    }).toArray(i -> new Tensor[i]);
+    if (null != temp_53_0007)
+      temp_53_0007.freeRef();
+    RefArrays.stream(Tensor.addRefs(outputA)).mapToInt(x -> {
+      int temp_53_0004 = x.length();
+      if (null != x)
+        x.freeRef();
+      return temp_53_0004;
+    }).sum();
+    TensorList temp_53_0008 = in.getData();
+    @Nonnull final int[][] gradientMapA = new int[temp_53_0008.length()][];
+    if (null != temp_53_0008)
+      temp_53_0008.freeRef();
+    TensorList temp_53_0009 = in.getData();
+    RefIntStream.range(0, temp_53_0009.length())
+        .forEach(RefUtil.wrapInterface(dataIndex -> {
+              TensorList temp_53_0010 = in.getData();
+              @Nullable final Tensor input = temp_53_0010.get(dataIndex);
+              if (null != temp_53_0010)
+                temp_53_0010.freeRef();
+              final Tensor output = outputA[dataIndex].addRef();
+              @Nonnull final IntToDoubleFunction keyExtractor = RefUtil.wrapInterface(
+                  inputCoords -> input.get(inputCoords),
+                  input == null ? null : input.addRef());
+              @Nonnull final int[] gradientMap = new int[input.length()];
+              regions.parallelStream().forEach(RefUtil.wrapInterface(
+                  (Consumer<? super Tuple2<Integer, int[]>>) tuple -> {
+                    final Integer from = tuple.getFirst();
+                    final int[] toList = tuple.getSecond();
+                    int toMax = -1;
+                    double bestValue = Double.NEGATIVE_INFINITY;
+                    for (final int c : toList) {
+                      final double value = keyExtractor.applyAsDouble(c);
+                      if (-1 == toMax || bestValue < value) {
+                        bestValue = value;
+                        toMax = c;
+                      }
                     }
-                    return backSignal;
-                  }).toArray(i -> new Tensor[i]));
-              in.accumulate(buffer, tensorArray);
-            }
+                    gradientMap[from] = toMax;
+                    RefUtil.freeRef(output.set(from, input.get(toMax)));
+                  }, output == null ? null : output.addRef(), input == null ? null : input.addRef()));
+              if (null != output)
+                output.freeRef();
+              if (null != input)
+                input.freeRef();
+              gradientMapA[dataIndex] = gradientMap;
+            }, in == null ? null : in.addRef(), Tensor.addRefs(outputA),
+            regions == null ? null : regions.addRef()));
+    if (null != temp_53_0009)
+      temp_53_0009.freeRef();
+    if (null != regions)
+      regions.freeRef();
+    try {
+      try {
+        return new Result(new TensorArray(Tensor.addRefs(outputA)),
+            new Result.Accumulator() {
+              {
+              }
+
+              @Override
+              public void accept(DeltaSet<UUID> buffer, TensorList data) {
+                if (in.isAlive()) {
+                  TensorList temp_53_0011 = in.getData();
+                  @Nonnull
+                  TensorArray tensorArray = new TensorArray(RefIntStream.range(0, temp_53_0011.length()).parallel()
+                      .mapToObj(RefUtil.wrapInterface(
+                          (IntFunction<? extends Tensor>) dataIndex -> {
+                            @Nonnull final Tensor backSignal = new Tensor(inputDims);
+                            final int[] ints = gradientMapA[dataIndex];
+                            @Nullable final Tensor datum = data.get(dataIndex);
+                            for (int i = 0; i < datum.length(); i++) {
+                              backSignal.add(ints[i], datum.get(i));
+                            }
+                            if (null != datum)
+                              datum.freeRef();
+                            return backSignal;
+                          }, data == null ? null : data.addRef()))
+                      .toArray(i -> new Tensor[i]));
+                  if (null != temp_53_0011)
+                    temp_53_0011.freeRef();
+                  in.accumulate(buffer == null ? null : buffer.addRef(), tensorArray == null ? null : tensorArray);
+                }
+                if (null != data)
+                  data.freeRef();
+                if (null != buffer)
+                  buffer.freeRef();
+              }
+
+              public @SuppressWarnings("unused")
+              void _free() {
+              }
+            }) {
+
+          {
           }
-        }) {
 
-      @Override
-      public boolean isAlive() {
-        return in.isAlive();
-      }
+          @Override
+          public boolean isAlive() {
+            return in.isAlive();
+          }
 
-      public void _free() {
+          public void _free() {
+          }
+        };
+      } finally {
+        if (null != outputA)
+          ReferenceCounting.freeRefs(outputA);
       }
-    };
+    } finally {
+      if (null != in)
+        in.freeRef();
+    }
   }
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources,
-                            DataSerializer dataSerializer) {
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
     @Nonnull final JsonObject json = super.getJsonStub();
     json.add("heapCopy", JsonUtil.getJson(kernelDims));
     return json;

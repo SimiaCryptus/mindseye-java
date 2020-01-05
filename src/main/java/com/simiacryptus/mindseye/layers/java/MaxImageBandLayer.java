@@ -22,6 +22,8 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.lang.RefUtil;
+import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.*;
 import com.simiacryptus.util.JsonUtil;
 import org.slf4j.Logger;
@@ -32,6 +34,9 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.function.IntFunction;
+import java.util.function.IntToDoubleFunction;
 
 @SuppressWarnings("serial")
 public @RefAware
@@ -49,8 +54,7 @@ class MaxImageBandLayer extends LayerBase {
   }
 
   @SuppressWarnings("unused")
-  public static MaxImageBandLayer fromJson(@Nonnull final JsonObject json,
-                                           Map<CharSequence, byte[]> rs) {
+  public static MaxImageBandLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new MaxImageBandLayer(json, JsonUtil.getIntArray(json.getAsJsonArray("heapCopy")));
   }
 
@@ -80,55 +84,107 @@ class MaxImageBandLayer extends LayerBase {
     @Nonnull final int[] inputDims = inputData.getDimensions();
     assert 3 == inputDims.length;
     final Coordinate[][] maxCoords = inputData.stream().map(data -> {
-      return RefIntStream.range(0, inputDims[2]).mapToObj(band -> {
-        return data.coordStream(true).filter(e -> e.getCoords()[2] == band)
-            .max(RefComparator.comparing(c -> data.get(c))).get();
-      }).toArray(i -> new Coordinate[i]);
+      Coordinate[] temp_31_0002 = RefIntStream.range(0, inputDims[2])
+          .mapToObj(RefUtil.wrapInterface(
+              (IntFunction<? extends Coordinate>) band -> {
+                return data.coordStream(true).filter(e -> e.getCoords()[2] == band)
+                    .max(RefComparator.comparing(RefUtil.wrapInterface(
+                        (Function<? super Coordinate, ? extends Double>) c -> data
+                            .get(c),
+                        data == null ? null : data.addRef())))
+                    .get();
+              }, data == null ? null : data.addRef()))
+          .toArray(i -> new Coordinate[i]);
+      if (null != data)
+        data.freeRef();
+      return temp_31_0002;
     }).toArray(i -> new Coordinate[i][]);
 
-    return new Result(
-        new TensorArray(RefIntStream.range(0, inputData.length()).mapToObj(dataIndex -> {
-          Tensor tensor = inputData.get(dataIndex);
-          final RefDoubleStream doubleStream = RefIntStream
-              .range(0, inputDims[2]).mapToDouble(band -> {
-                final int[] maxCoord = maxCoords[dataIndex][band].getCoords();
-                return tensor.get(maxCoord[0], maxCoord[1], band);
-              });
-          return new Tensor(1, 1, inputDims[2]).set(Tensor.getDoubles(doubleStream, inputDims[2]));
-        }).toArray(i -> new Tensor[i])), new Result.Accumulator() {
-      @Override
-      public void accept(DeltaSet<UUID> buffer, TensorList delta) {
-        if (inObj[0].isAlive()) {
-          @Nonnull
-          TensorArray tensorArray = new TensorArray(
-              RefIntStream.range(0, delta.length()).parallel().mapToObj(dataIndex -> {
-                Tensor deltaTensor = delta.get(dataIndex);
-                @Nonnull final Tensor passback = new Tensor(inputData.getDimensions());
-                RefIntStream.range(0, inputDims[2]).forEach(b -> {
-                  final int[] maxCoord = maxCoords[dataIndex][b].getCoords();
-                  passback.set(new int[]{maxCoord[0], maxCoord[1], b}, deltaTensor.get(0, 0, b));
-                });
-                return passback;
-              }).toArray(i -> new Tensor[i]));
-          inObj[0].accumulate(buffer, tensorArray);
-        }
-      }
-    }) {
+    try {
+      try {
+        return new Result(new TensorArray(
+            RefIntStream.range(0, inputData.length()).mapToObj(RefUtil.wrapInterface(
+                (IntFunction<? extends Tensor>) dataIndex -> {
+                  Tensor tensor = inputData.get(dataIndex);
+                  final RefDoubleStream doubleStream = RefIntStream.range(0, inputDims[2]).mapToDouble(
+                      RefUtil.wrapInterface((IntToDoubleFunction) band -> {
+                        final int[] maxCoord = maxCoords[dataIndex][band].getCoords();
+                        return tensor.get(maxCoord[0], maxCoord[1], band);
+                      }, tensor == null ? null : tensor.addRef()));
+                  if (null != tensor)
+                    tensor.freeRef();
+                  Tensor temp_31_0005 = new Tensor(1, 1, inputDims[2]);
+                  Tensor temp_31_0004 = temp_31_0005
+                      .set(Tensor.getDoubles(doubleStream, inputDims[2]));
+                  if (null != temp_31_0005)
+                    temp_31_0005.freeRef();
+                  return temp_31_0004;
+                }, inputData == null ? null : inputData.addRef())).toArray(i -> new Tensor[i])),
+            new Result.Accumulator() {
+              {
+                Result.addRefs(inObj);
+              }
 
-      @Override
-      public boolean isAlive() {
-        return inObj[0].isAlive();
-      }
+              @Override
+              public void accept(DeltaSet<UUID> buffer, TensorList delta) {
+                if (inObj[0].isAlive()) {
+                  @Nonnull
+                  TensorArray tensorArray = new TensorArray(RefIntStream.range(0, delta.length()).parallel()
+                      .mapToObj(RefUtil.wrapInterface(
+                          (IntFunction<? extends Tensor>) dataIndex -> {
+                            Tensor deltaTensor = delta.get(dataIndex);
+                            @Nonnull final Tensor passback = new Tensor(inputData.getDimensions());
+                            RefIntStream.range(0, inputDims[2]).forEach(
+                                RefUtil.wrapInterface(b -> {
+                                      final int[] maxCoord = maxCoords[dataIndex][b].getCoords();
+                                      passback.set(new int[]{maxCoord[0], maxCoord[1], b}, deltaTensor.get(0, 0, b));
+                                    }, passback == null ? null : passback.addRef(),
+                                    deltaTensor == null ? null : deltaTensor.addRef()));
+                            if (null != deltaTensor)
+                              deltaTensor.freeRef();
+                            return passback;
+                          }, delta == null ? null : delta.addRef(), inputData == null ? null : inputData.addRef()))
+                      .toArray(i -> new Tensor[i]));
+                  inObj[0].accumulate(buffer == null ? null : buffer.addRef(),
+                      tensorArray == null ? null : tensorArray);
+                }
+                if (null != delta)
+                  delta.freeRef();
+                if (null != buffer)
+                  buffer.freeRef();
+              }
 
-      public void _free() {
+              public @SuppressWarnings("unused")
+              void _free() {
+                ReferenceCounting.freeRefs(inObj);
+              }
+            }) {
+
+          {
+            Result.addRefs(inObj);
+          }
+
+          @Override
+          public boolean isAlive() {
+            return inObj[0].isAlive();
+          }
+
+          public void _free() {
+            ReferenceCounting.freeRefs(inObj);
+          }
+        };
+      } finally {
+        ReferenceCounting.freeRefs(inObj);
       }
-    };
+    } finally {
+      if (null != inputData)
+        inputData.freeRef();
+    }
   }
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources,
-                            DataSerializer dataSerializer) {
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 

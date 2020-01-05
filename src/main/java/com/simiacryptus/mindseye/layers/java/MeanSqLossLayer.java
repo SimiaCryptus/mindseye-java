@@ -22,6 +22,8 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.lang.RefUtil;
+import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +33,7 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.IntFunction;
 
 @SuppressWarnings("serial")
 public @RefAware
@@ -47,8 +50,7 @@ class MeanSqLossLayer extends LayerBase {
   }
 
   @SuppressWarnings("unused")
-  public static MeanSqLossLayer fromJson(@Nonnull final JsonObject json,
-                                         Map<CharSequence, byte[]> rs) {
+  public static MeanSqLossLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new MeanSqLossLayer(json);
   }
 
@@ -71,80 +73,174 @@ class MeanSqLossLayer extends LayerBase {
   @Nonnull
   @Override
   public Result eval(@Nonnull final Result... inObj) {
-    if (2 != inObj.length)
+    if (2 != inObj.length) {
+      ReferenceCounting.freeRefs(inObj);
       throw new IllegalArgumentException();
-    final int leftLength = inObj[0].getData().length();
-    final int rightLength = inObj[1].getData().length();
+    }
+    TensorList temp_20_0011 = inObj[0].getData();
+    final int leftLength = temp_20_0011.length();
+    if (null != temp_20_0011)
+      temp_20_0011.freeRef();
+    TensorList temp_20_0012 = inObj[1].getData();
+    final int rightLength = temp_20_0012.length();
+    if (null != temp_20_0012)
+      temp_20_0012.freeRef();
     if (leftLength != rightLength && leftLength != 1 && rightLength != 1) {
+      ReferenceCounting.freeRefs(inObj);
       throw new IllegalArgumentException(leftLength + " != " + rightLength);
     }
     @Nonnull final Tensor diffs[] = new Tensor[leftLength];
-    return new Result(
-        new TensorArray(RefIntStream.range(0, leftLength).mapToObj(dataIndex -> {
-          @Nullable final Tensor a = inObj[0].getData().get(1 == leftLength ? 0 : dataIndex);
-          @Nullable final Tensor b = inObj[1].getData().get(1 == rightLength ? 0 : dataIndex);
-          if (a.length() != b.length()) {
-            throw new IllegalArgumentException(
-                String.format("%s != %s", RefArrays.toString(a.getDimensions()),
-                    RefArrays.toString(b.getDimensions())));
-          }
-          @Nonnull final Tensor r = a.minus(b);
-          diffs[dataIndex] = r;
-          return new Tensor(new double[]{r.sumSq() / r.length()}, 1);
-        }).toArray(i -> new Tensor[i])), new Result.Accumulator() {
-      @Override
-      public void accept(DeltaSet<UUID> buffer, TensorList data) {
-        if (inObj[0].isAlive()) {
-          RefStream<Tensor> tensorStream = RefIntStream
-              .range(0, data.length()).parallel().mapToObj(dataIndex -> {
-                @Nullable
-                Tensor tensor = data.get(dataIndex);
-                Tensor diff = diffs[dataIndex];
-                return diff.scale(tensor.get(0) * 2.0 / diff.length());
-              }).collect(RefCollectors.toList()).stream();
-          if (1 == leftLength) {
-            tensorStream = RefStream.of(tensorStream.reduce((a, b) -> {
-              return a.addAndFree(b);
-            }).get());
-          }
-          @Nonnull final TensorList array = new TensorArray(tensorStream.toArray(i -> new Tensor[i]));
-          inObj[0].accumulate(buffer, array);
-        }
-        if (inObj[1].isAlive()) {
-          RefStream<Tensor> tensorStream = RefIntStream
-              .range(0, data.length()).parallel().mapToObj(dataIndex -> {
-                @Nullable
-                Tensor tensor = data.get(dataIndex);
-                return diffs[dataIndex].scale(tensor.get(0) * 2.0 / diffs[dataIndex].length());
-              }).collect(RefCollectors.toList()).stream();
-          if (1 == rightLength) {
-            tensorStream = RefStream.of(tensorStream.reduce((a, b) -> {
-              return a.addAndFree(b);
-            }).get());
-          }
-          @Nonnull final TensorList array = new TensorArray(tensorStream.map(x -> {
-            return x.scale(-1);
-          }).toArray(i -> new Tensor[i]));
-          inObj[1].accumulate(buffer, array);
-        }
-      }
-    }) {
+    try {
+      try {
+        return new Result(
+            new TensorArray(RefIntStream.range(0, leftLength).mapToObj(RefUtil.wrapInterface(
+                (IntFunction<? extends Tensor>) dataIndex -> {
+                  TensorList temp_20_0013 = inObj[0].getData();
+                  @Nullable final Tensor a = temp_20_0013.get(1 == leftLength ? 0 : dataIndex);
+                  if (null != temp_20_0013)
+                    temp_20_0013.freeRef();
+                  TensorList temp_20_0014 = inObj[1].getData();
+                  @Nullable final Tensor b = temp_20_0014.get(1 == rightLength ? 0 : dataIndex);
+                  if (null != temp_20_0014)
+                    temp_20_0014.freeRef();
+                  if (a.length() != b.length()) {
+                    IllegalArgumentException temp_20_0003 = new IllegalArgumentException(String.format(
+                        "%s != %s", RefArrays.toString(a.getDimensions()), RefArrays.toString(b.getDimensions())));
+                    if (null != a)
+                      a.freeRef();
+                    if (null != b)
+                      b.freeRef();
+                    throw temp_20_0003;
+                  }
+                  @Nonnull final Tensor r = a.minus(b == null ? null : b.addRef());
+                  if (null != b)
+                    b.freeRef();
+                  if (null != a)
+                    a.freeRef();
+                  {
+                    Tensor temp_20_0001 = r == null ? null : r.addRef();
+                    if (null != diffs[dataIndex])
+                      diffs[dataIndex].freeRef();
+                    diffs[dataIndex] = temp_20_0001 == null ? null : temp_20_0001.addRef();
+                    if (null != temp_20_0001)
+                      temp_20_0001.freeRef();
+                  }
+                  Tensor temp_20_0004 = new Tensor(
+                      new double[]{r.sumSq() / r.length()}, 1);
+                  r.freeRef();
+                  return temp_20_0004;
+                }, Tensor.addRefs(diffs),
+                Result.addRefs(inObj))).toArray(i -> new Tensor[i])),
+            new Result.Accumulator() {
+              {
+                Result.addRefs(inObj);
+              }
 
-      @Override
-      public boolean isAlive() {
-        return inObj[0].isAlive() || inObj[1].isAlive();
-      }
+              @Override
+              public void accept(DeltaSet<UUID> buffer, TensorList data) {
+                if (inObj[0].isAlive()) {
+                  RefList<Tensor> temp_20_0015 = RefIntStream
+                      .range(0, data.length()).parallel().mapToObj(RefUtil.wrapInterface(
+                          (IntFunction<? extends Tensor>) dataIndex -> {
+                            @Nullable
+                            Tensor tensor = data.get(dataIndex);
+                            Tensor diff = diffs[dataIndex].addRef();
+                            Tensor temp_20_0005 = diff
+                                .scale(tensor.get(0) * 2.0 / diff.length());
+                            if (null != diff)
+                              diff.freeRef();
+                            if (null != tensor)
+                              tensor.freeRef();
+                            return temp_20_0005;
+                          }, data == null ? null : data.addRef(), Tensor.addRefs(diffs)))
+                      .collect(RefCollectors.toList());
+                  RefStream<Tensor> tensorStream = temp_20_0015.stream();
+                  if (null != temp_20_0015)
+                    temp_20_0015.freeRef();
+                  if (1 == leftLength) {
+                    tensorStream = RefStream.of(tensorStream.reduce((a, b) -> {
+                      Tensor temp_20_0006 = a.addAndFree(b == null ? null : b.addRef());
+                      if (null != b)
+                        b.freeRef();
+                      if (null != a)
+                        a.freeRef();
+                      return temp_20_0006;
+                    }).get());
+                  }
+                  @Nonnull final TensorList array = new TensorArray(tensorStream.toArray(i -> new Tensor[i]));
+                  inObj[0].accumulate(buffer == null ? null : buffer.addRef(), array == null ? null : array);
+                }
+                if (inObj[1].isAlive()) {
+                  RefList<Tensor> temp_20_0016 = RefIntStream
+                      .range(0, data.length()).parallel().mapToObj(RefUtil.wrapInterface(
+                          (IntFunction<? extends Tensor>) dataIndex -> {
+                            @Nullable
+                            Tensor tensor = data.get(dataIndex);
+                            Tensor temp_20_0007 = diffs[dataIndex]
+                                .scale(tensor.get(0) * 2.0 / diffs[dataIndex].length());
+                            if (null != tensor)
+                              tensor.freeRef();
+                            return temp_20_0007;
+                          }, data == null ? null : data.addRef(), Tensor.addRefs(diffs)))
+                      .collect(RefCollectors.toList());
+                  RefStream<Tensor> tensorStream = temp_20_0016.stream();
+                  if (null != temp_20_0016)
+                    temp_20_0016.freeRef();
+                  if (1 == rightLength) {
+                    tensorStream = RefStream.of(tensorStream.reduce((a, b) -> {
+                      Tensor temp_20_0008 = a.addAndFree(b == null ? null : b.addRef());
+                      if (null != b)
+                        b.freeRef();
+                      if (null != a)
+                        a.freeRef();
+                      return temp_20_0008;
+                    }).get());
+                  }
+                  @Nonnull final TensorList array = new TensorArray(tensorStream.map(x -> {
+                    Tensor temp_20_0009 = x.scale(-1);
+                    if (null != x)
+                      x.freeRef();
+                    return temp_20_0009;
+                  }).toArray(i -> new Tensor[i]));
+                  inObj[1].accumulate(buffer == null ? null : buffer.addRef(), array == null ? null : array);
+                }
+                if (null != data)
+                  data.freeRef();
+                if (null != buffer)
+                  buffer.freeRef();
+              }
 
-      public void _free() {
-      }
+              public @SuppressWarnings("unused")
+              void _free() {
+                ReferenceCounting.freeRefs(inObj);
+              }
+            }) {
 
-    };
+          {
+            Result.addRefs(inObj);
+          }
+
+          @Override
+          public boolean isAlive() {
+            return inObj[0].isAlive() || inObj[1].isAlive();
+          }
+
+          public void _free() {
+            ReferenceCounting.freeRefs(inObj);
+          }
+
+        };
+      } finally {
+        ReferenceCounting.freeRefs(inObj);
+      }
+    } finally {
+      ReferenceCounting.freeRefs(diffs);
+    }
   }
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources,
-                            DataSerializer dataSerializer) {
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 

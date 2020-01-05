@@ -22,6 +22,8 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.lang.RefUtil;
+import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefList;
@@ -32,6 +34,8 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.IntToDoubleFunction;
+import java.util.function.ToDoubleFunction;
 
 @SuppressWarnings("serial")
 public @RefAware
@@ -49,8 +53,7 @@ class ImgPixelSumLayer extends LayerBase {
   }
 
   @SuppressWarnings("unused")
-  public static ImgPixelSumLayer fromJson(@Nonnull final JsonObject json,
-                                          Map<CharSequence, byte[]> rs) {
+  public static ImgPixelSumLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ImgPixelSumLayer(json);
   }
 
@@ -74,7 +77,10 @@ class ImgPixelSumLayer extends LayerBase {
   @Override
   public Result eval(final Result... inObj) {
     assert 1 == inObj.length;
-    return eval(inObj[0]);
+    Result temp_47_0004 = eval(inObj[0].addRef());
+    if (null != inObj)
+      ReferenceCounting.freeRefs(inObj);
+    return temp_47_0004;
   }
 
   @Nonnull
@@ -82,44 +88,87 @@ class ImgPixelSumLayer extends LayerBase {
     final TensorList inputData = input.getData();
     int[] inputDims = inputData.getDimensions();
     assert 3 == inputDims.length;
-    return new Result(new TensorArray(inputData.stream().map(tensor -> {
-      return new Tensor(inputDims[0], inputDims[1], 1).setByCoord(c -> {
-        return RefIntStream.range(0, inputDims[2]).mapToDouble(i -> {
-          int[] coords = c.getCoords();
-          return tensor.get(coords[0], coords[1], i);
-        }).sum();
-      });
-    }).toArray(i -> new Tensor[i])), new Result.Accumulator() {
-      @Override
-      public void accept(DeltaSet<UUID> buffer, TensorList delta) {
-        if (input.isAlive()) {
-          @Nonnull
-          TensorArray tensorArray = new TensorArray(delta.stream().map(deltaTensor -> {
-            int[] deltaDims = deltaTensor.getDimensions();
-            return new Tensor(deltaDims[0], deltaDims[1], inputDims[2]).setByCoord(c -> {
-              int[] coords = c.getCoords();
-              return deltaTensor.get(coords[0], coords[1], 0);
-            });
-          }).toArray(i -> new Tensor[i]));
-          input.accumulate(buffer, tensorArray);
-        }
-      }
-    }) {
+    try {
+      try {
+        return new Result(new TensorArray(inputData.stream().map(tensor -> {
+          Tensor temp_47_0006 = new Tensor(inputDims[0], inputDims[1], 1);
+          Tensor temp_47_0002 = temp_47_0006.setByCoord(RefUtil
+              .wrapInterface((ToDoubleFunction<Coordinate>) c -> {
+                return RefIntStream.range(0, inputDims[2]).mapToDouble(
+                    RefUtil.wrapInterface((IntToDoubleFunction) i -> {
+                      int[] coords = c.getCoords();
+                      return tensor.get(coords[0], coords[1], i);
+                    }, tensor == null ? null : tensor.addRef())).sum();
+              }, tensor == null ? null : tensor.addRef()));
+          if (null != temp_47_0006)
+            temp_47_0006.freeRef();
+          if (null != tensor)
+            tensor.freeRef();
+          return temp_47_0002;
+        }).toArray(i -> new Tensor[i])), new Result.Accumulator() {
+          {
+            input.addRef();
+          }
 
-      @Override
-      public boolean isAlive() {
-        return input.isAlive() || !isFrozen();
-      }
+          @Override
+          public void accept(DeltaSet<UUID> buffer, TensorList delta) {
+            if (input.isAlive()) {
+              @Nonnull
+              TensorArray tensorArray = new TensorArray(delta.stream().map(deltaTensor -> {
+                int[] deltaDims = deltaTensor.getDimensions();
+                Tensor temp_47_0007 = new Tensor(deltaDims[0], deltaDims[1],
+                    inputDims[2]);
+                Tensor temp_47_0003 = temp_47_0007
+                    .setByCoord(RefUtil.wrapInterface(
+                        c -> {
+                          int[] coords = c.getCoords();
+                          return deltaTensor.get(coords[0], coords[1], 0);
+                        }, deltaTensor == null ? null : deltaTensor.addRef()));
+                if (null != temp_47_0007)
+                  temp_47_0007.freeRef();
+                if (null != deltaTensor)
+                  deltaTensor.freeRef();
+                return temp_47_0003;
+              }).toArray(i -> new Tensor[i]));
+              input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray == null ? null : tensorArray);
+            }
+            if (null != delta)
+              delta.freeRef();
+            if (null != buffer)
+              buffer.freeRef();
+          }
 
-      public void _free() {
+          public @SuppressWarnings("unused")
+          void _free() {
+            input.freeRef();
+          }
+        }) {
+
+          {
+            input.addRef();
+          }
+
+          @Override
+          public boolean isAlive() {
+            return input.isAlive() || !isFrozen();
+          }
+
+          public void _free() {
+            input.freeRef();
+          }
+        };
+      } finally {
+        input.freeRef();
       }
-    };
+    } finally {
+      if (null != inputData)
+        inputData.freeRef();
+    }
   }
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources,
-                            DataSerializer dataSerializer) {
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 

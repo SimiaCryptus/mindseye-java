@@ -43,28 +43,52 @@ class SignReducerLayer extends DAGNetwork {
   public SignReducerLayer() {
     super(1);
     final DAGNode avgInput = add(new AvgReducerLayer(), getInput(0));
-    head = add(new SigmoidActivationLayer().setBalanced(false),
-        add(new ProductInputsLayer(), avgInput,
-            add(new NthPowerActivationLayer().setPower(-1),
-                (DAGNode) add(new NthPowerActivationLayer().setPower(0.5),
-                    add(new SumInputsLayer(), add(new AvgReducerLayer(), add(new SqActivationLayer(), getInput(0))),
-                        add(new LinearActivationLayer().setScale(-1), add(new SqActivationLayer(), avgInput)))))));
+    {
+      SigmoidActivationLayer temp_01_0003 = new SigmoidActivationLayer();
+      NthPowerActivationLayer temp_01_0004 = new NthPowerActivationLayer();
+      NthPowerActivationLayer temp_01_0005 = new NthPowerActivationLayer();
+      LinearActivationLayer temp_01_0006 = new LinearActivationLayer();
+      DAGNode temp_01_0001 = add(temp_01_0003.setBalanced(false),
+          add(new ProductInputsLayer(), avgInput == null ? null : avgInput.addRef(),
+              add(temp_01_0004.setPower(-1),
+                  add(temp_01_0005.setPower(0.5),
+                      add(new SumInputsLayer(), add(new AvgReducerLayer(), add(new SqActivationLayer(), getInput(0))),
+                          add(temp_01_0006.setScale(-1),
+                              add(new SqActivationLayer(), avgInput == null ? null : avgInput.addRef())))))));
+      if (null != temp_01_0006)
+        temp_01_0006.freeRef();
+      if (null != temp_01_0005)
+        temp_01_0005.freeRef();
+      if (null != temp_01_0004)
+        temp_01_0004.freeRef();
+      if (null != temp_01_0003)
+        temp_01_0003.freeRef();
+      head = temp_01_0001 == null ? null : temp_01_0001.addRef();
+      if (null != temp_01_0001)
+        temp_01_0001.freeRef();
+    }
+    if (null != avgInput)
+      avgInput.freeRef();
   }
 
-  protected SignReducerLayer(@Nonnull final JsonObject json,
-                             Map<CharSequence, byte[]> rs) {
+  protected SignReducerLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json, rs);
-    head = getNodeById(UUID.fromString(json.getAsJsonPrimitive("head").getAsString()));
+    {
+      DAGNode temp_01_0002 = getNodeById(
+          UUID.fromString(json.getAsJsonPrimitive("head").getAsString()));
+      head = temp_01_0002 == null ? null : temp_01_0002.addRef();
+      if (null != temp_01_0002)
+        temp_01_0002.freeRef();
+    }
   }
 
   @Override
   public DAGNode getHead() {
-    return head;
+    return head == null ? null : head.addRef();
   }
 
   @SuppressWarnings("unused")
-  public static Layer fromJson(@Nonnull final JsonObject inner,
-                               Map<CharSequence, byte[]> rs) {
+  public static Layer fromJson(@Nonnull final JsonObject inner, Map<CharSequence, byte[]> rs) {
     return new SignReducerLayer(inner, rs);
   }
 
@@ -85,6 +109,8 @@ class SignReducerLayer extends DAGNetwork {
   }
 
   public void _free() {
+    if (null != head)
+      head.freeRef();
     super._free();
   }
 

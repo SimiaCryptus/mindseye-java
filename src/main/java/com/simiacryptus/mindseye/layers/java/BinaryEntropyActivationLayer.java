@@ -29,8 +29,7 @@ import java.util.Map;
 
 @SuppressWarnings("serial")
 public final @RefAware
-class BinaryEntropyActivationLayer
-    extends SimpleActivationLayer<BinaryEntropyActivationLayer> {
+class BinaryEntropyActivationLayer extends SimpleActivationLayer<BinaryEntropyActivationLayer> {
 
   public BinaryEntropyActivationLayer() {
   }
@@ -40,8 +39,7 @@ class BinaryEntropyActivationLayer
   }
 
   @SuppressWarnings("unused")
-  public static BinaryEntropyActivationLayer fromJson(@Nonnull final JsonObject json,
-                                                      Map<CharSequence, byte[]> rs) {
+  public static BinaryEntropyActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new BinaryEntropyActivationLayer(json);
   }
 
@@ -65,8 +63,7 @@ class BinaryEntropyActivationLayer
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources,
-                            DataSerializer dataSerializer) {
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 

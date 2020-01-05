@@ -22,6 +22,8 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.lang.RefUtil;
+import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefList;
@@ -33,6 +35,7 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Consumer;
 import java.util.function.ToDoubleFunction;
 
 @SuppressWarnings("serial")
@@ -48,10 +51,16 @@ class AvgMetaLayer extends LayerBase {
   public AvgMetaLayer() {
   }
 
-  protected AvgMetaLayer(@Nonnull final JsonObject json,
-                         Map<CharSequence, byte[]> resources) {
+  protected AvgMetaLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> resources) {
     super(json);
-    lastResult = Tensor.fromJson(json.get("lastResult"), resources);
+    {
+      Tensor temp_21_0001 = Tensor.fromJson(json.get("lastResult"), resources);
+      if (null != lastResult)
+        lastResult.freeRef();
+      lastResult = temp_21_0001 == null ? null : temp_21_0001.addRef();
+      if (null != temp_21_0001)
+        temp_21_0001.freeRef();
+    }
     minBatchCount = json.get("minBatchCount").getAsInt();
   }
 
@@ -62,12 +71,11 @@ class AvgMetaLayer extends LayerBase {
   @Nonnull
   public AvgMetaLayer setMinBatchCount(final int minBatchCount) {
     this.minBatchCount = minBatchCount;
-    return this;
+    return this.addRef();
   }
 
   @SuppressWarnings("unused")
-  public static AvgMetaLayer fromJson(@Nonnull final JsonObject json,
-                                      Map<CharSequence, byte[]> rs) {
+  public static AvgMetaLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new AvgMetaLayer(json, rs);
   }
 
@@ -90,61 +98,110 @@ class AvgMetaLayer extends LayerBase {
   @Nonnull
   @Override
   public Result eval(final Result... inObj) {
-    final Result input = inObj[0];
+    final Result input = inObj[0].addRef();
+    if (null != inObj)
+      ReferenceCounting.freeRefs(inObj);
     TensorList inputData = input.getData();
     final int itemCnt = inputData.length();
     @Nullable
     Tensor thisResult;
     boolean passback;
     if (null == lastResult || inputData.length() > minBatchCount) {
-      @Nonnull final ToDoubleFunction<Coordinate> f = (
-          c) -> RefIntStream.range(0, itemCnt).mapToDouble(dataIndex -> {
-        Tensor tensor = inputData.get(dataIndex);
-        return tensor.get(c);
-      }).sum() / itemCnt;
+      @Nonnull final ToDoubleFunction<Coordinate> f = RefUtil
+          .wrapInterface((
+                  c) -> RefIntStream.range(0, itemCnt).mapToDouble(RefUtil
+                  .wrapInterface(dataIndex -> {
+                    Tensor tensor = inputData.get(dataIndex);
+                    double temp_21_0005 = tensor.get(c);
+                    if (null != tensor)
+                      tensor.freeRef();
+                    return temp_21_0005;
+                  }, inputData == null ? null : inputData.addRef())).sum() / itemCnt,
+              inputData == null ? null : inputData.addRef());
       Tensor tensor = inputData.get(0);
       thisResult = tensor.mapCoords(f);
+      if (null != tensor)
+        tensor.freeRef();
       passback = true;
-      lastResult = thisResult;
+      {
+        Tensor temp_21_0002 = thisResult == null ? null : thisResult.addRef();
+        if (null != lastResult)
+          lastResult.freeRef();
+        lastResult = temp_21_0002 == null ? null : temp_21_0002.addRef();
+        if (null != temp_21_0002)
+          temp_21_0002.freeRef();
+      }
     } else {
       passback = false;
-      thisResult = lastResult;
+      thisResult = lastResult == null ? null : lastResult.addRef();
     }
-    return new Result(new TensorArray(thisResult),
-        new Result.Accumulator() {
+    if (null != inputData)
+      inputData.freeRef();
+    try {
+      try {
+        return new Result(new TensorArray(thisResult == null ? null : thisResult.addRef()), new Result.Accumulator() {
+          {
+          }
+
           @Override
           public void accept(DeltaSet<UUID> buffer, TensorList data) {
             if (passback && input.isAlive()) {
               @Nullable final Tensor delta = data.get(0);
               @Nonnull final Tensor feedback[] = new Tensor[itemCnt];
-              RefArrays.parallelSetAll(feedback, i -> new Tensor(delta.getDimensions()));
-              thisResult.coordStream(true).forEach((inputCoord) -> {
-                for (int inputItem = 0; inputItem < itemCnt; inputItem++) {
-                  feedback[inputItem].add(inputCoord, delta.get(inputCoord) / itemCnt);
-                }
-              });
+              RefArrays.parallelSetAll(Tensor.addRefs(feedback),
+                  RefUtil.wrapInterface(
+                      i -> new Tensor(
+                          delta.getDimensions()),
+                      delta == null ? null : delta.addRef()));
+              thisResult.coordStream(true).forEach(RefUtil.wrapInterface(
+                  (Consumer<? super Coordinate>) (inputCoord) -> {
+                    for (int inputItem = 0; inputItem < itemCnt; inputItem++) {
+                      feedback[inputItem].add(inputCoord, delta.get(inputCoord) / itemCnt);
+                    }
+                  }, delta == null ? null : delta.addRef(), Tensor.addRefs(feedback)));
+              if (null != delta)
+                delta.freeRef();
               @Nonnull
-              TensorArray tensorArray = new TensorArray(feedback);
-              input.accumulate(buffer, tensorArray);
+              TensorArray tensorArray = new TensorArray(Tensor.addRefs(feedback));
+              ReferenceCounting.freeRefs(feedback);
+              input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray == null ? null : tensorArray);
             }
+            if (null != data)
+              data.freeRef();
+            if (null != buffer)
+              buffer.freeRef();
+          }
+
+          public @SuppressWarnings("unused")
+          void _free() {
           }
         }) {
 
-      @Override
-      public boolean isAlive() {
-        return input.isAlive();
-      }
+          {
+          }
 
-      public void _free() {
-      }
+          @Override
+          public boolean isAlive() {
+            return input.isAlive();
+          }
 
-    };
+          public void _free() {
+          }
+
+        };
+      } finally {
+        if (null != thisResult)
+          thisResult.freeRef();
+      }
+    } finally {
+      if (null != input)
+        input.freeRef();
+    }
   }
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources,
-                            @Nonnull DataSerializer dataSerializer) {
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, @Nonnull DataSerializer dataSerializer) {
     @Nonnull final JsonObject json = super.getJsonStub();
     if (null != lastResult) {
       json.add("lastResult", lastResult.getJson(resources, dataSerializer));
@@ -160,6 +217,9 @@ class AvgMetaLayer extends LayerBase {
   }
 
   public void _free() {
+    if (null != lastResult)
+      lastResult.freeRef();
+    lastResult = null;
     super._free();
   }
 

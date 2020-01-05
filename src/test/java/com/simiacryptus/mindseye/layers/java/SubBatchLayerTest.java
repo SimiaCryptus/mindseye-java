@@ -68,6 +68,8 @@ class SubBatchLayerTest extends LayerTestBase {
 
   public @SuppressWarnings("unused")
   void _free() {
+    if (null != layer)
+      layer.freeRef();
   }
 
   public @Override

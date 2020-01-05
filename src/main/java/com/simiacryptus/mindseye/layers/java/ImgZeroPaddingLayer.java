@@ -23,7 +23,9 @@ import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.DataSerializer;
 import com.simiacryptus.mindseye.lang.LayerBase;
 import com.simiacryptus.mindseye.lang.Result;
+import com.simiacryptus.mindseye.lang.TensorList;
 import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrayList;
 import com.simiacryptus.ref.wrappers.RefList;
 
@@ -51,8 +53,7 @@ class ImgZeroPaddingLayer extends LayerBase {
   }
 
   @SuppressWarnings("unused")
-  public static ImgZeroPaddingLayer fromJson(@Nonnull final JsonObject json,
-                                             Map<CharSequence, byte[]> rs) {
+  public static ImgZeroPaddingLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ImgZeroPaddingLayer(json);
   }
 
@@ -76,16 +77,23 @@ class ImgZeroPaddingLayer extends LayerBase {
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     assert inObj.length == 1;
+    TensorList temp_25_0002 = inObj[0].getData();
     @Nonnull
-    int[] dimensions = inObj[0].getData().getDimensions();
+    int[] dimensions = temp_25_0002.getDimensions();
+    if (null != temp_25_0002)
+      temp_25_0002.freeRef();
     ImgCropLayer imgCropLayer = new ImgCropLayer(dimensions[0] + 2 * this.sizeX, dimensions[1] + 2 * this.sizeY);
-    return imgCropLayer.eval(inObj);
+    Result temp_25_0001 = imgCropLayer
+        .eval(Result.addRefs(inObj));
+    ReferenceCounting.freeRefs(inObj);
+    if (null != imgCropLayer)
+      imgCropLayer.freeRef();
+    return temp_25_0001;
   }
 
   @Nonnull
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources,
-                            DataSerializer dataSerializer) {
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
     @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("sizeX", sizeX);
     json.addProperty("sizeY", sizeX);

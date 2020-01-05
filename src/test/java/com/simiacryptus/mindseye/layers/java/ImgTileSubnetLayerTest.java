@@ -55,7 +55,11 @@ class ImgTileSubnetLayerTest extends LayerTestBase {
   @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
     LinearActivationLayer subnetwork = new LinearActivationLayer();
-    return new ImgTileSubnetLayer(subnetwork, 3, 3, 2, 2);
+    ImgTileSubnetLayer temp_51_0001 = new ImgTileSubnetLayer(
+        subnetwork == null ? null : subnetwork.addRef(), 3, 3, 2, 2);
+    if (null != subnetwork)
+      subnetwork.freeRef();
+    return temp_51_0001;
   }
 
   public @SuppressWarnings("unused")
