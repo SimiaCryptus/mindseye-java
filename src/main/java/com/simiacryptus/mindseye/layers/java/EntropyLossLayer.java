@@ -102,34 +102,37 @@ class EntropyLossLayer extends LayerBase {
           assert total >= 0;
           gradient[dataIndex] = gradientTensor;
           return new Tensor(new double[]{total}, 1);
-        }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
-      if (inObj[1].isAlive()) {
-        @Nonnull
-        TensorArray tensorArray = new TensorArray(
-            RefIntStream.range(0, delta.length()).mapToObj(dataIndex -> {
-              Tensor deltaTensor = delta.get(dataIndex);
-              @Nullable final Tensor inputTensor = indata.get(dataIndex);
-              @Nonnull final Tensor passback = new Tensor(gradient[dataIndex].getDimensions());
-              for (int i = 0; i < passback.length(); i++) {
-                final double lv = Math.max(Math.min(inputTensor.get(i), max_prob), zero_tol);
-                passback.set(i, -deltaTensor.get(0) * Math.log(lv));
-              }
-              return passback;
-            }).toArray(i -> new Tensor[i]));
-        inObj[1].accumulate(buffer, tensorArray);
-      }
-      if (inObj[0].isAlive()) {
-        @Nonnull
-        TensorArray tensorArray = new TensorArray(
-            RefIntStream.range(0, delta.length()).mapToObj(dataIndex -> {
-              Tensor tensor = delta.get(dataIndex);
-              @Nonnull final Tensor passback = new Tensor(gradient[dataIndex].getDimensions());
-              for (int i = 0; i < passback.length(); i++) {
-                passback.set(i, tensor.get(0) * gradient[dataIndex].get(i));
-              }
-              return passback;
-            }).toArray(i -> new Tensor[i]));
-        inObj[0].accumulate(buffer, tensorArray);
+        }).toArray(i -> new Tensor[i])), new Result.Accumulator() {
+      @Override
+      public void accept(DeltaSet<UUID> buffer, TensorList delta) {
+        if (inObj[1].isAlive()) {
+          @Nonnull
+          TensorArray tensorArray = new TensorArray(
+              RefIntStream.range(0, delta.length()).mapToObj(dataIndex -> {
+                Tensor deltaTensor = delta.get(dataIndex);
+                @Nullable final Tensor inputTensor = indata.get(dataIndex);
+                @Nonnull final Tensor passback = new Tensor(gradient[dataIndex].getDimensions());
+                for (int i = 0; i < passback.length(); i++) {
+                  final double lv = Math.max(Math.min(inputTensor.get(i), max_prob), zero_tol);
+                  passback.set(i, -deltaTensor.get(0) * Math.log(lv));
+                }
+                return passback;
+              }).toArray(i -> new Tensor[i]));
+          inObj[1].accumulate(buffer, tensorArray);
+        }
+        if (inObj[0].isAlive()) {
+          @Nonnull
+          TensorArray tensorArray = new TensorArray(
+              RefIntStream.range(0, delta.length()).mapToObj(dataIndex -> {
+                Tensor tensor = delta.get(dataIndex);
+                @Nonnull final Tensor passback = new Tensor(gradient[dataIndex].getDimensions());
+                for (int i = 0; i < passback.length(); i++) {
+                  passback.set(i, tensor.get(0) * gradient[dataIndex].get(i));
+                }
+                return passback;
+              }).toArray(i -> new Tensor[i]));
+          inObj[0].accumulate(buffer, tensorArray);
+        }
       }
     }) {
 

@@ -92,20 +92,23 @@ class ImgBandSelectLayer extends LayerBase {
           Tensor tensor = batch.get(dataIndex);
           return tensor.get(coords[0], coords[1], bands[coords[2]]);
         })).toArray(i -> new Tensor[i]));
-    return new Result(wrap, (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList error) -> {
-      if (input.isAlive()) {
-        @Nonnull
-        TensorArray tensorArray = new TensorArray(
-            RefIntStream.range(0, error.length()).parallel().mapToObj(dataIndex -> {
-              @Nonnull final Tensor passback = new Tensor(inputDims);
-              @Nullable final Tensor err = error.get(dataIndex);
-              err.coordStream(false).forEach(c -> {
-                int[] coords = c.getCoords();
-                passback.set(coords[0], coords[1], bands[coords[2]], err.get(c));
-              });
-              return passback;
-            }).toArray(i -> new Tensor[i]));
-        input.accumulate(buffer, tensorArray);
+    return new Result(wrap, new Result.Accumulator() {
+      @Override
+      public void accept(DeltaSet<UUID> buffer, TensorList error) {
+        if (input.isAlive()) {
+          @Nonnull
+          TensorArray tensorArray = new TensorArray(
+              RefIntStream.range(0, error.length()).parallel().mapToObj(dataIndex -> {
+                @Nonnull final Tensor passback = new Tensor(inputDims);
+                @Nullable final Tensor err = error.get(dataIndex);
+                err.coordStream(false).forEach(c -> {
+                  int[] coords = c.getCoords();
+                  passback.set(coords[0], coords[1], bands[coords[2]], err.get(c));
+                });
+                return passback;
+              }).toArray(i -> new Tensor[i]));
+          input.accumulate(buffer, tensorArray);
+        }
       }
     }) {
 

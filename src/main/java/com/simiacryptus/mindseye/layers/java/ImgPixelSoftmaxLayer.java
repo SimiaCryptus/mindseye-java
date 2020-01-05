@@ -119,38 +119,41 @@ class ImgPixelSoftmaxLayer extends LayerBase {
             return (expTensor.get(c) / sumTensor.get(coords[0], coords[1], 0));
           });
         }).toArray(i -> new Tensor[i]));
-    return new Result(output, (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
-      if (input.isAlive()) {
+    return new Result(output, new Result.Accumulator() {
+      @Override
+      public void accept(DeltaSet<UUID> buffer, TensorList delta) {
+        if (input.isAlive()) {
 
-        TensorArray dots = new TensorArray(
-            RefIntStream.range(0, inputData.length()).mapToObj(index -> {
-              final Tensor deltaTensor = delta.get(index);
-              Tensor expTensor = exps.get(index);
-              return new Tensor(width, height, 1).setByCoord(c -> {
-                return RefIntStream.range(0, inputBands).mapToDouble(band -> {
+          TensorArray dots = new TensorArray(
+              RefIntStream.range(0, inputData.length()).mapToObj(index -> {
+                final Tensor deltaTensor = delta.get(index);
+                Tensor expTensor = exps.get(index);
+                return new Tensor(width, height, 1).setByCoord(c -> {
+                  return RefIntStream.range(0, inputBands).mapToDouble(band -> {
+                    int[] coords = c.getCoords();
+                    return expTensor.get(coords[0], coords[1], band) * deltaTensor.get(coords[0], coords[1], band);
+                  }).sum();
+                });
+              }).toArray(i -> new Tensor[i]));
+
+          TensorArray passback = new TensorArray(
+              RefIntStream.range(0, inputData.length()).mapToObj(index -> {
+                final Tensor deltaTensor = delta.get(index);
+                final Tensor expTensor = exps.get(index);
+                Tensor sumTensor = sums.get(index);
+                Tensor dotTensor = dots.get(index);
+                return new Tensor(inputDims).setByCoord(c -> {
                   int[] coords = c.getCoords();
-                  return expTensor.get(coords[0], coords[1], band) * deltaTensor.get(coords[0], coords[1], band);
-                }).sum();
-              });
-            }).toArray(i -> new Tensor[i]));
+                  double sum = sumTensor.get(coords[0], coords[1], 0);
+                  double dot = dotTensor.get(coords[0], coords[1], 0);
+                  double deltaValue = deltaTensor.get(c);
+                  double expValue = expTensor.get(c);
+                  return (sum * deltaValue - dot) * expValue / (sum * sum);
+                });
+              }).toArray(i -> new Tensor[i]));
 
-        TensorArray passback = new TensorArray(
-            RefIntStream.range(0, inputData.length()).mapToObj(index -> {
-              final Tensor deltaTensor = delta.get(index);
-              final Tensor expTensor = exps.get(index);
-              Tensor sumTensor = sums.get(index);
-              Tensor dotTensor = dots.get(index);
-              return new Tensor(inputDims).setByCoord(c -> {
-                int[] coords = c.getCoords();
-                double sum = sumTensor.get(coords[0], coords[1], 0);
-                double dot = dotTensor.get(coords[0], coords[1], 0);
-                double deltaValue = deltaTensor.get(c);
-                double expValue = expTensor.get(c);
-                return (sum * deltaValue - dot) * expValue / (sum * sum);
-              });
-            }).toArray(i -> new Tensor[i]));
-
-        input.accumulate(buffer, passback);
+          input.accumulate(buffer, passback);
+        }
       }
     }) {
 

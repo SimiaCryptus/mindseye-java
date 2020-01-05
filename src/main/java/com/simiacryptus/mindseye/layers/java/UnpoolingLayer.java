@@ -152,17 +152,20 @@ class UnpoolingLayer extends LayerBase {
           Tensor inputData = batch.get(dataIndex);
           return UnpoolingLayer.copyExpand(inputData, outputDims.copy());
         }).toArray(i -> new Tensor[i]));
-    return new Result(data, (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList error) -> {
-      //assert error.stream().flatMapToDouble(x-> Arrays.stream(x.getData())).allMatch(v->Double.isFinite(v));
-      if (input.isAlive()) {
-        @Nonnull
-        TensorArray tensorArray = new TensorArray(
-            RefIntStream.range(0, error.length()).parallel().mapToObj(dataIndex -> {
-              @Nonnull final Tensor passback = new Tensor(inputDims);
-              @Nullable final Tensor err = error.get(dataIndex);
-              return UnpoolingLayer.copyCondense(err, passback);
-            }).toArray(i -> new Tensor[i]));
-        input.accumulate(buffer, tensorArray);
+    return new Result(data, new Result.Accumulator() {
+      @Override
+      public void accept(DeltaSet<UUID> buffer, TensorList error) {
+        //assert error.stream().flatMapToDouble(x-> Arrays.stream(x.getData())).allMatch(v->Double.isFinite(v));
+        if (input.isAlive()) {
+          @Nonnull
+          TensorArray tensorArray = new TensorArray(
+              RefIntStream.range(0, error.length()).parallel().mapToObj(dataIndex -> {
+                @Nonnull final Tensor passback = new Tensor(inputDims);
+                @Nullable final Tensor err = error.get(dataIndex);
+                return UnpoolingLayer.copyCondense(err, passback);
+              }).toArray(i -> new Tensor[i]));
+          input.accumulate(buffer, tensorArray);
+        }
       }
     }) {
 

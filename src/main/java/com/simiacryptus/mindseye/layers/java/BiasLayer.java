@@ -127,6 +127,7 @@ class BiasLayer extends LayerBase {
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     TensorList input;
+    final BiasLayer biasLayer = BiasLayer.this;
     if (0 == inObj.length) {
       input = new TensorArray();
     } else {
@@ -134,23 +135,26 @@ class BiasLayer extends LayerBase {
     }
     return new Result(new TensorArray(input.stream().parallel().map(r -> {
       return new Tensor(add(r.getData()), r.getDimensions());
-    }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
-      if (!isFrozen()) {
-        final Delta<UUID> deltaBuffer = buffer.get(BiasLayer.this.getId(), bias);
-        if (1 == bias.length()) {
-          delta.stream().parallel().forEach(d -> {
-            @Nullable final double[] array = d.getData();
-            deltaBuffer.addInPlace(1 == array.length ? array
-                : new double[]{RefArrays.stream(array).sum()});
-          });
-        } else {
-          delta.stream().parallel().forEach(d -> {
-            deltaBuffer.addInPlace(d.getData());
-          });
+    }).toArray(i -> new Tensor[i])), new Result.Accumulator() {
+      @Override
+      public void accept(DeltaSet<UUID> buffer, TensorList delta) {
+        if (!BiasLayer.this.isFrozen()) {
+          final Delta<UUID> deltaBuffer = buffer.get(biasLayer.getId(), bias);
+          if (1 == bias.length()) {
+            delta.stream().parallel().forEach(d -> {
+              @Nullable final double[] array = d.getData();
+              deltaBuffer.addInPlace(1 == array.length ? array
+                  : new double[]{RefArrays.stream(array).sum()});
+            });
+          } else {
+            delta.stream().parallel().forEach(d -> {
+              deltaBuffer.addInPlace(d.getData());
+            });
+          }
         }
-      }
-      if (0 < inObj.length && inObj[0].isAlive()) {
-        inObj[0].accumulate(buffer, delta);
+        if (0 < inObj.length && inObj[0].isAlive()) {
+          inObj[0].accumulate(buffer, delta);
+        }
       }
     }) {
 

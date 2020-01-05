@@ -118,39 +118,42 @@ class ImgConcatLayer extends LayerBase {
       outputTensors.add(outputTensor);
     }
     return new Result(new TensorArray(outputTensors.toArray(new Tensor[]{})),
-        (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList data) -> {
-          assert numBatches == data.length();
+        new Result.Accumulator() {
+          @Override
+          public void accept(DeltaSet<UUID> buffer, TensorList data) {
+            assert numBatches == data.length();
 
-          @Nonnull final RefList<Tensor[]> splitBatches = new RefArrayList<>();
-          for (int b = 0; b < numBatches; b++) {
-            @Nullable final Tensor tensor = data.get(b);
-            @Nonnull final Tensor[] outputTensors2 = new Tensor[inObj.length];
-            int pos = 0;
-            for (int i = 0; i < inObj.length; i++) {
-              @Nonnull final Tensor dest = new Tensor(inObj[i].getData().getDimensions());
-              @Nullable
-              double[] tensorData = tensor.getData();
-              System.arraycopy(tensorData, pos, dest.getData(), 0, Math.min(dest.length(), tensorData.length - pos));
-              pos += dest.length();
-              outputTensors2[i] = dest;
-            }
-            splitBatches.add(outputTensors2);
-          }
-
-          @Nonnull final Tensor[][] splitData = new Tensor[inObj.length][];
-          for (int i = 0; i < splitData.length; i++) {
-            splitData[i] = new Tensor[numBatches];
-          }
-          for (int i = 0; i < inObj.length; i++) {
+            @Nonnull final RefList<Tensor[]> splitBatches = new RefArrayList<>();
             for (int b = 0; b < numBatches; b++) {
-              splitData[i][b] = splitBatches.get(b)[i];
+              @Nullable final Tensor tensor = data.get(b);
+              @Nonnull final Tensor[] outputTensors2 = new Tensor[inObj.length];
+              int pos = 0;
+              for (int i = 0; i < inObj.length; i++) {
+                @Nonnull final Tensor dest = new Tensor(inObj[i].getData().getDimensions());
+                @Nullable
+                double[] tensorData = tensor.getData();
+                System.arraycopy(tensorData, pos, dest.getData(), 0, Math.min(dest.length(), tensorData.length - pos));
+                pos += dest.length();
+                outputTensors2[i] = dest;
+              }
+              splitBatches.add(outputTensors2);
             }
-          }
 
-          for (int i = 0; i < inObj.length; i++) {
-            @Nonnull
-            TensorArray tensorArray = new TensorArray(splitData[i]);
-            inObj[i].accumulate(buffer, tensorArray);
+            @Nonnull final Tensor[][] splitData = new Tensor[inObj.length][];
+            for (int i = 0; i < splitData.length; i++) {
+              splitData[i] = new Tensor[numBatches];
+            }
+            for (int i = 0; i < inObj.length; i++) {
+              for (int b = 0; b < numBatches; b++) {
+                splitData[i][b] = splitBatches.get(b)[i];
+              }
+            }
+
+            for (int i = 0; i < inObj.length; i++) {
+              @Nonnull
+              TensorArray tensorArray = new TensorArray(splitData[i]);
+              inObj[i].accumulate(buffer, tensorArray);
+            }
           }
         }) {
 

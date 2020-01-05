@@ -94,17 +94,20 @@ class StaticScalarLossLayer extends LayerBase {
           @Nullable final Tensor a = indata.get(dataIndex);
           final double diff = Math.abs(a.get(0) - getTarget());
           return new Tensor(new double[]{diff}, 1);
-        }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList data) -> {
-      if (in0.isAlive()) {
-        @Nonnull
-        TensorArray tensorArray = new TensorArray(
-            RefIntStream.range(0, data.length()).parallel().mapToObj(dataIndex -> {
-              @Nullable final Tensor a = indata.get(dataIndex);
-              Tensor tensor = data.get(dataIndex);
-              final double deriv = tensor.get(0) * (a.get(0) - getTarget() < 0 ? -1 : 1);
-              return new Tensor(new double[]{deriv}, 1);
-            }).toArray(i -> new Tensor[i]));
-        in0.accumulate(buffer, tensorArray);
+        }).toArray(i -> new Tensor[i])), new Result.Accumulator() {
+      @Override
+      public void accept(DeltaSet<UUID> buffer, TensorList data) {
+        if (in0.isAlive()) {
+          @Nonnull
+          TensorArray tensorArray = new TensorArray(
+              RefIntStream.range(0, data.length()).parallel().mapToObj(dataIndex -> {
+                @Nullable final Tensor a = indata.get(dataIndex);
+                Tensor tensor = data.get(dataIndex);
+                final double deriv = tensor.get(0) * (a.get(0) - StaticScalarLossLayer.this.getTarget() < 0 ? -1 : 1);
+                return new Tensor(new double[]{deriv}, 1);
+              }).toArray(i -> new Tensor[i]));
+          in0.accumulate(buffer, tensorArray);
+        }
       }
     }) {
 

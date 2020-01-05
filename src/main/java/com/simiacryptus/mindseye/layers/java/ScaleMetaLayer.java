@@ -83,25 +83,28 @@ class ScaleMetaLayer extends LayerBase {
         .mapToObj(dataIndex -> data0.get(dataIndex).mapIndex((v, c) -> v * data10.get(c))).toArray(i -> new Tensor[i]);
     Tensor tensor0 = tensors[0];
     return new Result(new TensorArray(tensors),
-        (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList data) -> {
-          if (in0.isAlive()) {
-            @Nonnull
-            TensorArray tensorArray = new TensorArray(data.stream().map(t -> {
-              return t.mapIndex((v, c) -> {
-                return v * data10.get(c);
+        new Result.Accumulator() {
+          @Override
+          public void accept(DeltaSet<UUID> buffer, TensorList data) {
+            if (in0.isAlive()) {
+              @Nonnull
+              TensorArray tensorArray = new TensorArray(data.stream().map(t -> {
+                return t.mapIndex((v, c) -> {
+                  return v * data10.get(c);
+                });
+              }).toArray(i -> new Tensor[i]));
+              in0.accumulate(buffer, tensorArray);
+            }
+            if (in1.isAlive()) {
+              @Nullable final Tensor passback = tensor0.mapIndex((v, c) -> {
+                return RefIntStream.range(0, itemCnt)
+                    .mapToDouble(i -> data.get(i).get(c) * data.get(i).get(c)).sum();
               });
-            }).toArray(i -> new Tensor[i]));
-            in0.accumulate(buffer, tensorArray);
-          }
-          if (in1.isAlive()) {
-            @Nullable final Tensor passback = tensor0.mapIndex((v, c) -> {
-              return RefIntStream.range(0, itemCnt)
-                  .mapToDouble(i -> data.get(i).get(c) * data.get(i).get(c)).sum();
-            });
-            @Nonnull
-            TensorArray tensorArray = new TensorArray(RefIntStream.range(0, data.length())
-                .mapToObj(i -> i == 0 ? passback : passback.map(v -> 0)).toArray(i -> new Tensor[i]));
-            in1.accumulate(buffer, tensorArray);
+              @Nonnull
+              TensorArray tensorArray = new TensorArray(RefIntStream.range(0, data.length())
+                  .mapToObj(i -> i == 0 ? passback : passback.map(v -> 0)).toArray(i -> new Tensor[i]));
+              in1.accumulate(buffer, tensorArray);
+            }
           }
         }) {
 

@@ -20,10 +20,7 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
-import com.simiacryptus.mindseye.lang.DataSerializer;
-import com.simiacryptus.mindseye.lang.Layer;
-import com.simiacryptus.mindseye.lang.Result;
-import com.simiacryptus.mindseye.lang.TensorList;
+import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.mindseye.layers.WrapperLayer;
 import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.wrappers.RefArrayList;
@@ -34,6 +31,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @SuppressWarnings("serial")
@@ -116,15 +114,21 @@ class ImgTileSubnetLayer extends WrapperLayer {
         assert positionY < inputDims[1];
         final int finalIndex = index;
         ImgTileSelectLayer tileSelectLayer = new ImgTileSelectLayer(width, height, positionX, positionY);
-        Result selectedTile = tileSelectLayer.eval(new Result(inputData, (ctx, delta) -> {
-          passback[finalIndex] = delta;
-          if (passbacks.incrementAndGet() == rows * cols) {
-            passbacks.set(0);
-            ImgTileAssemblyLayer imgTileAssemblyLayer = new ImgTileAssemblyLayer(cols, rows);
-            TensorList reassembled = imgTileAssemblyLayer
-                .eval(RefArrays.stream(passback).map(t -> new Result(t, (c2, d2) -> {
-                })).<Result>toArray(i -> new Result[i])).getData();
-            input.accumulate(ctx, reassembled);
+        Result selectedTile = tileSelectLayer.eval(new Result(inputData, new Result.Accumulator() {
+          @Override
+          public void accept(DeltaSet<UUID> ctx, TensorList delta) {
+            passback[finalIndex] = delta;
+            if (passbacks.incrementAndGet() == rows * cols) {
+              passbacks.set(0);
+              ImgTileAssemblyLayer imgTileAssemblyLayer = new ImgTileAssemblyLayer(cols, rows);
+              TensorList reassembled = imgTileAssemblyLayer
+                  .eval(RefArrays.stream(passback).map(t -> new Result(t, new Result.Accumulator() {
+                    @Override
+                    public void accept(DeltaSet<UUID> c2, TensorList d2) {
+                    }
+                  })).<Result>toArray(i -> new Result[i])).getData();
+              input.accumulate(ctx, reassembled);
+            }
           }
         }) {
           public void _free() {

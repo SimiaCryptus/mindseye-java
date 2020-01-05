@@ -91,39 +91,42 @@ class MeanSqLossLayer extends LayerBase {
           @Nonnull final Tensor r = a.minus(b);
           diffs[dataIndex] = r;
           return new Tensor(new double[]{r.sumSq() / r.length()}, 1);
-        }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList data) -> {
-      if (inObj[0].isAlive()) {
-        RefStream<Tensor> tensorStream = RefIntStream
-            .range(0, data.length()).parallel().mapToObj(dataIndex -> {
-              @Nullable
-              Tensor tensor = data.get(dataIndex);
-              Tensor diff = diffs[dataIndex];
-              return diff.scale(tensor.get(0) * 2.0 / diff.length());
-            }).collect(RefCollectors.toList()).stream();
-        if (1 == leftLength) {
-          tensorStream = RefStream.of(tensorStream.reduce((a, b) -> {
-            return a.addAndFree(b);
-          }).get());
+        }).toArray(i -> new Tensor[i])), new Result.Accumulator() {
+      @Override
+      public void accept(DeltaSet<UUID> buffer, TensorList data) {
+        if (inObj[0].isAlive()) {
+          RefStream<Tensor> tensorStream = RefIntStream
+              .range(0, data.length()).parallel().mapToObj(dataIndex -> {
+                @Nullable
+                Tensor tensor = data.get(dataIndex);
+                Tensor diff = diffs[dataIndex];
+                return diff.scale(tensor.get(0) * 2.0 / diff.length());
+              }).collect(RefCollectors.toList()).stream();
+          if (1 == leftLength) {
+            tensorStream = RefStream.of(tensorStream.reduce((a, b) -> {
+              return a.addAndFree(b);
+            }).get());
+          }
+          @Nonnull final TensorList array = new TensorArray(tensorStream.toArray(i -> new Tensor[i]));
+          inObj[0].accumulate(buffer, array);
         }
-        @Nonnull final TensorList array = new TensorArray(tensorStream.toArray(i -> new Tensor[i]));
-        inObj[0].accumulate(buffer, array);
-      }
-      if (inObj[1].isAlive()) {
-        RefStream<Tensor> tensorStream = RefIntStream
-            .range(0, data.length()).parallel().mapToObj(dataIndex -> {
-              @Nullable
-              Tensor tensor = data.get(dataIndex);
-              return diffs[dataIndex].scale(tensor.get(0) * 2.0 / diffs[dataIndex].length());
-            }).collect(RefCollectors.toList()).stream();
-        if (1 == rightLength) {
-          tensorStream = RefStream.of(tensorStream.reduce((a, b) -> {
-            return a.addAndFree(b);
-          }).get());
+        if (inObj[1].isAlive()) {
+          RefStream<Tensor> tensorStream = RefIntStream
+              .range(0, data.length()).parallel().mapToObj(dataIndex -> {
+                @Nullable
+                Tensor tensor = data.get(dataIndex);
+                return diffs[dataIndex].scale(tensor.get(0) * 2.0 / diffs[dataIndex].length());
+              }).collect(RefCollectors.toList()).stream();
+          if (1 == rightLength) {
+            tensorStream = RefStream.of(tensorStream.reduce((a, b) -> {
+              return a.addAndFree(b);
+            }).get());
+          }
+          @Nonnull final TensorList array = new TensorArray(tensorStream.map(x -> {
+            return x.scale(-1);
+          }).toArray(i -> new Tensor[i]));
+          inObj[1].accumulate(buffer, array);
         }
-        @Nonnull final TensorList array = new TensorArray(tensorStream.map(x -> {
-          return x.scale(-1);
-        }).toArray(i -> new Tensor[i]));
-        inObj[1].accumulate(buffer, array);
       }
     }) {
 

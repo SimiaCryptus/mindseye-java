@@ -86,24 +86,27 @@ class SimpleActivationLayer<T extends SimpleActivationLayer<T>>
             output.set(i, results[0]);
           }
           return output;
-        }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList data) -> {
-      if (inObj[0].isAlive()) {
-        @Nonnull
-        TensorArray tensorArray = new TensorArray(
-            RefIntStream.range(0, itemCnt).parallel().mapToObj(dataIndex -> {
-              @Nonnull final Tensor passback = new Tensor(data.getDimensions());
-              @Nullable final double[] gradientData = inputGradientA[dataIndex].getData();
-              @Nullable
-              Tensor tensor = data.get(dataIndex);
-              RefIntStream.range(0, passback.length()).forEach(i -> {
-                final double v = gradientData[i];
-                if (Double.isFinite(v)) {
-                  passback.set(i, tensor.get(i) * v);
-                }
-              });
-              return passback;
-            }).toArray(i -> new Tensor[i]));
-        inObj[0].accumulate(buffer, tensorArray);
+        }).toArray(i -> new Tensor[i])), new Result.Accumulator() {
+      @Override
+      public void accept(DeltaSet<UUID> buffer, TensorList data) {
+        if (inObj[0].isAlive()) {
+          @Nonnull
+          TensorArray tensorArray = new TensorArray(
+              RefIntStream.range(0, itemCnt).parallel().mapToObj(dataIndex -> {
+                @Nonnull final Tensor passback = new Tensor(data.getDimensions());
+                @Nullable final double[] gradientData = inputGradientA[dataIndex].getData();
+                @Nullable
+                Tensor tensor = data.get(dataIndex);
+                RefIntStream.range(0, passback.length()).forEach(i -> {
+                  final double v = gradientData[i];
+                  if (Double.isFinite(v)) {
+                    passback.set(i, tensor.get(i) * v);
+                  }
+                });
+                return passback;
+              }).toArray(i -> new Tensor[i]));
+          inObj[0].accumulate(buffer, tensorArray);
+        }
       }
     }) {
 

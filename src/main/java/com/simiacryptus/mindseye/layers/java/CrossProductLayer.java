@@ -87,29 +87,32 @@ class CrossProductLayer extends LayerBase {
         });
       });
       return result1;
-    }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
-      if (in.isAlive()) {
-        assert delta.length() == delta.length();
-        @Nonnull
-        TensorArray tensorArray = new TensorArray(
-            RefIntStream.range(0, delta.length()).parallel().mapToObj(batchIndex -> {
-              @Nullable final Tensor deltaTensor = delta.get(batchIndex);
-              final int outputDim = deltaTensor.length();
-              final int inputDim = (1 + (int) Math.sqrt(1 + 8 * outputDim)) / 2;
-              @Nonnull final Tensor passback = new Tensor(inputDim);
-              @Nullable final double[] passbackData = passback.getData();
-              @Nullable final double[] tensorData = deltaTensor.getData();
-              Tensor inputTensor = indata.get(batchIndex);
-              @Nullable final double[] inputData = inputTensor.getData();
-              RefIntStream.range(0, inputDim).forEach(x -> {
-                RefIntStream.range(x + 1, inputDim).forEach(y -> {
-                  passbackData[x] += tensorData[CrossProductLayer.index(x, y, inputDim)] * inputData[y];
-                  passbackData[y] += tensorData[CrossProductLayer.index(x, y, inputDim)] * inputData[x];
+    }).toArray(i -> new Tensor[i])), new Result.Accumulator() {
+      @Override
+      public void accept(DeltaSet<UUID> buffer, TensorList delta) {
+        if (in.isAlive()) {
+          assert delta.length() == delta.length();
+          @Nonnull
+          TensorArray tensorArray = new TensorArray(
+              RefIntStream.range(0, delta.length()).parallel().mapToObj(batchIndex -> {
+                @Nullable final Tensor deltaTensor = delta.get(batchIndex);
+                final int outputDim = deltaTensor.length();
+                final int inputDim = (1 + (int) Math.sqrt(1 + 8 * outputDim)) / 2;
+                @Nonnull final Tensor passback = new Tensor(inputDim);
+                @Nullable final double[] passbackData = passback.getData();
+                @Nullable final double[] tensorData = deltaTensor.getData();
+                Tensor inputTensor = indata.get(batchIndex);
+                @Nullable final double[] inputData = inputTensor.getData();
+                RefIntStream.range(0, inputDim).forEach(x -> {
+                  RefIntStream.range(x + 1, inputDim).forEach(y -> {
+                    passbackData[x] += tensorData[CrossProductLayer.index(x, y, inputDim)] * inputData[y];
+                    passbackData[y] += tensorData[CrossProductLayer.index(x, y, inputDim)] * inputData[x];
+                  });
                 });
-              });
-              return passback;
-            }).toArray(i -> new Tensor[i]));
-        in.accumulate(buffer, tensorArray);
+                return passback;
+              }).toArray(i -> new Tensor[i]));
+          in.accumulate(buffer, tensorArray);
+        }
       }
     }) {
 

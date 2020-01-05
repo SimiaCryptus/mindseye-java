@@ -89,17 +89,20 @@ class ImgPixelSumLayer extends LayerBase {
           return tensor.get(coords[0], coords[1], i);
         }).sum();
       });
-    }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
-      if (input.isAlive()) {
-        @Nonnull
-        TensorArray tensorArray = new TensorArray(delta.stream().map(deltaTensor -> {
-          int[] deltaDims = deltaTensor.getDimensions();
-          return new Tensor(deltaDims[0], deltaDims[1], inputDims[2]).setByCoord(c -> {
-            int[] coords = c.getCoords();
-            return deltaTensor.get(coords[0], coords[1], 0);
-          });
-        }).toArray(i -> new Tensor[i]));
-        input.accumulate(buffer, tensorArray);
+    }).toArray(i -> new Tensor[i])), new Result.Accumulator() {
+      @Override
+      public void accept(DeltaSet<UUID> buffer, TensorList delta) {
+        if (input.isAlive()) {
+          @Nonnull
+          TensorArray tensorArray = new TensorArray(delta.stream().map(deltaTensor -> {
+            int[] deltaDims = deltaTensor.getDimensions();
+            return new Tensor(deltaDims[0], deltaDims[1], inputDims[2]).setByCoord(c -> {
+              int[] coords = c.getCoords();
+              return deltaTensor.get(coords[0], coords[1], 0);
+            });
+          }).toArray(i -> new Tensor[i]));
+          input.accumulate(buffer, tensorArray);
+        }
       }
     }) {
 

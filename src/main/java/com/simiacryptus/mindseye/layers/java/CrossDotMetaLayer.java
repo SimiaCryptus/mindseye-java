@@ -92,29 +92,32 @@ class CrossDotMetaLayer extends LayerBase {
       }
     }
     return new Result(new TensorArray(results),
-        (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
-          if (input.isAlive()) {
-            @Nullable final Tensor deltaTensor = delta.get(0);
-            @Nonnull final Tensor feedback[] = new Tensor[itemCnt];
-            RefArrays.parallelSetAll(feedback, i -> new Tensor(dim));
+        new Result.Accumulator() {
+          @Override
+          public void accept(DeltaSet<UUID> buffer, TensorList delta) {
+            if (input.isAlive()) {
+              @Nullable final Tensor deltaTensor = delta.get(0);
+              @Nonnull final Tensor feedback[] = new Tensor[itemCnt];
+              RefArrays.parallelSetAll(feedback, i -> new Tensor(dim));
 
-            for (int i = 0; i < dim; i++) {
-              for (int j = 0; j < dim; j++) {
-                if (i == j) {
-                  continue;
-                }
-                final double v = deltaTensor.get(i, j);
-                for (int k = 0; k < itemCnt; k++) {
-                  Tensor tensor = indata.get(k);
-                  @Nullable final double[] kk = tensor.getData();
-                  feedback[k].add(i, v * kk[j]);
-                  feedback[k].add(j, v * kk[i]);
+              for (int i = 0; i < dim; i++) {
+                for (int j = 0; j < dim; j++) {
+                  if (i == j) {
+                    continue;
+                  }
+                  final double v = deltaTensor.get(i, j);
+                  for (int k = 0; k < itemCnt; k++) {
+                    Tensor tensor = indata.get(k);
+                    @Nullable final double[] kk = tensor.getData();
+                    feedback[k].add(i, v * kk[j]);
+                    feedback[k].add(j, v * kk[i]);
+                  }
                 }
               }
+              @Nonnull
+              TensorArray tensorArray = new TensorArray(feedback);
+              input.accumulate(buffer, tensorArray);
             }
-            @Nonnull
-            TensorArray tensorArray = new TensorArray(feedback);
-            input.accumulate(buffer, tensorArray);
           }
         }) {
 

@@ -95,20 +95,23 @@ class MaxImageBandLayer extends LayerBase {
                 return tensor.get(maxCoord[0], maxCoord[1], band);
               });
           return new Tensor(1, 1, inputDims[2]).set(Tensor.getDoubles(doubleStream, inputDims[2]));
-        }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
-      if (inObj[0].isAlive()) {
-        @Nonnull
-        TensorArray tensorArray = new TensorArray(
-            RefIntStream.range(0, delta.length()).parallel().mapToObj(dataIndex -> {
-              Tensor deltaTensor = delta.get(dataIndex);
-              @Nonnull final Tensor passback = new Tensor(inputData.getDimensions());
-              RefIntStream.range(0, inputDims[2]).forEach(b -> {
-                final int[] maxCoord = maxCoords[dataIndex][b].getCoords();
-                passback.set(new int[]{maxCoord[0], maxCoord[1], b}, deltaTensor.get(0, 0, b));
-              });
-              return passback;
-            }).toArray(i -> new Tensor[i]));
-        inObj[0].accumulate(buffer, tensorArray);
+        }).toArray(i -> new Tensor[i])), new Result.Accumulator() {
+      @Override
+      public void accept(DeltaSet<UUID> buffer, TensorList delta) {
+        if (inObj[0].isAlive()) {
+          @Nonnull
+          TensorArray tensorArray = new TensorArray(
+              RefIntStream.range(0, delta.length()).parallel().mapToObj(dataIndex -> {
+                Tensor deltaTensor = delta.get(dataIndex);
+                @Nonnull final Tensor passback = new Tensor(inputData.getDimensions());
+                RefIntStream.range(0, inputDims[2]).forEach(b -> {
+                  final int[] maxCoord = maxCoords[dataIndex][b].getCoords();
+                  passback.set(new int[]{maxCoord[0], maxCoord[1], b}, deltaTensor.get(0, 0, b));
+                });
+                return passback;
+              }).toArray(i -> new Tensor[i]));
+          inObj[0].accumulate(buffer, tensorArray);
+        }
       }
     }) {
 

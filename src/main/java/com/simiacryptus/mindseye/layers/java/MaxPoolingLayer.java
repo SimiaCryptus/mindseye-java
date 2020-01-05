@@ -154,20 +154,23 @@ class MaxPoolingLayer extends LayerBase {
       gradientMapA[dataIndex] = gradientMap;
     });
     return new Result(new TensorArray(outputA),
-        (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList data) -> {
-          if (in.isAlive()) {
-            @Nonnull
-            TensorArray tensorArray = new TensorArray(RefIntStream
-                .range(0, in.getData().length()).parallel().mapToObj(dataIndex -> {
-                  @Nonnull final Tensor backSignal = new Tensor(inputDims);
-                  final int[] ints = gradientMapA[dataIndex];
-                  @Nullable final Tensor datum = data.get(dataIndex);
-                  for (int i = 0; i < datum.length(); i++) {
-                    backSignal.add(ints[i], datum.get(i));
-                  }
-                  return backSignal;
-                }).toArray(i -> new Tensor[i]));
-            in.accumulate(buffer, tensorArray);
+        new Result.Accumulator() {
+          @Override
+          public void accept(DeltaSet<UUID> buffer, TensorList data) {
+            if (in.isAlive()) {
+              @Nonnull
+              TensorArray tensorArray = new TensorArray(RefIntStream
+                  .range(0, in.getData().length()).parallel().mapToObj(dataIndex -> {
+                    @Nonnull final Tensor backSignal = new Tensor(inputDims);
+                    final int[] ints = gradientMapA[dataIndex];
+                    @Nullable final Tensor datum = data.get(dataIndex);
+                    for (int i = 0; i < datum.length(); i++) {
+                      backSignal.add(ints[i], datum.get(i));
+                    }
+                    return backSignal;
+                  }).toArray(i -> new Tensor[i]));
+              in.accumulate(buffer, tensorArray);
+            }
           }
         }) {
 

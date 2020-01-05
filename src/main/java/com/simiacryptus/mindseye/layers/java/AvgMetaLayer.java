@@ -111,19 +111,22 @@ class AvgMetaLayer extends LayerBase {
       thisResult = lastResult;
     }
     return new Result(new TensorArray(thisResult),
-        (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList data) -> {
-          if (passback && input.isAlive()) {
-            @Nullable final Tensor delta = data.get(0);
-            @Nonnull final Tensor feedback[] = new Tensor[itemCnt];
-            RefArrays.parallelSetAll(feedback, i -> new Tensor(delta.getDimensions()));
-            thisResult.coordStream(true).forEach((inputCoord) -> {
-              for (int inputItem = 0; inputItem < itemCnt; inputItem++) {
-                feedback[inputItem].add(inputCoord, delta.get(inputCoord) / itemCnt);
-              }
-            });
-            @Nonnull
-            TensorArray tensorArray = new TensorArray(feedback);
-            input.accumulate(buffer, tensorArray);
+        new Result.Accumulator() {
+          @Override
+          public void accept(DeltaSet<UUID> buffer, TensorList data) {
+            if (passback && input.isAlive()) {
+              @Nullable final Tensor delta = data.get(0);
+              @Nonnull final Tensor feedback[] = new Tensor[itemCnt];
+              RefArrays.parallelSetAll(feedback, i -> new Tensor(delta.getDimensions()));
+              thisResult.coordStream(true).forEach((inputCoord) -> {
+                for (int inputItem = 0; inputItem < itemCnt; inputItem++) {
+                  feedback[inputItem].add(inputCoord, delta.get(inputCoord) / itemCnt);
+                }
+              });
+              @Nonnull
+              TensorArray tensorArray = new TensorArray(feedback);
+              input.accumulate(buffer, tensorArray);
+            }
           }
         }) {
 

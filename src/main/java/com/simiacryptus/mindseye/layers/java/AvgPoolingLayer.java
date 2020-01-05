@@ -120,25 +120,28 @@ class AvgPoolingLayer extends LayerBase {
           return output;
         }).toArray(i -> new Tensor[i]);
     return new Result(new TensorArray(outputValues),
-        (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
-          if (inObj[0].isAlive()) {
-            final Tensor[] passback = RefIntStream.range(0, delta.length())
-                .mapToObj(dataIndex -> {
-                  @Nullable
-                  Tensor tensor = delta.get(dataIndex);
-                  @Nonnull final Tensor backSignal = new Tensor(inputDims);
-                  for (@Nonnull final Entry<Coordinate, RefList<int[]>> outputMapping : coordMap
-                      .entrySet()) {
-                    final double outputValue = tensor.get(outputMapping.getKey());
-                    for (@Nonnull final int[] inputCoord : outputMapping.getValue()) {
-                      backSignal.add(inputCoord, outputValue / kernelSize);
+        new Result.Accumulator() {
+          @Override
+          public void accept(DeltaSet<UUID> buffer, TensorList delta) {
+            if (inObj[0].isAlive()) {
+              final Tensor[] passback = RefIntStream.range(0, delta.length())
+                  .mapToObj(dataIndex -> {
+                    @Nullable
+                    Tensor tensor = delta.get(dataIndex);
+                    @Nonnull final Tensor backSignal = new Tensor(inputDims);
+                    for (@Nonnull final Entry<Coordinate, RefList<int[]>> outputMapping : coordMap
+                        .entrySet()) {
+                      final double outputValue = tensor.get(outputMapping.getKey());
+                      for (@Nonnull final int[] inputCoord : outputMapping.getValue()) {
+                        backSignal.add(inputCoord, outputValue / kernelSize);
+                      }
                     }
-                  }
-                  return backSignal;
-                }).toArray(i -> new Tensor[i]);
-            @Nonnull
-            TensorArray tensorArray = new TensorArray(passback);
-            inObj[0].accumulate(buffer, tensorArray);
+                    return backSignal;
+                  }).toArray(i -> new Tensor[i]);
+              @Nonnull
+              TensorArray tensorArray = new TensorArray(passback);
+              inObj[0].accumulate(buffer, tensorArray);
+            }
           }
         }) {
 

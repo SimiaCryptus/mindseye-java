@@ -90,17 +90,20 @@ class MaxMetaLayer extends LayerBase {
     return new Result(new TensorArray(input0Tensor.mapIndex((v, c) -> {
       Tensor tensor = input.getData().get(indicies[c]);
       return tensor.getData()[c];
-    })), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList data) -> {
-      if (input.isAlive()) {
-        @Nullable final Tensor delta = data.get(0);
-        @Nonnull final Tensor feedback[] = new Tensor[itemCnt];
-        RefArrays.parallelSetAll(feedback, i -> new Tensor(delta.getDimensions()));
-        input0Tensor.coordStream(true).forEach((inputCoord) -> {
-          feedback[indicies[inputCoord.getIndex()]].add(inputCoord, delta.get(inputCoord));
-        });
-        @Nonnull
-        TensorArray tensorArray = new TensorArray(feedback);
-        input.accumulate(buffer, tensorArray);
+    })), new Result.Accumulator() {
+      @Override
+      public void accept(DeltaSet<UUID> buffer, TensorList data) {
+        if (input.isAlive()) {
+          @Nullable final Tensor delta = data.get(0);
+          @Nonnull final Tensor feedback[] = new Tensor[itemCnt];
+          RefArrays.parallelSetAll(feedback, i -> new Tensor(delta.getDimensions()));
+          input0Tensor.coordStream(true).forEach((inputCoord) -> {
+            feedback[indicies[inputCoord.getIndex()]].add(inputCoord, delta.get(inputCoord));
+          });
+          @Nonnull
+          TensorArray tensorArray = new TensorArray(feedback);
+          input.accumulate(buffer, tensorArray);
+        }
       }
     }) {
 

@@ -144,8 +144,9 @@ class FullyConnectedReferenceLayer extends LayerBase {
     final TensorList indata = inputResult.getData();
     @Nonnull
     int[] inputDimensions = indata.getDimensions();
-    assert Tensor.length(inputDimensions) == Tensor.length(this.inputDims) : RefArrays
-        .toString(inputDimensions) + " == " + RefArrays.toString(this.inputDims);
+    final FullyConnectedReferenceLayer fullyConnectedReferenceLayer = this;
+    assert Tensor.length(inputDimensions) == Tensor.length(fullyConnectedReferenceLayer.inputDims) : RefArrays
+        .toString(inputDimensions) + " == " + RefArrays.toString(fullyConnectedReferenceLayer.inputDims);
     return new Result(
         new TensorArray(RefIntStream.range(0, indata.length()).mapToObj(index -> {
           @Nullable final Tensor input = indata.get(index);
@@ -159,37 +160,40 @@ class FullyConnectedReferenceLayer extends LayerBase {
             output.set(coords[1], value);
           });
           return output;
-        }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
-      if (!isFrozen()) {
-        Tensor[] array = RefIntStream.range(0, indata.length()).mapToObj(i -> {
-          @Nullable final Tensor inputTensor = indata.get(i);
-          @Nullable final Tensor deltaTensor = delta.get(i);
-          @Nonnull
-          Tensor weights = new Tensor(FullyConnectedReferenceLayer.this.weights.getDimensions());
-          weights.coordStream(false).forEach(c -> {
-            int[] coords = c.getCoords();
-            weights.set(c, inputTensor.get(coords[0]) * deltaTensor.get(coords[1]));
-          });
-          return weights;
-        }).toArray(i -> new Tensor[i]);
-        Tensor tensor = RefArrays.stream(array).reduce((a, b) -> {
-          return a.addAndFree(b);
-        }).get();
-        buffer.get(this.getId(), weights.getData()).addInPlace(tensor.getData());
-      }
-      if (inputResult.isAlive()) {
-        @Nonnull final TensorList tensorList = new TensorArray(
-            RefIntStream.range(0, indata.length()).mapToObj(i -> {
-              @Nullable final Tensor inputTensor = new Tensor(inputDims);
-              @Nullable final Tensor deltaTensor = delta.get(i);
-              weights.coordStream(false).forEach(c -> {
-                int[] coords = c.getCoords();
-                inputTensor.set(coords[0],
-                    inputTensor.get(coords[0]) + weights.get(c) * deltaTensor.get(coords[1]));
-              });
-              return inputTensor;
-            }).toArray(i -> new Tensor[i]));
-        inputResult.accumulate(buffer, tensorList);
+        }).toArray(i -> new Tensor[i])), new Result.Accumulator() {
+      @Override
+      public void accept(DeltaSet<UUID> buffer, TensorList delta) {
+        if (!FullyConnectedReferenceLayer.this.isFrozen()) {
+          Tensor[] array = RefIntStream.range(0, indata.length()).mapToObj(i -> {
+            @Nullable final Tensor inputTensor = indata.get(i);
+            @Nullable final Tensor deltaTensor = delta.get(i);
+            @Nonnull
+            Tensor weights = new Tensor(fullyConnectedReferenceLayer.weights.getDimensions());
+            weights.coordStream(false).forEach(c -> {
+              int[] coords = c.getCoords();
+              weights.set(c, inputTensor.get(coords[0]) * deltaTensor.get(coords[1]));
+            });
+            return weights;
+          }).toArray(i -> new Tensor[i]);
+          Tensor tensor = RefArrays.stream(array).reduce((a, b) -> {
+            return a.addAndFree(b);
+          }).get();
+          buffer.get(fullyConnectedReferenceLayer.getId(), weights.getData()).addInPlace(tensor.getData());
+        }
+        if (inputResult.isAlive()) {
+          @Nonnull final TensorList tensorList = new TensorArray(
+              RefIntStream.range(0, indata.length()).mapToObj(i -> {
+                @Nullable final Tensor inputTensor = new Tensor(inputDims);
+                @Nullable final Tensor deltaTensor = delta.get(i);
+                weights.coordStream(false).forEach(c -> {
+                  int[] coords = c.getCoords();
+                  inputTensor.set(coords[0],
+                      inputTensor.get(coords[0]) + weights.get(c) * deltaTensor.get(coords[1]));
+                });
+                return inputTensor;
+              }).toArray(i -> new Tensor[i]));
+          inputResult.accumulate(buffer, tensorList);
+        }
       }
     }) {
 

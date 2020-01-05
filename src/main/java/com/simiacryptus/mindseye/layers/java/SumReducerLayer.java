@@ -86,22 +86,25 @@ class SumReducerLayer extends LayerBase {
           }
           return sum;
         }).mapToObj(x -> new Tensor(new double[]{x}, new int[]{1})).toArray(i -> new Tensor[i])),
-        (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList data) -> {
-          for (@Nonnull final Result in_l : inObj) {
-            if (in_l.isAlive()) {
-              @Nonnull
-              TensorArray tensorArray = new TensorArray(RefIntStream
-                  .range(0, in_l.getData().length()).parallel().mapToObj(dataIndex -> {
-                    Tensor tensor = data.get(dataIndex);
-                    assert 1 == tensor.length() : RefArrays
-                        .toString(tensor.getDimensions());
-                    @Nonnull final Tensor passback = new Tensor(in_l.getData().getDimensions());
-                    for (int i = 0; i < Tensor.length(in_l.getData().getDimensions()); i++) {
-                      passback.set(i, tensor.get(0));
-                    }
-                    return passback;
-                  }).toArray(i -> new Tensor[i]));
-              in_l.accumulate(buffer, tensorArray);
+        new Result.Accumulator() {
+          @Override
+          public void accept(DeltaSet<UUID> buffer, TensorList data) {
+            for (@Nonnull final Result in_l : inObj) {
+              if (in_l.isAlive()) {
+                @Nonnull
+                TensorArray tensorArray = new TensorArray(RefIntStream
+                    .range(0, in_l.getData().length()).parallel().mapToObj(dataIndex -> {
+                      Tensor tensor = data.get(dataIndex);
+                      assert 1 == tensor.length() : RefArrays
+                          .toString(tensor.getDimensions());
+                      @Nonnull final Tensor passback = new Tensor(in_l.getData().getDimensions());
+                      for (int i = 0; i < Tensor.length(in_l.getData().getDimensions()); i++) {
+                        passback.set(i, tensor.get(0));
+                      }
+                      return passback;
+                    }).toArray(i -> new Tensor[i]));
+                in_l.accumulate(buffer, tensorArray);
+              }
             }
           }
         }) {

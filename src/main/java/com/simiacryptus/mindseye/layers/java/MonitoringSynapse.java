@@ -117,12 +117,15 @@ class MonitoringSynapse extends LayerBase implements MonitoredItem {
     inputdata.stream().parallel().forEach(t -> {
       forwardStatistics.add(t.getData());
     });
-    return new Result(inputdata, (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList data) -> {
-      backpropStatistics.clear();
-      input.accumulate(buffer, data);
-      data.stream().parallel().forEach(t -> {
-        backpropStatistics.add(t.getData());
-      });
+    return new Result(inputdata, new Result.Accumulator() {
+      @Override
+      public void accept(DeltaSet<UUID> buffer, TensorList data) {
+        backpropStatistics.clear();
+        input.accumulate(buffer, data);
+        data.stream().parallel().forEach(t -> {
+          backpropStatistics.add(t.getData());
+        });
+      }
     }) {
 
       @Override

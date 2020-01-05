@@ -167,18 +167,21 @@ class PhotoUnpoolingLayer extends LayerBase {
           Tensor referenceData = referencebatch.get(dataIndex);
           return PhotoUnpoolingLayer.copyExpand(inputData, outputDims.copy(), referenceData);
         }).toArray(i -> new Tensor[i]));
-    return new Result(data, (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList error) -> {
-      //assert error.stream().flatMapToDouble(x-> Arrays.stream(x.getData())).allMatch(v->Double.isFinite(v));
-      if (input.isAlive()) {
-        @Nonnull
-        TensorArray tensorArray = new TensorArray(
-            RefIntStream.range(0, error.length()).parallel().mapToObj(dataIndex -> {
-              @Nonnull final Tensor passback = new Tensor(inputDims);
-              @Nullable final Tensor err = error.get(dataIndex);
-              Tensor referenceData = referencebatch.get(dataIndex);
-              return PhotoUnpoolingLayer.copyCondense(err, passback, referenceData);
-            }).toArray(i -> new Tensor[i]));
-        input.accumulate(buffer, tensorArray);
+    return new Result(data, new Result.Accumulator() {
+      @Override
+      public void accept(DeltaSet<UUID> buffer, TensorList error) {
+        //assert error.stream().flatMapToDouble(x-> Arrays.stream(x.getData())).allMatch(v->Double.isFinite(v));
+        if (input.isAlive()) {
+          @Nonnull
+          TensorArray tensorArray = new TensorArray(
+              RefIntStream.range(0, error.length()).parallel().mapToObj(dataIndex -> {
+                @Nonnull final Tensor passback = new Tensor(inputDims);
+                @Nullable final Tensor err = error.get(dataIndex);
+                Tensor referenceData = referencebatch.get(dataIndex);
+                return PhotoUnpoolingLayer.copyCondense(err, passback, referenceData);
+              }).toArray(i -> new Tensor[i]));
+          input.accumulate(buffer, tensorArray);
+        }
       }
     }) {
 

@@ -86,32 +86,35 @@ class ProductInputsLayer extends LayerBase {
                 @Nullable final Tensor right = r.get(1 == r.length() ? 0 : i1);
                 return Tensor.product(left, right);
               }).toArray(i -> new Tensor[i]));
-        }).get(), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
-      for (@Nonnull final Result input : inObj) {
-        if (input.isAlive()) {
-          @Nonnull
-          TensorList passback = RefArrays.stream(inObj).parallel().map(x -> {
-            return x == input ? delta : x.getData();
-          }).reduce((l, r) -> {
-            return new TensorArray(RefIntStream
-                .range(0, Math.max(l.length(), r.length())).parallel().mapToObj(j -> {
-                  @Nullable final Tensor left = l.get(1 == l.length() ? 0 : j);
-                  @Nullable final Tensor right = r.get(1 == r.length() ? 0 : j);
-                  return Tensor.product(left, right);
-                }).toArray(j -> new Tensor[j]));
-          }).get();
-          final TensorList inputData = input.getData();
-          if (1 == inputData.length() && 1 < passback.length()) {
-            passback = new TensorArray(passback.stream().reduce((a, b) -> {
-              return a.addAndFree(b);
-            }).get());
+        }).get(), new Result.Accumulator() {
+      @Override
+      public void accept(DeltaSet<UUID> buffer, TensorList delta) {
+        for (@Nonnull final Result input : inObj) {
+          if (input.isAlive()) {
+            @Nonnull
+            TensorList passback = RefArrays.stream(inObj).parallel().map(x -> {
+              return x == input ? delta : x.getData();
+            }).reduce((l, r) -> {
+              return new TensorArray(RefIntStream
+                  .range(0, Math.max(l.length(), r.length())).parallel().mapToObj(j -> {
+                    @Nullable final Tensor left = l.get(1 == l.length() ? 0 : j);
+                    @Nullable final Tensor right = r.get(1 == r.length() ? 0 : j);
+                    return Tensor.product(left, right);
+                  }).toArray(j -> new Tensor[j]));
+            }).get();
+            final TensorList inputData = input.getData();
+            if (1 == inputData.length() && 1 < passback.length()) {
+              passback = new TensorArray(passback.stream().reduce((a, b) -> {
+                return a.addAndFree(b);
+              }).get());
+            }
+            if (1 == Tensor.length(inputData.getDimensions()) && 1 < Tensor.length(passback.getDimensions())) {
+              passback = new TensorArray(passback.stream().map((a) -> {
+                return new Tensor(a.sum());
+              }).toArray(i -> new Tensor[i]));
+            }
+            input.accumulate(buffer, passback);
           }
-          if (1 == Tensor.length(inputData.getDimensions()) && 1 < Tensor.length(passback.getDimensions())) {
-            passback = new TensorArray(passback.stream().map((a) -> {
-              return new Tensor(a.sum());
-            }).toArray(i -> new Tensor[i]));
-          }
-          input.accumulate(buffer, passback);
         }
       }
     }) {

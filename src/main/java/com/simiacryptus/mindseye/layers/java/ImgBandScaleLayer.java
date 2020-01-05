@@ -132,39 +132,43 @@ class ImgBandScaleLayer extends LayerBase {
       return tensor.mapCoords(c -> tensor.get(c) * weights[c.getCoords()[2]]);
     };
     Tensor[] data = inData.stream().parallel().map(tensorTensorFunction).toArray(i -> new Tensor[i]);
+    final ImgBandScaleLayer imgBandScaleLayer = ImgBandScaleLayer.this;
     return new Result(new TensorArray(data),
-        (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
-          if (!isFrozen()) {
-            final Delta<UUID> deltaBuffer = buffer.get(ImgBandScaleLayer.this.getId(), weights);
-            RefIntStream.range(0, delta.length()).forEach(index -> {
-              @Nonnull
-              int[] dimensions = delta.getDimensions();
-              int z = dimensions[2];
-              int y = dimensions[1];
-              int x = dimensions[0];
-              final double[] array = RecycleBin.DOUBLES.obtain(z);
-              Tensor deltaTensor = delta.get(index);
-              @Nullable final double[] deltaArray = deltaTensor.getData();
-              Tensor inputTensor = inData.get(index);
-              @Nullable final double[] inputData = inputTensor.getData();
-              for (int i = 0; i < z; i++) {
-                for (int j = 0; j < y * x; j++) {
-                  //array[i] += deltaArray[i + z * j];
-                  array[i] += deltaArray[i * x * y + j] * inputData[i * x * y + j];
+        new Result.Accumulator() {
+          @Override
+          public void accept(DeltaSet<UUID> buffer, TensorList delta) {
+            if (!ImgBandScaleLayer.this.isFrozen()) {
+              final Delta<UUID> deltaBuffer = buffer.get(imgBandScaleLayer.getId(), weights);
+              RefIntStream.range(0, delta.length()).forEach(index -> {
+                @Nonnull
+                int[] dimensions = delta.getDimensions();
+                int z = dimensions[2];
+                int y = dimensions[1];
+                int x = dimensions[0];
+                final double[] array = RecycleBin.DOUBLES.obtain(z);
+                Tensor deltaTensor = delta.get(index);
+                @Nullable final double[] deltaArray = deltaTensor.getData();
+                Tensor inputTensor = inData.get(index);
+                @Nullable final double[] inputData = inputTensor.getData();
+                for (int i = 0; i < z; i++) {
+                  for (int j = 0; j < y * x; j++) {
+                    //array[i] += deltaArray[i + z * j];
+                    array[i] += deltaArray[i * x * y + j] * inputData[i * x * y + j];
+                  }
                 }
-              }
-              assert RefArrays.stream(array).allMatch(v -> Double.isFinite(v));
-              deltaBuffer.addInPlace(array);
-              RecycleBin.DOUBLES.recycle(array, array.length);
-            });
-          }
-          if (input.isAlive()) {
-            Tensor[] tensors = delta.stream().map(t -> {
-              return t.mapCoords((c) -> t.get(c) * weights[c.getCoords()[2]]);
-            }).toArray(i -> new Tensor[i]);
-            @Nonnull
-            TensorArray tensorArray = new TensorArray(tensors);
-            input.accumulate(buffer, tensorArray);
+                assert RefArrays.stream(array).allMatch(v -> Double.isFinite(v));
+                deltaBuffer.addInPlace(array);
+                RecycleBin.DOUBLES.recycle(array, array.length);
+              });
+            }
+            if (input.isAlive()) {
+              Tensor[] tensors = delta.stream().map(t -> {
+                return t.mapCoords((c) -> t.get(c) * weights[c.getCoords()[2]]);
+              }).toArray(i -> new Tensor[i]);
+              @Nonnull
+              TensorArray tensorArray = new TensorArray(tensors);
+              input.accumulate(buffer, tensorArray);
+            }
           }
         }) {
 

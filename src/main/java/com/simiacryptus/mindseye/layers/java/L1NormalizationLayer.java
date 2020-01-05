@@ -88,31 +88,34 @@ class L1NormalizationLayer extends LayerBase {
               return value.scale(1.0 / sum);
             }
           }
-        }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList outDelta) -> {
-      if (in.isAlive()) {
-        final Tensor[] passbackArray = RefIntStream.range(0, outDelta.length())
-            .mapToObj(dataIndex -> {
-              Tensor inputTensor = inData.get(dataIndex);
-              @Nullable final double[] value = inputTensor.getData();
-              Tensor outputTensor = outDelta.get(dataIndex);
-              @Nullable final double[] delta = outputTensor.getData();
-              final double dot = ArrayUtil.dot(value, delta);
-              final double sum = RefArrays.stream(value).sum();
-              @Nonnull final Tensor passback = new Tensor(outputTensor.getDimensions());
-              @Nullable final double[] passbackData = passback.getData();
-              if (0 != sum || Double.isFinite(sum)) {
-                for (int i = 0; i < value.length; i++) {
-                  passbackData[i] = (delta[i] - dot / sum) / sum;
+        }).toArray(i -> new Tensor[i])), new Result.Accumulator() {
+      @Override
+      public void accept(DeltaSet<UUID> buffer, TensorList outDelta) {
+        if (in.isAlive()) {
+          final Tensor[] passbackArray = RefIntStream.range(0, outDelta.length())
+              .mapToObj(dataIndex -> {
+                Tensor inputTensor = inData.get(dataIndex);
+                @Nullable final double[] value = inputTensor.getData();
+                Tensor outputTensor = outDelta.get(dataIndex);
+                @Nullable final double[] delta = outputTensor.getData();
+                final double dot = ArrayUtil.dot(value, delta);
+                final double sum = RefArrays.stream(value).sum();
+                @Nonnull final Tensor passback = new Tensor(outputTensor.getDimensions());
+                @Nullable final double[] passbackData = passback.getData();
+                if (0 != sum || Double.isFinite(sum)) {
+                  for (int i = 0; i < value.length; i++) {
+                    passbackData[i] = (delta[i] - dot / sum) / sum;
+                  }
                 }
-              }
-              return passback;
-            }).toArray(i -> new Tensor[i]);
-        assert RefArrays.stream(passbackArray)
-            .flatMapToDouble(x -> RefArrays.stream(x.getData()))
-            .allMatch(v -> Double.isFinite(v));
-        @Nonnull
-        TensorArray tensorArray = new TensorArray(passbackArray);
-        in.accumulate(buffer, tensorArray);
+                return passback;
+              }).toArray(i -> new Tensor[i]);
+          assert RefArrays.stream(passbackArray)
+              .flatMapToDouble(x -> RefArrays.stream(x.getData()))
+              .allMatch(v -> Double.isFinite(v));
+          @Nonnull
+          TensorArray tensorArray = new TensorArray(passbackArray);
+          in.accumulate(buffer, tensorArray);
+        }
       }
     }) {
 

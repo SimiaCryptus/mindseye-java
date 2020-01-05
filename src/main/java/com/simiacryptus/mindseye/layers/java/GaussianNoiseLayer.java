@@ -107,20 +107,23 @@ class GaussianNoiseLayer extends LayerBase {
     }).toArray(i -> new Tensor[i]);
     int[] dimensions = inputData.getDimensions();
     return new Result(new TensorArray(outputA),
-        (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
-          if (in0.isAlive()) {
-            @Nonnull
-            TensorArray tensorArray = new TensorArray(
-                RefIntStream.range(0, delta.length()).mapToObj(dataIndex -> {
-                  Tensor tensor = delta.get(dataIndex);
-                  @Nullable final double[] deltaData = tensor.getData();
-                  @Nonnull final Tensor passback = new Tensor(dimensions);
-                  for (int i = 0; i < passback.length(); i++) {
-                    passback.set(i, deltaData[i]);
-                  }
-                  return passback;
-                }).toArray(i -> new Tensor[i]));
-            in0.accumulate(buffer, tensorArray);
+        new Result.Accumulator() {
+          @Override
+          public void accept(DeltaSet<UUID> buffer, TensorList delta) {
+            if (in0.isAlive()) {
+              @Nonnull
+              TensorArray tensorArray = new TensorArray(
+                  RefIntStream.range(0, delta.length()).mapToObj(dataIndex -> {
+                    Tensor tensor = delta.get(dataIndex);
+                    @Nullable final double[] deltaData = tensor.getData();
+                    @Nonnull final Tensor passback = new Tensor(dimensions);
+                    for (int i = 0; i < passback.length(); i++) {
+                      passback.set(i, deltaData[i]);
+                    }
+                    return passback;
+                  }).toArray(i -> new Tensor[i]));
+              in0.accumulate(buffer, tensorArray);
+            }
           }
         }) {
 

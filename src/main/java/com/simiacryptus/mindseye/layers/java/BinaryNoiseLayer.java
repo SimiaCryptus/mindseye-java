@@ -134,8 +134,11 @@ class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
     }
     TensorArray data = new TensorArray(maskList.stream().limit(length).toArray(i -> new Tensor[i]));
     assert inputData.length() == data.length() : (inputData.length() + " != " + data.length());
-    return new Result(data, (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
-      input.accumulate(buffer, new TensorArray(delta.stream().map(t -> t.map(x -> 0)).toArray(i -> new Tensor[i])));
+    return new Result(data, new Result.Accumulator() {
+      @Override
+      public void accept(DeltaSet<UUID> buffer, TensorList delta) {
+        input.accumulate(buffer, new TensorArray(delta.stream().map(t -> t.map(x -> 0)).toArray(i -> new Tensor[i])));
+      }
     }) {
 
       @Override

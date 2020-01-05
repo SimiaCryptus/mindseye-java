@@ -191,12 +191,13 @@ class FullyConnectedLayer extends LayerBase {
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     final TensorList indata = inObj[0].getData();
+    final FullyConnectedLayer fullyConnectedLayer = this;
     assert Tensor.length(indata.getDimensions()) == Tensor
-        .length(this.inputDims) : RefArrays.toString(indata.getDimensions()) + " == "
-        + RefArrays.toString(this.inputDims);
+        .length(fullyConnectedLayer.inputDims) : RefArrays.toString(indata.getDimensions()) + " == "
+        + RefArrays.toString(fullyConnectedLayer.inputDims);
     @Nonnull
     DoubleMatrix doubleMatrix = new DoubleMatrix(Tensor.length(indata.getDimensions()), Tensor.length(outputDims),
-        this.weights.getData());
+        fullyConnectedLayer.weights.getData());
     @Nonnull final DoubleMatrix matrixObj = FullyConnectedLayer.transpose(doubleMatrix);
     @Nonnull
     TensorArray tensorArray = new TensorArray(
@@ -208,34 +209,37 @@ class FullyConnectedLayer extends LayerBase {
           return output;
         }).toArray(i -> new Tensor[i]));
     RecycleBin.DOUBLES.recycle(matrixObj.data, matrixObj.data.length);
-    return new Result(tensorArray, (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
-      if (!isFrozen()) {
-        final Delta<UUID> deltaBuffer = buffer.get(FullyConnectedLayer.this.getId(), this.weights.getData());
-        final int threads = 4;
-        RefIntStream.range(0, threads).parallel().mapToObj(x -> x).flatMap(thread -> {
-          return RefIntStream.range(0, indata.length()).filter(i -> thread == i % threads)
-              .mapToObj(dataIndex -> {
-                @Nonnull final Tensor weightDelta = new Tensor(Tensor.length(inputDims), Tensor.length(outputDims));
+    return new Result(tensorArray, new Result.Accumulator() {
+      @Override
+      public void accept(DeltaSet<UUID> buffer, TensorList delta) {
+        if (!FullyConnectedLayer.this.isFrozen()) {
+          final Delta<UUID> deltaBuffer = buffer.get(fullyConnectedLayer.getId(), fullyConnectedLayer.weights.getData());
+          final int threads = 4;
+          RefIntStream.range(0, threads).parallel().mapToObj(x -> x).flatMap(thread -> {
+            return RefIntStream.range(0, indata.length()).filter(i -> thread == i % threads)
+                .mapToObj(dataIndex -> {
+                  @Nonnull final Tensor weightDelta = new Tensor(Tensor.length(inputDims), Tensor.length(outputDims));
+                  Tensor deltaTensor = delta.get(dataIndex);
+                  Tensor inputTensor = indata.get(dataIndex);
+                  FullyConnectedLayer.crossMultiplyT(deltaTensor.getData(), inputTensor.getData(), weightDelta.getData());
+                  return weightDelta;
+                });
+          }).reduce((a, b) -> {
+            return a.addAndFree(b);
+          }).map(data -> {
+            return deltaBuffer.addInPlace(data.getData());
+          });
+        }
+        if (inObj[0].isAlive()) {
+          @Nonnull final TensorList tensorList = new TensorArray(
+              RefIntStream.range(0, indata.length()).parallel().mapToObj(dataIndex -> {
                 Tensor deltaTensor = delta.get(dataIndex);
-                Tensor inputTensor = indata.get(dataIndex);
-                FullyConnectedLayer.crossMultiplyT(deltaTensor.getData(), inputTensor.getData(), weightDelta.getData());
-                return weightDelta;
-              });
-        }).reduce((a, b) -> {
-          return a.addAndFree(b);
-        }).map(data -> {
-          return deltaBuffer.addInPlace(data.getData());
-        });
-      }
-      if (inObj[0].isAlive()) {
-        @Nonnull final TensorList tensorList = new TensorArray(
-            RefIntStream.range(0, indata.length()).parallel().mapToObj(dataIndex -> {
-              Tensor deltaTensor = delta.get(dataIndex);
-              @Nonnull final Tensor passback = new Tensor(indata.getDimensions());
-              FullyConnectedLayer.multiply(this.weights.getData(), deltaTensor.getData(), passback.getData());
-              return passback;
-            }).toArray(i -> new Tensor[i]));
-        inObj[0].accumulate(buffer, tensorList);
+                @Nonnull final Tensor passback = new Tensor(indata.getDimensions());
+                FullyConnectedLayer.multiply(fullyConnectedLayer.weights.getData(), deltaTensor.getData(), passback.getData());
+                return passback;
+              }).toArray(i -> new Tensor[i]));
+          inObj[0].accumulate(buffer, tensorList);
+        }
       }
     }) {
 

@@ -89,25 +89,28 @@ class SumInputsLayer extends LayerBase {
         }
         return tensor;
       }).toArray(i -> new Tensor[i]));
-    }).get(), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
-      for (@Nonnull final Result input : inObj) {
-        if (input.isAlive()) {
-          @Nonnull
-          TensorList projectedDelta = delta;
-          if (1 < projectedDelta.length() && input.getData().length() == 1) {
-            projectedDelta = new TensorArray(projectedDelta.stream().parallel().reduce((a, b) -> {
-              return a.addAndFree(b);
-            }).get());
-          }
-          if (1 < Tensor.length(projectedDelta.getDimensions())
-              && Tensor.length(input.getData().getDimensions()) == 1) {
+    }).get(), new Result.Accumulator() {
+      @Override
+      public void accept(DeltaSet<UUID> buffer, TensorList delta) {
+        for (@Nonnull final Result input : inObj) {
+          if (input.isAlive()) {
             @Nonnull
-            TensorArray new_projectedDelta = new TensorArray(projectedDelta.stream().map(t -> {
-              return new Tensor(new double[]{t.sum()});
-            }).toArray(i -> new Tensor[i]));
-            projectedDelta = new_projectedDelta;
+            TensorList projectedDelta = delta;
+            if (1 < projectedDelta.length() && input.getData().length() == 1) {
+              projectedDelta = new TensorArray(projectedDelta.stream().parallel().reduce((a, b) -> {
+                return a.addAndFree(b);
+              }).get());
+            }
+            if (1 < Tensor.length(projectedDelta.getDimensions())
+                && Tensor.length(input.getData().getDimensions()) == 1) {
+              @Nonnull
+              TensorArray new_projectedDelta = new TensorArray(projectedDelta.stream().map(t -> {
+                return new Tensor(new double[]{t.sum()});
+              }).toArray(i -> new Tensor[i]));
+              projectedDelta = new_projectedDelta;
+            }
+            input.accumulate(buffer, projectedDelta);
           }
-          input.accumulate(buffer, projectedDelta);
         }
       }
     }) {

@@ -111,22 +111,25 @@ class MaxDropoutNoiseLayer extends LayerBase {
             outputData[i] = input[i] * maskT[i];
           }
           return output;
-        }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
-      if (in0.isAlive()) {
-        @Nonnull
-        TensorArray tensorArray = new TensorArray(
-            RefIntStream.range(0, delta.length()).mapToObj(dataIndex -> {
-              Tensor deltaTensor = delta.get(dataIndex);
-              @Nullable final double[] deltaData = deltaTensor.getData();
-              @Nonnull final int[] dims = data0.getDimensions();
-              @Nullable final double[] maskData = mask[dataIndex].getData();
-              @Nonnull final Tensor passback = new Tensor(dims);
-              for (int i = 0; i < passback.length(); i++) {
-                passback.set(i, maskData[i] * deltaData[i]);
-              }
-              return passback;
-            }).toArray(i -> new Tensor[i]));
-        in0.accumulate(buffer, tensorArray);
+        }).toArray(i -> new Tensor[i])), new Result.Accumulator() {
+      @Override
+      public void accept(DeltaSet<UUID> buffer, TensorList delta) {
+        if (in0.isAlive()) {
+          @Nonnull
+          TensorArray tensorArray = new TensorArray(
+              RefIntStream.range(0, delta.length()).mapToObj(dataIndex -> {
+                Tensor deltaTensor = delta.get(dataIndex);
+                @Nullable final double[] deltaData = deltaTensor.getData();
+                @Nonnull final int[] dims = data0.getDimensions();
+                @Nullable final double[] maskData = mask[dataIndex].getData();
+                @Nonnull final Tensor passback = new Tensor(dims);
+                for (int i = 0; i < passback.length(); i++) {
+                  passback.set(i, maskData[i] * deltaData[i]);
+                }
+                return passback;
+              }).toArray(i -> new Tensor[i]));
+          in0.accumulate(buffer, tensorArray);
+        }
       }
     }) {
 

@@ -213,34 +213,37 @@ class ImgTileAssemblyLayer extends LayerBase {
           }
 
           return outputData;
-        }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
-      final AtomicInteger positionY = new AtomicInteger(offsetX);
-      int inputIndex = 0;
-      for (int row = 0; row < rows; row++) {
-        final AtomicInteger positionX = new AtomicInteger(offsetY);
-        int rowHeight = 0;
-        for (int col = 0; col < columns; col++) {
-          Result in = inObj[inputIndex++];
-          int[] inputDataDimensions = in.getData().getDimensions();
-          rowHeight = Math.max(rowHeight, inputDataDimensions[1]);
-          if (in.isAlive()) {
-            final int finalRow = row;
-            final int finalCol = col;
-            @Nonnull
-            TensorArray tensorArray = new TensorArray(RefIntStream
-                .range(0, delta.length()).parallel().mapToObj(dataIndex -> {
-                  @Nullable final Tensor deltaTensor = delta.get(dataIndex);
-                  @Nonnull final Tensor passbackTensor = new Tensor(inputDataDimensions);
-                  ImgTileAssemblyLayer.copy(deltaTensor, passbackTensor, -positionX.get(), -positionY.get(),
-                      0 == positionX.get() ? 0 : getPaddingX() / 2, 0 == positionY.get() ? 0 : getPaddingY() / 2,
-                      offsetX < 0 || offsetY < 0, (double) finalRow / rows, (double) finalCol / columns);
-                  return passbackTensor;
-                }).toArray(i -> new Tensor[i]));
-            in.accumulate(buffer, tensorArray);
+        }).toArray(i -> new Tensor[i])), new Result.Accumulator() {
+      @Override
+      public void accept(DeltaSet<UUID> buffer, TensorList delta) {
+        final AtomicInteger positionY = new AtomicInteger(offsetX);
+        int inputIndex = 0;
+        for (int row = 0; row < rows; row++) {
+          final AtomicInteger positionX = new AtomicInteger(offsetY);
+          int rowHeight = 0;
+          for (int col = 0; col < columns; col++) {
+            Result in = inObj[inputIndex++];
+            int[] inputDataDimensions = in.getData().getDimensions();
+            rowHeight = Math.max(rowHeight, inputDataDimensions[1]);
+            if (in.isAlive()) {
+              final int finalRow = row;
+              final int finalCol = col;
+              @Nonnull
+              TensorArray tensorArray = new TensorArray(RefIntStream
+                  .range(0, delta.length()).parallel().mapToObj(dataIndex -> {
+                    @Nullable final Tensor deltaTensor = delta.get(dataIndex);
+                    @Nonnull final Tensor passbackTensor = new Tensor(inputDataDimensions);
+                    ImgTileAssemblyLayer.copy(deltaTensor, passbackTensor, -positionX.get(), -positionY.get(),
+                        0 == positionX.get() ? 0 : ImgTileAssemblyLayer.this.getPaddingX() / 2, 0 == positionY.get() ? 0 : ImgTileAssemblyLayer.this.getPaddingY() / 2,
+                        offsetX < 0 || offsetY < 0, (double) finalRow / rows, (double) finalCol / columns);
+                    return passbackTensor;
+                  }).toArray(i -> new Tensor[i]));
+              in.accumulate(buffer, tensorArray);
+            }
+            positionX.addAndGet(inputDataDimensions[0] - ImgTileAssemblyLayer.this.getPaddingX());
           }
-          positionX.addAndGet(inputDataDimensions[0] - getPaddingX());
+          positionY.addAndGet(rowHeight - ImgTileAssemblyLayer.this.getPaddingY());
         }
-        positionY.addAndGet(rowHeight - getPaddingY());
       }
     }) {
 

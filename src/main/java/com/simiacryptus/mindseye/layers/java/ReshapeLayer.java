@@ -85,10 +85,13 @@ class ReshapeLayer extends LayerBase {
     @Nonnull
     int[] inputDims = data.getDimensions();
     ReshapedTensorList reshapedTensorList = new ReshapedTensorList(data, outputDims);
-    return new Result(reshapedTensorList, (DeltaSet<UUID> buffer, TensorList delta) -> {
-      @Nonnull
-      ReshapedTensorList tensorList = new ReshapedTensorList(delta, inputDims);
-      inObj[0].accumulate(buffer, tensorList);
+    return new Result(reshapedTensorList, new Result.Accumulator() {
+      @Override
+      public void accept(DeltaSet<UUID> buffer, TensorList delta) {
+        @Nonnull
+        ReshapedTensorList tensorList = new ReshapedTensorList(delta, inputDims);
+        inObj[0].accumulate(buffer, tensorList);
+      }
     }) {
 
       @Override

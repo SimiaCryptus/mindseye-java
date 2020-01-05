@@ -104,19 +104,22 @@ class SumMetaLayer extends LayerBase {
       lastResult = inputData.get(0).mapCoords(f);
     }
     return new Result(new TensorArray(lastResult),
-        (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList data) -> {
-          if (input.isAlive()) {
-            @Nullable final Tensor delta = data.get(0);
-            @Nonnull final Tensor feedback[] = new Tensor[itemCnt];
-            RefArrays.parallelSetAll(feedback, i -> new Tensor(delta.getDimensions()));
-            delta.coordStream(false).forEach((inputCoord) -> {
-              for (int inputItem = 0; inputItem < itemCnt; inputItem++) {
-                feedback[inputItem].add(inputCoord, delta.get(inputCoord));
-              }
-            });
-            @Nonnull
-            TensorArray tensorArray = new TensorArray(feedback);
-            input.accumulate(buffer, tensorArray);
+        new Result.Accumulator() {
+          @Override
+          public void accept(DeltaSet<UUID> buffer, TensorList data) {
+            if (input.isAlive()) {
+              @Nullable final Tensor delta = data.get(0);
+              @Nonnull final Tensor feedback[] = new Tensor[itemCnt];
+              RefArrays.parallelSetAll(feedback, i -> new Tensor(delta.getDimensions()));
+              delta.coordStream(false).forEach((inputCoord) -> {
+                for (int inputItem = 0; inputItem < itemCnt; inputItem++) {
+                  feedback[inputItem].add(inputCoord, delta.get(inputCoord));
+                }
+              });
+              @Nonnull
+              TensorArray tensorArray = new TensorArray(feedback);
+              input.accumulate(buffer, tensorArray);
+            }
           }
         }) {
 

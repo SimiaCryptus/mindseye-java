@@ -85,25 +85,28 @@ class CrossDifferenceLayer extends LayerBase {
         });
       });
       return result1;
-    }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList data) -> {
-      final Result input = inObj[0];
-      if (input.isAlive()) {
-        @Nonnull
-        TensorArray tensorArray = new TensorArray(data.stream().parallel().map(tensor -> {
-          final int outputDim = tensor.length();
-          final int inputDim = (1 + (int) Math.sqrt(1 + 8 * outputDim)) / 2;
-          @Nonnull final Tensor passback = new Tensor(inputDim);
-          @Nullable final double[] passbackData = passback.getData();
-          @Nullable final double[] tensorData = tensor.getData();
-          RefIntStream.range(0, inputDim).forEach(x -> {
-            RefIntStream.range(x + 1, inputDim).forEach(y -> {
-              passbackData[x] += tensorData[CrossDifferenceLayer.index(x, y, inputDim)];
-              passbackData[y] += -tensorData[CrossDifferenceLayer.index(x, y, inputDim)];
+    }).toArray(i -> new Tensor[i])), new Result.Accumulator() {
+      @Override
+      public void accept(DeltaSet<UUID> buffer, TensorList data) {
+        final Result input = inObj[0];
+        if (input.isAlive()) {
+          @Nonnull
+          TensorArray tensorArray = new TensorArray(data.stream().parallel().map(tensor -> {
+            final int outputDim = tensor.length();
+            final int inputDim = (1 + (int) Math.sqrt(1 + 8 * outputDim)) / 2;
+            @Nonnull final Tensor passback = new Tensor(inputDim);
+            @Nullable final double[] passbackData = passback.getData();
+            @Nullable final double[] tensorData = tensor.getData();
+            RefIntStream.range(0, inputDim).forEach(x -> {
+              RefIntStream.range(x + 1, inputDim).forEach(y -> {
+                passbackData[x] += tensorData[CrossDifferenceLayer.index(x, y, inputDim)];
+                passbackData[y] += -tensorData[CrossDifferenceLayer.index(x, y, inputDim)];
+              });
             });
-          });
-          return passback;
-        }).toArray(i -> new Tensor[i]));
-        input.accumulate(buffer, tensorArray);
+            return passback;
+          }).toArray(i -> new Tensor[i]));
+          input.accumulate(buffer, tensorArray);
+        }
       }
     }) {
 

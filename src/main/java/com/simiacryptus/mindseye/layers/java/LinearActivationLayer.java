@@ -123,40 +123,44 @@ class LinearActivationLayer extends LayerBase {
     final int itemCnt = inData.length();
     final double scale = weights.get(0);
     final double bias = weights.get(1);
+    final LinearActivationLayer linearActivationLayer = LinearActivationLayer.this;
     return new Result(new TensorArray(RefIntStream.range(0, itemCnt)
         .mapToObj(dataIndex -> inData.get(dataIndex).map(v -> {
           final double r = scale * v + bias;
           return Double.isFinite(r) ? r : 0;
-        })).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
-      if (!isFrozen()) {
-        RefIntStream.range(0, delta.length()).forEach(dataIndex -> {
-          @Nullable
-          Tensor deltaT = delta.get(dataIndex);
-          @Nullable
-          Tensor inputT = inData.get(dataIndex);
-          @Nullable final double[] deltaData = deltaT.getData();
-          @Nullable final double[] inputData = inputT.getData();
-          @Nonnull final Tensor weightDelta = new Tensor(weights.getDimensions());
-          for (int i = 0; i < deltaData.length; i++) {
-            weightDelta.add(0, deltaData[i] * inputData[inputData.length == 1 ? 0 : i]);
-            weightDelta.add(1, deltaData[i]);
-          }
-          buffer.get(LinearActivationLayer.this.getId(), weights.getData()).addInPlace(weightDelta.getData());
-        });
-      }
-      if (in0.isAlive()) {
-        @Nonnull final TensorList tensorList = new TensorArray(
-            RefIntStream.range(0, delta.length()).mapToObj(dataIndex -> {
-              @Nullable
-              Tensor tensor = delta.get(dataIndex);
-              @Nullable final double[] deltaData = tensor.getData();
-              @Nonnull final Tensor passback = new Tensor(inData.getDimensions());
-              for (int i = 0; i < passback.length(); i++) {
-                passback.set(i, deltaData[i] * weights.getData()[0]);
-              }
-              return passback;
-            }).toArray(i -> new Tensor[i]));
-        in0.accumulate(buffer, tensorList);
+        })).toArray(i -> new Tensor[i])), new Result.Accumulator() {
+      @Override
+      public void accept(DeltaSet<UUID> buffer, TensorList delta) {
+        if (!LinearActivationLayer.this.isFrozen()) {
+          RefIntStream.range(0, delta.length()).forEach(dataIndex -> {
+            @Nullable
+            Tensor deltaT = delta.get(dataIndex);
+            @Nullable
+            Tensor inputT = inData.get(dataIndex);
+            @Nullable final double[] deltaData = deltaT.getData();
+            @Nullable final double[] inputData = inputT.getData();
+            @Nonnull final Tensor weightDelta = new Tensor(weights.getDimensions());
+            for (int i = 0; i < deltaData.length; i++) {
+              weightDelta.add(0, deltaData[i] * inputData[inputData.length == 1 ? 0 : i]);
+              weightDelta.add(1, deltaData[i]);
+            }
+            buffer.get(linearActivationLayer.getId(), weights.getData()).addInPlace(weightDelta.getData());
+          });
+        }
+        if (in0.isAlive()) {
+          @Nonnull final TensorList tensorList = new TensorArray(
+              RefIntStream.range(0, delta.length()).mapToObj(dataIndex -> {
+                @Nullable
+                Tensor tensor = delta.get(dataIndex);
+                @Nullable final double[] deltaData = tensor.getData();
+                @Nonnull final Tensor passback = new Tensor(inData.getDimensions());
+                for (int i = 0; i < passback.length(); i++) {
+                  passback.set(i, deltaData[i] * weights.getData()[0]);
+                }
+                return passback;
+              }).toArray(i -> new Tensor[i]));
+          in0.accumulate(buffer, tensorList);
+        }
       }
     }) {
 

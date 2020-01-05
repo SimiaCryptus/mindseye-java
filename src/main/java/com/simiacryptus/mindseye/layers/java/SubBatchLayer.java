@@ -86,23 +86,29 @@ class SubBatchLayer extends WrapperLayer {
         .mapToObj(inputIndex -> new Tensor[inputs[inputIndex].getData().length()]).toArray(x -> new Tensor[x][]);
     Result[] batchResults = RefIntStream.range(0, batches).mapToObj(batchIndex -> {
       return inner.eval(RefIntStream.range(0, inputs.length).mapToObj(inputIndex -> {
-        return new Result(new TensorArray(inputs[inputIndex].getData().get(batchIndex)), (deltaBuffer, deltaSignal) -> {
-          passbackBuffer[inputIndex][batchIndex] = deltaSignal.get(0);
+        return new Result(new TensorArray(inputs[inputIndex].getData().get(batchIndex)), new Result.Accumulator() {
+          @Override
+          public void accept(DeltaSet<UUID> deltaBuffer, TensorList deltaSignal) {
+            passbackBuffer[inputIndex][batchIndex] = deltaSignal.get(0);
+          }
         });
       }).<Result>toArray(x -> new Result[x]));
     }).toArray(i -> new Result[i]);
     TensorArray resultData = new TensorArray(RefArrays.stream(batchResults)
         .map(x -> x.getData().get(0)).toArray(i -> new Tensor[i]));
-    return new Result(resultData, (DeltaSet<UUID> deltaBuffer, TensorList deltaSignal) -> {
-      RefIntStream.range(0, deltaSignal.length()).forEach(batchIndex -> {
-        TensorArray tensorArray = new TensorArray(deltaSignal.get(batchIndex));
-        batchResults[batchIndex].getAccumulator().accept(deltaBuffer, tensorArray);
-      });
-      synchronized (passbackBuffer) {
-        RefIntStream.range(0, inputs.length).forEach(inputIndex -> {
-          TensorArray tensorArray = new TensorArray(passbackBuffer[inputIndex]);
-          inputs[inputIndex].getAccumulator().accept(deltaBuffer, tensorArray);
+    return new Result(resultData, new Result.Accumulator() {
+      @Override
+      public void accept(DeltaSet<UUID> deltaBuffer, TensorList deltaSignal) {
+        RefIntStream.range(0, deltaSignal.length()).forEach(batchIndex -> {
+          TensorArray tensorArray = new TensorArray(deltaSignal.get(batchIndex));
+          batchResults[batchIndex].getAccumulator().accept(deltaBuffer, tensorArray);
         });
+        synchronized (passbackBuffer) {
+          RefIntStream.range(0, inputs.length).forEach(inputIndex -> {
+            TensorArray tensorArray = new TensorArray(passbackBuffer[inputIndex]);
+            inputs[inputIndex].getAccumulator().accept(deltaBuffer, tensorArray);
+          });
+        }
       }
     }) {
       public void _free() {

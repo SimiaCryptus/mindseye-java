@@ -193,17 +193,20 @@ class ImgTileSelectLayer extends LayerBase {
           Tensor inputData = batch.get(dataIndex);
           copy(inputData, outputData, positionX, positionY, toroidal);
           return outputData;
-        }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList error) -> {
-      if (input.isAlive()) {
-        @Nonnull
-        TensorArray tensorArray = new TensorArray(
-            RefIntStream.range(0, error.length()).mapToObj(dataIndex -> {
-              @Nullable final Tensor err = error.get(dataIndex);
-              @Nonnull final Tensor passback = new Tensor(inputDims);
-              copy(err, passback, -positionX, -positionY, toroidal);
-              return passback;
-            }).toArray(i -> new Tensor[i]));
-        input.accumulate(buffer, tensorArray);
+        }).toArray(i -> new Tensor[i])), new Result.Accumulator() {
+      @Override
+      public void accept(DeltaSet<UUID> buffer, TensorList error) {
+        if (input.isAlive()) {
+          @Nonnull
+          TensorArray tensorArray = new TensorArray(
+              RefIntStream.range(0, error.length()).mapToObj(dataIndex -> {
+                @Nullable final Tensor err = error.get(dataIndex);
+                @Nonnull final Tensor passback = new Tensor(inputDims);
+                copy(err, passback, -positionX, -positionY, toroidal);
+                return passback;
+              }).toArray(i -> new Tensor[i]));
+          input.accumulate(buffer, tensorArray);
+        }
       }
     }) {
 

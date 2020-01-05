@@ -88,26 +88,29 @@ class BiasMetaLayer extends LayerBase {
         }).toArray(i -> new Tensor[i]);
     Tensor tensor0 = tensors[0];
     return new Result(new TensorArray(tensors),
-        (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList data) -> {
-          if (in1.isAlive()) {
-            @Nonnull
-            TensorArray tensorArray = new TensorArray(
-                RefIntStream.range(0, data.length()).mapToObj(i -> {
-                  if (i == 0)
-                    return tensor0.mapCoords((c) -> {
-                      return RefIntStream.range(0, itemCnt).mapToDouble(j -> {
-                        Tensor tensor = data.get(j);
-                        return tensor.get(c);
-                      }).sum();
-                    });
-                  else {
-                    return tensor0.mapCoords(v -> 0);
-                  }
-                }).toArray(i -> new Tensor[i]));
-            in1.accumulate(buffer, tensorArray);
-          }
-          if (in0.isAlive()) {
-            in0.accumulate(buffer, data);
+        new Result.Accumulator() {
+          @Override
+          public void accept(DeltaSet<UUID> buffer, TensorList data) {
+            if (in1.isAlive()) {
+              @Nonnull
+              TensorArray tensorArray = new TensorArray(
+                  RefIntStream.range(0, data.length()).mapToObj(i -> {
+                    if (i == 0)
+                      return tensor0.mapCoords((c) -> {
+                        return RefIntStream.range(0, itemCnt).mapToDouble(j -> {
+                          Tensor tensor = data.get(j);
+                          return tensor.get(c);
+                        }).sum();
+                      });
+                    else {
+                      return tensor0.mapCoords(v -> 0);
+                    }
+                  }).toArray(i -> new Tensor[i]));
+              in1.accumulate(buffer, tensorArray);
+            }
+            if (in0.isAlive()) {
+              in0.accumulate(buffer, data);
+            }
           }
         }) {
 

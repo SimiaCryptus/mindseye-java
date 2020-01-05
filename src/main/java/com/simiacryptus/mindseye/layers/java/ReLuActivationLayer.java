@@ -108,6 +108,7 @@ class ReLuActivationLayer extends LayerBase {
     final Result input = inObj[0];
     final TensorList indata = input.getData();
     final int itemCnt = indata.length();
+    final ReLuActivationLayer reLuActivationLayer = ReLuActivationLayer.this;
     return new Result(
         new TensorArray(RefIntStream.range(0, itemCnt).parallel().mapToObj(dataIndex -> {
           @Nullable
@@ -120,42 +121,45 @@ class ReLuActivationLayer extends LayerBase {
             }
           }
           return tensor;
-        }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
-      if (!isFrozen()) {
-        RefIntStream.range(0, delta.length()).parallel().forEach(dataIndex -> {
-          @Nullable
-          Tensor deltaTensor = delta.get(dataIndex);
-          @Nullable final double[] deltaData = deltaTensor.getData();
-          @Nullable
-          Tensor inputTensor = indata.get(dataIndex);
-          @Nullable final double[] inputData = inputTensor.getData();
-          @Nonnull final Tensor weightDelta = new Tensor(weights.getDimensions());
-          @Nullable final double[] weightDeltaData = weightDelta.getData();
-          for (int i = 0; i < deltaData.length; i++) {
-            weightDeltaData[0] += inputData[i] < 0 ? 0 : deltaData[i] * inputData[i];
-          }
-          buffer.get(ReLuActivationLayer.this.getId(), weights.getData()).addInPlace(weightDeltaData);
-        });
-      }
-      if (input.isAlive()) {
-        final double weight = weights.getData()[0];
-        @Nonnull
-        TensorArray tensorArray = new TensorArray(
-            RefIntStream.range(0, delta.length()).parallel().mapToObj(dataIndex -> {
-              @Nullable
-              Tensor deltaTensor = delta.get(dataIndex);
-              @Nullable final double[] deltaData = deltaTensor.getData();
-              @Nullable
-              Tensor inTensor = indata.get(dataIndex);
-              @Nullable final double[] inputData = inTensor.getData();
-              @Nonnull final int[] dims = inTensor.getDimensions();
-              @Nonnull final Tensor passback = new Tensor(dims);
-              for (int i = 0; i < passback.length(); i++) {
-                passback.set(i, inputData[i] < 0 ? 0 : deltaData[i] * weight);
-              }
-              return passback;
-            }).toArray(i -> new Tensor[i]));
-        input.accumulate(buffer, tensorArray);
+        }).toArray(i -> new Tensor[i])), new Result.Accumulator() {
+      @Override
+      public void accept(DeltaSet<UUID> buffer, TensorList delta) {
+        if (!ReLuActivationLayer.this.isFrozen()) {
+          RefIntStream.range(0, delta.length()).parallel().forEach(dataIndex -> {
+            @Nullable
+            Tensor deltaTensor = delta.get(dataIndex);
+            @Nullable final double[] deltaData = deltaTensor.getData();
+            @Nullable
+            Tensor inputTensor = indata.get(dataIndex);
+            @Nullable final double[] inputData = inputTensor.getData();
+            @Nonnull final Tensor weightDelta = new Tensor(weights.getDimensions());
+            @Nullable final double[] weightDeltaData = weightDelta.getData();
+            for (int i = 0; i < deltaData.length; i++) {
+              weightDeltaData[0] += inputData[i] < 0 ? 0 : deltaData[i] * inputData[i];
+            }
+            buffer.get(reLuActivationLayer.getId(), weights.getData()).addInPlace(weightDeltaData);
+          });
+        }
+        if (input.isAlive()) {
+          final double weight = weights.getData()[0];
+          @Nonnull
+          TensorArray tensorArray = new TensorArray(
+              RefIntStream.range(0, delta.length()).parallel().mapToObj(dataIndex -> {
+                @Nullable
+                Tensor deltaTensor = delta.get(dataIndex);
+                @Nullable final double[] deltaData = deltaTensor.getData();
+                @Nullable
+                Tensor inTensor = indata.get(dataIndex);
+                @Nullable final double[] inputData = inTensor.getData();
+                @Nonnull final int[] dims = inTensor.getDimensions();
+                @Nonnull final Tensor passback = new Tensor(dims);
+                for (int i = 0; i < passback.length(); i++) {
+                  passback.set(i, inputData[i] < 0 ? 0 : deltaData[i] * weight);
+                }
+                return passback;
+              }).toArray(i -> new Tensor[i]));
+          input.accumulate(buffer, tensorArray);
+        }
       }
     }) {
 

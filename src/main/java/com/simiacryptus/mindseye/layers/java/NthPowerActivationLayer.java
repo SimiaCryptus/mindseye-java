@@ -157,25 +157,28 @@ class NthPowerActivationLayer extends LayerBase {
             NthPowerActivationLayer.nthPower(power, input, inputData, gradientData, outputData);
           }
           return output;
-        }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList data) -> {
-      if (inObj[0].isAlive()) {
-        @Nonnull
-        TensorArray tensorArray = new TensorArray(
-            RefIntStream.range(0, itemCnt).parallel().mapToObj(dataIndex -> {
-              @Nonnull final Tensor passback = new Tensor(data.getDimensions());
-              @Nullable final Tensor tensor = data.get(dataIndex);
-              @Nullable
-              double[] tensorData = tensor.getData();
-              @Nullable final double[] gradientData = inputGradientA[dataIndex].getData();
-              RefIntStream.range(0, passback.length()).forEach(i -> {
-                final double v = gradientData[i];
-                if (Double.isFinite(v)) {
-                  passback.set(i, tensorData[i] * v);
-                }
-              });
-              return passback;
-            }).toArray(i -> new Tensor[i]));
-        inObj[0].accumulate(buffer, tensorArray);
+        }).toArray(i -> new Tensor[i])), new Result.Accumulator() {
+      @Override
+      public void accept(DeltaSet<UUID> buffer, TensorList data) {
+        if (inObj[0].isAlive()) {
+          @Nonnull
+          TensorArray tensorArray = new TensorArray(
+              RefIntStream.range(0, itemCnt).parallel().mapToObj(dataIndex -> {
+                @Nonnull final Tensor passback = new Tensor(data.getDimensions());
+                @Nullable final Tensor tensor = data.get(dataIndex);
+                @Nullable
+                double[] tensorData = tensor.getData();
+                @Nullable final double[] gradientData = inputGradientA[dataIndex].getData();
+                RefIntStream.range(0, passback.length()).forEach(i -> {
+                  final double v = gradientData[i];
+                  if (Double.isFinite(v)) {
+                    passback.set(i, tensorData[i] * v);
+                  }
+                });
+                return passback;
+              }).toArray(i -> new Tensor[i]));
+          inObj[0].accumulate(buffer, tensorArray);
+        }
       }
     }) {
 

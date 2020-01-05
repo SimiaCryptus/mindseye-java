@@ -92,22 +92,25 @@ class ProductLayer extends LayerBase {
           return new Tensor(new double[]{sum}, 1);
         }).toArray(i -> new Tensor[i]);
     return new Result(new TensorArray(outputA),
-        (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
-          for (@Nonnull final Result input : inObj) {
-            if (input.isAlive()) {
-              TensorList data = input.getData();
-              input.accumulate(buffer, new TensorArray(
-                  RefIntStream.range(0, delta.length()).mapToObj(dataIndex -> {
-                    Tensor dataTensor = delta.get(dataIndex);
-                    Tensor lTensor = data.get(dataIndex);
-                    @Nonnull final Tensor passback = new Tensor(lTensor.getDimensions());
-                    for (int i = 0; i < lTensor.length(); i++) {
-                      double d = lTensor.getData()[i];
-                      double deltaV = dataTensor.get(0);
-                      passback.set(i, d == 0 ? 0 : (deltaV * sum_A[dataIndex] / d));
-                    }
-                    return passback;
-                  }).toArray(i -> new Tensor[i])));
+        new Result.Accumulator() {
+          @Override
+          public void accept(DeltaSet<UUID> buffer, TensorList delta) {
+            for (@Nonnull final Result input : inObj) {
+              if (input.isAlive()) {
+                TensorList data = input.getData();
+                input.accumulate(buffer, new TensorArray(
+                    RefIntStream.range(0, delta.length()).mapToObj(dataIndex -> {
+                      Tensor dataTensor = delta.get(dataIndex);
+                      Tensor lTensor = data.get(dataIndex);
+                      @Nonnull final Tensor passback = new Tensor(lTensor.getDimensions());
+                      for (int i = 0; i < lTensor.length(); i++) {
+                        double d = lTensor.getData()[i];
+                        double deltaV = dataTensor.get(0);
+                        passback.set(i, d == 0 ? 0 : (deltaV * sum_A[dataIndex] / d));
+                      }
+                      return passback;
+                    }).toArray(i -> new Tensor[i])));
+              }
             }
           }
         }) {

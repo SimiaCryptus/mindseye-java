@@ -143,6 +143,7 @@ class ImgBandBiasLayer extends LayerBase {
   @Nonnull
   public Result eval(@Nonnull final Result input) {
     @Nullable final double[] bias = getBias();
+    final ImgBandBiasLayer imgBandBiasLayer = ImgBandBiasLayer.this;
     return new Result(new TensorArray(input.getData().stream().parallel().map(r -> {
       if (r.getDimensions().length != 3) {
         throw new IllegalArgumentException(RefArrays.toString(r.getDimensions()));
@@ -152,26 +153,29 @@ class ImgBandBiasLayer extends LayerBase {
             RefArrays.toString(r.getDimensions()), bias.length));
       }
       return new Tensor(add(r.getData()), r.getDimensions());
-    }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList data) -> {
-      if (!isFrozen()) {
-        final Delta<UUID> deltaBuffer = buffer.get(ImgBandBiasLayer.this.getId(), bias);
-        data.stream().parallel().forEach(d -> {
-          final double[] array = RecycleBin.DOUBLES.obtain(bias.length);
-          @Nullable final double[] signal = d.getData();
-          final int size = signal.length / bias.length;
-          for (int i = 0; i < signal.length; i++) {
-            array[i / size] += signal[i];
-            if (!Double.isFinite(array[i / size])) {
-              array[i / size] = 0.0;
+    }).toArray(i -> new Tensor[i])), new Result.Accumulator() {
+      @Override
+      public void accept(DeltaSet<UUID> buffer, TensorList data) {
+        if (!ImgBandBiasLayer.this.isFrozen()) {
+          final Delta<UUID> deltaBuffer = buffer.get(imgBandBiasLayer.getId(), bias);
+          data.stream().parallel().forEach(d -> {
+            final double[] array = RecycleBin.DOUBLES.obtain(bias.length);
+            @Nullable final double[] signal = d.getData();
+            final int size = signal.length / bias.length;
+            for (int i = 0; i < signal.length; i++) {
+              array[i / size] += signal[i];
+              if (!Double.isFinite(array[i / size])) {
+                array[i / size] = 0.0;
+              }
             }
-          }
-          assert RefArrays.stream(array).allMatch(v -> Double.isFinite(v));
-          deltaBuffer.addInPlace(array);
-          RecycleBin.DOUBLES.recycle(array, array.length);
-        });
-      }
-      if (input.isAlive()) {
-        input.accumulate(buffer, data);
+            assert RefArrays.stream(array).allMatch(v -> Double.isFinite(v));
+            deltaBuffer.addInPlace(array);
+            RecycleBin.DOUBLES.recycle(array, array.length);
+          });
+        }
+        if (input.isAlive()) {
+          input.accumulate(buffer, data);
+        }
       }
     }) {
 
