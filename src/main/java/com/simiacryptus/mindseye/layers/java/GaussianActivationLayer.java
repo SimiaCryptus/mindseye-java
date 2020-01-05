@@ -21,11 +21,14 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.DataSerializer;
+import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
+import java.util.Map;
 
 @SuppressWarnings("serial")
-public final @com.simiacryptus.ref.lang.RefAware
+public final @RefAware
 class GaussianActivationLayer
     extends SimpleActivationLayer<GaussianActivationLayer> {
 
@@ -49,7 +52,7 @@ class GaussianActivationLayer
 
   @SuppressWarnings("unused")
   public static GaussianActivationLayer fromJson(@Nonnull final JsonObject json,
-                                                 com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                                 Map<CharSequence, byte[]> rs) {
     return new GaussianActivationLayer(json);
   }
 
@@ -57,7 +60,7 @@ class GaussianActivationLayer
   GaussianActivationLayer[] addRefs(GaussianActivationLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(GaussianActivationLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(GaussianActivationLayer::addRef)
         .toArray((x) -> new GaussianActivationLayer[x]);
   }
 
@@ -65,13 +68,13 @@ class GaussianActivationLayer
   GaussianActivationLayer[][] addRefs(GaussianActivationLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(GaussianActivationLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(GaussianActivationLayer::addRefs)
         .toArray((x) -> new GaussianActivationLayer[x][]);
   }
 
   @Nonnull
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             DataSerializer dataSerializer) {
     @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("mean", mean);

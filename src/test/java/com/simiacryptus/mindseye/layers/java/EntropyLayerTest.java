@@ -24,8 +24,11 @@ import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 import com.simiacryptus.mindseye.test.ToleranceStatistics;
 import com.simiacryptus.mindseye.test.unit.ComponentTest;
 import com.simiacryptus.mindseye.test.unit.SingleDerivativeTester;
+import com.simiacryptus.ref.lang.RefAware;
 
-public abstract @com.simiacryptus.ref.lang.RefAware
+import java.util.Arrays;
+
+public abstract @RefAware
 class EntropyLayerTest extends ActivationLayerTestBase {
   public EntropyLayerTest() {
     super(new EntropyLayer());
@@ -42,7 +45,7 @@ class EntropyLayerTest extends ActivationLayerTestBase {
   EntropyLayerTest[] addRefs(EntropyLayerTest[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(EntropyLayerTest::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(EntropyLayerTest::addRef)
         .toArray((x) -> new EntropyLayerTest[x]);
   }
 
@@ -50,7 +53,7 @@ class EntropyLayerTest extends ActivationLayerTestBase {
   EntropyLayerTest[][] addRefs(EntropyLayerTest[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(EntropyLayerTest::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(EntropyLayerTest::addRefs)
         .toArray((x) -> new EntropyLayerTest[x][]);
   }
 
@@ -64,13 +67,13 @@ class EntropyLayerTest extends ActivationLayerTestBase {
     return (EntropyLayerTest) super.addRef();
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Basic extends EntropyLayerTest {
     public static @SuppressWarnings("unused")
     Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
     public @SuppressWarnings("unused")

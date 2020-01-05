@@ -21,18 +21,21 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.test.unit.StandardLayerTests;
+import com.simiacryptus.ref.lang.RefAware;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public abstract @com.simiacryptus.ref.lang.RefAware
+import java.util.Arrays;
+
+public abstract @RefAware
 class LayerTestBase extends StandardLayerTests {
 
   public static @SuppressWarnings("unused")
   LayerTestBase[] addRefs(LayerTestBase[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(LayerTestBase::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(LayerTestBase::addRef)
         .toArray((x) -> new LayerTestBase[x]);
   }
 
@@ -40,7 +43,7 @@ class LayerTestBase extends StandardLayerTests {
   LayerTestBase[][] addRefs(LayerTestBase[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(LayerTestBase::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(LayerTestBase::addRefs)
         .toArray((x) -> new LayerTestBase[x][]);
   }
 

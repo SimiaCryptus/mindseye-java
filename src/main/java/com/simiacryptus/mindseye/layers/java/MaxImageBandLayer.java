@@ -21,16 +21,20 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.*;
 import com.simiacryptus.util.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.UUID;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class MaxImageBandLayer extends LayerBase {
 
   @SuppressWarnings("unused")
@@ -46,7 +50,7 @@ class MaxImageBandLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   public static MaxImageBandLayer fromJson(@Nonnull final JsonObject json,
-                                           com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                           Map<CharSequence, byte[]> rs) {
     return new MaxImageBandLayer(json, JsonUtil.getIntArray(json.getAsJsonArray("heapCopy")));
   }
 
@@ -54,7 +58,7 @@ class MaxImageBandLayer extends LayerBase {
   MaxImageBandLayer[] addRefs(MaxImageBandLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MaxImageBandLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(MaxImageBandLayer::addRef)
         .toArray((x) -> new MaxImageBandLayer[x]);
   }
 
@@ -62,7 +66,7 @@ class MaxImageBandLayer extends LayerBase {
   MaxImageBandLayer[][] addRefs(MaxImageBandLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MaxImageBandLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(MaxImageBandLayer::addRefs)
         .toArray((x) -> new MaxImageBandLayer[x][]);
   }
 
@@ -76,16 +80,16 @@ class MaxImageBandLayer extends LayerBase {
     @Nonnull final int[] inputDims = inputData.getDimensions();
     assert 3 == inputDims.length;
     final Coordinate[][] maxCoords = inputData.stream().map(data -> {
-      return com.simiacryptus.ref.wrappers.RefIntStream.range(0, inputDims[2]).mapToObj(band -> {
+      return RefIntStream.range(0, inputDims[2]).mapToObj(band -> {
         return data.coordStream(true).filter(e -> e.getCoords()[2] == band)
-            .max(com.simiacryptus.ref.wrappers.RefComparator.comparing(c -> data.get(c))).get();
+            .max(RefComparator.comparing(c -> data.get(c))).get();
       }).toArray(i -> new Coordinate[i]);
     }).toArray(i -> new Coordinate[i][]);
 
     return new Result(
-        new TensorArray(com.simiacryptus.ref.wrappers.RefIntStream.range(0, inputData.length()).mapToObj(dataIndex -> {
+        new TensorArray(RefIntStream.range(0, inputData.length()).mapToObj(dataIndex -> {
           Tensor tensor = inputData.get(dataIndex);
-          final com.simiacryptus.ref.wrappers.RefDoubleStream doubleStream = com.simiacryptus.ref.wrappers.RefIntStream
+          final RefDoubleStream doubleStream = RefIntStream
               .range(0, inputDims[2]).mapToDouble(band -> {
                 final int[] maxCoord = maxCoords[dataIndex][band].getCoords();
                 return tensor.get(maxCoord[0], maxCoord[1], band);
@@ -95,10 +99,10 @@ class MaxImageBandLayer extends LayerBase {
       if (inObj[0].isAlive()) {
         @Nonnull
         TensorArray tensorArray = new TensorArray(
-            com.simiacryptus.ref.wrappers.RefIntStream.range(0, delta.length()).parallel().mapToObj(dataIndex -> {
+            RefIntStream.range(0, delta.length()).parallel().mapToObj(dataIndex -> {
               Tensor deltaTensor = delta.get(dataIndex);
               @Nonnull final Tensor passback = new Tensor(inputData.getDimensions());
-              com.simiacryptus.ref.wrappers.RefIntStream.range(0, inputDims[2]).forEach(b -> {
+              RefIntStream.range(0, inputDims[2]).forEach(b -> {
                 final int[] maxCoord = maxCoords[dataIndex][b].getCoords();
                 passback.set(new int[]{maxCoord[0], maxCoord[1], b}, deltaTensor.get(0, 0, b));
               });
@@ -120,15 +124,15 @@ class MaxImageBandLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 
   @Nonnull
   @Override
-  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
-    return com.simiacryptus.ref.wrappers.RefArrays.asList();
+  public RefList<double[]> state() {
+    return RefArrays.asList();
   }
 
   public @SuppressWarnings("unused")
@@ -141,7 +145,7 @@ class MaxImageBandLayer extends LayerBase {
     return (MaxImageBandLayer) super.addRef();
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class CalcRegionsParameter {
     public final int[] inputDims;
     public final int[] kernelDims;
@@ -163,18 +167,18 @@ class MaxImageBandLayer extends LayerBase {
         return false;
       }
       @Nonnull final MaxImageBandLayer.CalcRegionsParameter other = (MaxImageBandLayer.CalcRegionsParameter) obj;
-      if (!com.simiacryptus.ref.wrappers.RefArrays.equals(inputDims, other.inputDims)) {
+      if (!RefArrays.equals(inputDims, other.inputDims)) {
         return false;
       }
-      return com.simiacryptus.ref.wrappers.RefArrays.equals(kernelDims, other.kernelDims);
+      return RefArrays.equals(kernelDims, other.kernelDims);
     }
 
     @Override
     public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + com.simiacryptus.ref.wrappers.RefArrays.hashCode(inputDims);
-      result = prime * result + com.simiacryptus.ref.wrappers.RefArrays.hashCode(kernelDims);
+      result = prime * result + RefArrays.hashCode(inputDims);
+      result = prime * result + RefArrays.hashCode(kernelDims);
       return result;
     }
 

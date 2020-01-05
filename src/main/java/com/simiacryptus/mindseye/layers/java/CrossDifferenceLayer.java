@@ -21,13 +21,19 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefIntStream;
+import com.simiacryptus.ref.wrappers.RefList;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.UUID;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class CrossDifferenceLayer extends LayerBase {
 
   public CrossDifferenceLayer() {
@@ -39,7 +45,7 @@ class CrossDifferenceLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   public static CrossDifferenceLayer fromJson(@Nonnull final JsonObject json,
-                                              com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                              Map<CharSequence, byte[]> rs) {
     return new CrossDifferenceLayer(json);
   }
 
@@ -51,7 +57,7 @@ class CrossDifferenceLayer extends LayerBase {
   CrossDifferenceLayer[] addRefs(CrossDifferenceLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(CrossDifferenceLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(CrossDifferenceLayer::addRef)
         .toArray((x) -> new CrossDifferenceLayer[x]);
   }
 
@@ -59,7 +65,7 @@ class CrossDifferenceLayer extends LayerBase {
   CrossDifferenceLayer[][] addRefs(CrossDifferenceLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(CrossDifferenceLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(CrossDifferenceLayer::addRefs)
         .toArray((x) -> new CrossDifferenceLayer[x][]);
   }
 
@@ -73,8 +79,8 @@ class CrossDifferenceLayer extends LayerBase {
       @Nonnull final Tensor result1 = new Tensor(outputDim);
       @Nullable final double[] inputData = tensor.getData();
       @Nullable final double[] resultData = result1.getData();
-      com.simiacryptus.ref.wrappers.RefIntStream.range(0, inputDim).forEach(x -> {
-        com.simiacryptus.ref.wrappers.RefIntStream.range(x + 1, inputDim).forEach(y -> {
+      RefIntStream.range(0, inputDim).forEach(x -> {
+        RefIntStream.range(x + 1, inputDim).forEach(y -> {
           resultData[CrossDifferenceLayer.index(x, y, inputDim)] = inputData[x] - inputData[y];
         });
       });
@@ -89,8 +95,8 @@ class CrossDifferenceLayer extends LayerBase {
           @Nonnull final Tensor passback = new Tensor(inputDim);
           @Nullable final double[] passbackData = passback.getData();
           @Nullable final double[] tensorData = tensor.getData();
-          com.simiacryptus.ref.wrappers.RefIntStream.range(0, inputDim).forEach(x -> {
-            com.simiacryptus.ref.wrappers.RefIntStream.range(x + 1, inputDim).forEach(y -> {
+          RefIntStream.range(0, inputDim).forEach(x -> {
+            RefIntStream.range(x + 1, inputDim).forEach(y -> {
               passbackData[x] += tensorData[CrossDifferenceLayer.index(x, y, inputDim)];
               passbackData[y] += -tensorData[CrossDifferenceLayer.index(x, y, inputDim)];
             });
@@ -118,15 +124,15 @@ class CrossDifferenceLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 
   @Nonnull
   @Override
-  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
-    return com.simiacryptus.ref.wrappers.RefArrays.asList();
+  public RefList<double[]> state() {
+    return RefArrays.asList();
   }
 
   public @SuppressWarnings("unused")

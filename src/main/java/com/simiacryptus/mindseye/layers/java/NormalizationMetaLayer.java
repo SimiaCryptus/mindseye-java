@@ -21,14 +21,17 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
+import com.simiacryptus.ref.lang.RefAware;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
+import java.util.Map;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class NormalizationMetaLayer extends PipelineNetwork {
 
   @SuppressWarnings("unused")
@@ -44,13 +47,13 @@ class NormalizationMetaLayer extends PipelineNetwork {
   }
 
   protected NormalizationMetaLayer(@Nonnull final JsonObject json,
-                                   com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                   Map<CharSequence, byte[]> rs) {
     super(json, rs);
   }
 
   @SuppressWarnings("unused")
   public static NormalizationMetaLayer fromJson(@NotNull final JsonObject json,
-                                                com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                                Map<CharSequence, byte[]> rs) {
     return new NormalizationMetaLayer(json, rs);
   }
 
@@ -58,7 +61,7 @@ class NormalizationMetaLayer extends PipelineNetwork {
   NormalizationMetaLayer[] addRefs(NormalizationMetaLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(NormalizationMetaLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(NormalizationMetaLayer::addRef)
         .toArray((x) -> new NormalizationMetaLayer[x]);
   }
 
@@ -66,7 +69,7 @@ class NormalizationMetaLayer extends PipelineNetwork {
   NormalizationMetaLayer[][] addRefs(NormalizationMetaLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(NormalizationMetaLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(NormalizationMetaLayer::addRefs)
         .toArray((x) -> new NormalizationMetaLayer[x][]);
   }
 

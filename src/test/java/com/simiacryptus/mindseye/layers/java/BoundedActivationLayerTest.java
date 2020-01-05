@@ -21,8 +21,11 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
+import com.simiacryptus.ref.lang.RefAware;
 
-public abstract @com.simiacryptus.ref.lang.RefAware
+import java.util.Arrays;
+
+public abstract @RefAware
 class BoundedActivationLayerTest extends ActivationLayerTestBase {
   public BoundedActivationLayerTest() {
     super(new BoundedActivationLayer());
@@ -32,7 +35,7 @@ class BoundedActivationLayerTest extends ActivationLayerTestBase {
   BoundedActivationLayerTest[] addRefs(BoundedActivationLayerTest[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BoundedActivationLayerTest::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(BoundedActivationLayerTest::addRef)
         .toArray((x) -> new BoundedActivationLayerTest[x]);
   }
 
@@ -41,7 +44,7 @@ class BoundedActivationLayerTest extends ActivationLayerTestBase {
       BoundedActivationLayerTest[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BoundedActivationLayerTest::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(BoundedActivationLayerTest::addRefs)
         .toArray((x) -> new BoundedActivationLayerTest[x][]);
   }
 
@@ -60,14 +63,14 @@ class BoundedActivationLayerTest extends ActivationLayerTestBase {
     return new MeanSqLossLayer();
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Basic extends BoundedActivationLayerTest {
 
     public static @SuppressWarnings("unused")
     Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
     public @SuppressWarnings("unused")

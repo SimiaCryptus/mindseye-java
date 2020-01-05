@@ -22,14 +22,17 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.network.InnerNode;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
+import com.simiacryptus.ref.lang.RefAware;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
+import java.util.Map;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class StdDevMetaLayer extends PipelineNetwork {
 
   @SuppressWarnings("unused")
@@ -52,13 +55,13 @@ class StdDevMetaLayer extends PipelineNetwork {
   }
 
   protected StdDevMetaLayer(@Nonnull final JsonObject json,
-                            com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                            Map<CharSequence, byte[]> rs) {
     super(json, rs);
   }
 
   @SuppressWarnings("unused")
   public static StdDevMetaLayer fromJson(@NotNull final JsonObject json,
-                                         com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                         Map<CharSequence, byte[]> rs) {
     return new StdDevMetaLayer(json, rs);
   }
 
@@ -66,7 +69,7 @@ class StdDevMetaLayer extends PipelineNetwork {
   StdDevMetaLayer[] addRefs(StdDevMetaLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(StdDevMetaLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(StdDevMetaLayer::addRef)
         .toArray((x) -> new StdDevMetaLayer[x]);
   }
 
@@ -74,7 +77,7 @@ class StdDevMetaLayer extends PipelineNetwork {
   StdDevMetaLayer[][] addRefs(StdDevMetaLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(StdDevMetaLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(StdDevMetaLayer::addRefs)
         .toArray((x) -> new StdDevMetaLayer[x][]);
   }
 

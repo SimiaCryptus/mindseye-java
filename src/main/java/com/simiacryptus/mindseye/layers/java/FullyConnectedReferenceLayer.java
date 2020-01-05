@@ -21,6 +21,10 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefIntStream;
+import com.simiacryptus.ref.wrappers.RefList;
 import com.simiacryptus.util.FastRandom;
 import com.simiacryptus.util.JsonUtil;
 import com.simiacryptus.util.Util;
@@ -29,6 +33,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.UUID;
 import java.util.function.DoubleSupplier;
 import java.util.function.IntToDoubleFunction;
@@ -36,7 +42,7 @@ import java.util.function.ToDoubleBiFunction;
 import java.util.function.ToDoubleFunction;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class FullyConnectedReferenceLayer extends LayerBase {
 
   @SuppressWarnings("unused")
@@ -56,8 +62,8 @@ class FullyConnectedReferenceLayer extends LayerBase {
   }
 
   public FullyConnectedReferenceLayer(@Nonnull final int[] inputDims, @Nonnull final int[] outputDims) {
-    this.inputDims = com.simiacryptus.ref.wrappers.RefArrays.copyOf(inputDims, inputDims.length);
-    this.outputDims = com.simiacryptus.ref.wrappers.RefArrays.copyOf(outputDims, outputDims.length);
+    this.inputDims = RefArrays.copyOf(inputDims, inputDims.length);
+    this.outputDims = RefArrays.copyOf(outputDims, outputDims.length);
     final int inputs = Tensor.length(inputDims);
     final int outputs = Tensor.length(outputDims);
     weights = new Tensor(inputs, outputs);
@@ -69,7 +75,7 @@ class FullyConnectedReferenceLayer extends LayerBase {
   }
 
   protected FullyConnectedReferenceLayer(@Nonnull final JsonObject json,
-                                         com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources) {
+                                         Map<CharSequence, byte[]> resources) {
     super(json);
     outputDims = JsonUtil.getIntArray(json.getAsJsonArray("outputDims"));
     inputDims = JsonUtil.getIntArray(json.getAsJsonArray("inputDims"));
@@ -109,7 +115,7 @@ class FullyConnectedReferenceLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   public static FullyConnectedReferenceLayer fromJson(@Nonnull final JsonObject json,
-                                                      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                                      Map<CharSequence, byte[]> rs) {
     return new FullyConnectedReferenceLayer(json, rs);
   }
 
@@ -118,7 +124,7 @@ class FullyConnectedReferenceLayer extends LayerBase {
       FullyConnectedReferenceLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(FullyConnectedReferenceLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(FullyConnectedReferenceLayer::addRef)
         .toArray((x) -> new FullyConnectedReferenceLayer[x]);
   }
 
@@ -127,7 +133,7 @@ class FullyConnectedReferenceLayer extends LayerBase {
       FullyConnectedReferenceLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(FullyConnectedReferenceLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(FullyConnectedReferenceLayer::addRefs)
         .toArray((x) -> new FullyConnectedReferenceLayer[x][]);
   }
 
@@ -138,10 +144,10 @@ class FullyConnectedReferenceLayer extends LayerBase {
     final TensorList indata = inputResult.getData();
     @Nonnull
     int[] inputDimensions = indata.getDimensions();
-    assert Tensor.length(inputDimensions) == Tensor.length(this.inputDims) : com.simiacryptus.ref.wrappers.RefArrays
-        .toString(inputDimensions) + " == " + com.simiacryptus.ref.wrappers.RefArrays.toString(this.inputDims);
+    assert Tensor.length(inputDimensions) == Tensor.length(this.inputDims) : RefArrays
+        .toString(inputDimensions) + " == " + RefArrays.toString(this.inputDims);
     return new Result(
-        new TensorArray(com.simiacryptus.ref.wrappers.RefIntStream.range(0, indata.length()).mapToObj(index -> {
+        new TensorArray(RefIntStream.range(0, indata.length()).mapToObj(index -> {
           @Nullable final Tensor input = indata.get(index);
           @Nullable final Tensor output = new Tensor(outputDims);
           weights.coordStream(false).forEach(c -> {
@@ -155,7 +161,7 @@ class FullyConnectedReferenceLayer extends LayerBase {
           return output;
         }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
       if (!isFrozen()) {
-        Tensor[] array = com.simiacryptus.ref.wrappers.RefIntStream.range(0, indata.length()).mapToObj(i -> {
+        Tensor[] array = RefIntStream.range(0, indata.length()).mapToObj(i -> {
           @Nullable final Tensor inputTensor = indata.get(i);
           @Nullable final Tensor deltaTensor = delta.get(i);
           @Nonnull
@@ -166,14 +172,14 @@ class FullyConnectedReferenceLayer extends LayerBase {
           });
           return weights;
         }).toArray(i -> new Tensor[i]);
-        Tensor tensor = com.simiacryptus.ref.wrappers.RefArrays.stream(array).reduce((a, b) -> {
+        Tensor tensor = RefArrays.stream(array).reduce((a, b) -> {
           return a.addAndFree(b);
         }).get();
         buffer.get(this.getId(), weights.getData()).addInPlace(tensor.getData());
       }
       if (inputResult.isAlive()) {
         @Nonnull final TensorList tensorList = new TensorArray(
-            com.simiacryptus.ref.wrappers.RefIntStream.range(0, indata.length()).mapToObj(i -> {
+            RefIntStream.range(0, indata.length()).mapToObj(i -> {
               @Nullable final Tensor inputTensor = new Tensor(inputDims);
               @Nullable final Tensor deltaTensor = delta.get(i);
               weights.coordStream(false).forEach(c -> {
@@ -200,7 +206,7 @@ class FullyConnectedReferenceLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             @Nonnull DataSerializer dataSerializer) {
     @Nonnull final JsonObject json = super.getJsonStub();
     json.add("outputDims", JsonUtil.getJson(outputDims));
@@ -211,7 +217,7 @@ class FullyConnectedReferenceLayer extends LayerBase {
 
   @Nonnull
   public void set(@Nonnull final DoubleSupplier f) {
-    com.simiacryptus.ref.wrappers.RefArrays.parallelSetAll(weights.getData(), i -> f.getAsDouble());
+    RefArrays.parallelSetAll(weights.getData(), i -> f.getAsDouble());
   }
 
   @Nonnull
@@ -234,8 +240,8 @@ class FullyConnectedReferenceLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
-    return com.simiacryptus.ref.wrappers.RefArrays.asList(getWeights().getData());
+  public RefList<double[]> state() {
+    return RefArrays.asList(getWeights().getData());
   }
 
   public void _free() {

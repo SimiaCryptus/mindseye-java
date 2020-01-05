@@ -21,18 +21,20 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.MonitoringWrapperLayer;
+import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.Random;
 
-public abstract @com.simiacryptus.ref.lang.RefAware
+public abstract @RefAware
 class MonitoringWrapperTest extends LayerTestBase {
 
   public static @SuppressWarnings("unused")
   MonitoringWrapperTest[] addRefs(MonitoringWrapperTest[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MonitoringWrapperTest::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(MonitoringWrapperTest::addRef)
         .toArray((x) -> new MonitoringWrapperTest[x]);
   }
 
@@ -40,7 +42,7 @@ class MonitoringWrapperTest extends LayerTestBase {
   MonitoringWrapperTest[][] addRefs(MonitoringWrapperTest[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MonitoringWrapperTest::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(MonitoringWrapperTest::addRefs)
         .toArray((x) -> new MonitoringWrapperTest[x][]);
   }
 
@@ -67,14 +69,14 @@ class MonitoringWrapperTest extends LayerTestBase {
     return (MonitoringWrapperTest) super.addRef();
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Basic extends MonitoringWrapperTest {
 
     public static @SuppressWarnings("unused")
     Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
     public @SuppressWarnings("unused")

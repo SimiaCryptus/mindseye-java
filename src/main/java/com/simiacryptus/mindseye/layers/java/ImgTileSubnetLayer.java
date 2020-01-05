@@ -25,13 +25,19 @@ import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.lang.Result;
 import com.simiacryptus.mindseye.lang.TensorList;
 import com.simiacryptus.mindseye.layers.WrapperLayer;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefArrayList;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefList;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class ImgTileSubnetLayer extends WrapperLayer {
 
   private final int height;
@@ -53,7 +59,7 @@ class ImgTileSubnetLayer extends WrapperLayer {
   }
 
   protected ImgTileSubnetLayer(@Nonnull final JsonObject json,
-                               com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                               Map<CharSequence, byte[]> rs) {
     super(json, rs);
     height = json.getAsJsonPrimitive("height").getAsInt();
     width = json.getAsJsonPrimitive("width").getAsInt();
@@ -64,7 +70,7 @@ class ImgTileSubnetLayer extends WrapperLayer {
 
   @SuppressWarnings("unused")
   public static ImgTileSubnetLayer fromJson(@Nonnull final JsonObject json,
-                                            com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                            Map<CharSequence, byte[]> rs) {
     return new ImgTileSubnetLayer(json, rs);
   }
 
@@ -72,7 +78,7 @@ class ImgTileSubnetLayer extends WrapperLayer {
   ImgTileSubnetLayer[] addRefs(ImgTileSubnetLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgTileSubnetLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(ImgTileSubnetLayer::addRef)
         .toArray((x) -> new ImgTileSubnetLayer[x]);
   }
 
@@ -80,7 +86,7 @@ class ImgTileSubnetLayer extends WrapperLayer {
   ImgTileSubnetLayer[][] addRefs(ImgTileSubnetLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgTileSubnetLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(ImgTileSubnetLayer::addRefs)
         .toArray((x) -> new ImgTileSubnetLayer[x][]);
   }
 
@@ -116,7 +122,7 @@ class ImgTileSubnetLayer extends WrapperLayer {
             passbacks.set(0);
             ImgTileAssemblyLayer imgTileAssemblyLayer = new ImgTileAssemblyLayer(cols, rows);
             TensorList reassembled = imgTileAssemblyLayer
-                .eval(com.simiacryptus.ref.wrappers.RefArrays.stream(passback).map(t -> new Result(t, (c2, d2) -> {
+                .eval(RefArrays.stream(passback).map(t -> new Result(t, (c2, d2) -> {
                 })).<Result>toArray(i -> new Result[i])).getData();
             input.accumulate(ctx, reassembled);
           }
@@ -135,7 +141,7 @@ class ImgTileSubnetLayer extends WrapperLayer {
 
   @Nonnull
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             DataSerializer dataSerializer) {
     @Nonnull final JsonObject json = super.getJson(resources, dataSerializer);
     json.addProperty("height", height);
@@ -147,8 +153,8 @@ class ImgTileSubnetLayer extends WrapperLayer {
 
   @Nonnull
   @Override
-  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
-    return new com.simiacryptus.ref.wrappers.RefArrayList<>();
+  public RefList<double[]> state() {
+    return new RefArrayList<>();
   }
 
   public @SuppressWarnings("unused")

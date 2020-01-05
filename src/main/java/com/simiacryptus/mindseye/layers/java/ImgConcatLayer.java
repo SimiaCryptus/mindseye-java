@@ -22,15 +22,21 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefArrayList;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.UUID;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class ImgConcatLayer extends LayerBase {
 
   @SuppressWarnings("unused")
@@ -59,7 +65,7 @@ class ImgConcatLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   public static ImgConcatLayer fromJson(@Nonnull final JsonObject json,
-                                        com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                        Map<CharSequence, byte[]> rs) {
     return new ImgConcatLayer(json);
   }
 
@@ -67,7 +73,7 @@ class ImgConcatLayer extends LayerBase {
   ImgConcatLayer[] addRefs(ImgConcatLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgConcatLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(ImgConcatLayer::addRef)
         .toArray((x) -> new ImgConcatLayer[x]);
   }
 
@@ -75,29 +81,29 @@ class ImgConcatLayer extends LayerBase {
   ImgConcatLayer[][] addRefs(ImgConcatLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgConcatLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(ImgConcatLayer::addRefs)
         .toArray((x) -> new ImgConcatLayer[x][]);
   }
 
   @Nullable
   @Override
   public Result eval(@Nonnull final Result... inObj) {
-    assert com.simiacryptus.ref.wrappers.RefArrays.stream(inObj).allMatch(
+    assert RefArrays.stream(inObj).allMatch(
         x -> x.getData().getDimensions().length == 3) : "This component is for use mapCoords 3d png tensors only";
     final int numBatches = inObj[0].getData().length();
-    assert com.simiacryptus.ref.wrappers.RefArrays.stream(inObj)
+    assert RefArrays.stream(inObj)
         .allMatch(x -> x.getData().length() == numBatches) : "All inputs must use same batch size";
-    @Nonnull final int[] outputDims = com.simiacryptus.ref.wrappers.RefArrays.copyOf(inObj[0].getData().getDimensions(), 3);
-    outputDims[2] = com.simiacryptus.ref.wrappers.RefArrays.stream(inObj).mapToInt(x -> x.getData().getDimensions()[2])
+    @Nonnull final int[] outputDims = RefArrays.copyOf(inObj[0].getData().getDimensions(), 3);
+    outputDims[2] = RefArrays.stream(inObj).mapToInt(x -> x.getData().getDimensions()[2])
         .sum();
     if (maxBands > 0)
       outputDims[2] = Math.min(maxBands, outputDims[2]);
-    assert com.simiacryptus.ref.wrappers.RefArrays.stream(inObj)
+    assert RefArrays.stream(inObj)
         .allMatch(x -> x.getData().getDimensions()[0] == outputDims[0]) : "Inputs must be same size";
-    assert com.simiacryptus.ref.wrappers.RefArrays.stream(inObj)
+    assert RefArrays.stream(inObj)
         .allMatch(x -> x.getData().getDimensions()[1] == outputDims[1]) : "Inputs must be same size";
 
-    @Nonnull final com.simiacryptus.ref.wrappers.RefList<Tensor> outputTensors = new com.simiacryptus.ref.wrappers.RefArrayList<>();
+    @Nonnull final RefList<Tensor> outputTensors = new RefArrayList<>();
     for (int b = 0; b < numBatches; b++) {
       @Nonnull final Tensor outputTensor = new Tensor(outputDims);
       int pos = 0;
@@ -115,7 +121,7 @@ class ImgConcatLayer extends LayerBase {
         (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList data) -> {
           assert numBatches == data.length();
 
-          @Nonnull final com.simiacryptus.ref.wrappers.RefList<Tensor[]> splitBatches = new com.simiacryptus.ref.wrappers.RefArrayList<>();
+          @Nonnull final RefList<Tensor[]> splitBatches = new RefArrayList<>();
           for (int b = 0; b < numBatches; b++) {
             @Nullable final Tensor tensor = data.get(b);
             @Nonnull final Tensor[] outputTensors2 = new Tensor[inObj.length];
@@ -165,7 +171,7 @@ class ImgConcatLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             DataSerializer dataSerializer) {
     @Nonnull
     JsonObject json = super.getJsonStub();
@@ -175,8 +181,8 @@ class ImgConcatLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
-    return com.simiacryptus.ref.wrappers.RefArrays.asList();
+  public RefList<double[]> state() {
+    return RefArrays.asList();
   }
 
   public @SuppressWarnings("unused")

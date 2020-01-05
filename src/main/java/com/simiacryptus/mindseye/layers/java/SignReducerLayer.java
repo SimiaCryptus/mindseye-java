@@ -23,14 +23,17 @@ import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.network.DAGNetwork;
 import com.simiacryptus.mindseye.network.DAGNode;
+import com.simiacryptus.ref.lang.RefAware;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.UUID;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class SignReducerLayer extends DAGNetwork {
 
   @SuppressWarnings("unused")
@@ -49,7 +52,7 @@ class SignReducerLayer extends DAGNetwork {
   }
 
   protected SignReducerLayer(@Nonnull final JsonObject json,
-                             com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                             Map<CharSequence, byte[]> rs) {
     super(json, rs);
     head = getNodeById(UUID.fromString(json.getAsJsonPrimitive("head").getAsString()));
   }
@@ -61,7 +64,7 @@ class SignReducerLayer extends DAGNetwork {
 
   @SuppressWarnings("unused")
   public static Layer fromJson(@Nonnull final JsonObject inner,
-                               com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                               Map<CharSequence, byte[]> rs) {
     return new SignReducerLayer(inner, rs);
   }
 
@@ -69,7 +72,7 @@ class SignReducerLayer extends DAGNetwork {
   SignReducerLayer[] addRefs(SignReducerLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SignReducerLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(SignReducerLayer::addRef)
         .toArray((x) -> new SignReducerLayer[x]);
   }
 
@@ -77,7 +80,7 @@ class SignReducerLayer extends DAGNetwork {
   SignReducerLayer[][] addRefs(SignReducerLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SignReducerLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(SignReducerLayer::addRefs)
         .toArray((x) -> new SignReducerLayer[x][]);
   }
 

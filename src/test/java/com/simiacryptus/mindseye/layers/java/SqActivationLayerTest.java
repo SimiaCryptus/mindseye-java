@@ -21,8 +21,11 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
+import com.simiacryptus.ref.lang.RefAware;
 
-public abstract @com.simiacryptus.ref.lang.RefAware
+import java.util.Arrays;
+
+public abstract @RefAware
 class SqActivationLayerTest extends ActivationLayerTestBase {
   public SqActivationLayerTest() {
     super(new SqActivationLayer());
@@ -32,7 +35,7 @@ class SqActivationLayerTest extends ActivationLayerTestBase {
   SqActivationLayerTest[] addRefs(SqActivationLayerTest[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SqActivationLayerTest::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(SqActivationLayerTest::addRef)
         .toArray((x) -> new SqActivationLayerTest[x]);
   }
 
@@ -40,7 +43,7 @@ class SqActivationLayerTest extends ActivationLayerTestBase {
   SqActivationLayerTest[][] addRefs(SqActivationLayerTest[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SqActivationLayerTest::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(SqActivationLayerTest::addRefs)
         .toArray((x) -> new SqActivationLayerTest[x][]);
   }
 
@@ -59,14 +62,14 @@ class SqActivationLayerTest extends ActivationLayerTestBase {
     return new MeanSqLossLayer();
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Basic extends SqActivationLayerTest {
 
     public static @SuppressWarnings("unused")
     Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
     public @SuppressWarnings("unused")

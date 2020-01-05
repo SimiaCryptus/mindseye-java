@@ -21,13 +21,19 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefIntStream;
+import com.simiacryptus.ref.wrappers.RefList;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.UUID;
 
 @SuppressWarnings("serial")
-public final @com.simiacryptus.ref.lang.RefAware
+public final @RefAware
 class NthPowerActivationLayer extends LayerBase {
 
   private double power = 1.0;
@@ -52,7 +58,7 @@ class NthPowerActivationLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   public static NthPowerActivationLayer fromJson(@Nonnull final JsonObject json,
-                                                 com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                                 Map<CharSequence, byte[]> rs) {
     return new NthPowerActivationLayer(json);
   }
 
@@ -60,7 +66,7 @@ class NthPowerActivationLayer extends LayerBase {
   NthPowerActivationLayer[] addRefs(NthPowerActivationLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(NthPowerActivationLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(NthPowerActivationLayer::addRef)
         .toArray((x) -> new NthPowerActivationLayer[x]);
   }
 
@@ -68,7 +74,7 @@ class NthPowerActivationLayer extends LayerBase {
   NthPowerActivationLayer[][] addRefs(NthPowerActivationLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(NthPowerActivationLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(NthPowerActivationLayer::addRefs)
         .toArray((x) -> new NthPowerActivationLayer[x][]);
   }
 
@@ -133,7 +139,7 @@ class NthPowerActivationLayer extends LayerBase {
     assert 0 < itemCnt;
     @Nonnull final Tensor inputGradientA[] = new Tensor[itemCnt];
     return new Result(
-        new TensorArray(com.simiacryptus.ref.wrappers.RefIntStream.range(0, itemCnt).parallel().mapToObj(dataIndex -> {
+        new TensorArray(RefIntStream.range(0, itemCnt).parallel().mapToObj(dataIndex -> {
           @Nullable final Tensor input = inObj[0].getData().get(dataIndex);
           @Nonnull final Tensor output = new Tensor(inObj[0].getData().getDimensions());
           @Nonnull final Tensor gradient = new Tensor(input.length());
@@ -155,13 +161,13 @@ class NthPowerActivationLayer extends LayerBase {
       if (inObj[0].isAlive()) {
         @Nonnull
         TensorArray tensorArray = new TensorArray(
-            com.simiacryptus.ref.wrappers.RefIntStream.range(0, itemCnt).parallel().mapToObj(dataIndex -> {
+            RefIntStream.range(0, itemCnt).parallel().mapToObj(dataIndex -> {
               @Nonnull final Tensor passback = new Tensor(data.getDimensions());
               @Nullable final Tensor tensor = data.get(dataIndex);
               @Nullable
               double[] tensorData = tensor.getData();
               @Nullable final double[] gradientData = inputGradientA[dataIndex].getData();
-              com.simiacryptus.ref.wrappers.RefIntStream.range(0, passback.length()).forEach(i -> {
+              RefIntStream.range(0, passback.length()).forEach(i -> {
                 final double v = gradientData[i];
                 if (Double.isFinite(v)) {
                   passback.set(i, tensorData[i] * v);
@@ -185,7 +191,7 @@ class NthPowerActivationLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             DataSerializer dataSerializer) {
     @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("power", power);
@@ -193,8 +199,8 @@ class NthPowerActivationLayer extends LayerBase {
   }
 
   @Override
-  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
-    return com.simiacryptus.ref.wrappers.RefArrays.asList();
+  public RefList<double[]> state() {
+    return RefArrays.asList();
   }
 
   public @SuppressWarnings("unused")

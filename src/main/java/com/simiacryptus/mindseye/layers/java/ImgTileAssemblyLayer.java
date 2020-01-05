@@ -22,14 +22,21 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.simiacryptus.mindseye.lang.*;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefArrayList;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefIntStream;
+import com.simiacryptus.ref.wrappers.RefList;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class ImgTileAssemblyLayer extends LayerBase {
 
   private final int columns;
@@ -96,8 +103,8 @@ class ImgTileAssemblyLayer extends LayerBase {
     @Nonnull final int[] outDim = outputData.getDimensions();
     assert 3 == inDim.length;
     assert 3 == outDim.length;
-    assert inDim[2] == outDim[2] : com.simiacryptus.ref.wrappers.RefArrays.toString(inDim) + "; "
-        + com.simiacryptus.ref.wrappers.RefArrays.toString(outDim);
+    assert inDim[2] == outDim[2] : RefArrays.toString(inDim) + "; "
+        + RefArrays.toString(outDim);
     //    outputData.coordStream(true).forEach((outputCoord) -> {
     //      double value = getMaxValue(inputData, outputCoord, offsetX, offsetY, paddingX, paddingY, toroidal);
     //      if (Double.isFinite(value)) outputData.set(outputCoord, value);
@@ -155,7 +162,7 @@ class ImgTileAssemblyLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   public static ImgTileAssemblyLayer fromJson(@Nonnull final JsonObject json,
-                                              com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                              Map<CharSequence, byte[]> rs) {
     return new ImgTileAssemblyLayer(json);
   }
 
@@ -163,7 +170,7 @@ class ImgTileAssemblyLayer extends LayerBase {
   ImgTileAssemblyLayer[] addRefs(ImgTileAssemblyLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgTileAssemblyLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(ImgTileAssemblyLayer::addRef)
         .toArray((x) -> new ImgTileAssemblyLayer[x]);
   }
 
@@ -171,7 +178,7 @@ class ImgTileAssemblyLayer extends LayerBase {
   ImgTileAssemblyLayer[][] addRefs(ImgTileAssemblyLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgTileAssemblyLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(ImgTileAssemblyLayer::addRefs)
         .toArray((x) -> new ImgTileAssemblyLayer[x][]);
   }
 
@@ -180,7 +187,7 @@ class ImgTileAssemblyLayer extends LayerBase {
   public Result eval(@Nonnull final Result... inObj) {
     assert 3 == inObj[0].getData().getDimensions().length;
     int[] outputDims = getOutputDims(inObj);
-    return new Result(new TensorArray(com.simiacryptus.ref.wrappers.RefIntStream.range(0, inObj[0].getData().length())
+    return new Result(new TensorArray(RefIntStream.range(0, inObj[0].getData().length())
         .parallel().mapToObj(dataIndex -> {
           @Nonnull final Tensor outputData = new Tensor(outputDims);
 
@@ -220,7 +227,7 @@ class ImgTileAssemblyLayer extends LayerBase {
             final int finalRow = row;
             final int finalCol = col;
             @Nonnull
-            TensorArray tensorArray = new TensorArray(com.simiacryptus.ref.wrappers.RefIntStream
+            TensorArray tensorArray = new TensorArray(RefIntStream
                 .range(0, delta.length()).parallel().mapToObj(dataIndex -> {
                   @Nullable final Tensor deltaTensor = delta.get(dataIndex);
                   @Nonnull final Tensor passbackTensor = new Tensor(inputDataDimensions);
@@ -249,7 +256,7 @@ class ImgTileAssemblyLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             DataSerializer dataSerializer) {
     @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("columns", columns);
@@ -263,8 +270,8 @@ class ImgTileAssemblyLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
-    return new com.simiacryptus.ref.wrappers.RefArrayList<>();
+  public RefList<double[]> state() {
+    return new RefArrayList<>();
   }
 
   public @SuppressWarnings("unused")

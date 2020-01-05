@@ -26,14 +26,17 @@ import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.mindseye.layers.ValueLayer;
 import com.simiacryptus.mindseye.network.DAGNetwork;
 import com.simiacryptus.mindseye.network.DAGNode;
+import com.simiacryptus.ref.lang.RefAware;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.UUID;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class TargetValueLayer extends DAGNetwork {
 
   @SuppressWarnings("unused")
@@ -48,7 +51,7 @@ class TargetValueLayer extends DAGNetwork {
   }
 
   protected TargetValueLayer(@Nonnull final JsonObject json,
-                             com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                             Map<CharSequence, byte[]> rs) {
     super(json, rs);
     head = getNodeById(UUID.fromString(json.getAsJsonPrimitive("head").getAsString()));
     target = getNodeById(UUID.fromString(json.getAsJsonPrimitive("target").getAsString()));
@@ -67,7 +70,7 @@ class TargetValueLayer extends DAGNetwork {
 
   @SuppressWarnings("unused")
   public static Layer fromJson(@Nonnull final JsonObject inner,
-                               com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                               Map<CharSequence, byte[]> rs) {
     return new TargetValueLayer(inner, rs);
   }
 
@@ -75,7 +78,7 @@ class TargetValueLayer extends DAGNetwork {
   TargetValueLayer[] addRefs(TargetValueLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(TargetValueLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(TargetValueLayer::addRef)
         .toArray((x) -> new TargetValueLayer[x]);
   }
 
@@ -83,12 +86,12 @@ class TargetValueLayer extends DAGNetwork {
   TargetValueLayer[][] addRefs(TargetValueLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(TargetValueLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(TargetValueLayer::addRefs)
         .toArray((x) -> new TargetValueLayer[x][]);
   }
 
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             DataSerializer dataSerializer) {
     final JsonObject json = super.getJson(resources, dataSerializer);
     json.addProperty("target", target.getId().toString());

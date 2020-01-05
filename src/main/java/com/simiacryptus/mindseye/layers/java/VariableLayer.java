@@ -22,15 +22,19 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.WrapperLayer;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefList;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
+import java.util.Map;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class VariableLayer extends WrapperLayer {
 
   protected VariableLayer(@Nonnull final JsonObject json,
-                          com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                          Map<CharSequence, byte[]> rs) {
     super(json, rs);
   }
 
@@ -39,13 +43,13 @@ class VariableLayer extends WrapperLayer {
   }
 
   @Override
-  public com.simiacryptus.ref.wrappers.RefList<Layer> getChildren() {
+  public RefList<Layer> getChildren() {
     return super.getChildren();
   }
 
   @SuppressWarnings("unused")
   public static VariableLayer fromJson(@Nonnull final JsonObject json,
-                                       com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                       Map<CharSequence, byte[]> rs) {
     return new VariableLayer(json, rs);
   }
 
@@ -53,7 +57,7 @@ class VariableLayer extends WrapperLayer {
   VariableLayer[] addRefs(VariableLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(VariableLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(VariableLayer::addRef)
         .toArray((x) -> new VariableLayer[x]);
   }
 
@@ -61,7 +65,7 @@ class VariableLayer extends WrapperLayer {
   VariableLayer[][] addRefs(VariableLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(VariableLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(VariableLayer::addRefs)
         .toArray((x) -> new VariableLayer[x][]);
   }
 

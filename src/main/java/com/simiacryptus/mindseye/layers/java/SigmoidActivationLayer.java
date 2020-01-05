@@ -21,11 +21,14 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.DataSerializer;
+import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
+import java.util.Map;
 
 @SuppressWarnings("serial")
-public final @com.simiacryptus.ref.lang.RefAware
+public final @RefAware
 class SigmoidActivationLayer
     extends SimpleActivationLayer<SigmoidActivationLayer> {
 
@@ -55,7 +58,7 @@ class SigmoidActivationLayer
 
   @SuppressWarnings("unused")
   public static SigmoidActivationLayer fromJson(@Nonnull final JsonObject json,
-                                                com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                                Map<CharSequence, byte[]> rs) {
     return new SigmoidActivationLayer(json);
   }
 
@@ -63,7 +66,7 @@ class SigmoidActivationLayer
   SigmoidActivationLayer[] addRefs(SigmoidActivationLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SigmoidActivationLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(SigmoidActivationLayer::addRef)
         .toArray((x) -> new SigmoidActivationLayer[x]);
   }
 
@@ -71,13 +74,13 @@ class SigmoidActivationLayer
   SigmoidActivationLayer[][] addRefs(SigmoidActivationLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SigmoidActivationLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(SigmoidActivationLayer::addRefs)
         .toArray((x) -> new SigmoidActivationLayer[x][]);
   }
 
   @Nonnull
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             DataSerializer dataSerializer) {
     @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("balanced", balanced);

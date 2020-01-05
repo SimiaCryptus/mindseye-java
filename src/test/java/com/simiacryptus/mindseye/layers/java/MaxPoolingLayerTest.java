@@ -20,18 +20,20 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
+import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.Random;
 
-public abstract @com.simiacryptus.ref.lang.RefAware
+public abstract @RefAware
 class MaxPoolingLayerTest extends LayerTestBase {
 
   public static @SuppressWarnings("unused")
   MaxPoolingLayerTest[] addRefs(MaxPoolingLayerTest[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MaxPoolingLayerTest::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(MaxPoolingLayerTest::addRef)
         .toArray((x) -> new MaxPoolingLayerTest[x]);
   }
 
@@ -39,7 +41,7 @@ class MaxPoolingLayerTest extends LayerTestBase {
   MaxPoolingLayerTest[][] addRefs(MaxPoolingLayerTest[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MaxPoolingLayerTest::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(MaxPoolingLayerTest::addRefs)
         .toArray((x) -> new MaxPoolingLayerTest[x][]);
   }
 
@@ -65,14 +67,14 @@ class MaxPoolingLayerTest extends LayerTestBase {
     return (MaxPoolingLayerTest) super.addRef();
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Basic extends MaxPoolingLayerTest {
 
     public static @SuppressWarnings("unused")
     Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
     public @SuppressWarnings("unused")

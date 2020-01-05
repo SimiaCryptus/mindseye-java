@@ -22,11 +22,14 @@ package com.simiacryptus.mindseye.layers.java;
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 import com.simiacryptus.mindseye.test.unit.SingleDerivativeTester;
+import com.simiacryptus.ref.lang.RefAware;
 
-public @com.simiacryptus.ref.lang.RefAware
+import java.util.Arrays;
+
+public @RefAware
 class NthPowerActivationLayerTest {
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class InvPowerTest extends ActivationLayerTestBase {
     public InvPowerTest() {
       super(new NthPowerActivationLayer().setPower(-1));
@@ -41,7 +44,7 @@ class NthPowerActivationLayerTest {
     InvPowerTest[] addRefs(InvPowerTest[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(InvPowerTest::addRef)
+      return Arrays.stream(array).filter((x) -> x != null).map(InvPowerTest::addRef)
           .toArray((x) -> new InvPowerTest[x]);
     }
 
@@ -69,7 +72,7 @@ class NthPowerActivationLayerTest {
     }
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class InvSqrtPowerTest extends ActivationLayerTestBase {
     public InvSqrtPowerTest() {
       super(new NthPowerActivationLayer().setPower(-0.5));
@@ -84,7 +87,7 @@ class NthPowerActivationLayerTest {
     InvSqrtPowerTest[] addRefs(InvSqrtPowerTest[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(InvSqrtPowerTest::addRef)
+      return Arrays.stream(array).filter((x) -> x != null).map(InvSqrtPowerTest::addRef)
           .toArray((x) -> new InvSqrtPowerTest[x]);
     }
 
@@ -112,7 +115,7 @@ class NthPowerActivationLayerTest {
     }
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class NthPowerTest extends ActivationLayerTestBase {
     public NthPowerTest() {
       super(new NthPowerActivationLayer().setPower(Math.PI));
@@ -122,7 +125,7 @@ class NthPowerActivationLayerTest {
     NthPowerTest[] addRefs(NthPowerTest[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(NthPowerTest::addRef)
+      return Arrays.stream(array).filter((x) -> x != null).map(NthPowerTest::addRef)
           .toArray((x) -> new NthPowerTest[x]);
     }
 
@@ -154,7 +157,7 @@ class NthPowerActivationLayerTest {
   //    }
   //  }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class SquarePowerTest extends ActivationLayerTestBase {
     public SquarePowerTest() {
       super(new NthPowerActivationLayer().setPower(2));
@@ -164,7 +167,7 @@ class NthPowerActivationLayerTest {
     SquarePowerTest[] addRefs(SquarePowerTest[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(SquarePowerTest::addRef)
+      return Arrays.stream(array).filter((x) -> x != null).map(SquarePowerTest::addRef)
           .toArray((x) -> new SquarePowerTest[x]);
     }
 
@@ -184,7 +187,7 @@ class NthPowerActivationLayerTest {
     }
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class ZeroPowerTest extends ActivationLayerTestBase {
     public ZeroPowerTest() {
       super(new NthPowerActivationLayer().setPower(0));
@@ -194,7 +197,7 @@ class NthPowerActivationLayerTest {
     ZeroPowerTest[] addRefs(ZeroPowerTest[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(ZeroPowerTest::addRef)
+      return Arrays.stream(array).filter((x) -> x != null).map(ZeroPowerTest::addRef)
           .toArray((x) -> new ZeroPowerTest[x]);
     }
 

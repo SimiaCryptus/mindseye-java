@@ -29,15 +29,22 @@ import com.simiacryptus.mindseye.network.CountingResult;
 import com.simiacryptus.mindseye.network.DAGNetwork;
 import com.simiacryptus.mindseye.network.DAGNode;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefArrayList;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefIntStream;
+import com.simiacryptus.ref.wrappers.RefList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.Random;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class StochasticSamplingSubnetLayer extends LayerBase
     implements StochasticComponent {
 
@@ -56,7 +63,7 @@ class StochasticSamplingSubnetLayer extends LayerBase
   }
 
   protected StochasticSamplingSubnetLayer(@Nonnull final JsonObject json,
-                                          com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                          Map<CharSequence, byte[]> rs) {
     super(json);
     samples = json.getAsJsonPrimitive("samples").getAsInt();
     seed = json.getAsJsonPrimitive("seed").getAsLong();
@@ -66,20 +73,20 @@ class StochasticSamplingSubnetLayer extends LayerBase
 
   public long[] getSeeds() {
     Random random = new Random(seed);
-    return com.simiacryptus.ref.wrappers.RefIntStream.range(0, this.samples).mapToLong(i -> random.nextLong())
+    return RefIntStream.range(0, this.samples).mapToLong(i -> random.nextLong())
         .toArray();
   }
 
   @SuppressWarnings("unused")
   public static StochasticSamplingSubnetLayer fromJson(@Nonnull final JsonObject json,
-                                                       com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                                       Map<CharSequence, byte[]> rs) {
     return new StochasticSamplingSubnetLayer(json, rs);
   }
 
   public static Result average(final Result[] samples) {
     PipelineNetwork gateNetwork = new PipelineNetwork(samples.length);
     {
-      gateNetwork.add(new SumInputsLayer(), com.simiacryptus.ref.wrappers.RefIntStream.range(0, samples.length)
+      gateNetwork.add(new SumInputsLayer(), RefIntStream.range(0, samples.length)
           .mapToObj(i -> gateNetwork.getInput(i)).toArray(i -> new DAGNode[i]));
       gateNetwork.add(new LinearActivationLayer().setScale(1.0 / samples.length).freeze());
       return gateNetwork.eval(samples);
@@ -91,7 +98,7 @@ class StochasticSamplingSubnetLayer extends LayerBase
       StochasticSamplingSubnetLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(StochasticSamplingSubnetLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(StochasticSamplingSubnetLayer::addRef)
         .toArray((x) -> new StochasticSamplingSubnetLayer[x]);
   }
 
@@ -100,7 +107,7 @@ class StochasticSamplingSubnetLayer extends LayerBase
       StochasticSamplingSubnetLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(StochasticSamplingSubnetLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(StochasticSamplingSubnetLayer::addRefs)
         .toArray((x) -> new StochasticSamplingSubnetLayer[x][]);
   }
 
@@ -109,10 +116,10 @@ class StochasticSamplingSubnetLayer extends LayerBase
     if (0 == seed) {
       return subnetwork.eval(inObj);
     }
-    Result[] counting = com.simiacryptus.ref.wrappers.RefArrays.stream(inObj).map(r -> {
+    Result[] counting = RefArrays.stream(inObj).map(r -> {
       return new CountingResult(r, samples);
     }).toArray(i -> new Result[i]);
-    return average(com.simiacryptus.ref.wrappers.RefArrays.stream(getSeeds()).mapToObj(seed1 -> {
+    return average(RefArrays.stream(getSeeds()).mapToObj(seed1 -> {
       shuffleSubnet(seed1);
       return subnetwork.eval(counting);
     }).toArray(i -> new Result[i]));
@@ -134,7 +141,7 @@ class StochasticSamplingSubnetLayer extends LayerBase
 
   @Nonnull
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             DataSerializer dataSerializer) {
     @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("samples", samples);
@@ -145,8 +152,8 @@ class StochasticSamplingSubnetLayer extends LayerBase
 
   @Nonnull
   @Override
-  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
-    return new com.simiacryptus.ref.wrappers.RefArrayList<>();
+  public RefList<double[]> state() {
+    return new RefArrayList<>();
   }
 
   @Nonnull

@@ -20,18 +20,20 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
+import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.Random;
 
-public abstract @com.simiacryptus.ref.lang.RefAware
+public abstract @RefAware
 class ImgReshapeLayerTest extends LayerTestBase {
 
   public static @SuppressWarnings("unused")
   ImgReshapeLayerTest[] addRefs(ImgReshapeLayerTest[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgReshapeLayerTest::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(ImgReshapeLayerTest::addRef)
         .toArray((x) -> new ImgReshapeLayerTest[x]);
   }
 
@@ -39,7 +41,7 @@ class ImgReshapeLayerTest extends LayerTestBase {
   ImgReshapeLayerTest[][] addRefs(ImgReshapeLayerTest[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgReshapeLayerTest::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(ImgReshapeLayerTest::addRefs)
         .toArray((x) -> new ImgReshapeLayerTest[x][]);
   }
 
@@ -65,14 +67,14 @@ class ImgReshapeLayerTest extends LayerTestBase {
     return (ImgReshapeLayerTest) super.addRef();
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Basic extends ImgReshapeLayerTest {
 
     public static @SuppressWarnings("unused")
     Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
     public @SuppressWarnings("unused")

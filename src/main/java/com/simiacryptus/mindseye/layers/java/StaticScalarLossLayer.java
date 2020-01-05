@@ -21,15 +21,21 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefIntStream;
+import com.simiacryptus.ref.wrappers.RefList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.UUID;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class StaticScalarLossLayer extends LayerBase {
 
   @SuppressWarnings("unused")
@@ -55,7 +61,7 @@ class StaticScalarLossLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   public static StaticScalarLossLayer fromJson(@Nonnull final JsonObject json,
-                                               com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                               Map<CharSequence, byte[]> rs) {
     return new StaticScalarLossLayer(json);
   }
 
@@ -63,7 +69,7 @@ class StaticScalarLossLayer extends LayerBase {
   StaticScalarLossLayer[] addRefs(StaticScalarLossLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(StaticScalarLossLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(StaticScalarLossLayer::addRef)
         .toArray((x) -> new StaticScalarLossLayer[x]);
   }
 
@@ -71,7 +77,7 @@ class StaticScalarLossLayer extends LayerBase {
   StaticScalarLossLayer[][] addRefs(StaticScalarLossLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(StaticScalarLossLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(StaticScalarLossLayer::addRefs)
         .toArray((x) -> new StaticScalarLossLayer[x][]);
   }
 
@@ -84,7 +90,7 @@ class StaticScalarLossLayer extends LayerBase {
     final Result in0 = inObj[0];
     TensorList indata = in0.getData();
     return new Result(new TensorArray(
-        com.simiacryptus.ref.wrappers.RefIntStream.range(0, indata.length()).parallel().mapToObj(dataIndex -> {
+        RefIntStream.range(0, indata.length()).parallel().mapToObj(dataIndex -> {
           @Nullable final Tensor a = indata.get(dataIndex);
           final double diff = Math.abs(a.get(0) - getTarget());
           return new Tensor(new double[]{diff}, 1);
@@ -92,7 +98,7 @@ class StaticScalarLossLayer extends LayerBase {
       if (in0.isAlive()) {
         @Nonnull
         TensorArray tensorArray = new TensorArray(
-            com.simiacryptus.ref.wrappers.RefIntStream.range(0, data.length()).parallel().mapToObj(dataIndex -> {
+            RefIntStream.range(0, data.length()).parallel().mapToObj(dataIndex -> {
               @Nullable final Tensor a = indata.get(dataIndex);
               Tensor tensor = data.get(dataIndex);
               final double deriv = tensor.get(0) * (a.get(0) - getTarget() < 0 ? -1 : 1);
@@ -115,15 +121,15 @@ class StaticScalarLossLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 
   @Nonnull
   @Override
-  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
-    return com.simiacryptus.ref.wrappers.RefArrays.asList();
+  public RefList<double[]> state() {
+    return RefArrays.asList();
   }
 
   public @SuppressWarnings("unused")

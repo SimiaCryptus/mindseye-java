@@ -20,11 +20,13 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
+import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.Random;
 
-public abstract @com.simiacryptus.ref.lang.RefAware
+public abstract @RefAware
 class BiasLayerTest extends LayerTestBase {
 
   private final int dimension;
@@ -37,7 +39,7 @@ class BiasLayerTest extends LayerTestBase {
   BiasLayerTest[] addRefs(BiasLayerTest[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BiasLayerTest::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(BiasLayerTest::addRef)
         .toArray((x) -> new BiasLayerTest[x]);
   }
 
@@ -45,7 +47,7 @@ class BiasLayerTest extends LayerTestBase {
   BiasLayerTest[][] addRefs(BiasLayerTest[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BiasLayerTest::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(BiasLayerTest::addRefs)
         .toArray((x) -> new BiasLayerTest[x][]);
   }
 
@@ -71,7 +73,7 @@ class BiasLayerTest extends LayerTestBase {
     return (BiasLayerTest) super.addRef();
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Basic extends BiasLayerTest {
     public Basic() {
       super(5);
@@ -81,7 +83,7 @@ class BiasLayerTest extends LayerTestBase {
     Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
     public @SuppressWarnings("unused")
@@ -95,7 +97,7 @@ class BiasLayerTest extends LayerTestBase {
     }
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Reducing extends BiasLayerTest {
 
     public Reducing() {
@@ -106,7 +108,7 @@ class BiasLayerTest extends LayerTestBase {
     Reducing[] addRefs(Reducing[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Reducing::addRef)
+      return Arrays.stream(array).filter((x) -> x != null).map(Reducing::addRef)
           .toArray((x) -> new Reducing[x]);
     }
 

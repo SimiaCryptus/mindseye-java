@@ -23,14 +23,21 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.simiacryptus.mindseye.lang.*;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefArrayList;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefIntStream;
+import com.simiacryptus.ref.wrappers.RefList;
 import org.apache.commons.math3.util.FastMath;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.UUID;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class ImgViewLayer extends LayerBase {
 
   private double negativeBias = 255;
@@ -173,7 +180,7 @@ class ImgViewLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   public static ImgViewLayer fromJson(@Nonnull final JsonObject json,
-                                      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                      Map<CharSequence, byte[]> rs) {
     return new ImgViewLayer(json);
   }
 
@@ -181,7 +188,7 @@ class ImgViewLayer extends LayerBase {
   ImgViewLayer[] addRefs(ImgViewLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgViewLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(ImgViewLayer::addRef)
         .toArray((x) -> new ImgViewLayer[x]);
   }
 
@@ -189,7 +196,7 @@ class ImgViewLayer extends LayerBase {
   ImgViewLayer[][] addRefs(ImgViewLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgViewLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(ImgViewLayer::addRefs)
         .toArray((x) -> new ImgViewLayer[x][]);
   }
 
@@ -252,7 +259,7 @@ class ImgViewLayer extends LayerBase {
     if (null != channelSelector)
       dimOut[2] = channelSelector.length;
     return new Result(
-        new TensorArray(com.simiacryptus.ref.wrappers.RefIntStream.range(0, batch.length()).mapToObj(dataIndex -> {
+        new TensorArray(RefIntStream.range(0, batch.length()).mapToObj(dataIndex -> {
           @Nonnull final Tensor outputData = new Tensor(dimOut);
           Tensor inputData = batch.get(dataIndex);
           fwd(inputData, outputData);
@@ -261,7 +268,7 @@ class ImgViewLayer extends LayerBase {
       if (input.isAlive()) {
         @Nonnull
         TensorArray tensorArray = new TensorArray(
-            com.simiacryptus.ref.wrappers.RefIntStream.range(0, error.length()).mapToObj(dataIndex -> {
+            RefIntStream.range(0, error.length()).mapToObj(dataIndex -> {
               @Nullable final Tensor err = error.get(dataIndex);
               @Nonnull final Tensor passback = new Tensor(inputDims);
               bck(err, passback);
@@ -284,14 +291,14 @@ class ImgViewLayer extends LayerBase {
   @Nonnull
   public int[] getViewDimensions(int[] sourceDimensions, int[] destinationDimensions, int[] offset) {
     @Nonnull final int[] viewDim = new int[3];
-    com.simiacryptus.ref.wrappers.RefArrays.parallelSetAll(viewDim, i -> isWrap() ? (destinationDimensions[i])
+    RefArrays.parallelSetAll(viewDim, i -> isWrap() ? (destinationDimensions[i])
         : (Math.min(sourceDimensions[i], destinationDimensions[i] + offset[i]) - Math.max(offset[i], 0)));
     return viewDim;
   }
 
   @Nonnull
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             DataSerializer dataSerializer) {
     @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("sizeX", getSizeX());
@@ -315,8 +322,8 @@ class ImgViewLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
-    return new com.simiacryptus.ref.wrappers.RefArrayList<>();
+  public RefList<double[]> state() {
+    return new RefArrayList<>();
   }
 
   public @SuppressWarnings("unused")
@@ -336,8 +343,8 @@ class ImgViewLayer extends LayerBase {
     @Nonnull final int[] outDim = outputData.getDimensions();
     assert 3 == inDim.length;
     assert 3 == outDim.length;
-    assert inDim[2] == outDim[2] : com.simiacryptus.ref.wrappers.RefArrays.toString(inDim) + "; "
-        + com.simiacryptus.ref.wrappers.RefArrays.toString(outDim);
+    assert inDim[2] == outDim[2] : RefArrays.toString(inDim) + "; "
+        + RefArrays.toString(outDim);
     outputData.coordStream(true).forEach((c) -> {
       int[] coords = c.getCoords();
       double[] xy = coordinateMapping(coords[0], coords[1]);
@@ -362,8 +369,8 @@ class ImgViewLayer extends LayerBase {
     @Nonnull final int[] inputDeltaDims = inputDelta.getDimensions();
     assert 3 == outDeltaDims.length;
     assert 3 == inputDeltaDims.length;
-    assert outDeltaDims[2] == inputDeltaDims[2] : com.simiacryptus.ref.wrappers.RefArrays.toString(outDeltaDims) + "; "
-        + com.simiacryptus.ref.wrappers.RefArrays.toString(inputDeltaDims);
+    assert outDeltaDims[2] == inputDeltaDims[2] : RefArrays.toString(outDeltaDims) + "; "
+        + RefArrays.toString(inputDeltaDims);
     outputDelta.coordStream(true).forEach((c) -> {
       int[] outCoord = c.getCoords();
       double[] inCoords = coordinateMapping(outCoord[0], outCoord[1]);

@@ -20,12 +20,14 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
+import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.Random;
 
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class SubBatchLayerTest extends LayerTestBase {
 
   private final Layer layer = SubBatchLayer.wrap(new SoftmaxLayer());
@@ -40,7 +42,7 @@ class SubBatchLayerTest extends LayerTestBase {
   SubBatchLayerTest[] addRefs(SubBatchLayerTest[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SubBatchLayerTest::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(SubBatchLayerTest::addRef)
         .toArray((x) -> new SubBatchLayerTest[x]);
   }
 
@@ -48,7 +50,7 @@ class SubBatchLayerTest extends LayerTestBase {
   SubBatchLayerTest[][] addRefs(SubBatchLayerTest[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SubBatchLayerTest::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(SubBatchLayerTest::addRefs)
         .toArray((x) -> new SubBatchLayerTest[x][]);
   }
 

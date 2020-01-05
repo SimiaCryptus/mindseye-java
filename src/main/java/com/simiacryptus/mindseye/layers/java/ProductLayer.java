@@ -21,15 +21,21 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefIntStream;
+import com.simiacryptus.ref.wrappers.RefList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.UUID;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class ProductLayer extends LayerBase {
 
   @SuppressWarnings("unused")
@@ -44,7 +50,7 @@ class ProductLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   public static ProductLayer fromJson(@Nonnull final JsonObject json,
-                                      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                      Map<CharSequence, byte[]> rs) {
     return new ProductLayer(json);
   }
 
@@ -52,7 +58,7 @@ class ProductLayer extends LayerBase {
   ProductLayer[] addRefs(ProductLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ProductLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(ProductLayer::addRef)
         .toArray((x) -> new ProductLayer[x]);
   }
 
@@ -60,7 +66,7 @@ class ProductLayer extends LayerBase {
   ProductLayer[][] addRefs(ProductLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ProductLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(ProductLayer::addRefs)
         .toArray((x) -> new ProductLayer[x][]);
   }
 
@@ -68,11 +74,11 @@ class ProductLayer extends LayerBase {
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     final Result in0 = inObj[0];
-    assert com.simiacryptus.ref.wrappers.RefArrays.stream(inObj).mapToInt(x -> x.getData().length()).distinct()
-        .count() == 1 : com.simiacryptus.ref.wrappers.RefArrays.toString(
-        com.simiacryptus.ref.wrappers.RefArrays.stream(inObj).mapToInt(x -> x.getData().length()).toArray());
+    assert RefArrays.stream(inObj).mapToInt(x -> x.getData().length()).distinct()
+        .count() == 1 : RefArrays.toString(
+        RefArrays.stream(inObj).mapToInt(x -> x.getData().length()).toArray());
     @Nonnull final double[] sum_A = new double[in0.getData().length()];
-    final Tensor[] outputA = com.simiacryptus.ref.wrappers.RefIntStream.range(0, in0.getData().length())
+    final Tensor[] outputA = RefIntStream.range(0, in0.getData().length())
         .mapToObj(dataIndex -> {
           double sum = 1;
           for (@Nonnull final Result input : inObj) {
@@ -91,7 +97,7 @@ class ProductLayer extends LayerBase {
             if (input.isAlive()) {
               TensorList data = input.getData();
               input.accumulate(buffer, new TensorArray(
-                  com.simiacryptus.ref.wrappers.RefIntStream.range(0, delta.length()).mapToObj(dataIndex -> {
+                  RefIntStream.range(0, delta.length()).mapToObj(dataIndex -> {
                     Tensor dataTensor = delta.get(dataIndex);
                     Tensor lTensor = data.get(dataIndex);
                     @Nonnull final Tensor passback = new Tensor(lTensor.getDimensions());
@@ -123,15 +129,15 @@ class ProductLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 
   @Nonnull
   @Override
-  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
-    return com.simiacryptus.ref.wrappers.RefArrays.asList();
+  public RefList<double[]> state() {
+    return RefArrays.asList();
   }
 
   public @SuppressWarnings("unused")

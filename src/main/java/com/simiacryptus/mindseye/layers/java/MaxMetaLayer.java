@@ -21,15 +21,22 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefComparator;
+import com.simiacryptus.ref.wrappers.RefIntStream;
+import com.simiacryptus.ref.wrappers.RefList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.UUID;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class MaxMetaLayer extends LayerBase {
 
   @SuppressWarnings("unused")
@@ -44,7 +51,7 @@ class MaxMetaLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   public static MaxMetaLayer fromJson(@Nonnull final JsonObject json,
-                                      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                      Map<CharSequence, byte[]> rs) {
     return new MaxMetaLayer(json);
   }
 
@@ -52,7 +59,7 @@ class MaxMetaLayer extends LayerBase {
   MaxMetaLayer[] addRefs(MaxMetaLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MaxMetaLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(MaxMetaLayer::addRef)
         .toArray((x) -> new MaxMetaLayer[x]);
   }
 
@@ -60,7 +67,7 @@ class MaxMetaLayer extends LayerBase {
   MaxMetaLayer[][] addRefs(MaxMetaLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MaxMetaLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(MaxMetaLayer::addRefs)
         .toArray((x) -> new MaxMetaLayer[x][]);
   }
 
@@ -74,8 +81,8 @@ class MaxMetaLayer extends LayerBase {
     @Nonnull final int[] indicies = new int[vectorSize];
     for (int i = 0; i < vectorSize; i++) {
       final int itemNumber = i;
-      indicies[i] = com.simiacryptus.ref.wrappers.RefIntStream.range(0, itemCnt).mapToObj(x -> x)
-          .max(com.simiacryptus.ref.wrappers.RefComparator.comparing(dataIndex -> {
+      indicies[i] = RefIntStream.range(0, itemCnt).mapToObj(x -> x)
+          .max(RefComparator.comparing(dataIndex -> {
             Tensor tensor = input.getData().get(dataIndex);
             return tensor.getData()[itemNumber];
           })).get();
@@ -87,7 +94,7 @@ class MaxMetaLayer extends LayerBase {
       if (input.isAlive()) {
         @Nullable final Tensor delta = data.get(0);
         @Nonnull final Tensor feedback[] = new Tensor[itemCnt];
-        com.simiacryptus.ref.wrappers.RefArrays.parallelSetAll(feedback, i -> new Tensor(delta.getDimensions()));
+        RefArrays.parallelSetAll(feedback, i -> new Tensor(delta.getDimensions()));
         input0Tensor.coordStream(true).forEach((inputCoord) -> {
           feedback[indicies[inputCoord.getIndex()]].add(inputCoord, delta.get(inputCoord));
         });
@@ -110,15 +117,15 @@ class MaxMetaLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 
   @Nonnull
   @Override
-  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
-    return com.simiacryptus.ref.wrappers.RefArrays.asList();
+  public RefList<double[]> state() {
+    return RefArrays.asList();
   }
 
   public @SuppressWarnings("unused")

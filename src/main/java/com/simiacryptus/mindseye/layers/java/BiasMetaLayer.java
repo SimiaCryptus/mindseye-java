@@ -21,15 +21,21 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefIntStream;
+import com.simiacryptus.ref.wrappers.RefList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.UUID;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class BiasMetaLayer extends LayerBase {
 
   @SuppressWarnings("unused")
@@ -44,7 +50,7 @@ class BiasMetaLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   public static BiasMetaLayer fromJson(@Nonnull final JsonObject json,
-                                       com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                       Map<CharSequence, byte[]> rs) {
     return new BiasMetaLayer(json);
   }
 
@@ -52,7 +58,7 @@ class BiasMetaLayer extends LayerBase {
   BiasMetaLayer[] addRefs(BiasMetaLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BiasMetaLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(BiasMetaLayer::addRef)
         .toArray((x) -> new BiasMetaLayer[x]);
   }
 
@@ -60,7 +66,7 @@ class BiasMetaLayer extends LayerBase {
   BiasMetaLayer[][] addRefs(BiasMetaLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BiasMetaLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(BiasMetaLayer::addRefs)
         .toArray((x) -> new BiasMetaLayer[x][]);
   }
 
@@ -73,7 +79,7 @@ class BiasMetaLayer extends LayerBase {
     final int itemCnt = data0.length();
     final TensorList data1 = in1.getData();
     Tensor tensor1 = data1.get(0);
-    final Tensor[] tensors = com.simiacryptus.ref.wrappers.RefIntStream.range(0, itemCnt).parallel()
+    final Tensor[] tensors = RefIntStream.range(0, itemCnt).parallel()
         .mapToObj(dataIndex -> {
           Tensor tensor = data0.get(dataIndex);
           return tensor.mapIndex((v, c) -> {
@@ -86,10 +92,10 @@ class BiasMetaLayer extends LayerBase {
           if (in1.isAlive()) {
             @Nonnull
             TensorArray tensorArray = new TensorArray(
-                com.simiacryptus.ref.wrappers.RefIntStream.range(0, data.length()).mapToObj(i -> {
+                RefIntStream.range(0, data.length()).mapToObj(i -> {
                   if (i == 0)
                     return tensor0.mapCoords((c) -> {
-                      return com.simiacryptus.ref.wrappers.RefIntStream.range(0, itemCnt).mapToDouble(j -> {
+                      return RefIntStream.range(0, itemCnt).mapToDouble(j -> {
                         Tensor tensor = data.get(j);
                         return tensor.get(c);
                       }).sum();
@@ -118,15 +124,15 @@ class BiasMetaLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 
   @Nonnull
   @Override
-  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
-    return com.simiacryptus.ref.wrappers.RefArrays.asList();
+  public RefList<double[]> state() {
+    return RefArrays.asList();
   }
 
   public @SuppressWarnings("unused")

@@ -23,11 +23,17 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.simiacryptus.mindseye.lang.*;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefIntStream;
+import com.simiacryptus.ref.wrappers.RefList;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
+import java.util.Map;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class AssertDimensionsLayer extends LayerBase {
 
   private final int[] dims;
@@ -40,18 +46,18 @@ class AssertDimensionsLayer extends LayerBase {
   protected AssertDimensionsLayer(@Nonnull final JsonObject json) {
     super(json);
     final JsonArray dimsJson = json.get("dims").getAsJsonArray();
-    dims = com.simiacryptus.ref.wrappers.RefIntStream.range(0, dimsJson.size()).map(i -> dimsJson.get(i).getAsInt())
+    dims = RefIntStream.range(0, dimsJson.size()).map(i -> dimsJson.get(i).getAsInt())
         .toArray();
   }
 
   @Override
-  public com.simiacryptus.ref.wrappers.RefList<Layer> getChildren() {
+  public RefList<Layer> getChildren() {
     return super.getChildren();
   }
 
   @SuppressWarnings("unused")
   public static AssertDimensionsLayer fromJson(@Nonnull final JsonObject json,
-                                               com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                               Map<CharSequence, byte[]> rs) {
     return new AssertDimensionsLayer(json);
   }
 
@@ -59,7 +65,7 @@ class AssertDimensionsLayer extends LayerBase {
   AssertDimensionsLayer[] addRefs(AssertDimensionsLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(AssertDimensionsLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(AssertDimensionsLayer::addRef)
         .toArray((x) -> new AssertDimensionsLayer[x]);
   }
 
@@ -67,7 +73,7 @@ class AssertDimensionsLayer extends LayerBase {
   AssertDimensionsLayer[][] addRefs(AssertDimensionsLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(AssertDimensionsLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(AssertDimensionsLayer::addRefs)
         .toArray((x) -> new AssertDimensionsLayer[x][]);
   }
 
@@ -82,15 +88,15 @@ class AssertDimensionsLayer extends LayerBase {
     }
     @Nonnull final int[] inputDims = input.getData().getDimensions();
     if (Tensor.length(inputDims) != Tensor.length(dims)) {
-      throw new IllegalArgumentException(getName() + ": " + com.simiacryptus.ref.wrappers.RefArrays.toString(inputDims)
-          + " != " + com.simiacryptus.ref.wrappers.RefArrays.toString(dims));
+      throw new IllegalArgumentException(getName() + ": " + RefArrays.toString(inputDims)
+          + " != " + RefArrays.toString(dims));
     }
     return input;
   }
 
   @Nonnull
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             DataSerializer dataSerializer) {
     @Nonnull final JsonObject json = super.getJsonStub();
     @Nonnull final JsonArray dimsJson = new JsonArray();
@@ -103,8 +109,8 @@ class AssertDimensionsLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
-    return com.simiacryptus.ref.wrappers.RefArrays.asList();
+  public RefList<double[]> state() {
+    return RefArrays.asList();
   }
 
   public @SuppressWarnings("unused")

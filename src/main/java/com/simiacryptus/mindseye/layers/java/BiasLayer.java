@@ -22,6 +22,9 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RecycleBin;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefList;
 import com.simiacryptus.util.FastRandom;
 import com.simiacryptus.util.Util;
 import org.slf4j.Logger;
@@ -29,12 +32,14 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.UUID;
 import java.util.function.DoubleSupplier;
 import java.util.function.IntToDoubleFunction;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class BiasLayer extends LayerBase {
 
   @SuppressWarnings("unused")
@@ -51,7 +56,7 @@ class BiasLayer extends LayerBase {
     bias = new Tensor(dims);
   }
 
-  protected BiasLayer(@Nonnull final JsonObject json, com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+  protected BiasLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json);
     bias = Tensor.fromJson(json.get("bias"), rs);
   }
@@ -76,7 +81,7 @@ class BiasLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   public static BiasLayer fromJson(@Nonnull final JsonObject json,
-                                   com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                   Map<CharSequence, byte[]> rs) {
     return new BiasLayer(json, rs);
   }
 
@@ -84,7 +89,7 @@ class BiasLayer extends LayerBase {
   BiasLayer[] addRefs(BiasLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BiasLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(BiasLayer::addRef)
         .toArray((x) -> new BiasLayer[x]);
   }
 
@@ -92,7 +97,7 @@ class BiasLayer extends LayerBase {
   BiasLayer[][] addRefs(BiasLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BiasLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(BiasLayer::addRefs)
         .toArray((x) -> new BiasLayer[x][]);
   }
 
@@ -136,7 +141,7 @@ class BiasLayer extends LayerBase {
           delta.stream().parallel().forEach(d -> {
             @Nullable final double[] array = d.getData();
             deltaBuffer.addInPlace(1 == array.length ? array
-                : new double[]{com.simiacryptus.ref.wrappers.RefArrays.stream(array).sum()});
+                : new double[]{RefArrays.stream(array).sum()});
           });
         } else {
           delta.stream().parallel().forEach(d -> {
@@ -161,7 +166,7 @@ class BiasLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             DataSerializer dataSerializer) {
     @Nonnull final JsonObject json = super.getJsonStub();
     json.add("bias", bias.getJson(resources, dataSerializer));
@@ -179,8 +184,8 @@ class BiasLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
-    return com.simiacryptus.ref.wrappers.RefArrays.asList(bias.getData());
+  public RefList<double[]> state() {
+    return RefArrays.asList(bias.getData());
   }
 
   @Nonnull

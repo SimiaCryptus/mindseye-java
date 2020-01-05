@@ -21,15 +21,21 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefIntStream;
+import com.simiacryptus.ref.wrappers.RefList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.UUID;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class EntropyLossLayer extends LayerBase {
 
   @SuppressWarnings("unused")
@@ -44,7 +50,7 @@ class EntropyLossLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   public static EntropyLossLayer fromJson(@Nonnull final JsonObject json,
-                                          com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                          Map<CharSequence, byte[]> rs) {
     return new EntropyLossLayer(json);
   }
 
@@ -52,7 +58,7 @@ class EntropyLossLayer extends LayerBase {
   EntropyLossLayer[] addRefs(EntropyLossLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(EntropyLossLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(EntropyLossLayer::addRef)
         .toArray((x) -> new EntropyLossLayer[x]);
   }
 
@@ -60,7 +66,7 @@ class EntropyLossLayer extends LayerBase {
   EntropyLossLayer[][] addRefs(EntropyLossLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(EntropyLossLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(EntropyLossLayer::addRefs)
         .toArray((x) -> new EntropyLossLayer[x][]);
   }
 
@@ -72,7 +78,7 @@ class EntropyLossLayer extends LayerBase {
     @Nonnull final Tensor gradient[] = new Tensor[indata.length()];
     final double max_prob = 1.;
     return new Result(
-        new TensorArray(com.simiacryptus.ref.wrappers.RefIntStream.range(0, indata.length()).mapToObj(dataIndex -> {
+        new TensorArray(RefIntStream.range(0, indata.length()).mapToObj(dataIndex -> {
           @Nullable final Tensor l = indata.get(dataIndex);
           @Nullable final Tensor r = inObj[1].getData().get(dataIndex);
           if (l.length() != r.length()) {
@@ -100,7 +106,7 @@ class EntropyLossLayer extends LayerBase {
       if (inObj[1].isAlive()) {
         @Nonnull
         TensorArray tensorArray = new TensorArray(
-            com.simiacryptus.ref.wrappers.RefIntStream.range(0, delta.length()).mapToObj(dataIndex -> {
+            RefIntStream.range(0, delta.length()).mapToObj(dataIndex -> {
               Tensor deltaTensor = delta.get(dataIndex);
               @Nullable final Tensor inputTensor = indata.get(dataIndex);
               @Nonnull final Tensor passback = new Tensor(gradient[dataIndex].getDimensions());
@@ -115,7 +121,7 @@ class EntropyLossLayer extends LayerBase {
       if (inObj[0].isAlive()) {
         @Nonnull
         TensorArray tensorArray = new TensorArray(
-            com.simiacryptus.ref.wrappers.RefIntStream.range(0, delta.length()).mapToObj(dataIndex -> {
+            RefIntStream.range(0, delta.length()).mapToObj(dataIndex -> {
               Tensor tensor = delta.get(dataIndex);
               @Nonnull final Tensor passback = new Tensor(gradient[dataIndex].getDimensions());
               for (int i = 0; i < passback.length(); i++) {
@@ -140,15 +146,15 @@ class EntropyLossLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 
   @Nonnull
   @Override
-  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
-    return com.simiacryptus.ref.wrappers.RefArrays.asList();
+  public RefList<double[]> state() {
+    return RefArrays.asList();
   }
 
   public @SuppressWarnings("unused")

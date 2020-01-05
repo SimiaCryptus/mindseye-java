@@ -21,16 +21,23 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefHashMap;
+import com.simiacryptus.ref.wrappers.RefList;
+import com.simiacryptus.ref.wrappers.RefMap;
 import com.simiacryptus.util.MonitoredItem;
 import com.simiacryptus.util.MonitoredObject;
 import com.simiacryptus.util.data.PercentileStatistics;
 import com.simiacryptus.util.data.ScalarStatistics;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.UUID;
 
 @SuppressWarnings("serial")
-public final @com.simiacryptus.ref.lang.RefAware
+public final @RefAware
 class MonitoringSynapse extends LayerBase implements MonitoredItem {
 
   private final ScalarStatistics backpropStatistics = new PercentileStatistics();
@@ -48,8 +55,8 @@ class MonitoringSynapse extends LayerBase implements MonitoredItem {
 
   @Nonnull
   @Override
-  public com.simiacryptus.ref.wrappers.RefMap<CharSequence, Object> getMetrics() {
-    @Nonnull final com.simiacryptus.ref.wrappers.RefHashMap<CharSequence, Object> map = new com.simiacryptus.ref.wrappers.RefHashMap<>();
+  public RefMap<CharSequence, Object> getMetrics() {
+    @Nonnull final RefHashMap<CharSequence, Object> map = new RefHashMap<>();
     map.put("totalBatches", totalBatches);
     map.put("totalItems", totalItems);
     map.put("forward", forwardStatistics.getMetrics());
@@ -60,7 +67,7 @@ class MonitoringSynapse extends LayerBase implements MonitoredItem {
   @Nonnull
   @SuppressWarnings("unused")
   public static MonitoringSynapse fromJson(@Nonnull final JsonObject json,
-                                           com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                           Map<CharSequence, byte[]> rs) {
     @Nonnull final MonitoringSynapse obj = new MonitoringSynapse(json);
     obj.totalBatches = json.get("totalBatches").getAsInt();
     obj.totalItems = json.get("totalItems").getAsInt();
@@ -73,7 +80,7 @@ class MonitoringSynapse extends LayerBase implements MonitoredItem {
   MonitoringSynapse[] addRefs(MonitoringSynapse[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MonitoringSynapse::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(MonitoringSynapse::addRef)
         .toArray((x) -> new MonitoringSynapse[x]);
   }
 
@@ -81,7 +88,7 @@ class MonitoringSynapse extends LayerBase implements MonitoredItem {
   MonitoringSynapse[][] addRefs(MonitoringSynapse[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MonitoringSynapse::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(MonitoringSynapse::addRefs)
         .toArray((x) -> new MonitoringSynapse[x][]);
   }
 
@@ -130,7 +137,7 @@ class MonitoringSynapse extends LayerBase implements MonitoredItem {
 
   @Nonnull
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             DataSerializer dataSerializer) {
     @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("totalBatches", totalBatches);
@@ -139,8 +146,8 @@ class MonitoringSynapse extends LayerBase implements MonitoredItem {
   }
 
   @Override
-  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
-    return com.simiacryptus.ref.wrappers.RefArrays.asList();
+  public RefList<double[]> state() {
+    return RefArrays.asList();
   }
 
   public @SuppressWarnings("unused")

@@ -21,13 +21,20 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefArrayList;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefIntStream;
+import com.simiacryptus.ref.wrappers.RefList;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.UUID;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class ImgCropLayer extends LayerBase {
 
   private final int sizeX;
@@ -51,8 +58,8 @@ class ImgCropLayer extends LayerBase {
     @Nonnull final int[] outDim = outputData.getDimensions();
     assert 3 == inDim.length;
     assert 3 == outDim.length;
-    assert inDim[2] == outDim[2] : com.simiacryptus.ref.wrappers.RefArrays.toString(inDim) + "; "
-        + com.simiacryptus.ref.wrappers.RefArrays.toString(outDim);
+    assert inDim[2] == outDim[2] : RefArrays.toString(inDim) + "; "
+        + RefArrays.toString(outDim);
     double fx = (inDim[0] - outDim[0]) / 2.0;
     double fy = (inDim[1] - outDim[1]) / 2.0;
     final int paddingX = (int) (fx < 0 ? Math.ceil(fx) : Math.floor(fx));
@@ -81,7 +88,7 @@ class ImgCropLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   public static ImgCropLayer fromJson(@Nonnull final JsonObject json,
-                                      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                      Map<CharSequence, byte[]> rs) {
     return new ImgCropLayer(json);
   }
 
@@ -89,7 +96,7 @@ class ImgCropLayer extends LayerBase {
   ImgCropLayer[] addRefs(ImgCropLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgCropLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(ImgCropLayer::addRef)
         .toArray((x) -> new ImgCropLayer[x]);
   }
 
@@ -97,7 +104,7 @@ class ImgCropLayer extends LayerBase {
   ImgCropLayer[][] addRefs(ImgCropLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgCropLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(ImgCropLayer::addRefs)
         .toArray((x) -> new ImgCropLayer[x][]);
   }
 
@@ -109,7 +116,7 @@ class ImgCropLayer extends LayerBase {
     @Nonnull final int[] inputDims = batch.getDimensions();
     assert 3 == inputDims.length;
     return new Result(new TensorArray(
-        com.simiacryptus.ref.wrappers.RefIntStream.range(0, batch.length()).parallel().mapToObj(dataIndex -> {
+        RefIntStream.range(0, batch.length()).parallel().mapToObj(dataIndex -> {
           @Nonnull final Tensor outputData = new Tensor(sizeX, sizeY, inputDims[2]);
           Tensor inputData = batch.get(dataIndex);
           ImgCropLayer.copy(inputData, outputData);
@@ -118,7 +125,7 @@ class ImgCropLayer extends LayerBase {
       if (input.isAlive()) {
         @Nonnull
         TensorArray tensorArray = new TensorArray(
-            com.simiacryptus.ref.wrappers.RefIntStream.range(0, error.length()).parallel().mapToObj(dataIndex -> {
+            RefIntStream.range(0, error.length()).parallel().mapToObj(dataIndex -> {
               @Nullable final Tensor err = error.get(dataIndex);
               @Nonnull final Tensor passback = new Tensor(inputDims);
               copy(err, passback);
@@ -140,7 +147,7 @@ class ImgCropLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             DataSerializer dataSerializer) {
     @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("sizeX", sizeX);
@@ -150,8 +157,8 @@ class ImgCropLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
-    return new com.simiacryptus.ref.wrappers.RefArrayList<>();
+  public RefList<double[]> state() {
+    return new RefArrayList<>();
   }
 
   public @SuppressWarnings("unused")

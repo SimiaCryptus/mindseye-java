@@ -22,20 +22,22 @@ package com.simiacryptus.mindseye.layers.java;
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.network.DAGNode;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
+import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.Random;
 
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class SumInputsLayerTest {
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class N1Test extends LayerTestBase {
 
     public static @SuppressWarnings("unused")
     N1Test[] addRefs(N1Test[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(N1Test::addRef).toArray((x) -> new N1Test[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(N1Test::addRef).toArray((x) -> new N1Test[x]);
     }
 
     @Nonnull
@@ -68,14 +70,14 @@ class SumInputsLayerTest {
 
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class NNTest extends LayerTestBase {
 
     public static @SuppressWarnings("unused")
     NNTest[] addRefs(NNTest[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(NNTest::addRef).toArray((x) -> new NNTest[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(NNTest::addRef).toArray((x) -> new NNTest[x]);
     }
 
     @Nonnull
@@ -108,7 +110,7 @@ class SumInputsLayerTest {
 
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class OnePlusOne extends LayerTestBase {
 
     public OnePlusOne() {
@@ -130,7 +132,7 @@ class SumInputsLayerTest {
     OnePlusOne[] addRefs(OnePlusOne[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(OnePlusOne::addRef)
+      return Arrays.stream(array).filter((x) -> x != null).map(OnePlusOne::addRef)
           .toArray((x) -> new OnePlusOne[x]);
     }
 

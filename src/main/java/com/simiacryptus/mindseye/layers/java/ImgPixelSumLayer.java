@@ -21,14 +21,20 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefIntStream;
+import com.simiacryptus.ref.wrappers.RefList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.UUID;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class ImgPixelSumLayer extends LayerBase {
 
   @SuppressWarnings("unused")
@@ -44,7 +50,7 @@ class ImgPixelSumLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   public static ImgPixelSumLayer fromJson(@Nonnull final JsonObject json,
-                                          com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                          Map<CharSequence, byte[]> rs) {
     return new ImgPixelSumLayer(json);
   }
 
@@ -52,7 +58,7 @@ class ImgPixelSumLayer extends LayerBase {
   ImgPixelSumLayer[] addRefs(ImgPixelSumLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgPixelSumLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(ImgPixelSumLayer::addRef)
         .toArray((x) -> new ImgPixelSumLayer[x]);
   }
 
@@ -60,7 +66,7 @@ class ImgPixelSumLayer extends LayerBase {
   ImgPixelSumLayer[][] addRefs(ImgPixelSumLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgPixelSumLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(ImgPixelSumLayer::addRefs)
         .toArray((x) -> new ImgPixelSumLayer[x][]);
   }
 
@@ -78,7 +84,7 @@ class ImgPixelSumLayer extends LayerBase {
     assert 3 == inputDims.length;
     return new Result(new TensorArray(inputData.stream().map(tensor -> {
       return new Tensor(inputDims[0], inputDims[1], 1).setByCoord(c -> {
-        return com.simiacryptus.ref.wrappers.RefIntStream.range(0, inputDims[2]).mapToDouble(i -> {
+        return RefIntStream.range(0, inputDims[2]).mapToDouble(i -> {
           int[] coords = c.getCoords();
           return tensor.get(coords[0], coords[1], i);
         }).sum();
@@ -109,15 +115,15 @@ class ImgPixelSumLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 
   @Nonnull
   @Override
-  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
-    return com.simiacryptus.ref.wrappers.RefArrays.asList();
+  public RefList<double[]> state() {
+    return RefArrays.asList();
   }
 
   public @SuppressWarnings("unused")

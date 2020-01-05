@@ -23,11 +23,16 @@ import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.DataSerializer;
 import com.simiacryptus.mindseye.lang.LayerBase;
 import com.simiacryptus.mindseye.lang.Result;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefArrayList;
+import com.simiacryptus.ref.wrappers.RefList;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
+import java.util.Map;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class ImgZeroPaddingLayer extends LayerBase {
 
   private final int sizeX;
@@ -47,7 +52,7 @@ class ImgZeroPaddingLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   public static ImgZeroPaddingLayer fromJson(@Nonnull final JsonObject json,
-                                             com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                             Map<CharSequence, byte[]> rs) {
     return new ImgZeroPaddingLayer(json);
   }
 
@@ -55,7 +60,7 @@ class ImgZeroPaddingLayer extends LayerBase {
   ImgZeroPaddingLayer[] addRefs(ImgZeroPaddingLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgZeroPaddingLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(ImgZeroPaddingLayer::addRef)
         .toArray((x) -> new ImgZeroPaddingLayer[x]);
   }
 
@@ -63,7 +68,7 @@ class ImgZeroPaddingLayer extends LayerBase {
   ImgZeroPaddingLayer[][] addRefs(ImgZeroPaddingLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgZeroPaddingLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(ImgZeroPaddingLayer::addRefs)
         .toArray((x) -> new ImgZeroPaddingLayer[x][]);
   }
 
@@ -79,7 +84,7 @@ class ImgZeroPaddingLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             DataSerializer dataSerializer) {
     @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("sizeX", sizeX);
@@ -89,8 +94,8 @@ class ImgZeroPaddingLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
-    return new com.simiacryptus.ref.wrappers.RefArrayList<>();
+  public RefList<double[]> state() {
+    return new RefArrayList<>();
   }
 
   public @SuppressWarnings("unused")

@@ -21,15 +21,21 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefIntStream;
+import com.simiacryptus.ref.wrappers.RefList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.UUID;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class SumReducerLayer extends LayerBase {
 
   @SuppressWarnings("unused")
@@ -44,7 +50,7 @@ class SumReducerLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   public static SumReducerLayer fromJson(@Nonnull final JsonObject json,
-                                         com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                         Map<CharSequence, byte[]> rs) {
     return new SumReducerLayer(json);
   }
 
@@ -52,7 +58,7 @@ class SumReducerLayer extends LayerBase {
   SumReducerLayer[] addRefs(SumReducerLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SumReducerLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(SumReducerLayer::addRef)
         .toArray((x) -> new SumReducerLayer[x]);
   }
 
@@ -60,14 +66,14 @@ class SumReducerLayer extends LayerBase {
   SumReducerLayer[][] addRefs(SumReducerLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SumReducerLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(SumReducerLayer::addRefs)
         .toArray((x) -> new SumReducerLayer[x][]);
   }
 
   @Nonnull
   @Override
   public Result eval(@Nonnull final Result... inObj) {
-    return new Result(new TensorArray(com.simiacryptus.ref.wrappers.RefIntStream.range(0, inObj[0].getData().length())
+    return new Result(new TensorArray(RefIntStream.range(0, inObj[0].getData().length())
         .parallel().mapToDouble(dataIndex -> {
           double sum = 0;
           for (@Nonnull final Result element : inObj) {
@@ -84,10 +90,10 @@ class SumReducerLayer extends LayerBase {
           for (@Nonnull final Result in_l : inObj) {
             if (in_l.isAlive()) {
               @Nonnull
-              TensorArray tensorArray = new TensorArray(com.simiacryptus.ref.wrappers.RefIntStream
+              TensorArray tensorArray = new TensorArray(RefIntStream
                   .range(0, in_l.getData().length()).parallel().mapToObj(dataIndex -> {
                     Tensor tensor = data.get(dataIndex);
-                    assert 1 == tensor.length() : com.simiacryptus.ref.wrappers.RefArrays
+                    assert 1 == tensor.length() : RefArrays
                         .toString(tensor.getDimensions());
                     @Nonnull final Tensor passback = new Tensor(in_l.getData().getDimensions());
                     for (int i = 0; i < Tensor.length(in_l.getData().getDimensions()); i++) {
@@ -117,15 +123,15 @@ class SumReducerLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 
   @Nonnull
   @Override
-  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
-    return com.simiacryptus.ref.wrappers.RefArrays.asList();
+  public RefList<double[]> state() {
+    return RefArrays.asList();
   }
 
   public @SuppressWarnings("unused")

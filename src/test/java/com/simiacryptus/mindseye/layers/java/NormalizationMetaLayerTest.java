@@ -23,11 +23,13 @@ import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.MetaLayerTestBase;
 import com.simiacryptus.mindseye.test.ToleranceStatistics;
 import com.simiacryptus.mindseye.test.unit.ComponentTest;
+import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.Random;
 
-public abstract @com.simiacryptus.ref.lang.RefAware
+public abstract @RefAware
 class NormalizationMetaLayerTest extends MetaLayerTestBase {
   @Override
   public ComponentTest<ToleranceStatistics> getDerivativeTester() {
@@ -39,7 +41,7 @@ class NormalizationMetaLayerTest extends MetaLayerTestBase {
   NormalizationMetaLayerTest[] addRefs(NormalizationMetaLayerTest[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(NormalizationMetaLayerTest::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(NormalizationMetaLayerTest::addRef)
         .toArray((x) -> new NormalizationMetaLayerTest[x]);
   }
 
@@ -48,7 +50,7 @@ class NormalizationMetaLayerTest extends MetaLayerTestBase {
       NormalizationMetaLayerTest[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(NormalizationMetaLayerTest::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(NormalizationMetaLayerTest::addRefs)
         .toArray((x) -> new NormalizationMetaLayerTest[x][]);
   }
 
@@ -85,14 +87,14 @@ class NormalizationMetaLayerTest extends MetaLayerTestBase {
     return new MeanSqLossLayer();
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Basic extends NormalizationMetaLayerTest {
 
     public static @SuppressWarnings("unused")
     Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
     public @SuppressWarnings("unused")

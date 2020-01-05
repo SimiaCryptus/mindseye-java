@@ -20,18 +20,20 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
+import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.Random;
 
-public abstract @com.simiacryptus.ref.lang.RefAware
+public abstract @RefAware
 class TensorConcatLayerTest extends LayerTestBase {
 
   public static @SuppressWarnings("unused")
   TensorConcatLayerTest[] addRefs(TensorConcatLayerTest[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(TensorConcatLayerTest::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(TensorConcatLayerTest::addRef)
         .toArray((x) -> new TensorConcatLayerTest[x]);
   }
 
@@ -39,7 +41,7 @@ class TensorConcatLayerTest extends LayerTestBase {
   TensorConcatLayerTest[][] addRefs(TensorConcatLayerTest[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(TensorConcatLayerTest::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(TensorConcatLayerTest::addRefs)
         .toArray((x) -> new TensorConcatLayerTest[x][]);
   }
 
@@ -65,14 +67,14 @@ class TensorConcatLayerTest extends LayerTestBase {
     return (TensorConcatLayerTest) super.addRef();
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Basic extends TensorConcatLayerTest {
 
     public static @SuppressWarnings("unused")
     Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
     public @SuppressWarnings("unused")

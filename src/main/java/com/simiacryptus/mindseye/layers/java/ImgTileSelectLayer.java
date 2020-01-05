@@ -23,13 +23,20 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.notebook.NotebookOutput;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefArrayList;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefIntStream;
+import com.simiacryptus.ref.wrappers.RefList;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.UUID;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class ImgTileSelectLayer extends LayerBase {
 
   private final boolean toroidal;
@@ -69,8 +76,8 @@ class ImgTileSelectLayer extends LayerBase {
     @Nonnull final int[] outDim = outputData.getDimensions();
     assert 3 == inDim.length;
     assert 3 == outDim.length;
-    assert inDim[2] == outDim[2] : com.simiacryptus.ref.wrappers.RefArrays.toString(inDim) + "; "
-        + com.simiacryptus.ref.wrappers.RefArrays.toString(outDim);
+    assert inDim[2] == outDim[2] : RefArrays.toString(inDim) + "; "
+        + RefArrays.toString(outDim);
     outputData.coordStream(true).forEach((c) -> {
       int x = c.getCoords()[0] + posX;
       int y = c.getCoords()[1] + posY;
@@ -103,7 +110,7 @@ class ImgTileSelectLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   public static ImgTileSelectLayer fromJson(@Nonnull final JsonObject json,
-                                            com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                            Map<CharSequence, byte[]> rs) {
     return new ImgTileSelectLayer(json);
   }
 
@@ -159,7 +166,7 @@ class ImgTileSelectLayer extends LayerBase {
   ImgTileSelectLayer[] addRefs(ImgTileSelectLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgTileSelectLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(ImgTileSelectLayer::addRef)
         .toArray((x) -> new ImgTileSelectLayer[x]);
   }
 
@@ -167,7 +174,7 @@ class ImgTileSelectLayer extends LayerBase {
   ImgTileSelectLayer[][] addRefs(ImgTileSelectLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgTileSelectLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(ImgTileSelectLayer::addRefs)
         .toArray((x) -> new ImgTileSelectLayer[x][]);
   }
 
@@ -181,7 +188,7 @@ class ImgTileSelectLayer extends LayerBase {
     @Nonnull final int[] dimOut = getViewDimensions(inputDims, new int[]{sizeX, sizeY, inputDims[2]},
         new int[]{positionX, positionY, 0});
     return new Result(
-        new TensorArray(com.simiacryptus.ref.wrappers.RefIntStream.range(0, batch.length()).mapToObj(dataIndex -> {
+        new TensorArray(RefIntStream.range(0, batch.length()).mapToObj(dataIndex -> {
           @Nonnull final Tensor outputData = new Tensor(dimOut);
           Tensor inputData = batch.get(dataIndex);
           copy(inputData, outputData, positionX, positionY, toroidal);
@@ -190,7 +197,7 @@ class ImgTileSelectLayer extends LayerBase {
       if (input.isAlive()) {
         @Nonnull
         TensorArray tensorArray = new TensorArray(
-            com.simiacryptus.ref.wrappers.RefIntStream.range(0, error.length()).mapToObj(dataIndex -> {
+            RefIntStream.range(0, error.length()).mapToObj(dataIndex -> {
               @Nullable final Tensor err = error.get(dataIndex);
               @Nonnull final Tensor passback = new Tensor(inputDims);
               copy(err, passback, -positionX, -positionY, toroidal);
@@ -213,14 +220,14 @@ class ImgTileSelectLayer extends LayerBase {
   @Nonnull
   public int[] getViewDimensions(int[] sourceDimensions, int[] destinationDimensions, int[] offset) {
     @Nonnull final int[] viewDim = new int[3];
-    com.simiacryptus.ref.wrappers.RefArrays.parallelSetAll(viewDim, i -> toroidal ? (destinationDimensions[i])
+    RefArrays.parallelSetAll(viewDim, i -> toroidal ? (destinationDimensions[i])
         : (Math.min(sourceDimensions[i], destinationDimensions[i] + offset[i]) - Math.max(offset[i], 0)));
     return viewDim;
   }
 
   @Nonnull
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             DataSerializer dataSerializer) {
     @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("sizeX", sizeX);
@@ -233,8 +240,8 @@ class ImgTileSelectLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
-    return new com.simiacryptus.ref.wrappers.RefArrayList<>();
+  public RefList<double[]> state() {
+    return new RefArrayList<>();
   }
 
   public @SuppressWarnings("unused")

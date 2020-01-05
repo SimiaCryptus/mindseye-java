@@ -21,14 +21,20 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefIntStream;
+import com.simiacryptus.ref.wrappers.RefList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.UUID;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class ImgPixelSoftmaxLayer extends LayerBase {
 
   @SuppressWarnings("unused")
@@ -44,7 +50,7 @@ class ImgPixelSoftmaxLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   public static ImgPixelSoftmaxLayer fromJson(@Nonnull final JsonObject json,
-                                              com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                              Map<CharSequence, byte[]> rs) {
     return new ImgPixelSoftmaxLayer(json);
   }
 
@@ -52,7 +58,7 @@ class ImgPixelSoftmaxLayer extends LayerBase {
   ImgPixelSoftmaxLayer[] addRefs(ImgPixelSoftmaxLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgPixelSoftmaxLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(ImgPixelSoftmaxLayer::addRef)
         .toArray((x) -> new ImgPixelSoftmaxLayer[x]);
   }
 
@@ -60,7 +66,7 @@ class ImgPixelSoftmaxLayer extends LayerBase {
   ImgPixelSoftmaxLayer[][] addRefs(ImgPixelSoftmaxLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgPixelSoftmaxLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(ImgPixelSoftmaxLayer::addRefs)
         .toArray((x) -> new ImgPixelSoftmaxLayer[x][]);
   }
 
@@ -81,14 +87,14 @@ class ImgPixelSoftmaxLayer extends LayerBase {
     final int height = inputDims[1];
     TensorArray maxima = new TensorArray(inputData.stream().map(inputTensor -> {
       return new Tensor(width, height, 1).setByCoord(c -> {
-        return com.simiacryptus.ref.wrappers.RefIntStream.range(0, inputBands).mapToDouble(band -> {
+        return RefIntStream.range(0, inputBands).mapToDouble(band -> {
           int[] coords = c.getCoords();
           return inputTensor.get(coords[0], coords[1], band);
         }).max().getAsDouble();
       });
     }).toArray(i -> new Tensor[i]));
     TensorArray exps = new TensorArray(
-        com.simiacryptus.ref.wrappers.RefIntStream.range(0, inputData.length()).mapToObj(index -> {
+        RefIntStream.range(0, inputData.length()).mapToObj(index -> {
           final Tensor inputTensor = inputData.get(index);
           Tensor maxTensor = maxima.get(index);
           return new Tensor(inputDims).setByCoord(c -> {
@@ -98,14 +104,14 @@ class ImgPixelSoftmaxLayer extends LayerBase {
         }).toArray(i -> new Tensor[i]));
     TensorArray sums = new TensorArray(exps.stream().map(expTensor -> {
       return new Tensor(width, height, 1).setByCoord(c -> {
-        return com.simiacryptus.ref.wrappers.RefIntStream.range(0, inputBands).mapToDouble(band -> {
+        return RefIntStream.range(0, inputBands).mapToDouble(band -> {
           int[] coords = c.getCoords();
           return expTensor.get(coords[0], coords[1], band);
         }).sum();
       });
     }).toArray(i -> new Tensor[i]));
     TensorArray output = new TensorArray(
-        com.simiacryptus.ref.wrappers.RefIntStream.range(0, inputData.length()).mapToObj(index -> {
+        RefIntStream.range(0, inputData.length()).mapToObj(index -> {
           Tensor sumTensor = sums.get(index);
           Tensor expTensor = exps.get(index);
           return new Tensor(inputDims).setByCoord(c -> {
@@ -117,11 +123,11 @@ class ImgPixelSoftmaxLayer extends LayerBase {
       if (input.isAlive()) {
 
         TensorArray dots = new TensorArray(
-            com.simiacryptus.ref.wrappers.RefIntStream.range(0, inputData.length()).mapToObj(index -> {
+            RefIntStream.range(0, inputData.length()).mapToObj(index -> {
               final Tensor deltaTensor = delta.get(index);
               Tensor expTensor = exps.get(index);
               return new Tensor(width, height, 1).setByCoord(c -> {
-                return com.simiacryptus.ref.wrappers.RefIntStream.range(0, inputBands).mapToDouble(band -> {
+                return RefIntStream.range(0, inputBands).mapToDouble(band -> {
                   int[] coords = c.getCoords();
                   return expTensor.get(coords[0], coords[1], band) * deltaTensor.get(coords[0], coords[1], band);
                 }).sum();
@@ -129,7 +135,7 @@ class ImgPixelSoftmaxLayer extends LayerBase {
             }).toArray(i -> new Tensor[i]));
 
         TensorArray passback = new TensorArray(
-            com.simiacryptus.ref.wrappers.RefIntStream.range(0, inputData.length()).mapToObj(index -> {
+            RefIntStream.range(0, inputData.length()).mapToObj(index -> {
               final Tensor deltaTensor = delta.get(index);
               final Tensor expTensor = exps.get(index);
               Tensor sumTensor = sums.get(index);
@@ -160,15 +166,15 @@ class ImgPixelSoftmaxLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 
   @Nonnull
   @Override
-  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
-    return com.simiacryptus.ref.wrappers.RefArrays.asList();
+  public RefList<double[]> state() {
+    return RefArrays.asList();
   }
 
   public @SuppressWarnings("unused")

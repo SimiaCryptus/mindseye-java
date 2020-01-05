@@ -20,20 +20,22 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
+import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.Random;
 
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class TargetValueLayerTest {
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Normal extends LayerTestBase {
 
     public static @SuppressWarnings("unused")
     Normal[] addRefs(Normal[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Normal::addRef).toArray((x) -> new Normal[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(Normal::addRef).toArray((x) -> new Normal[x]);
     }
 
     @Nonnull

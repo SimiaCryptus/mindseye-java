@@ -21,11 +21,13 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.MetaLayerTestBase;
+import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.Random;
 
-public abstract @com.simiacryptus.ref.lang.RefAware
+public abstract @RefAware
 class AutoEntropyLayerTest extends MetaLayerTestBase {
 
   public AutoEntropyLayerTest() {
@@ -37,7 +39,7 @@ class AutoEntropyLayerTest extends MetaLayerTestBase {
   AutoEntropyLayerTest[] addRefs(AutoEntropyLayerTest[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(AutoEntropyLayerTest::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(AutoEntropyLayerTest::addRef)
         .toArray((x) -> new AutoEntropyLayerTest[x]);
   }
 
@@ -45,7 +47,7 @@ class AutoEntropyLayerTest extends MetaLayerTestBase {
   AutoEntropyLayerTest[][] addRefs(AutoEntropyLayerTest[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(AutoEntropyLayerTest::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(AutoEntropyLayerTest::addRefs)
         .toArray((x) -> new AutoEntropyLayerTest[x][]);
   }
 
@@ -77,13 +79,13 @@ class AutoEntropyLayerTest extends MetaLayerTestBase {
     return (AutoEntropyLayerTest) super.addRef();
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Basic extends AutoEntropyLayerTest {
     public static @SuppressWarnings("unused")
     Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
     public @SuppressWarnings("unused")

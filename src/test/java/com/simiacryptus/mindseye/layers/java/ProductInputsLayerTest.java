@@ -22,11 +22,13 @@ package com.simiacryptus.mindseye.layers.java;
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.test.unit.ComponentTest;
 import com.simiacryptus.mindseye.test.unit.TrainingTester;
+import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.Random;
 
-public abstract @com.simiacryptus.ref.lang.RefAware
+public abstract @RefAware
 class ProductInputsLayerTest extends LayerTestBase {
   @Override
   public ComponentTest<TrainingTester.ComponentResult> getTrainingTester() {
@@ -47,7 +49,7 @@ class ProductInputsLayerTest extends LayerTestBase {
   ProductInputsLayerTest[] addRefs(ProductInputsLayerTest[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ProductInputsLayerTest::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(ProductInputsLayerTest::addRef)
         .toArray((x) -> new ProductInputsLayerTest[x]);
   }
 
@@ -55,7 +57,7 @@ class ProductInputsLayerTest extends LayerTestBase {
   ProductInputsLayerTest[][] addRefs(ProductInputsLayerTest[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ProductInputsLayerTest::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(ProductInputsLayerTest::addRefs)
         .toArray((x) -> new ProductInputsLayerTest[x][]);
   }
 
@@ -75,13 +77,13 @@ class ProductInputsLayerTest extends LayerTestBase {
     return (ProductInputsLayerTest) super.addRef();
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class N1Test extends ProductInputsLayerTest {
     public static @SuppressWarnings("unused")
     N1Test[] addRefs(N1Test[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(N1Test::addRef).toArray((x) -> new N1Test[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(N1Test::addRef).toArray((x) -> new N1Test[x]);
     }
 
     @Nonnull
@@ -101,14 +103,14 @@ class ProductInputsLayerTest extends LayerTestBase {
     }
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class NNNTest extends ProductInputsLayerTest {
 
     public static @SuppressWarnings("unused")
     NNNTest[] addRefs(NNNTest[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(NNNTest::addRef)
+      return Arrays.stream(array).filter((x) -> x != null).map(NNNTest::addRef)
           .toArray((x) -> new NNNTest[x]);
     }
 
@@ -129,14 +131,14 @@ class ProductInputsLayerTest extends LayerTestBase {
     }
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class NNTest extends ProductInputsLayerTest {
 
     public static @SuppressWarnings("unused")
     NNTest[] addRefs(NNTest[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(NNTest::addRef).toArray((x) -> new NNTest[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(NNTest::addRef).toArray((x) -> new NNTest[x]);
     }
 
     @Nonnull

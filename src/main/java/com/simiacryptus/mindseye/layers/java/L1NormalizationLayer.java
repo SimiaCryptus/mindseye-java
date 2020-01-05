@@ -21,16 +21,22 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefIntStream;
+import com.simiacryptus.ref.wrappers.RefList;
 import com.simiacryptus.util.ArrayUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.UUID;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class L1NormalizationLayer extends LayerBase {
 
   @SuppressWarnings("unused")
@@ -46,7 +52,7 @@ class L1NormalizationLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   public static L1NormalizationLayer fromJson(@Nonnull final JsonObject json,
-                                              com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                              Map<CharSequence, byte[]> rs) {
     return new L1NormalizationLayer(json);
   }
 
@@ -54,7 +60,7 @@ class L1NormalizationLayer extends LayerBase {
   L1NormalizationLayer[] addRefs(L1NormalizationLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(L1NormalizationLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(L1NormalizationLayer::addRef)
         .toArray((x) -> new L1NormalizationLayer[x]);
   }
 
@@ -62,7 +68,7 @@ class L1NormalizationLayer extends LayerBase {
   L1NormalizationLayer[][] addRefs(L1NormalizationLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(L1NormalizationLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(L1NormalizationLayer::addRefs)
         .toArray((x) -> new L1NormalizationLayer[x][]);
   }
 
@@ -72,7 +78,7 @@ class L1NormalizationLayer extends LayerBase {
     final Result in = input[0];
     final TensorList inData = in.getData();
     return new Result(
-        new TensorArray(com.simiacryptus.ref.wrappers.RefIntStream.range(0, inData.length()).mapToObj(dataIndex -> {
+        new TensorArray(RefIntStream.range(0, inData.length()).mapToObj(dataIndex -> {
           @Nullable final Tensor value = inData.get(dataIndex);
           {
             final double sum = value.sum();
@@ -84,14 +90,14 @@ class L1NormalizationLayer extends LayerBase {
           }
         }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList outDelta) -> {
       if (in.isAlive()) {
-        final Tensor[] passbackArray = com.simiacryptus.ref.wrappers.RefIntStream.range(0, outDelta.length())
+        final Tensor[] passbackArray = RefIntStream.range(0, outDelta.length())
             .mapToObj(dataIndex -> {
               Tensor inputTensor = inData.get(dataIndex);
               @Nullable final double[] value = inputTensor.getData();
               Tensor outputTensor = outDelta.get(dataIndex);
               @Nullable final double[] delta = outputTensor.getData();
               final double dot = ArrayUtil.dot(value, delta);
-              final double sum = com.simiacryptus.ref.wrappers.RefArrays.stream(value).sum();
+              final double sum = RefArrays.stream(value).sum();
               @Nonnull final Tensor passback = new Tensor(outputTensor.getDimensions());
               @Nullable final double[] passbackData = passback.getData();
               if (0 != sum || Double.isFinite(sum)) {
@@ -101,8 +107,8 @@ class L1NormalizationLayer extends LayerBase {
               }
               return passback;
             }).toArray(i -> new Tensor[i]);
-        assert com.simiacryptus.ref.wrappers.RefArrays.stream(passbackArray)
-            .flatMapToDouble(x -> com.simiacryptus.ref.wrappers.RefArrays.stream(x.getData()))
+        assert RefArrays.stream(passbackArray)
+            .flatMapToDouble(x -> RefArrays.stream(x.getData()))
             .allMatch(v -> Double.isFinite(v));
         @Nonnull
         TensorArray tensorArray = new TensorArray(passbackArray);
@@ -124,15 +130,15 @@ class L1NormalizationLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 
   @Nonnull
   @Override
-  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
-    return com.simiacryptus.ref.wrappers.RefArrays.asList();
+  public RefList<double[]> state() {
+    return RefArrays.asList();
   }
 
   public @SuppressWarnings("unused")

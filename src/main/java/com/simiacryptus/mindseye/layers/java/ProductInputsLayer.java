@@ -21,13 +21,19 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefIntStream;
+import com.simiacryptus.ref.wrappers.RefList;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.UUID;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class ProductInputsLayer extends LayerBase {
 
   public ProductInputsLayer() {
@@ -39,7 +45,7 @@ class ProductInputsLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   public static ProductInputsLayer fromJson(@Nonnull final JsonObject json,
-                                            com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                            Map<CharSequence, byte[]> rs) {
     return new ProductInputsLayer(json);
   }
 
@@ -47,7 +53,7 @@ class ProductInputsLayer extends LayerBase {
   ProductInputsLayer[] addRefs(ProductInputsLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ProductInputsLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(ProductInputsLayer::addRef)
         .toArray((x) -> new ProductInputsLayer[x]);
   }
 
@@ -55,7 +61,7 @@ class ProductInputsLayer extends LayerBase {
   ProductInputsLayer[][] addRefs(ProductInputsLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ProductInputsLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(ProductInputsLayer::addRefs)
         .toArray((x) -> new ProductInputsLayer[x][]);
   }
 
@@ -68,13 +74,13 @@ class ProductInputsLayer extends LayerBase {
       final int dimI = Tensor.length(inObj[i].getData().getDimensions());
       if (dim0 != 1 && dimI != 1 && dim0 != dimI) {
         throw new IllegalArgumentException(
-            com.simiacryptus.ref.wrappers.RefArrays.toString(inObj[0].getData().getDimensions()) + " != "
-                + com.simiacryptus.ref.wrappers.RefArrays.toString(inObj[i].getData().getDimensions()));
+            RefArrays.toString(inObj[0].getData().getDimensions()) + " != "
+                + RefArrays.toString(inObj[i].getData().getDimensions()));
       }
     }
     return new Result(
-        com.simiacryptus.ref.wrappers.RefArrays.stream(inObj).parallel().map(x -> x.getData()).reduce((l, r) -> {
-          return new TensorArray(com.simiacryptus.ref.wrappers.RefIntStream.range(0, Math.max(l.length(), r.length()))
+        RefArrays.stream(inObj).parallel().map(x -> x.getData()).reduce((l, r) -> {
+          return new TensorArray(RefIntStream.range(0, Math.max(l.length(), r.length()))
               .parallel().mapToObj(i1 -> {
                 @Nullable final Tensor left = l.get(1 == l.length() ? 0 : i1);
                 @Nullable final Tensor right = r.get(1 == r.length() ? 0 : i1);
@@ -84,10 +90,10 @@ class ProductInputsLayer extends LayerBase {
       for (@Nonnull final Result input : inObj) {
         if (input.isAlive()) {
           @Nonnull
-          TensorList passback = com.simiacryptus.ref.wrappers.RefArrays.stream(inObj).parallel().map(x -> {
+          TensorList passback = RefArrays.stream(inObj).parallel().map(x -> {
             return x == input ? delta : x.getData();
           }).reduce((l, r) -> {
-            return new TensorArray(com.simiacryptus.ref.wrappers.RefIntStream
+            return new TensorArray(RefIntStream
                 .range(0, Math.max(l.length(), r.length())).parallel().mapToObj(j -> {
                   @Nullable final Tensor left = l.get(1 == l.length() ? 0 : j);
                   @Nullable final Tensor right = r.get(1 == r.length() ? 0 : j);
@@ -127,15 +133,15 @@ class ProductInputsLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 
   @Nonnull
   @Override
-  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
-    return com.simiacryptus.ref.wrappers.RefArrays.asList();
+  public RefList<double[]> state() {
+    return RefArrays.asList();
   }
 
   public @SuppressWarnings("unused")

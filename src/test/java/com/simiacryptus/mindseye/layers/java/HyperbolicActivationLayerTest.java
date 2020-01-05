@@ -24,8 +24,12 @@ import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 import com.simiacryptus.mindseye.test.unit.ComponentTest;
 import com.simiacryptus.mindseye.test.unit.TrainingTester;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefHashMap;
 
-public abstract @com.simiacryptus.ref.lang.RefAware
+import java.util.Arrays;
+
+public abstract @RefAware
 class HyperbolicActivationLayerTest
     extends ActivationLayerTestBase {
   public HyperbolicActivationLayerTest() {
@@ -33,8 +37,8 @@ class HyperbolicActivationLayerTest
   }
 
   @Override
-  protected com.simiacryptus.ref.wrappers.RefHashMap<Tensor[], Tensor> getReferenceIO() {
-    final com.simiacryptus.ref.wrappers.RefHashMap<Tensor[], Tensor> map = super.getReferenceIO();
+  protected RefHashMap<Tensor[], Tensor> getReferenceIO() {
+    final RefHashMap<Tensor[], Tensor> map = super.getReferenceIO();
     map.put(new Tensor[]{new Tensor(0.0)}, new Tensor(0.0));
     return map;
   }
@@ -59,7 +63,7 @@ class HyperbolicActivationLayerTest
       HyperbolicActivationLayerTest[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(HyperbolicActivationLayerTest::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(HyperbolicActivationLayerTest::addRef)
         .toArray((x) -> new HyperbolicActivationLayerTest[x]);
   }
 
@@ -68,7 +72,7 @@ class HyperbolicActivationLayerTest
       HyperbolicActivationLayerTest[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(HyperbolicActivationLayerTest::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(HyperbolicActivationLayerTest::addRefs)
         .toArray((x) -> new HyperbolicActivationLayerTest[x][]);
   }
 
@@ -82,13 +86,13 @@ class HyperbolicActivationLayerTest
     return (HyperbolicActivationLayerTest) super.addRef();
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Basic extends HyperbolicActivationLayerTest {
     public static @SuppressWarnings("unused")
     Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
     public @SuppressWarnings("unused")

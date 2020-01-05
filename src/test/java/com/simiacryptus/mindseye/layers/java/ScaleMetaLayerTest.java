@@ -20,11 +20,13 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
+import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.Random;
 
-public abstract @com.simiacryptus.ref.lang.RefAware
+public abstract @RefAware
 class ScaleMetaLayerTest extends LayerTestBase {
 
   public ScaleMetaLayerTest() {
@@ -35,7 +37,7 @@ class ScaleMetaLayerTest extends LayerTestBase {
   ScaleMetaLayerTest[] addRefs(ScaleMetaLayerTest[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ScaleMetaLayerTest::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(ScaleMetaLayerTest::addRef)
         .toArray((x) -> new ScaleMetaLayerTest[x]);
   }
 
@@ -43,7 +45,7 @@ class ScaleMetaLayerTest extends LayerTestBase {
   ScaleMetaLayerTest[][] addRefs(ScaleMetaLayerTest[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ScaleMetaLayerTest::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(ScaleMetaLayerTest::addRefs)
         .toArray((x) -> new ScaleMetaLayerTest[x][]);
   }
 
@@ -69,14 +71,14 @@ class ScaleMetaLayerTest extends LayerTestBase {
     return (ScaleMetaLayerTest) super.addRef();
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Basic extends ScaleMetaLayerTest {
 
     public static @SuppressWarnings("unused")
     Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
     public @SuppressWarnings("unused")

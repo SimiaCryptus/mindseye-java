@@ -21,13 +21,19 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefIntStream;
+import com.simiacryptus.ref.wrappers.RefList;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.UUID;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class CrossProductLayer extends LayerBase {
 
   public CrossProductLayer() {
@@ -39,7 +45,7 @@ class CrossProductLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   public static CrossProductLayer fromJson(@Nonnull final JsonObject json,
-                                           com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                           Map<CharSequence, byte[]> rs) {
     return new CrossProductLayer(json);
   }
 
@@ -51,7 +57,7 @@ class CrossProductLayer extends LayerBase {
   CrossProductLayer[] addRefs(CrossProductLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(CrossProductLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(CrossProductLayer::addRef)
         .toArray((x) -> new CrossProductLayer[x]);
   }
 
@@ -59,7 +65,7 @@ class CrossProductLayer extends LayerBase {
   CrossProductLayer[][] addRefs(CrossProductLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(CrossProductLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(CrossProductLayer::addRefs)
         .toArray((x) -> new CrossProductLayer[x][]);
   }
 
@@ -75,8 +81,8 @@ class CrossProductLayer extends LayerBase {
       @Nonnull final Tensor result1 = new Tensor(outputDim);
       @Nullable final double[] inputData = tensor.getData();
       @Nullable final double[] resultData = result1.getData();
-      com.simiacryptus.ref.wrappers.RefIntStream.range(0, inputDim).forEach(x -> {
-        com.simiacryptus.ref.wrappers.RefIntStream.range(x + 1, inputDim).forEach(y -> {
+      RefIntStream.range(0, inputDim).forEach(x -> {
+        RefIntStream.range(x + 1, inputDim).forEach(y -> {
           resultData[CrossProductLayer.index(x, y, inputDim)] = inputData[x] * inputData[y];
         });
       });
@@ -86,7 +92,7 @@ class CrossProductLayer extends LayerBase {
         assert delta.length() == delta.length();
         @Nonnull
         TensorArray tensorArray = new TensorArray(
-            com.simiacryptus.ref.wrappers.RefIntStream.range(0, delta.length()).parallel().mapToObj(batchIndex -> {
+            RefIntStream.range(0, delta.length()).parallel().mapToObj(batchIndex -> {
               @Nullable final Tensor deltaTensor = delta.get(batchIndex);
               final int outputDim = deltaTensor.length();
               final int inputDim = (1 + (int) Math.sqrt(1 + 8 * outputDim)) / 2;
@@ -95,8 +101,8 @@ class CrossProductLayer extends LayerBase {
               @Nullable final double[] tensorData = deltaTensor.getData();
               Tensor inputTensor = indata.get(batchIndex);
               @Nullable final double[] inputData = inputTensor.getData();
-              com.simiacryptus.ref.wrappers.RefIntStream.range(0, inputDim).forEach(x -> {
-                com.simiacryptus.ref.wrappers.RefIntStream.range(x + 1, inputDim).forEach(y -> {
+              RefIntStream.range(0, inputDim).forEach(x -> {
+                RefIntStream.range(x + 1, inputDim).forEach(y -> {
                   passbackData[x] += tensorData[CrossProductLayer.index(x, y, inputDim)] * inputData[y];
                   passbackData[y] += tensorData[CrossProductLayer.index(x, y, inputDim)] * inputData[x];
                 });
@@ -124,15 +130,15 @@ class CrossProductLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 
   @Nonnull
   @Override
-  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
-    return com.simiacryptus.ref.wrappers.RefArrays.asList();
+  public RefList<double[]> state() {
+    return RefArrays.asList();
   }
 
   public @SuppressWarnings("unused")

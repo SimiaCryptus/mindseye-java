@@ -22,15 +22,21 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefArrayList;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.UUID;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class TensorConcatLayer extends LayerBase {
 
   @SuppressWarnings("unused")
@@ -59,7 +65,7 @@ class TensorConcatLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   public static TensorConcatLayer fromJson(@Nonnull final JsonObject json,
-                                           com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                           Map<CharSequence, byte[]> rs) {
     return new TensorConcatLayer(json);
   }
 
@@ -67,7 +73,7 @@ class TensorConcatLayer extends LayerBase {
   TensorConcatLayer[] addRefs(TensorConcatLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(TensorConcatLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(TensorConcatLayer::addRef)
         .toArray((x) -> new TensorConcatLayer[x]);
   }
 
@@ -75,7 +81,7 @@ class TensorConcatLayer extends LayerBase {
   TensorConcatLayer[][] addRefs(TensorConcatLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(TensorConcatLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(TensorConcatLayer::addRefs)
         .toArray((x) -> new TensorConcatLayer[x][]);
   }
 
@@ -83,12 +89,12 @@ class TensorConcatLayer extends LayerBase {
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     final int numBatches = inObj[0].getData().length();
-    assert com.simiacryptus.ref.wrappers.RefArrays.stream(inObj)
+    assert RefArrays.stream(inObj)
         .allMatch(x -> x.getData().length() == numBatches) : "All inputs must use same batch size";
-    int[] outputDims = new int[]{com.simiacryptus.ref.wrappers.RefArrays.stream(inObj)
+    int[] outputDims = new int[]{RefArrays.stream(inObj)
         .mapToInt(x -> Tensor.length(x.getData().getDimensions())).sum()};
 
-    @Nonnull final com.simiacryptus.ref.wrappers.RefList<Tensor> outputTensors = new com.simiacryptus.ref.wrappers.RefArrayList<>();
+    @Nonnull final RefList<Tensor> outputTensors = new RefArrayList<>();
     for (int b = 0; b < numBatches; b++) {
       @Nonnull final Tensor outputTensor = new Tensor(outputDims);
       int pos = 0;
@@ -106,7 +112,7 @@ class TensorConcatLayer extends LayerBase {
         (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList data) -> {
           assert numBatches == data.length();
 
-          @Nonnull final com.simiacryptus.ref.wrappers.RefList<Tensor[]> splitBatches = new com.simiacryptus.ref.wrappers.RefArrayList<>();
+          @Nonnull final RefList<Tensor[]> splitBatches = new RefArrayList<>();
           for (int b = 0; b < numBatches; b++) {
             @Nullable final Tensor tensor = data.get(b);
             @Nonnull final Tensor[] outputTensors2 = new Tensor[inObj.length];
@@ -158,7 +164,7 @@ class TensorConcatLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             DataSerializer dataSerializer) {
     @Nonnull
     JsonObject json = super.getJsonStub();
@@ -168,8 +174,8 @@ class TensorConcatLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
-    return com.simiacryptus.ref.wrappers.RefArrays.asList();
+  public RefList<double[]> state() {
+    return RefArrays.asList();
   }
 
   public @SuppressWarnings("unused")

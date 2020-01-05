@@ -21,15 +21,21 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefIntStream;
+import com.simiacryptus.ref.wrappers.RefList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.UUID;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class ScaleMetaLayer extends LayerBase {
 
   @SuppressWarnings("unused")
@@ -44,7 +50,7 @@ class ScaleMetaLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   public static ScaleMetaLayer fromJson(@Nonnull final JsonObject json,
-                                        com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                        Map<CharSequence, byte[]> rs) {
     return new ScaleMetaLayer(json);
   }
 
@@ -52,7 +58,7 @@ class ScaleMetaLayer extends LayerBase {
   ScaleMetaLayer[] addRefs(ScaleMetaLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ScaleMetaLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(ScaleMetaLayer::addRef)
         .toArray((x) -> new ScaleMetaLayer[x]);
   }
 
@@ -60,7 +66,7 @@ class ScaleMetaLayer extends LayerBase {
   ScaleMetaLayer[][] addRefs(ScaleMetaLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ScaleMetaLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(ScaleMetaLayer::addRefs)
         .toArray((x) -> new ScaleMetaLayer[x][]);
   }
 
@@ -73,7 +79,7 @@ class ScaleMetaLayer extends LayerBase {
     final TensorList data1 = in1.getData();
     final int itemCnt = data0.length();
     final Tensor data10 = data1.get(0);
-    final Tensor[] tensors = com.simiacryptus.ref.wrappers.RefIntStream.range(0, itemCnt)
+    final Tensor[] tensors = RefIntStream.range(0, itemCnt)
         .mapToObj(dataIndex -> data0.get(dataIndex).mapIndex((v, c) -> v * data10.get(c))).toArray(i -> new Tensor[i]);
     Tensor tensor0 = tensors[0];
     return new Result(new TensorArray(tensors),
@@ -89,11 +95,11 @@ class ScaleMetaLayer extends LayerBase {
           }
           if (in1.isAlive()) {
             @Nullable final Tensor passback = tensor0.mapIndex((v, c) -> {
-              return com.simiacryptus.ref.wrappers.RefIntStream.range(0, itemCnt)
+              return RefIntStream.range(0, itemCnt)
                   .mapToDouble(i -> data.get(i).get(c) * data.get(i).get(c)).sum();
             });
             @Nonnull
-            TensorArray tensorArray = new TensorArray(com.simiacryptus.ref.wrappers.RefIntStream.range(0, data.length())
+            TensorArray tensorArray = new TensorArray(RefIntStream.range(0, data.length())
                 .mapToObj(i -> i == 0 ? passback : passback.map(v -> 0)).toArray(i -> new Tensor[i]));
             in1.accumulate(buffer, tensorArray);
           }
@@ -112,15 +118,15 @@ class ScaleMetaLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 
   @Nonnull
   @Override
-  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
-    return com.simiacryptus.ref.wrappers.RefArrays.asList();
+  public RefList<double[]> state() {
+    return RefArrays.asList();
   }
 
   public @SuppressWarnings("unused")

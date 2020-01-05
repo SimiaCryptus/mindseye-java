@@ -21,11 +21,13 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.LoggingWrapperLayer;
+import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.Random;
 
-public abstract @com.simiacryptus.ref.lang.RefAware
+public abstract @RefAware
 class LoggingWrapperLayerTest extends LayerTestBase {
 
   public LoggingWrapperLayerTest() {
@@ -36,7 +38,7 @@ class LoggingWrapperLayerTest extends LayerTestBase {
   LoggingWrapperLayerTest[] addRefs(LoggingWrapperLayerTest[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(LoggingWrapperLayerTest::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(LoggingWrapperLayerTest::addRef)
         .toArray((x) -> new LoggingWrapperLayerTest[x]);
   }
 
@@ -44,7 +46,7 @@ class LoggingWrapperLayerTest extends LayerTestBase {
   LoggingWrapperLayerTest[][] addRefs(LoggingWrapperLayerTest[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(LoggingWrapperLayerTest::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(LoggingWrapperLayerTest::addRefs)
         .toArray((x) -> new LoggingWrapperLayerTest[x][]);
   }
 
@@ -71,14 +73,14 @@ class LoggingWrapperLayerTest extends LayerTestBase {
     return (LoggingWrapperLayerTest) super.addRef();
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Basic extends LoggingWrapperLayerTest {
 
     public static @SuppressWarnings("unused")
     Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
     public @SuppressWarnings("unused")

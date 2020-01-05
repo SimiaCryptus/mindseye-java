@@ -20,18 +20,20 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
+import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.Random;
 
-public abstract @com.simiacryptus.ref.lang.RefAware
+public abstract @RefAware
 class ImgBandBiasLayerTest extends LayerTestBase {
 
   public static @SuppressWarnings("unused")
   ImgBandBiasLayerTest[] addRefs(ImgBandBiasLayerTest[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgBandBiasLayerTest::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(ImgBandBiasLayerTest::addRef)
         .toArray((x) -> new ImgBandBiasLayerTest[x]);
   }
 
@@ -39,7 +41,7 @@ class ImgBandBiasLayerTest extends LayerTestBase {
   ImgBandBiasLayerTest[][] addRefs(ImgBandBiasLayerTest[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgBandBiasLayerTest::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(ImgBandBiasLayerTest::addRefs)
         .toArray((x) -> new ImgBandBiasLayerTest[x][]);
   }
 
@@ -65,14 +67,14 @@ class ImgBandBiasLayerTest extends LayerTestBase {
     return (ImgBandBiasLayerTest) super.addRef();
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Basic extends ImgBandBiasLayerTest {
 
     public static @SuppressWarnings("unused")
     Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
     public @SuppressWarnings("unused")

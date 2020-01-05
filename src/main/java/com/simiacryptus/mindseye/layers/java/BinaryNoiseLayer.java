@@ -24,16 +24,22 @@ import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.mindseye.layers.StochasticComponent;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefArrayList;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefList;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
 
   public static final ThreadLocal<Random> random = new ThreadLocal<Random>() {
@@ -45,7 +51,7 @@ class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(BinaryNoiseLayer.class);
   @Nonnull
-  final com.simiacryptus.ref.wrappers.RefList<Tensor> maskList = new com.simiacryptus.ref.wrappers.RefArrayList<>();
+  final RefList<Tensor> maskList = new RefArrayList<>();
   private double value;
   private long seed = System.nanoTime();
 
@@ -78,7 +84,7 @@ class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
 
   @SuppressWarnings("unused")
   public static BinaryNoiseLayer fromJson(@Nonnull final JsonObject json,
-                                          com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                          Map<CharSequence, byte[]> rs) {
     return new BinaryNoiseLayer(json);
   }
 
@@ -94,7 +100,7 @@ class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
   BinaryNoiseLayer[] addRefs(BinaryNoiseLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BinaryNoiseLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(BinaryNoiseLayer::addRef)
         .toArray((x) -> new BinaryNoiseLayer[x]);
   }
 
@@ -102,7 +108,7 @@ class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
   BinaryNoiseLayer[][] addRefs(BinaryNoiseLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BinaryNoiseLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(BinaryNoiseLayer::addRefs)
         .toArray((x) -> new BinaryNoiseLayer[x][]);
   }
 
@@ -113,7 +119,7 @@ class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
     @Nonnull final int[] dimensions = inputData.getDimensions();
     final int length = inputData.length();
     if (maskList.size() > 0
-        && !com.simiacryptus.ref.wrappers.RefArrays.equals(maskList.get(0).getDimensions(), dimensions)) {
+        && !RefArrays.equals(maskList.get(0).getDimensions(), dimensions)) {
       clear();
     }
     @Nonnull final Tensor tensorPrototype = new Tensor(dimensions);
@@ -143,7 +149,7 @@ class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
   }
 
   public void clear() {
-    final com.simiacryptus.ref.wrappers.RefList<Tensor> maskList = this.maskList;
+    final RefList<Tensor> maskList = this.maskList;
     synchronized (maskList) {
       maskList.clear();
     }
@@ -151,7 +157,7 @@ class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
 
   @Nonnull
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             DataSerializer dataSerializer) {
     @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("value", value);
@@ -174,8 +180,8 @@ class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
 
   @Nonnull
   @Override
-  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
-    return com.simiacryptus.ref.wrappers.RefArrays.asList();
+  public RefList<double[]> state() {
+    return RefArrays.asList();
   }
 
   public void _free() {

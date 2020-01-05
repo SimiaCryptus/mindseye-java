@@ -20,18 +20,20 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
+import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.Random;
 
-public abstract @com.simiacryptus.ref.lang.RefAware
+public abstract @RefAware
 class UnpoolingLayerTest extends LayerTestBase {
 
   public static @SuppressWarnings("unused")
   UnpoolingLayerTest[] addRefs(UnpoolingLayerTest[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(UnpoolingLayerTest::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(UnpoolingLayerTest::addRef)
         .toArray((x) -> new UnpoolingLayerTest[x]);
   }
 
@@ -39,7 +41,7 @@ class UnpoolingLayerTest extends LayerTestBase {
   UnpoolingLayerTest[][] addRefs(UnpoolingLayerTest[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(UnpoolingLayerTest::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(UnpoolingLayerTest::addRefs)
         .toArray((x) -> new UnpoolingLayerTest[x][]);
   }
 
@@ -65,14 +67,14 @@ class UnpoolingLayerTest extends LayerTestBase {
     return (UnpoolingLayerTest) super.addRef();
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Basic extends UnpoolingLayerTest {
 
     public static @SuppressWarnings("unused")
     Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
     public @SuppressWarnings("unused")

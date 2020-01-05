@@ -26,12 +26,18 @@ import com.simiacryptus.mindseye.lang.LayerBase;
 import com.simiacryptus.mindseye.lang.Result;
 import com.simiacryptus.mindseye.network.DAGNode;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefArrayList;
+import com.simiacryptus.ref.wrappers.RefIntStream;
+import com.simiacryptus.ref.wrappers.RefList;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Map;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class RescaledSubnetLayer extends LayerBase {
 
   private final int scale;
@@ -45,7 +51,7 @@ class RescaledSubnetLayer extends LayerBase {
   }
 
   protected RescaledSubnetLayer(@Nonnull final JsonObject json,
-                                com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                Map<CharSequence, byte[]> rs) {
     super(json);
     scale = json.getAsJsonPrimitive("scale").getAsInt();
     JsonObject subnetwork = json.getAsJsonObject("subnetwork");
@@ -54,7 +60,7 @@ class RescaledSubnetLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   public static RescaledSubnetLayer fromJson(@Nonnull final JsonObject json,
-                                             com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                             Map<CharSequence, byte[]> rs) {
     return new RescaledSubnetLayer(json, rs);
   }
 
@@ -62,7 +68,7 @@ class RescaledSubnetLayer extends LayerBase {
   RescaledSubnetLayer[] addRefs(RescaledSubnetLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(RescaledSubnetLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(RescaledSubnetLayer::addRef)
         .toArray((x) -> new RescaledSubnetLayer[x]);
   }
 
@@ -70,7 +76,7 @@ class RescaledSubnetLayer extends LayerBase {
   RescaledSubnetLayer[][] addRefs(RescaledSubnetLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(RescaledSubnetLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(RescaledSubnetLayer::addRefs)
         .toArray((x) -> new RescaledSubnetLayer[x][]);
   }
 
@@ -86,7 +92,7 @@ class RescaledSubnetLayer extends LayerBase {
     @Nonnull final PipelineNetwork network = new PipelineNetwork();
     @Nullable final DAGNode condensed = network.add(new ImgReshapeLayer(scale, scale, false));
     network.add(new ImgConcatLayer(),
-        com.simiacryptus.ref.wrappers.RefIntStream.range(0, scale * scale).mapToObj(subband -> {
+        RefIntStream.range(0, scale * scale).mapToObj(subband -> {
           @Nonnull final int[] select = new int[inputDims[2]];
           for (int i = 0; i < inputDims[2]; i++) {
             select[i] = subband * inputDims[2] + i;
@@ -99,7 +105,7 @@ class RescaledSubnetLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             DataSerializer dataSerializer) {
     @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("scale", scale);
@@ -109,8 +115,8 @@ class RescaledSubnetLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
-    return new com.simiacryptus.ref.wrappers.RefArrayList<>();
+  public RefList<double[]> state() {
+    return new RefArrayList<>();
   }
 
   public void _free() {

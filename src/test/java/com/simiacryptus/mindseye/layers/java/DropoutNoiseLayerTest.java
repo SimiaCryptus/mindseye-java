@@ -20,18 +20,20 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
+import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.Random;
 
-public abstract @com.simiacryptus.ref.lang.RefAware
+public abstract @RefAware
 class DropoutNoiseLayerTest extends LayerTestBase {
 
   public static @SuppressWarnings("unused")
   DropoutNoiseLayerTest[] addRefs(DropoutNoiseLayerTest[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(DropoutNoiseLayerTest::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(DropoutNoiseLayerTest::addRef)
         .toArray((x) -> new DropoutNoiseLayerTest[x]);
   }
 
@@ -39,7 +41,7 @@ class DropoutNoiseLayerTest extends LayerTestBase {
   DropoutNoiseLayerTest[][] addRefs(DropoutNoiseLayerTest[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(DropoutNoiseLayerTest::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(DropoutNoiseLayerTest::addRefs)
         .toArray((x) -> new DropoutNoiseLayerTest[x][]);
   }
 
@@ -65,14 +67,14 @@ class DropoutNoiseLayerTest extends LayerTestBase {
     return (DropoutNoiseLayerTest) super.addRef();
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Basic extends DropoutNoiseLayerTest {
 
     public static @SuppressWarnings("unused")
     Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
     public @SuppressWarnings("unused")

@@ -21,11 +21,13 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.MetaLayerTestBase;
+import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.Random;
 
-public abstract @com.simiacryptus.ref.lang.RefAware
+public abstract @RefAware
 class SumMetaLayerTest extends MetaLayerTestBase {
   public SumMetaLayerTest() {
     super();
@@ -36,7 +38,7 @@ class SumMetaLayerTest extends MetaLayerTestBase {
   SumMetaLayerTest[] addRefs(SumMetaLayerTest[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SumMetaLayerTest::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(SumMetaLayerTest::addRef)
         .toArray((x) -> new SumMetaLayerTest[x]);
   }
 
@@ -44,7 +46,7 @@ class SumMetaLayerTest extends MetaLayerTestBase {
   SumMetaLayerTest[][] addRefs(SumMetaLayerTest[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SumMetaLayerTest::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(SumMetaLayerTest::addRefs)
         .toArray((x) -> new SumMetaLayerTest[x][]);
   }
 
@@ -81,14 +83,14 @@ class SumMetaLayerTest extends MetaLayerTestBase {
     return new MeanSqLossLayer();
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Basic extends SumMetaLayerTest {
 
     public static @SuppressWarnings("unused")
     Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
     public @SuppressWarnings("unused")

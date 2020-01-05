@@ -20,12 +20,14 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
+import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.Random;
 
-public abstract @com.simiacryptus.ref.lang.RefAware
+public abstract @RefAware
 class FullyConnectedLayerTest extends LayerTestBase {
 
   @Nonnull
@@ -49,7 +51,7 @@ class FullyConnectedLayerTest extends LayerTestBase {
   FullyConnectedLayerTest[] addRefs(FullyConnectedLayerTest[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(FullyConnectedLayerTest::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(FullyConnectedLayerTest::addRef)
         .toArray((x) -> new FullyConnectedLayerTest[x]);
   }
 
@@ -57,7 +59,7 @@ class FullyConnectedLayerTest extends LayerTestBase {
   FullyConnectedLayerTest[][] addRefs(FullyConnectedLayerTest[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(FullyConnectedLayerTest::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(FullyConnectedLayerTest::addRefs)
         .toArray((x) -> new FullyConnectedLayerTest[x][]);
   }
 
@@ -83,7 +85,7 @@ class FullyConnectedLayerTest extends LayerTestBase {
     return (FullyConnectedLayerTest) super.addRef();
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Basic extends FullyConnectedLayerTest {
     public Basic() {
       super(3, 3);
@@ -93,7 +95,7 @@ class FullyConnectedLayerTest extends LayerTestBase {
     Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
     public @SuppressWarnings("unused")

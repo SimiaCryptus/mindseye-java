@@ -22,14 +22,17 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.network.DAGNode;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
+import com.simiacryptus.ref.lang.RefAware;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
+import java.util.Map;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class AutoEntropyLayer extends PipelineNetwork {
 
   @SuppressWarnings("unused")
@@ -42,13 +45,13 @@ class AutoEntropyLayer extends PipelineNetwork {
   }
 
   protected AutoEntropyLayer(@Nonnull final JsonObject json,
-                             com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                             Map<CharSequence, byte[]> rs) {
     super(json, rs);
   }
 
   @SuppressWarnings("unused")
   public static AutoEntropyLayer fromJson(@NotNull final JsonObject json,
-                                          com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                          Map<CharSequence, byte[]> rs) {
     return new AutoEntropyLayer(json, rs);
   }
 
@@ -56,7 +59,7 @@ class AutoEntropyLayer extends PipelineNetwork {
   AutoEntropyLayer[] addRefs(AutoEntropyLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(AutoEntropyLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(AutoEntropyLayer::addRef)
         .toArray((x) -> new AutoEntropyLayer[x]);
   }
 
@@ -64,7 +67,7 @@ class AutoEntropyLayer extends PipelineNetwork {
   AutoEntropyLayer[][] addRefs(AutoEntropyLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(AutoEntropyLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(AutoEntropyLayer::addRefs)
         .toArray((x) -> new AutoEntropyLayer[x][]);
   }
 

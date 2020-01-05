@@ -21,13 +21,19 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefArrayList;
+import com.simiacryptus.ref.wrappers.RefIntStream;
+import com.simiacryptus.ref.wrappers.RefList;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.UUID;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class UnpoolingLayer extends LayerBase {
 
   private final int sizeX;
@@ -111,7 +117,7 @@ class UnpoolingLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   public static UnpoolingLayer fromJson(@Nonnull final JsonObject json,
-                                        com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                        Map<CharSequence, byte[]> rs) {
     return new UnpoolingLayer(json);
   }
 
@@ -119,7 +125,7 @@ class UnpoolingLayer extends LayerBase {
   UnpoolingLayer[] addRefs(UnpoolingLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(UnpoolingLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(UnpoolingLayer::addRef)
         .toArray((x) -> new UnpoolingLayer[x]);
   }
 
@@ -127,7 +133,7 @@ class UnpoolingLayer extends LayerBase {
   UnpoolingLayer[][] addRefs(UnpoolingLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(UnpoolingLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(UnpoolingLayer::addRefs)
         .toArray((x) -> new UnpoolingLayer[x][]);
   }
 
@@ -142,7 +148,7 @@ class UnpoolingLayer extends LayerBase {
     Tensor outputDims;
     outputDims = new Tensor(inputDims[0] * sizeX, inputDims[1] * sizeY, inputDims[2]);
     TensorArray data = new TensorArray(
-        com.simiacryptus.ref.wrappers.RefIntStream.range(0, batch.length()).parallel().mapToObj(dataIndex -> {
+        RefIntStream.range(0, batch.length()).parallel().mapToObj(dataIndex -> {
           Tensor inputData = batch.get(dataIndex);
           return UnpoolingLayer.copyExpand(inputData, outputDims.copy());
         }).toArray(i -> new Tensor[i]));
@@ -151,7 +157,7 @@ class UnpoolingLayer extends LayerBase {
       if (input.isAlive()) {
         @Nonnull
         TensorArray tensorArray = new TensorArray(
-            com.simiacryptus.ref.wrappers.RefIntStream.range(0, error.length()).parallel().mapToObj(dataIndex -> {
+            RefIntStream.range(0, error.length()).parallel().mapToObj(dataIndex -> {
               @Nonnull final Tensor passback = new Tensor(inputDims);
               @Nullable final Tensor err = error.get(dataIndex);
               return UnpoolingLayer.copyCondense(err, passback);
@@ -172,7 +178,7 @@ class UnpoolingLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             DataSerializer dataSerializer) {
     @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("sizeX", sizeX);
@@ -182,8 +188,8 @@ class UnpoolingLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
-    return new com.simiacryptus.ref.wrappers.RefArrayList<>();
+  public RefList<double[]> state() {
+    return new RefArrayList<>();
   }
 
   public @SuppressWarnings("unused")

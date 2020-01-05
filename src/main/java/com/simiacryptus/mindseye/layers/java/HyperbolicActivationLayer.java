@@ -21,15 +21,21 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefIntStream;
+import com.simiacryptus.ref.wrappers.RefList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.UUID;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class HyperbolicActivationLayer extends LayerBase {
 
   @SuppressWarnings("unused")
@@ -46,7 +52,7 @@ class HyperbolicActivationLayer extends LayerBase {
   }
 
   protected HyperbolicActivationLayer(@Nonnull final JsonObject json,
-                                      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources) {
+                                      Map<CharSequence, byte[]> resources) {
     super(json);
     weights = Tensor.fromJson(json.get("weights"), resources);
     negativeMode = json.getAsJsonPrimitive("negativeMode").getAsInt();
@@ -69,7 +75,7 @@ class HyperbolicActivationLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   public static HyperbolicActivationLayer fromJson(@Nonnull final JsonObject json,
-                                                   com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                                   Map<CharSequence, byte[]> rs) {
     return new HyperbolicActivationLayer(json, rs);
   }
 
@@ -77,7 +83,7 @@ class HyperbolicActivationLayer extends LayerBase {
   HyperbolicActivationLayer[] addRefs(HyperbolicActivationLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(HyperbolicActivationLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(HyperbolicActivationLayer::addRef)
         .toArray((x) -> new HyperbolicActivationLayer[x]);
   }
 
@@ -85,7 +91,7 @@ class HyperbolicActivationLayer extends LayerBase {
   HyperbolicActivationLayer[][] addRefs(HyperbolicActivationLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(HyperbolicActivationLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(HyperbolicActivationLayer::addRefs)
         .toArray((x) -> new HyperbolicActivationLayer[x][]);
   }
 
@@ -95,7 +101,7 @@ class HyperbolicActivationLayer extends LayerBase {
     final TensorList indata = inObj[0].getData();
     final int itemCnt = indata.length();
     return new Result(
-        new TensorArray(com.simiacryptus.ref.wrappers.RefIntStream.range(0, itemCnt).mapToObj(dataIndex -> {
+        new TensorArray(RefIntStream.range(0, itemCnt).mapToObj(dataIndex -> {
           @Nullable final Tensor input = indata.get(dataIndex);
           return input.map(v -> {
             final int sign = v < 0 ? negativeMode : 1;
@@ -104,7 +110,7 @@ class HyperbolicActivationLayer extends LayerBase {
           });
         }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList delta) -> {
       if (!isFrozen()) {
-        com.simiacryptus.ref.wrappers.RefIntStream.range(0, delta.length()).forEach(dataIndex -> {
+        RefIntStream.range(0, delta.length()).forEach(dataIndex -> {
           @Nullable
           Tensor deltaI = delta.get(dataIndex);
           @Nullable
@@ -125,7 +131,7 @@ class HyperbolicActivationLayer extends LayerBase {
       if (inObj[0].isAlive()) {
         @Nonnull
         TensorArray tensorArray = new TensorArray(
-            com.simiacryptus.ref.wrappers.RefIntStream.range(0, delta.length()).mapToObj(dataIndex -> {
+            RefIntStream.range(0, delta.length()).mapToObj(dataIndex -> {
               @Nullable
               Tensor inputTensor = indata.get(dataIndex);
               Tensor deltaTensor = delta.get(dataIndex);
@@ -158,7 +164,7 @@ class HyperbolicActivationLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             @Nonnull DataSerializer dataSerializer) {
     @Nonnull final JsonObject json = super.getJsonStub();
     json.add("weights", weights.getJson(resources, dataSerializer));
@@ -186,8 +192,8 @@ class HyperbolicActivationLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
-    return com.simiacryptus.ref.wrappers.RefArrays.asList(weights.getData());
+  public RefList<double[]> state() {
+    return RefArrays.asList(weights.getData());
   }
 
   public void _free() {

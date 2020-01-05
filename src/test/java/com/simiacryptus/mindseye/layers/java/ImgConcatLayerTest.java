@@ -20,18 +20,20 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
+import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.Random;
 
-public abstract @com.simiacryptus.ref.lang.RefAware
+public abstract @RefAware
 class ImgConcatLayerTest extends LayerTestBase {
 
   public static @SuppressWarnings("unused")
   ImgConcatLayerTest[] addRefs(ImgConcatLayerTest[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgConcatLayerTest::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(ImgConcatLayerTest::addRef)
         .toArray((x) -> new ImgConcatLayerTest[x]);
   }
 
@@ -39,7 +41,7 @@ class ImgConcatLayerTest extends LayerTestBase {
   ImgConcatLayerTest[][] addRefs(ImgConcatLayerTest[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgConcatLayerTest::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(ImgConcatLayerTest::addRefs)
         .toArray((x) -> new ImgConcatLayerTest[x][]);
   }
 
@@ -65,14 +67,14 @@ class ImgConcatLayerTest extends LayerTestBase {
     return (ImgConcatLayerTest) super.addRef();
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Basic extends ImgConcatLayerTest {
 
     public static @SuppressWarnings("unused")
     Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
     public @SuppressWarnings("unused")

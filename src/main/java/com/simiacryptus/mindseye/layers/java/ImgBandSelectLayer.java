@@ -23,13 +23,19 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.simiacryptus.mindseye.lang.*;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefArrayList;
+import com.simiacryptus.ref.wrappers.RefIntStream;
+import com.simiacryptus.ref.wrappers.RefList;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.UUID;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class ImgBandSelectLayer extends LayerBase {
 
   private final int[] bands;
@@ -50,7 +56,7 @@ class ImgBandSelectLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   public static ImgBandSelectLayer fromJson(@Nonnull final JsonObject json,
-                                            com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                            Map<CharSequence, byte[]> rs) {
     return new ImgBandSelectLayer(json);
   }
 
@@ -58,7 +64,7 @@ class ImgBandSelectLayer extends LayerBase {
   ImgBandSelectLayer[] addRefs(ImgBandSelectLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgBandSelectLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(ImgBandSelectLayer::addRef)
         .toArray((x) -> new ImgBandSelectLayer[x]);
   }
 
@@ -66,7 +72,7 @@ class ImgBandSelectLayer extends LayerBase {
   ImgBandSelectLayer[][] addRefs(ImgBandSelectLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgBandSelectLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(ImgBandSelectLayer::addRefs)
         .toArray((x) -> new ImgBandSelectLayer[x][]);
   }
 
@@ -79,7 +85,7 @@ class ImgBandSelectLayer extends LayerBase {
     assert 3 == inputDims.length;
     @Nonnull final Tensor outputDims = new Tensor(inputDims[0], inputDims[1], bands.length);
     @Nonnull
-    TensorArray wrap = new TensorArray(com.simiacryptus.ref.wrappers.RefIntStream.range(0, batch.length()).parallel()
+    TensorArray wrap = new TensorArray(RefIntStream.range(0, batch.length()).parallel()
         .mapToObj(dataIndex -> outputDims.mapCoords((c) -> {
           int[] coords = c.getCoords();
           @Nullable
@@ -90,7 +96,7 @@ class ImgBandSelectLayer extends LayerBase {
       if (input.isAlive()) {
         @Nonnull
         TensorArray tensorArray = new TensorArray(
-            com.simiacryptus.ref.wrappers.RefIntStream.range(0, error.length()).parallel().mapToObj(dataIndex -> {
+            RefIntStream.range(0, error.length()).parallel().mapToObj(dataIndex -> {
               @Nonnull final Tensor passback = new Tensor(inputDims);
               @Nullable final Tensor err = error.get(dataIndex);
               err.coordStream(false).forEach(c -> {
@@ -116,7 +122,7 @@ class ImgBandSelectLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             DataSerializer dataSerializer) {
     @Nonnull final JsonObject json = super.getJsonStub();
     @Nonnull final JsonArray array = new JsonArray();
@@ -129,8 +135,8 @@ class ImgBandSelectLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
-    return new com.simiacryptus.ref.wrappers.RefArrayList<>();
+  public RefList<double[]> state() {
+    return new RefArrayList<>();
   }
 
   public @SuppressWarnings("unused")

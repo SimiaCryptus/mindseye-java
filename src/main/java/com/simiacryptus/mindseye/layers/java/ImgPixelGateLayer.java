@@ -21,14 +21,20 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefIntStream;
+import com.simiacryptus.ref.wrappers.RefList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.UUID;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class ImgPixelGateLayer extends LayerBase {
 
   @SuppressWarnings("unused")
@@ -44,7 +50,7 @@ class ImgPixelGateLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   public static ImgPixelGateLayer fromJson(@Nonnull final JsonObject json,
-                                           com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                           Map<CharSequence, byte[]> rs) {
     return new ImgPixelGateLayer(json);
   }
 
@@ -52,7 +58,7 @@ class ImgPixelGateLayer extends LayerBase {
   ImgPixelGateLayer[] addRefs(ImgPixelGateLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgPixelGateLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(ImgPixelGateLayer::addRef)
         .toArray((x) -> new ImgPixelGateLayer[x]);
   }
 
@@ -60,7 +66,7 @@ class ImgPixelGateLayer extends LayerBase {
   ImgPixelGateLayer[][] addRefs(ImgPixelGateLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ImgPixelGateLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(ImgPixelGateLayer::addRefs)
         .toArray((x) -> new ImgPixelGateLayer[x][]);
   }
 
@@ -78,7 +84,7 @@ class ImgPixelGateLayer extends LayerBase {
     int[] inputDims = inputData.getDimensions();
     assert 3 == inputDims.length;
     return new Result(
-        new TensorArray(com.simiacryptus.ref.wrappers.RefIntStream.range(0, inputData.length()).mapToObj(i -> {
+        new TensorArray(RefIntStream.range(0, inputData.length()).mapToObj(i -> {
           Tensor inputTensor = inputData.get(i);
           Tensor gateTensor = gateData.get(gateData.length() == 1 ? 0 : i);
           return new Tensor(inputDims[0], inputDims[1], inputDims[2]).setByCoord(c -> {
@@ -89,7 +95,7 @@ class ImgPixelGateLayer extends LayerBase {
       if (input.isAlive()) {
         @Nonnull
         TensorArray tensorArray = new TensorArray(
-            com.simiacryptus.ref.wrappers.RefIntStream.range(0, delta.length()).mapToObj(i -> {
+            RefIntStream.range(0, delta.length()).mapToObj(i -> {
               Tensor deltaTensor = delta.get(i);
               Tensor gateTensor = gateData.get(gateData.length() == 1 ? 0 : i);
               return new Tensor(input.getData().getDimensions()).setByCoord(c -> {
@@ -102,11 +108,11 @@ class ImgPixelGateLayer extends LayerBase {
       if (gate.isAlive()) {
         @Nonnull
         TensorArray tensorArray = new TensorArray(
-            com.simiacryptus.ref.wrappers.RefIntStream.range(0, delta.length()).mapToObj(i -> {
+            RefIntStream.range(0, delta.length()).mapToObj(i -> {
               Tensor deltaTensor = delta.get(i);
               Tensor inputTensor = inputData.get(i);
               return new Tensor(gateData.getDimensions()).setByCoord(
-                  c -> com.simiacryptus.ref.wrappers.RefIntStream.range(0, inputDims[2]).mapToDouble(b -> {
+                  c -> RefIntStream.range(0, inputDims[2]).mapToDouble(b -> {
                     int[] coords = c.getCoords();
                     return deltaTensor.get(coords[0], coords[1], b) * inputTensor.get(coords[0], coords[1], b);
                   }).sum());
@@ -127,15 +133,15 @@ class ImgPixelGateLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 
   @Nonnull
   @Override
-  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
-    return com.simiacryptus.ref.wrappers.RefArrays.asList();
+  public RefList<double[]> state() {
+    return RefArrays.asList();
   }
 
   public @SuppressWarnings("unused")

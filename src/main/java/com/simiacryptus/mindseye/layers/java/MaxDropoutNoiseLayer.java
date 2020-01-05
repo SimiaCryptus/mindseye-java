@@ -21,6 +21,8 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.*;
 import com.simiacryptus.util.JsonUtil;
 import com.simiacryptus.util.Util;
 import com.simiacryptus.util.data.IntArray;
@@ -29,18 +31,20 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class MaxDropoutNoiseLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(MaxDropoutNoiseLayer.class);
   @Nullable
   private final int[] kernelSize;
-  private final Function<IntArray, com.simiacryptus.ref.wrappers.RefList<com.simiacryptus.ref.wrappers.RefList<Coordinate>>> getCellMap_cached = Util
+  private final Function<IntArray, RefList<RefList<Coordinate>>> getCellMap_cached = Util
       .cache(this::getCellMap);
 
   public MaxDropoutNoiseLayer() {
@@ -59,7 +63,7 @@ class MaxDropoutNoiseLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   public static MaxDropoutNoiseLayer fromJson(@Nonnull final JsonObject json,
-                                              com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                              Map<CharSequence, byte[]> rs) {
     return new MaxDropoutNoiseLayer(json);
   }
 
@@ -67,7 +71,7 @@ class MaxDropoutNoiseLayer extends LayerBase {
   MaxDropoutNoiseLayer[] addRefs(MaxDropoutNoiseLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MaxDropoutNoiseLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(MaxDropoutNoiseLayer::addRef)
         .toArray((x) -> new MaxDropoutNoiseLayer[x]);
   }
 
@@ -75,7 +79,7 @@ class MaxDropoutNoiseLayer extends LayerBase {
   MaxDropoutNoiseLayer[][] addRefs(MaxDropoutNoiseLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MaxDropoutNoiseLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(MaxDropoutNoiseLayer::addRefs)
         .toArray((x) -> new MaxDropoutNoiseLayer[x][]);
   }
 
@@ -85,19 +89,19 @@ class MaxDropoutNoiseLayer extends LayerBase {
     final Result in0 = inObj[0];
     final TensorList data0 = in0.getData();
     final int itemCnt = data0.length();
-    final Tensor[] mask = com.simiacryptus.ref.wrappers.RefIntStream.range(0, itemCnt).mapToObj(dataIndex -> {
+    final Tensor[] mask = RefIntStream.range(0, itemCnt).mapToObj(dataIndex -> {
       @Nullable final Tensor input = data0.get(dataIndex);
       @Nullable final Tensor output = input.map(x -> 0);
-      final com.simiacryptus.ref.wrappers.RefList<com.simiacryptus.ref.wrappers.RefList<Coordinate>> cells = getCellMap_cached
+      final RefList<RefList<Coordinate>> cells = getCellMap_cached
           .apply(new IntArray(output.getDimensions()));
       cells.forEach(cell -> {
         output.set(
-            cell.stream().max(com.simiacryptus.ref.wrappers.RefComparator.comparingDouble(c -> input.get(c))).get(), 1);
+            cell.stream().max(RefComparator.comparingDouble(c -> input.get(c))).get(), 1);
       });
       return output;
     }).toArray(i -> new Tensor[i]);
     return new Result(
-        new TensorArray(com.simiacryptus.ref.wrappers.RefIntStream.range(0, itemCnt).mapToObj(dataIndex -> {
+        new TensorArray(RefIntStream.range(0, itemCnt).mapToObj(dataIndex -> {
           Tensor inputData = data0.get(dataIndex);
           @Nullable final double[] input = inputData.getData();
           @Nullable final double[] maskT = mask[dataIndex].getData();
@@ -111,7 +115,7 @@ class MaxDropoutNoiseLayer extends LayerBase {
       if (in0.isAlive()) {
         @Nonnull
         TensorArray tensorArray = new TensorArray(
-            com.simiacryptus.ref.wrappers.RefIntStream.range(0, delta.length()).mapToObj(dataIndex -> {
+            RefIntStream.range(0, delta.length()).mapToObj(dataIndex -> {
               Tensor deltaTensor = delta.get(dataIndex);
               @Nullable final double[] deltaData = deltaTensor.getData();
               @Nonnull final int[] dims = data0.getDimensions();
@@ -139,7 +143,7 @@ class MaxDropoutNoiseLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             DataSerializer dataSerializer) {
     @Nonnull final JsonObject json = super.getJsonStub();
     json.add("kernelSize", JsonUtil.getJson(kernelSize));
@@ -148,8 +152,8 @@ class MaxDropoutNoiseLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
-    return com.simiacryptus.ref.wrappers.RefArrays.asList();
+  public RefList<double[]> state() {
+    return RefArrays.asList();
   }
 
   public @SuppressWarnings("unused")
@@ -162,11 +166,11 @@ class MaxDropoutNoiseLayer extends LayerBase {
     return (MaxDropoutNoiseLayer) super.addRef();
   }
 
-  private com.simiacryptus.ref.wrappers.RefList<com.simiacryptus.ref.wrappers.RefList<Coordinate>> getCellMap(
+  private RefList<RefList<Coordinate>> getCellMap(
       @Nonnull final IntArray dims) {
     Tensor tensor = new Tensor(dims.data);
-    return new com.simiacryptus.ref.wrappers.RefArrayList<>(tensor.coordStream(true)
-        .collect(com.simiacryptus.ref.wrappers.RefCollectors.groupingBy((@Nonnull final Coordinate c) -> {
+    return new RefArrayList<>(tensor.coordStream(true)
+        .collect(RefCollectors.groupingBy((@Nonnull final Coordinate c) -> {
           int cellId = 0;
           int max = 0;
           for (int dim = 0; dim < dims.size(); dim++) {

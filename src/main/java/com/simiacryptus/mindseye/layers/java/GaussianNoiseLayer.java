@@ -21,16 +21,22 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefIntStream;
+import com.simiacryptus.ref.wrappers.RefList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class GaussianNoiseLayer extends LayerBase {
 
   public static final ThreadLocal<Random> random = new ThreadLocal<Random>() {
@@ -66,7 +72,7 @@ class GaussianNoiseLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   public static GaussianNoiseLayer fromJson(@Nonnull final JsonObject json,
-                                            com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                            Map<CharSequence, byte[]> rs) {
     return new GaussianNoiseLayer(json);
   }
 
@@ -74,7 +80,7 @@ class GaussianNoiseLayer extends LayerBase {
   GaussianNoiseLayer[] addRefs(GaussianNoiseLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(GaussianNoiseLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(GaussianNoiseLayer::addRef)
         .toArray((x) -> new GaussianNoiseLayer[x]);
   }
 
@@ -82,7 +88,7 @@ class GaussianNoiseLayer extends LayerBase {
   GaussianNoiseLayer[][] addRefs(GaussianNoiseLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(GaussianNoiseLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(GaussianNoiseLayer::addRefs)
         .toArray((x) -> new GaussianNoiseLayer[x][]);
   }
 
@@ -92,7 +98,7 @@ class GaussianNoiseLayer extends LayerBase {
     final Result in0 = inObj[0];
     final TensorList inputData = in0.getData();
     final int itemCnt = inputData.length();
-    final Tensor[] outputA = com.simiacryptus.ref.wrappers.RefIntStream.range(0, itemCnt).mapToObj(dataIndex -> {
+    final Tensor[] outputA = RefIntStream.range(0, itemCnt).mapToObj(dataIndex -> {
       @Nonnull final Random random = new Random(seed);
       @Nullable final Tensor input = inputData.get(dataIndex);
       return input.map(x -> {
@@ -105,7 +111,7 @@ class GaussianNoiseLayer extends LayerBase {
           if (in0.isAlive()) {
             @Nonnull
             TensorArray tensorArray = new TensorArray(
-                com.simiacryptus.ref.wrappers.RefIntStream.range(0, delta.length()).mapToObj(dataIndex -> {
+                RefIntStream.range(0, delta.length()).mapToObj(dataIndex -> {
                   Tensor tensor = delta.get(dataIndex);
                   @Nullable final double[] deltaData = tensor.getData();
                   @Nonnull final Tensor passback = new Tensor(dimensions);
@@ -130,7 +136,7 @@ class GaussianNoiseLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             DataSerializer dataSerializer) {
     @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("value", value);
@@ -143,8 +149,8 @@ class GaussianNoiseLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
-    return com.simiacryptus.ref.wrappers.RefArrays.asList();
+  public RefList<double[]> state() {
+    return RefArrays.asList();
   }
 
   public @SuppressWarnings("unused")

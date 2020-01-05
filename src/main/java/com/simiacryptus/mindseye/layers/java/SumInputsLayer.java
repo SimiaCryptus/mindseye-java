@@ -22,13 +22,19 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefIntStream;
+import com.simiacryptus.ref.wrappers.RefList;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.UUID;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class SumInputsLayer extends LayerBase {
 
   public SumInputsLayer() {
@@ -40,7 +46,7 @@ class SumInputsLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   public static SumInputsLayer fromJson(@Nonnull final JsonObject json,
-                                        com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                        Map<CharSequence, byte[]> rs) {
     return new SumInputsLayer(json);
   }
 
@@ -52,7 +58,7 @@ class SumInputsLayer extends LayerBase {
   SumInputsLayer[] addRefs(SumInputsLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SumInputsLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(SumInputsLayer::addRef)
         .toArray((x) -> new SumInputsLayer[x]);
   }
 
@@ -60,18 +66,18 @@ class SumInputsLayer extends LayerBase {
   SumInputsLayer[][] addRefs(SumInputsLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SumInputsLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(SumInputsLayer::addRefs)
         .toArray((x) -> new SumInputsLayer[x][]);
   }
 
   @Nonnull
   @Override
   public Result eval(@Nonnull final Result... inObj) {
-    return new Result(com.simiacryptus.ref.wrappers.RefArrays.stream(inObj).parallel().map(x -> {
+    return new Result(RefArrays.stream(inObj).parallel().map(x -> {
       return x.getData();
     }).reduce((l, r) -> {
       assert l.length() == r.length() || 1 == l.length() || 1 == r.length();
-      return new TensorArray(com.simiacryptus.ref.wrappers.RefIntStream.range(0, l.length()).parallel().mapToObj(i -> {
+      return new TensorArray(RefIntStream.range(0, l.length()).parallel().mapToObj(i -> {
         @Nullable final Tensor left = l.get(1 == l.length() ? 0 : i);
         @Nullable final Tensor right = r.get(1 == r.length() ? 0 : i);
         @Nullable
@@ -123,15 +129,15 @@ class SumInputsLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 
   @Nonnull
   @Override
-  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
-    return com.simiacryptus.ref.wrappers.RefArrays.asList();
+  public RefList<double[]> state() {
+    return RefArrays.asList();
   }
 
   public @SuppressWarnings("unused")

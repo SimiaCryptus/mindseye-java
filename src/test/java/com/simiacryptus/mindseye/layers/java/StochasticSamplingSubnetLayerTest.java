@@ -21,11 +21,13 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
+import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.Random;
 
-public abstract @com.simiacryptus.ref.lang.RefAware
+public abstract @RefAware
 class StochasticSamplingSubnetLayerTest extends LayerTestBase {
 
   public static @SuppressWarnings("unused")
@@ -33,7 +35,7 @@ class StochasticSamplingSubnetLayerTest extends LayerTestBase {
       StochasticSamplingSubnetLayerTest[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(StochasticSamplingSubnetLayerTest::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(StochasticSamplingSubnetLayerTest::addRef)
         .toArray((x) -> new StochasticSamplingSubnetLayerTest[x]);
   }
 
@@ -42,7 +44,7 @@ class StochasticSamplingSubnetLayerTest extends LayerTestBase {
       StochasticSamplingSubnetLayerTest[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(StochasticSamplingSubnetLayerTest::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(StochasticSamplingSubnetLayerTest::addRefs)
         .toArray((x) -> new StochasticSamplingSubnetLayerTest[x][]);
   }
 
@@ -72,14 +74,14 @@ class StochasticSamplingSubnetLayerTest extends LayerTestBase {
     return (StochasticSamplingSubnetLayerTest) super.addRef();
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Basic extends StochasticSamplingSubnetLayerTest {
 
     public static @SuppressWarnings("unused")
     Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
     public @SuppressWarnings("unused")

@@ -21,8 +21,11 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
+import com.simiacryptus.ref.lang.RefAware;
 
-public abstract @com.simiacryptus.ref.lang.RefAware
+import java.util.Arrays;
+
+public abstract @RefAware
 class AbsActivationLayerTest extends ActivationLayerTestBase {
   public AbsActivationLayerTest() {
     super(new AbsActivationLayer());
@@ -32,7 +35,7 @@ class AbsActivationLayerTest extends ActivationLayerTestBase {
   AbsActivationLayerTest[] addRefs(AbsActivationLayerTest[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(AbsActivationLayerTest::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(AbsActivationLayerTest::addRef)
         .toArray((x) -> new AbsActivationLayerTest[x]);
   }
 
@@ -40,7 +43,7 @@ class AbsActivationLayerTest extends ActivationLayerTestBase {
   AbsActivationLayerTest[][] addRefs(AbsActivationLayerTest[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(AbsActivationLayerTest::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(AbsActivationLayerTest::addRefs)
         .toArray((x) -> new AbsActivationLayerTest[x][]);
   }
 
@@ -54,14 +57,14 @@ class AbsActivationLayerTest extends ActivationLayerTestBase {
     return (AbsActivationLayerTest) super.addRef();
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Basic extends AbsActivationLayerTest {
 
     public static @SuppressWarnings("unused")
     Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
     public @SuppressWarnings("unused")

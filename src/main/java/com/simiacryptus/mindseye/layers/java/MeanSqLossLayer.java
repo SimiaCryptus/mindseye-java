@@ -21,15 +21,19 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.UUID;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class MeanSqLossLayer extends LayerBase {
 
   @SuppressWarnings("unused")
@@ -44,7 +48,7 @@ class MeanSqLossLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   public static MeanSqLossLayer fromJson(@Nonnull final JsonObject json,
-                                         com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                         Map<CharSequence, byte[]> rs) {
     return new MeanSqLossLayer(json);
   }
 
@@ -52,7 +56,7 @@ class MeanSqLossLayer extends LayerBase {
   MeanSqLossLayer[] addRefs(MeanSqLossLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MeanSqLossLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(MeanSqLossLayer::addRef)
         .toArray((x) -> new MeanSqLossLayer[x]);
   }
 
@@ -60,7 +64,7 @@ class MeanSqLossLayer extends LayerBase {
   MeanSqLossLayer[][] addRefs(MeanSqLossLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MeanSqLossLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(MeanSqLossLayer::addRefs)
         .toArray((x) -> new MeanSqLossLayer[x][]);
   }
 
@@ -76,28 +80,28 @@ class MeanSqLossLayer extends LayerBase {
     }
     @Nonnull final Tensor diffs[] = new Tensor[leftLength];
     return new Result(
-        new TensorArray(com.simiacryptus.ref.wrappers.RefIntStream.range(0, leftLength).mapToObj(dataIndex -> {
+        new TensorArray(RefIntStream.range(0, leftLength).mapToObj(dataIndex -> {
           @Nullable final Tensor a = inObj[0].getData().get(1 == leftLength ? 0 : dataIndex);
           @Nullable final Tensor b = inObj[1].getData().get(1 == rightLength ? 0 : dataIndex);
           if (a.length() != b.length()) {
             throw new IllegalArgumentException(
-                String.format("%s != %s", com.simiacryptus.ref.wrappers.RefArrays.toString(a.getDimensions()),
-                    com.simiacryptus.ref.wrappers.RefArrays.toString(b.getDimensions())));
+                String.format("%s != %s", RefArrays.toString(a.getDimensions()),
+                    RefArrays.toString(b.getDimensions())));
           }
           @Nonnull final Tensor r = a.minus(b);
           diffs[dataIndex] = r;
           return new Tensor(new double[]{r.sumSq() / r.length()}, 1);
         }).toArray(i -> new Tensor[i])), (@Nonnull final DeltaSet<UUID> buffer, @Nonnull final TensorList data) -> {
       if (inObj[0].isAlive()) {
-        com.simiacryptus.ref.wrappers.RefStream<Tensor> tensorStream = com.simiacryptus.ref.wrappers.RefIntStream
+        RefStream<Tensor> tensorStream = RefIntStream
             .range(0, data.length()).parallel().mapToObj(dataIndex -> {
               @Nullable
               Tensor tensor = data.get(dataIndex);
               Tensor diff = diffs[dataIndex];
               return diff.scale(tensor.get(0) * 2.0 / diff.length());
-            }).collect(com.simiacryptus.ref.wrappers.RefCollectors.toList()).stream();
+            }).collect(RefCollectors.toList()).stream();
         if (1 == leftLength) {
-          tensorStream = com.simiacryptus.ref.wrappers.RefStream.of(tensorStream.reduce((a, b) -> {
+          tensorStream = RefStream.of(tensorStream.reduce((a, b) -> {
             return a.addAndFree(b);
           }).get());
         }
@@ -105,14 +109,14 @@ class MeanSqLossLayer extends LayerBase {
         inObj[0].accumulate(buffer, array);
       }
       if (inObj[1].isAlive()) {
-        com.simiacryptus.ref.wrappers.RefStream<Tensor> tensorStream = com.simiacryptus.ref.wrappers.RefIntStream
+        RefStream<Tensor> tensorStream = RefIntStream
             .range(0, data.length()).parallel().mapToObj(dataIndex -> {
               @Nullable
               Tensor tensor = data.get(dataIndex);
               return diffs[dataIndex].scale(tensor.get(0) * 2.0 / diffs[dataIndex].length());
-            }).collect(com.simiacryptus.ref.wrappers.RefCollectors.toList()).stream();
+            }).collect(RefCollectors.toList()).stream();
         if (1 == rightLength) {
-          tensorStream = com.simiacryptus.ref.wrappers.RefStream.of(tensorStream.reduce((a, b) -> {
+          tensorStream = RefStream.of(tensorStream.reduce((a, b) -> {
             return a.addAndFree(b);
           }).get());
         }
@@ -136,15 +140,15 @@ class MeanSqLossLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 
   @Nonnull
   @Override
-  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
-    return com.simiacryptus.ref.wrappers.RefArrays.asList();
+  public RefList<double[]> state() {
+    return RefArrays.asList();
   }
 
   public @SuppressWarnings("unused")
