@@ -126,7 +126,7 @@ class TensorConcatLayer extends LayerBase {
         @Nullable final double[] data = tensor.getData();
         if (null != tensor)
           tensor.freeRef();
-        System.arraycopy(data, 0, outputTensorData, pos, Math.min(data.length, outputTensorData.length - pos));
+        com.simiacryptus.ref.wrappers.RefSystem.arraycopy(data, 0, outputTensorData, pos, Math.min(data.length, outputTensorData.length - pos));
         pos += data.length;
       }
       outputTensors.add(outputTensor == null ? null : outputTensor);
@@ -154,7 +154,7 @@ class TensorConcatLayer extends LayerBase {
                   temp_09_0013.freeRef();
                 @Nullable
                 double[] tensorData = tensor.getData();
-                System.arraycopy(tensorData, pos, dest.getData(), 0, Math.min(dest.length(), tensorData.length - pos));
+                com.simiacryptus.ref.wrappers.RefSystem.arraycopy(tensorData, pos, dest.getData(), 0, Math.min(dest.length(), tensorData.length - pos));
                 pos += dest.length();
                 {
                   Tensor temp_09_0001 = dest == null ? null : dest.addRef();

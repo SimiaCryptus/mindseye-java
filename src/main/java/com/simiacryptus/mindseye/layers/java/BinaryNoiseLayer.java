@@ -55,7 +55,7 @@ class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
   @Nonnull
   final RefList<Tensor> maskList = new RefArrayList<>();
   private double value;
-  private long seed = System.nanoTime();
+  private long seed = com.simiacryptus.ref.wrappers.RefSystem.nanoTime();
 
   public BinaryNoiseLayer() {
     this(0.5);

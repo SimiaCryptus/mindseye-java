@@ -36,6 +36,7 @@ import com.simiacryptus.ref.wrappers.RefArrayList;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefList;
+import com.simiacryptus.ref.wrappers.RefString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,7 +58,7 @@ class StochasticSamplingSubnetLayer extends LayerBase implements StochasticCompo
   private final int samples;
   @Nullable
   private final Layer subnetwork;
-  private long seed = System.nanoTime();
+  private long seed = com.simiacryptus.ref.wrappers.RefSystem.nanoTime();
 
   public StochasticSamplingSubnetLayer(@org.jetbrains.annotations.Nullable final Layer subnetwork, final int samples) {
     super();
@@ -213,13 +214,13 @@ class StochasticSamplingSubnetLayer extends LayerBase implements StochasticCompo
 
   @Override
   public void shuffle(final long seed) {
-    log.info(String.format("Set %s to random seed %s", getName(), seed));
+    log.info(RefString.format("Set %s to random seed %s", getName(), seed));
     this.seed = seed;
   }
 
   @Override
   public void clearNoise() {
-    log.info(String.format("Set %s to random null seed", getName()));
+    log.info(RefString.format("Set %s to random null seed", getName()));
     seed = 0;
   }
 

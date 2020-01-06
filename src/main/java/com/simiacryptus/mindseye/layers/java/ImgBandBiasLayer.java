@@ -27,6 +27,7 @@ import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefList;
+import com.simiacryptus.ref.wrappers.RefString;
 import com.simiacryptus.util.FastRandom;
 import com.simiacryptus.util.JsonUtil;
 import com.simiacryptus.util.Util;
@@ -162,7 +163,7 @@ class ImgBandBiasLayer extends LayerBase {
                 throw temp_24_0003;
               }
               if (r.getDimensions()[2] != bias.length) {
-                IllegalArgumentException temp_24_0004 = new IllegalArgumentException(String.format(
+                IllegalArgumentException temp_24_0004 = new IllegalArgumentException(RefString.format(
                     "%s: %s does not have %s bands", getName(), RefArrays.toString(r.getDimensions()), bias.length));
                 if (null != r)
                   r.freeRef();

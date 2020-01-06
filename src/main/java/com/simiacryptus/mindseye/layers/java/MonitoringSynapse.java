@@ -27,7 +27,6 @@ import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefHashMap;
 import com.simiacryptus.ref.wrappers.RefList;
-import com.simiacryptus.ref.wrappers.RefMap;
 import com.simiacryptus.util.MonitoredItem;
 import com.simiacryptus.util.MonitoredObject;
 import com.simiacryptus.util.data.PercentileStatistics;
@@ -35,6 +34,7 @@ import com.simiacryptus.util.data.ScalarStatistics;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -57,8 +57,8 @@ class MonitoringSynapse extends LayerBase implements MonitoredItem {
 
   @Nonnull
   @Override
-  public RefMap<CharSequence, Object> getMetrics() {
-    @Nonnull final RefHashMap<CharSequence, Object> map = new RefHashMap<>();
+  public Map<CharSequence, Object> getMetrics() {
+    @Nonnull final HashMap<CharSequence, Object> map = new HashMap<>();
     map.put("totalBatches", totalBatches);
     map.put("totalItems", totalItems);
     map.put("forward", forwardStatistics.getMetrics());
@@ -113,8 +113,8 @@ class MonitoringSynapse extends LayerBase implements MonitoredItem {
     final Result input = inObj[0].addRef();
     ReferenceCounting.freeRefs(inObj);
     final TensorList inputdata = input.getData();
-    System.nanoTime();
-    System.nanoTime();
+    com.simiacryptus.ref.wrappers.RefSystem.nanoTime();
+    com.simiacryptus.ref.wrappers.RefSystem.nanoTime();
     totalBatches++;
     totalItems += inputdata.length();
     forwardStatistics.clear();

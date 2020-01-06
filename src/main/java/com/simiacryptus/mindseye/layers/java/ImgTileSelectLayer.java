@@ -30,6 +30,7 @@ import com.simiacryptus.ref.wrappers.RefArrayList;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefList;
+import com.simiacryptus.ref.wrappers.RefString;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -124,7 +125,7 @@ class ImgTileSelectLayer extends LayerBase {
     @Nonnull final int[] inputDims = canvas.getDimensions();
     int cols = (int) (Math.ceil((inputDims[0] - width - offsetX) * 1.0 / strideX) + 1);
     int rows = (int) (Math.ceil((inputDims[1] - height - offsetY) * 1.0 / strideY) + 1);
-    log.p(String.format(
+    log.p(RefString.format(
         "Partition %s x %s png with %s x %s tile size into %s x %s grid with stride %s x %s offset %s x %s",
         inputDims[0], inputDims[1], width, height, cols, rows, strideX, strideY, offsetX, offsetY));
     Tensor[] tiles = new Tensor[rows * cols];
@@ -168,7 +169,7 @@ class ImgTileSelectLayer extends LayerBase {
       canvas.freeRef();
     int cols = (int) (Math.ceil((inputDims[0] - width - offsetX) * 1.0 / strideX) + 1);
     int rows = (int) (Math.ceil((inputDims[1] - height - offsetY) * 1.0 / strideY) + 1);
-    log.p(String.format(
+    log.p(RefString.format(
         "Partition %s x %s png with %s x %s tile size into %s x %s grid with stride %s x %s offset %s x %s",
         inputDims[0], inputDims[1], width, height, cols, rows, strideX, strideY, offsetX, offsetY));
     ImgTileSelectLayer[] tiles = new ImgTileSelectLayer[rows * cols];

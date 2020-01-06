@@ -104,7 +104,7 @@ class MeanSqLossLayer extends LayerBase {
                   if (null != temp_20_0014)
                     temp_20_0014.freeRef();
                   if (a.length() != b.length()) {
-                    IllegalArgumentException temp_20_0003 = new IllegalArgumentException(String.format(
+                    IllegalArgumentException temp_20_0003 = new IllegalArgumentException(RefString.format(
                         "%s != %s", RefArrays.toString(a.getDimensions()), RefArrays.toString(b.getDimensions())));
                     if (null != a)
                       a.freeRef();

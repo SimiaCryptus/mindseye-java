@@ -27,6 +27,7 @@ import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefList;
+import com.simiacryptus.ref.wrappers.RefString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,11 +86,11 @@ class LinearActivationLayer extends LayerBase {
   public String getName() {
     String eqStr = isFrozen() ? "== " : "=> ";
     if (weights.get(0) == 1.0) {
-      return eqStr + String.format("x + %.1e", weights.get(1)) + (isFrozen() ? "" : "!");
+      return eqStr + RefString.format("x + %.1e", weights.get(1)) + (isFrozen() ? "" : "!");
     } else if (weights.get(1) == 0.0) {
-      return eqStr + String.format("%.1e x", weights.get(0)) + (isFrozen() ? "" : "!");
+      return eqStr + RefString.format("%.1e x", weights.get(0)) + (isFrozen() ? "" : "!");
     } else {
-      return eqStr + String.format("%.1e x + %.1e", weights.get(0), weights.get(1));
+      return eqStr + RefString.format("%.1e x + %.1e", weights.get(0), weights.get(1));
     }
   }
 

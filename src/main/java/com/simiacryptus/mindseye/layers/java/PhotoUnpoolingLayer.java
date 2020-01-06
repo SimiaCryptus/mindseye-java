@@ -28,6 +28,7 @@ import com.simiacryptus.ref.wrappers.RefArrayList;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefList;
+import com.simiacryptus.ref.wrappers.RefString;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -103,7 +104,7 @@ class PhotoUnpoolingLayer extends LayerBase {
     assert inDim[0] <= outDim[0];
     assert inDim[1] <= outDim[1];
     assert inDim[2] == outDim[2];
-    assert RefArrays.equals(referenceData.getDimensions(), outDim) : String.format("%s != %s",
+    assert RefArrays.equals(referenceData.getDimensions(), outDim) : RefString.format("%s != %s",
         RefArrays.toString(referenceData.getDimensions()), RefArrays.toString(outDim));
     final int kernelSizeX = outDim[0] / inDim[0];
     final int kernelSizeY = outDim[0] / inDim[0];

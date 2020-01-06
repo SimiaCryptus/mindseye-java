@@ -28,6 +28,7 @@ import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefList;
+import com.simiacryptus.ref.wrappers.RefString;
 import com.simiacryptus.util.JsonUtil;
 import com.simiacryptus.util.Util;
 import org.slf4j.Logger;
@@ -134,7 +135,7 @@ class ImgBandScaleLayer extends LayerBase {
         throw temp_50_0003;
       }
       if (tensor.getDimensions()[2] != weights.length) {
-        IllegalArgumentException temp_50_0004 = new IllegalArgumentException(String.format(
+        IllegalArgumentException temp_50_0004 = new IllegalArgumentException(RefString.format(
             "%s: %s does not have %s bands", getName(), RefArrays.toString(tensor.getDimensions()), weights.length));
         if (null != tensor)
           tensor.freeRef();
