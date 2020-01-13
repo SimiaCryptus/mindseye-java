@@ -28,8 +28,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 @SuppressWarnings("serial")
-public final @RefAware
-class AbsActivationLayer extends SimpleActivationLayer<AbsActivationLayer> {
+public final class AbsActivationLayer extends SimpleActivationLayer<AbsActivationLayer> {
 
   public AbsActivationLayer() {
   }
@@ -43,16 +42,14 @@ class AbsActivationLayer extends SimpleActivationLayer<AbsActivationLayer> {
     return new AbsActivationLayer(json);
   }
 
-  public static @SuppressWarnings("unused")
-  AbsActivationLayer[] addRefs(AbsActivationLayer[] array) {
+  public static @SuppressWarnings("unused") AbsActivationLayer[] addRefs(AbsActivationLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(AbsActivationLayer::addRef)
         .toArray((x) -> new AbsActivationLayer[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  AbsActivationLayer[][] addRefs(AbsActivationLayer[][] array) {
+  public static @SuppressWarnings("unused") AbsActivationLayer[][] addRefs(AbsActivationLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(AbsActivationLayer::addRefs)
@@ -65,13 +62,10 @@ class AbsActivationLayer extends SimpleActivationLayer<AbsActivationLayer> {
     return super.getJsonStub();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  AbsActivationLayer addRef() {
+  public @Override @SuppressWarnings("unused") AbsActivationLayer addRef() {
     return (AbsActivationLayer) super.addRef();
   }
 

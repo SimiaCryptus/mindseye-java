@@ -28,8 +28,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 @SuppressWarnings("serial")
-public @RefAware
-class EntropyLayer extends SimpleActivationLayer<EntropyLayer> {
+public class EntropyLayer extends SimpleActivationLayer<EntropyLayer> {
 
   public EntropyLayer() {
     super();
@@ -44,16 +43,13 @@ class EntropyLayer extends SimpleActivationLayer<EntropyLayer> {
     return new EntropyLayer(json);
   }
 
-  public static @SuppressWarnings("unused")
-  EntropyLayer[] addRefs(EntropyLayer[] array) {
+  public static @SuppressWarnings("unused") EntropyLayer[] addRefs(EntropyLayer[] array) {
     if (array == null)
       return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(EntropyLayer::addRef)
-        .toArray((x) -> new EntropyLayer[x]);
+    return Arrays.stream(array).filter((x) -> x != null).map(EntropyLayer::addRef).toArray((x) -> new EntropyLayer[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  EntropyLayer[][] addRefs(EntropyLayer[][] array) {
+  public static @SuppressWarnings("unused") EntropyLayer[][] addRefs(EntropyLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(EntropyLayer::addRefs)
@@ -66,13 +62,10 @@ class EntropyLayer extends SimpleActivationLayer<EntropyLayer> {
     return super.getJsonStub();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  EntropyLayer addRef() {
+  public @Override @SuppressWarnings("unused") EntropyLayer addRef() {
     return (EntropyLayer) super.addRef();
   }
 

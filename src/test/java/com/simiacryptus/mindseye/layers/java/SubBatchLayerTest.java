@@ -27,8 +27,7 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Random;
 
-public @RefAware
-class SubBatchLayerTest extends LayerTestBase {
+public class SubBatchLayerTest extends LayerTestBase {
 
   private final Layer layer = SubBatchLayer.wrap(new SoftmaxLayer());
 
@@ -38,16 +37,14 @@ class SubBatchLayerTest extends LayerTestBase {
     return null;
   }
 
-  public static @SuppressWarnings("unused")
-  SubBatchLayerTest[] addRefs(SubBatchLayerTest[] array) {
+  public static @SuppressWarnings("unused") SubBatchLayerTest[] addRefs(SubBatchLayerTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SubBatchLayerTest::addRef)
         .toArray((x) -> new SubBatchLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  SubBatchLayerTest[][] addRefs(SubBatchLayerTest[][] array) {
+  public static @SuppressWarnings("unused") SubBatchLayerTest[][] addRefs(SubBatchLayerTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SubBatchLayerTest::addRefs)
@@ -57,7 +54,7 @@ class SubBatchLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{{5}};
+    return new int[][] { { 5 } };
   }
 
   @Nonnull
@@ -66,15 +63,12 @@ class SubBatchLayerTest extends LayerTestBase {
     return layer.copy();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
     if (null != layer)
       layer.freeRef();
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  SubBatchLayerTest addRef() {
+  public @Override @SuppressWarnings("unused") SubBatchLayerTest addRef() {
     return (SubBatchLayerTest) super.addRef();
   }
 

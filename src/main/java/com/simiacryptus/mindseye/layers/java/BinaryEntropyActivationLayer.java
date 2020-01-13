@@ -28,8 +28,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 @SuppressWarnings("serial")
-public final @RefAware
-class BinaryEntropyActivationLayer extends SimpleActivationLayer<BinaryEntropyActivationLayer> {
+public final class BinaryEntropyActivationLayer extends SimpleActivationLayer<BinaryEntropyActivationLayer> {
 
   public BinaryEntropyActivationLayer() {
   }
@@ -43,8 +42,7 @@ class BinaryEntropyActivationLayer extends SimpleActivationLayer<BinaryEntropyAc
     return new BinaryEntropyActivationLayer(json);
   }
 
-  public static @SuppressWarnings("unused")
-  BinaryEntropyActivationLayer[] addRefs(
+  public static @SuppressWarnings("unused") BinaryEntropyActivationLayer[] addRefs(
       BinaryEntropyActivationLayer[] array) {
     if (array == null)
       return null;
@@ -52,8 +50,7 @@ class BinaryEntropyActivationLayer extends SimpleActivationLayer<BinaryEntropyAc
         .toArray((x) -> new BinaryEntropyActivationLayer[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  BinaryEntropyActivationLayer[][] addRefs(
+  public static @SuppressWarnings("unused") BinaryEntropyActivationLayer[][] addRefs(
       BinaryEntropyActivationLayer[][] array) {
     if (array == null)
       return null;
@@ -67,13 +64,10 @@ class BinaryEntropyActivationLayer extends SimpleActivationLayer<BinaryEntropyAc
     return super.getJsonStub();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  BinaryEntropyActivationLayer addRef() {
+  public @Override @SuppressWarnings("unused") BinaryEntropyActivationLayer addRef() {
     return (BinaryEntropyActivationLayer) super.addRef();
   }
 

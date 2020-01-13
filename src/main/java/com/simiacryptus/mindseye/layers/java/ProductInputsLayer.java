@@ -37,8 +37,7 @@ import java.util.function.Function;
 import java.util.function.IntFunction;
 
 @SuppressWarnings("serial")
-public @RefAware
-class ProductInputsLayer extends LayerBase {
+public class ProductInputsLayer extends LayerBase {
 
   public ProductInputsLayer() {
   }
@@ -52,16 +51,14 @@ class ProductInputsLayer extends LayerBase {
     return new ProductInputsLayer(json);
   }
 
-  public static @SuppressWarnings("unused")
-  ProductInputsLayer[] addRefs(ProductInputsLayer[] array) {
+  public static @SuppressWarnings("unused") ProductInputsLayer[] addRefs(ProductInputsLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ProductInputsLayer::addRef)
         .toArray((x) -> new ProductInputsLayer[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  ProductInputsLayer[][] addRefs(ProductInputsLayer[][] array) {
+  public static @SuppressWarnings("unused") ProductInputsLayer[][] addRefs(ProductInputsLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ProductInputsLayer::addRefs)
@@ -97,81 +94,79 @@ class ProductInputsLayer extends LayerBase {
       }
     }
     try {
-      return new Result(RefArrays.stream(Result.addRefs(inObj)).parallel().map(x -> {
+      return new Result(RefUtil.get(RefArrays.stream(Result.addRefs(inObj)).parallel().map(x -> {
         TensorList temp_57_0001 = x.getData();
         if (null != x)
           x.freeRef();
         return temp_57_0001;
       }).reduce((l, r) -> {
-        TensorArray temp_57_0002 = new TensorArray(RefIntStream
-            .range(0, Math.max(l.length(), r.length())).parallel().mapToObj(RefUtil
-                .wrapInterface((IntFunction<? extends Tensor>) i1 -> {
-                  @Nullable final Tensor left = l.get(1 == l.length() ? 0 : i1);
-                  @Nullable final Tensor right = r.get(1 == r.length() ? 0 : i1);
-                  Tensor temp_57_0003 = Tensor
-                      .product(left == null ? null : left.addRef(), right == null ? null : right.addRef());
-                  if (null != right)
-                    right.freeRef();
-                  if (null != left)
-                    left.freeRef();
-                  return temp_57_0003;
-                }, l == null ? null : l.addRef(), r == null ? null : r.addRef()))
-            .toArray(i -> new Tensor[i]));
+        TensorArray temp_57_0002 = new TensorArray(RefIntStream.range(0, Math.max(l.length(), r.length())).parallel()
+            .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) i1 -> {
+              @Nullable
+              final Tensor left = l.get(1 == l.length() ? 0 : i1);
+              @Nullable
+              final Tensor right = r.get(1 == r.length() ? 0 : i1);
+              Tensor temp_57_0003 = Tensor.product(left == null ? null : left.addRef(),
+                  right == null ? null : right.addRef());
+              if (null != right)
+                right.freeRef();
+              if (null != left)
+                left.freeRef();
+              return temp_57_0003;
+            }, l == null ? null : l.addRef(), r == null ? null : r.addRef())).toArray(i -> new Tensor[i]));
         if (null != r)
           r.freeRef();
         if (null != l)
           l.freeRef();
         return temp_57_0002;
-      }).get(), new Result.Accumulator() {
+      })), new Result.Accumulator() {
         {
           Result.addRefs(inObj);
         }
 
         @Override
         public void accept(DeltaSet<UUID> buffer, TensorList delta) {
-          for (@Nonnull final Result input : inObj) {
+          for (@Nonnull
+          final Result input : inObj) {
             if (input.isAlive()) {
               @Nonnull
-              TensorList passback = RefArrays.stream(Result.addRefs(inObj)).parallel()
-                  .map(RefUtil.wrapInterface(
-                      (Function<? super Result, ? extends TensorList>) x -> {
-                        TensorList temp_57_0004 = x == input ? delta : x.getData();
-                        if (null != x)
-                          x.freeRef();
-                        return temp_57_0004;
-                      }, delta == null ? null : delta.addRef(), input == null ? null : input.addRef()))
-                  .reduce((l, r) -> {
-                    TensorArray temp_57_0005 = new TensorArray(
-                        RefIntStream.range(0, Math.max(l.length(), r.length())).parallel()
-                            .mapToObj(RefUtil.wrapInterface(
-                                (IntFunction<? extends Tensor>) j -> {
-                                  @Nullable final Tensor left = l.get(1 == l.length() ? 0 : j);
-                                  @Nullable final Tensor right = r.get(1 == r.length() ? 0 : j);
-                                  Tensor temp_57_0006 = Tensor.product(
-                                      left == null ? null : left.addRef(), right == null ? null : right.addRef());
-                                  if (null != right)
-                                    right.freeRef();
-                                  if (null != left)
-                                    left.freeRef();
-                                  return temp_57_0006;
-                                }, l == null ? null : l.addRef(), r == null ? null : r.addRef()))
-                            .toArray(j -> new Tensor[j]));
+              TensorList passback = RefUtil.get(RefArrays.stream(Result.addRefs(inObj)).parallel()
+                  .map(RefUtil.wrapInterface((Function<Result, TensorList>) x -> {
+                    TensorList temp_57_0004 = x == input ? delta.addRef() : x.getData();
+                    if (null != x)
+                      x.freeRef();
+                    return temp_57_0004;
+                  }, delta == null ? null : delta.addRef(), input == null ? null : input.addRef())).reduce((l, r) -> {
+                    TensorArray temp_57_0005 = new TensorArray(RefIntStream.range(0, Math.max(l.length(), r.length()))
+                        .parallel().mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) j -> {
+                          @Nullable
+                          final Tensor left = l.get(1 == l.length() ? 0 : j);
+                          @Nullable
+                          final Tensor right = r.get(1 == r.length() ? 0 : j);
+                          Tensor temp_57_0006 = Tensor.product(left == null ? null : left.addRef(),
+                              right == null ? null : right.addRef());
+                          if (null != right)
+                            right.freeRef();
+                          if (null != left)
+                            left.freeRef();
+                          return temp_57_0006;
+                        }, l == null ? null : l.addRef(), r == null ? null : r.addRef())).toArray(j -> new Tensor[j]));
                     if (null != r)
                       r.freeRef();
                     if (null != l)
                       l.freeRef();
                     return temp_57_0005;
-                  }).get();
+                  }));
               final TensorList inputData = input.getData();
               if (1 == inputData.length() && 1 < passback.length()) {
-                passback = new TensorArray(passback.stream().reduce((a, b) -> {
+                passback = new TensorArray(RefUtil.get(passback.stream().reduce((a, b) -> {
                   Tensor temp_57_0007 = a.addAndFree(b == null ? null : b.addRef());
                   if (null != b)
                     b.freeRef();
                   if (null != a)
                     a.freeRef();
                   return temp_57_0007;
-                }).get());
+                })));
               }
               if (1 == Tensor.length(inputData.getDimensions()) && 1 < Tensor.length(passback.getDimensions())) {
                 passback = new TensorArray(passback.stream().map((a) -> {
@@ -192,8 +187,7 @@ class ProductInputsLayer extends LayerBase {
             buffer.freeRef();
         }
 
-        public @SuppressWarnings("unused")
-        void _free() {
+        public @SuppressWarnings("unused") void _free() {
           ReferenceCounting.freeRefs(inObj);
         }
       }) {
@@ -204,7 +198,8 @@ class ProductInputsLayer extends LayerBase {
 
         @Override
         public boolean isAlive() {
-          for (@Nonnull final Result element : inObj)
+          for (@Nonnull
+          final Result element : inObj)
             if (element.isAlive()) {
               return true;
             }
@@ -233,13 +228,10 @@ class ProductInputsLayer extends LayerBase {
     return RefArrays.asList();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  ProductInputsLayer addRef() {
+  public @Override @SuppressWarnings("unused") ProductInputsLayer addRef() {
     return (ProductInputsLayer) super.addRef();
   }
 }

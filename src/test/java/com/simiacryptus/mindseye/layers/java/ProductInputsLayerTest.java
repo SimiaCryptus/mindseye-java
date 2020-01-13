@@ -28,14 +28,12 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Random;
 
-public abstract @RefAware
-class ProductInputsLayerTest extends LayerTestBase {
+public abstract class ProductInputsLayerTest extends LayerTestBase {
   @Override
   public ComponentTest<TrainingTester.ComponentResult> getTrainingTester() {
     TrainingTester temp_67_0002 = new TrainingTester() {
 
-      public @SuppressWarnings("unused")
-      void _free() {
+      public @SuppressWarnings("unused") void _free() {
       }
 
       @Override
@@ -43,23 +41,20 @@ class ProductInputsLayerTest extends LayerTestBase {
         return ProductInputsLayerTest.this.lossLayer();
       }
     };
-    TrainingTester temp_67_0001 = temp_67_0002
-        .setRandomizationMode(TrainingTester.RandomizationMode.Random);
+    TrainingTester temp_67_0001 = temp_67_0002.setRandomizationMode(TrainingTester.RandomizationMode.Random);
     if (null != temp_67_0002)
       temp_67_0002.freeRef();
     return temp_67_0001;
   }
 
-  public static @SuppressWarnings("unused")
-  ProductInputsLayerTest[] addRefs(ProductInputsLayerTest[] array) {
+  public static @SuppressWarnings("unused") ProductInputsLayerTest[] addRefs(ProductInputsLayerTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ProductInputsLayerTest::addRef)
         .toArray((x) -> new ProductInputsLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  ProductInputsLayerTest[][] addRefs(ProductInputsLayerTest[][] array) {
+  public static @SuppressWarnings("unused") ProductInputsLayerTest[][] addRefs(ProductInputsLayerTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ProductInputsLayerTest::addRefs)
@@ -72,20 +67,15 @@ class ProductInputsLayerTest extends LayerTestBase {
     return new ProductInputsLayer();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  ProductInputsLayerTest addRef() {
+  public @Override @SuppressWarnings("unused") ProductInputsLayerTest addRef() {
     return (ProductInputsLayerTest) super.addRef();
   }
 
-  public static @RefAware
-  class N1Test extends ProductInputsLayerTest {
-    public static @SuppressWarnings("unused")
-    N1Test[] addRefs(N1Test[] array) {
+  public static class N1Test extends ProductInputsLayerTest {
+    public static @SuppressWarnings("unused") N1Test[] addRefs(N1Test[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(N1Test::addRef).toArray((x) -> new N1Test[x]);
@@ -94,53 +84,42 @@ class ProductInputsLayerTest extends LayerTestBase {
     @Nonnull
     @Override
     public int[][] getSmallDims(Random random) {
-      return new int[][]{{3}, {1}};
+      return new int[][] { { 3 }, { 1 } };
     }
 
-    public @SuppressWarnings("unused")
-    void _free() {
+    public @SuppressWarnings("unused") void _free() {
     }
 
-    public @Override
-    @SuppressWarnings("unused")
-    N1Test addRef() {
+    public @Override @SuppressWarnings("unused") N1Test addRef() {
       return (N1Test) super.addRef();
     }
   }
 
-  public static @RefAware
-  class NNNTest extends ProductInputsLayerTest {
+  public static class NNNTest extends ProductInputsLayerTest {
 
-    public static @SuppressWarnings("unused")
-    NNNTest[] addRefs(NNNTest[] array) {
+    public static @SuppressWarnings("unused") NNNTest[] addRefs(NNNTest[] array) {
       if (array == null)
         return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(NNNTest::addRef)
-          .toArray((x) -> new NNNTest[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(NNNTest::addRef).toArray((x) -> new NNNTest[x]);
     }
 
     @Nonnull
     @Override
     public int[][] getSmallDims(Random random) {
-      return new int[][]{{3}, {3}, {3}};
+      return new int[][] { { 3 }, { 3 }, { 3 } };
     }
 
-    public @SuppressWarnings("unused")
-    void _free() {
+    public @SuppressWarnings("unused") void _free() {
     }
 
-    public @Override
-    @SuppressWarnings("unused")
-    NNNTest addRef() {
+    public @Override @SuppressWarnings("unused") NNNTest addRef() {
       return (NNNTest) super.addRef();
     }
   }
 
-  public static @RefAware
-  class NNTest extends ProductInputsLayerTest {
+  public static class NNTest extends ProductInputsLayerTest {
 
-    public static @SuppressWarnings("unused")
-    NNTest[] addRefs(NNTest[] array) {
+    public static @SuppressWarnings("unused") NNTest[] addRefs(NNTest[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(NNTest::addRef).toArray((x) -> new NNTest[x]);
@@ -149,16 +128,13 @@ class ProductInputsLayerTest extends LayerTestBase {
     @Nonnull
     @Override
     public int[][] getSmallDims(Random random) {
-      return new int[][]{{3}, {3}};
+      return new int[][] { { 3 }, { 3 } };
     }
 
-    public @SuppressWarnings("unused")
-    void _free() {
+    public @SuppressWarnings("unused") void _free() {
     }
 
-    public @Override
-    @SuppressWarnings("unused")
-    NNTest addRef() {
+    public @Override @SuppressWarnings("unused") NNTest addRef() {
       return (NNTest) super.addRef();
     }
   }

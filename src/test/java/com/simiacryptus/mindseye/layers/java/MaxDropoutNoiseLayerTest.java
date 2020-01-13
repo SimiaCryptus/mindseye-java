@@ -27,22 +27,19 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Random;
 
-public abstract @RefAware
-class MaxDropoutNoiseLayerTest extends ActivationLayerTestBase {
+public abstract class MaxDropoutNoiseLayerTest extends ActivationLayerTestBase {
   public MaxDropoutNoiseLayerTest() {
     super(new MaxDropoutNoiseLayer(2, 2, 1));
   }
 
-  public static @SuppressWarnings("unused")
-  MaxDropoutNoiseLayerTest[] addRefs(MaxDropoutNoiseLayerTest[] array) {
+  public static @SuppressWarnings("unused") MaxDropoutNoiseLayerTest[] addRefs(MaxDropoutNoiseLayerTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(MaxDropoutNoiseLayerTest::addRef)
         .toArray((x) -> new MaxDropoutNoiseLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  MaxDropoutNoiseLayerTest[][] addRefs(MaxDropoutNoiseLayerTest[][] array) {
+  public static @SuppressWarnings("unused") MaxDropoutNoiseLayerTest[][] addRefs(MaxDropoutNoiseLayerTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(MaxDropoutNoiseLayerTest::addRefs)
@@ -52,16 +49,13 @@ class MaxDropoutNoiseLayerTest extends ActivationLayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{{8, 8, 1}};
+    return new int[][] { { 8, 8, 1 } };
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  MaxDropoutNoiseLayerTest addRef() {
+  public @Override @SuppressWarnings("unused") MaxDropoutNoiseLayerTest addRef() {
     return (MaxDropoutNoiseLayerTest) super.addRef();
   }
 
@@ -70,23 +64,18 @@ class MaxDropoutNoiseLayerTest extends ActivationLayerTestBase {
     return new MeanSqLossLayer();
   }
 
-  public static @RefAware
-  class Basic extends MaxDropoutNoiseLayerTest {
+  public static class Basic extends MaxDropoutNoiseLayerTest {
 
-    public static @SuppressWarnings("unused")
-    Basic[] addRefs(Basic[] array) {
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
-    public @SuppressWarnings("unused")
-    void _free() {
+    public @SuppressWarnings("unused") void _free() {
     }
 
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
+    public @Override @SuppressWarnings("unused") Basic addRef() {
       return (Basic) super.addRef();
     }
   }

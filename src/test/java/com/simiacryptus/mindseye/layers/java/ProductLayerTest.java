@@ -26,19 +26,16 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Random;
 
-public abstract @RefAware
-class ProductLayerTest extends LayerTestBase {
+public abstract class ProductLayerTest extends LayerTestBase {
 
-  public static @SuppressWarnings("unused")
-  ProductLayerTest[] addRefs(ProductLayerTest[] array) {
+  public static @SuppressWarnings("unused") ProductLayerTest[] addRefs(ProductLayerTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ProductLayerTest::addRef)
         .toArray((x) -> new ProductLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  ProductLayerTest[][] addRefs(ProductLayerTest[][] array) {
+  public static @SuppressWarnings("unused") ProductLayerTest[][] addRefs(ProductLayerTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ProductLayerTest::addRefs)
@@ -48,7 +45,7 @@ class ProductLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{{3}, {3}};
+    return new int[][] { { 3 }, { 3 } };
   }
 
   @Nonnull
@@ -57,33 +54,25 @@ class ProductLayerTest extends LayerTestBase {
     return new ProductLayer();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  ProductLayerTest addRef() {
+  public @Override @SuppressWarnings("unused") ProductLayerTest addRef() {
     return (ProductLayerTest) super.addRef();
   }
 
-  public static @RefAware
-  class Basic extends ProductLayerTest {
+  public static class Basic extends ProductLayerTest {
 
-    public static @SuppressWarnings("unused")
-    Basic[] addRefs(Basic[] array) {
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
-    public @SuppressWarnings("unused")
-    void _free() {
+    public @SuppressWarnings("unused") void _free() {
     }
 
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
+    public @Override @SuppressWarnings("unused") Basic addRef() {
       return (Basic) super.addRef();
     }
   }

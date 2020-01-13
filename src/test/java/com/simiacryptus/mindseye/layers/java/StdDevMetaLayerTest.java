@@ -27,23 +27,20 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Random;
 
-public abstract @RefAware
-class StdDevMetaLayerTest extends MetaLayerTestBase {
+public abstract class StdDevMetaLayerTest extends MetaLayerTestBase {
   public StdDevMetaLayerTest() {
     super();
     //validateDifferentials = false;
   }
 
-  public static @SuppressWarnings("unused")
-  StdDevMetaLayerTest[] addRefs(StdDevMetaLayerTest[] array) {
+  public static @SuppressWarnings("unused") StdDevMetaLayerTest[] addRefs(StdDevMetaLayerTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(StdDevMetaLayerTest::addRef)
         .toArray((x) -> new StdDevMetaLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  StdDevMetaLayerTest[][] addRefs(StdDevMetaLayerTest[][] array) {
+  public static @SuppressWarnings("unused") StdDevMetaLayerTest[][] addRefs(StdDevMetaLayerTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(StdDevMetaLayerTest::addRefs)
@@ -53,7 +50,7 @@ class StdDevMetaLayerTest extends MetaLayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{{3}};
+    return new int[][] { { 3 } };
   }
 
   @Nonnull
@@ -65,16 +62,13 @@ class StdDevMetaLayerTest extends MetaLayerTestBase {
   @Nonnull
   @Override
   public int[][] getLargeDims(Random random) {
-    return new int[][]{{100}};
+    return new int[][] { { 100 } };
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  StdDevMetaLayerTest addRef() {
+  public @Override @SuppressWarnings("unused") StdDevMetaLayerTest addRef() {
     return (StdDevMetaLayerTest) super.addRef();
   }
 
@@ -83,23 +77,18 @@ class StdDevMetaLayerTest extends MetaLayerTestBase {
     return new MeanSqLossLayer();
   }
 
-  public static @RefAware
-  class Basic extends StdDevMetaLayerTest {
+  public static class Basic extends StdDevMetaLayerTest {
 
-    public static @SuppressWarnings("unused")
-    Basic[] addRefs(Basic[] array) {
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
-    public @SuppressWarnings("unused")
-    void _free() {
+    public @SuppressWarnings("unused") void _free() {
     }
 
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
+    public @Override @SuppressWarnings("unused") Basic addRef() {
       return (Basic) super.addRef();
     }
   }

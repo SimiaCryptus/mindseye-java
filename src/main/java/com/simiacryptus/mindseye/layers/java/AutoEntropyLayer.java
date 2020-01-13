@@ -33,8 +33,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 @SuppressWarnings("serial")
-public @RefAware
-class AutoEntropyLayer extends PipelineNetwork {
+public class AutoEntropyLayer extends PipelineNetwork {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(AutoEntropyLayer.class);
@@ -57,29 +56,24 @@ class AutoEntropyLayer extends PipelineNetwork {
     return new AutoEntropyLayer(json, rs);
   }
 
-  public static @SuppressWarnings("unused")
-  AutoEntropyLayer[] addRefs(AutoEntropyLayer[] array) {
+  public static @SuppressWarnings("unused") AutoEntropyLayer[] addRefs(AutoEntropyLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(AutoEntropyLayer::addRef)
         .toArray((x) -> new AutoEntropyLayer[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  AutoEntropyLayer[][] addRefs(AutoEntropyLayer[][] array) {
+  public static @SuppressWarnings("unused") AutoEntropyLayer[][] addRefs(AutoEntropyLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(AutoEntropyLayer::addRefs)
         .toArray((x) -> new AutoEntropyLayer[x][]);
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  AutoEntropyLayer addRef() {
+  public @Override @SuppressWarnings("unused") AutoEntropyLayer addRef() {
     return (AutoEntropyLayer) super.addRef();
   }
 

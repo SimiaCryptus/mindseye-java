@@ -28,8 +28,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 @SuppressWarnings("serial")
-public final @RefAware
-class SigmoidActivationLayer extends SimpleActivationLayer<SigmoidActivationLayer> {
+public final class SigmoidActivationLayer extends SimpleActivationLayer<SigmoidActivationLayer> {
 
   private static final double MIN_X = -20;
   private static final double MAX_X = -SigmoidActivationLayer.MIN_X;
@@ -60,16 +59,14 @@ class SigmoidActivationLayer extends SimpleActivationLayer<SigmoidActivationLaye
     return new SigmoidActivationLayer(json);
   }
 
-  public static @SuppressWarnings("unused")
-  SigmoidActivationLayer[] addRefs(SigmoidActivationLayer[] array) {
+  public static @SuppressWarnings("unused") SigmoidActivationLayer[] addRefs(SigmoidActivationLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SigmoidActivationLayer::addRef)
         .toArray((x) -> new SigmoidActivationLayer[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  SigmoidActivationLayer[][] addRefs(SigmoidActivationLayer[][] array) {
+  public static @SuppressWarnings("unused") SigmoidActivationLayer[][] addRefs(SigmoidActivationLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SigmoidActivationLayer::addRefs)
@@ -79,18 +76,16 @@ class SigmoidActivationLayer extends SimpleActivationLayer<SigmoidActivationLaye
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull final JsonObject json = super.getJsonStub();
+    @Nonnull
+    final JsonObject json = super.getJsonStub();
     json.addProperty("balanced", balanced);
     return json;
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  SigmoidActivationLayer addRef() {
+  public @Override @SuppressWarnings("unused") SigmoidActivationLayer addRef() {
     return (SigmoidActivationLayer) super.addRef();
   }
 

@@ -28,8 +28,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 @SuppressWarnings("serial")
-public final @RefAware
-class LogActivationLayer extends SimpleActivationLayer<LogActivationLayer> {
+public final class LogActivationLayer extends SimpleActivationLayer<LogActivationLayer> {
 
   public LogActivationLayer() {
   }
@@ -43,16 +42,14 @@ class LogActivationLayer extends SimpleActivationLayer<LogActivationLayer> {
     return new LogActivationLayer(json);
   }
 
-  public static @SuppressWarnings("unused")
-  LogActivationLayer[] addRefs(LogActivationLayer[] array) {
+  public static @SuppressWarnings("unused") LogActivationLayer[] addRefs(LogActivationLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(LogActivationLayer::addRef)
         .toArray((x) -> new LogActivationLayer[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  LogActivationLayer[][] addRefs(LogActivationLayer[][] array) {
+  public static @SuppressWarnings("unused") LogActivationLayer[][] addRefs(LogActivationLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(LogActivationLayer::addRefs)
@@ -65,13 +62,10 @@ class LogActivationLayer extends SimpleActivationLayer<LogActivationLayer> {
     return super.getJsonStub();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  LogActivationLayer addRef() {
+  public @Override @SuppressWarnings("unused") LogActivationLayer addRef() {
     return (LogActivationLayer) super.addRef();
   }
 

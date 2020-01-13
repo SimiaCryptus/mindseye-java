@@ -28,24 +28,21 @@ import org.junit.Test;
 
 import java.util.Arrays;
 
-public abstract @RefAware
-class LayerTestBase extends StandardLayerTests {
+public abstract class LayerTestBase extends StandardLayerTests {
 
   //  @Test(timeout = 15 * 60 * 1000)
   //  public void testMonteCarlo() throws Throwable {
   //    apply(this::monteCarlo);
   //  }
 
-  public static @SuppressWarnings("unused")
-  LayerTestBase[] addRefs(LayerTestBase[] array) {
+  public static @SuppressWarnings("unused") LayerTestBase[] addRefs(LayerTestBase[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(LayerTestBase::addRef)
         .toArray((x) -> new LayerTestBase[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  LayerTestBase[][] addRefs(LayerTestBase[][] array) {
+  public static @SuppressWarnings("unused") LayerTestBase[][] addRefs(LayerTestBase[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(LayerTestBase::addRefs)
@@ -69,13 +66,10 @@ class LayerTestBase extends StandardLayerTests {
     //GpuController.remove();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  LayerTestBase addRef() {
+  public @Override @SuppressWarnings("unused") LayerTestBase addRef() {
     return (LayerTestBase) super.addRef();
   }
 

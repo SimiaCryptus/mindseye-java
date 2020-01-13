@@ -40,8 +40,7 @@ import java.util.UUID;
 import java.util.function.IntFunction;
 
 @SuppressWarnings("serial")
-public @RefAware
-class L1NormalizationLayer extends LayerBase {
+public class L1NormalizationLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(L1NormalizationLayer.class);
@@ -59,16 +58,14 @@ class L1NormalizationLayer extends LayerBase {
     return new L1NormalizationLayer(json);
   }
 
-  public static @SuppressWarnings("unused")
-  L1NormalizationLayer[] addRefs(L1NormalizationLayer[] array) {
+  public static @SuppressWarnings("unused") L1NormalizationLayer[] addRefs(L1NormalizationLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(L1NormalizationLayer::addRef)
         .toArray((x) -> new L1NormalizationLayer[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  L1NormalizationLayer[][] addRefs(L1NormalizationLayer[][] array) {
+  public static @SuppressWarnings("unused") L1NormalizationLayer[][] addRefs(L1NormalizationLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(L1NormalizationLayer::addRefs)
@@ -83,23 +80,20 @@ class L1NormalizationLayer extends LayerBase {
     final TensorList inData = in.getData();
     try {
       try {
-        return new Result(new TensorArray(
-            RefIntStream.range(0, inData.length()).mapToObj(RefUtil.wrapInterface(
-                (IntFunction<? extends Tensor>) dataIndex -> {
-                  @Nullable final Tensor value = inData.get(dataIndex);
-                  {
-                    final double sum = value.sum();
-                    if (!Double.isFinite(sum) || 0 == sum) {
-                      return value;
-                    } else {
-                      Tensor temp_26_0003 = value.scale(1.0 / sum);
-                      if (null != value)
-                        value.freeRef();
-                      return temp_26_0003;
-                    }
-                  }
-                }, inData == null ? null : inData.addRef())).toArray(i -> new Tensor[i])),
-            new Result.Accumulator() {
+        return new Result(new TensorArray(RefIntStream.range(0, inData.length())
+            .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+              @Nullable
+              final Tensor value = inData.get(dataIndex);
+              final double sum = value.sum();
+              if (!Double.isFinite(sum) || 0 == sum) {
+                return value;
+              } else {
+                Tensor temp_26_0003 = value.scale(1.0 / sum);
+                if (null != value)
+                  value.freeRef();
+                return temp_26_0003;
+              }
+            }, inData == null ? null : inData.addRef())).toArray(i -> new Tensor[i])), new Result.Accumulator() {
               {
               }
 
@@ -107,38 +101,39 @@ class L1NormalizationLayer extends LayerBase {
               public void accept(DeltaSet<UUID> buffer, TensorList outDelta) {
                 if (in.isAlive()) {
                   final Tensor[] passbackArray = RefIntStream.range(0, outDelta.length())
-                      .mapToObj(RefUtil.wrapInterface(
-                          (IntFunction<? extends Tensor>) dataIndex -> {
-                            Tensor inputTensor = inData.get(dataIndex);
-                            @Nullable final double[] value = inputTensor.getData();
-                            if (null != inputTensor)
-                              inputTensor.freeRef();
-                            Tensor outputTensor = outDelta.get(dataIndex);
-                            @Nullable final double[] delta = outputTensor.getData();
-                            final double dot = ArrayUtil.dot(value, delta);
-                            final double sum = RefArrays.stream(value).sum();
-                            @Nonnull final Tensor passback = new Tensor(outputTensor.getDimensions());
-                            if (null != outputTensor)
-                              outputTensor.freeRef();
-                            @Nullable final double[] passbackData = passback.getData();
-                            if (0 != sum || Double.isFinite(sum)) {
-                              for (int i = 0; i < value.length; i++) {
-                                passbackData[i] = (delta[i] - dot / sum) / sum;
-                              }
-                            }
-                            return passback;
-                          }, inData == null ? null : inData.addRef(), outDelta == null ? null : outDelta.addRef()))
+                      .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+                        Tensor inputTensor = inData.get(dataIndex);
+                        @Nullable
+                        final double[] value = inputTensor.getData();
+                        if (null != inputTensor)
+                          inputTensor.freeRef();
+                        Tensor outputTensor = outDelta.get(dataIndex);
+                        @Nullable
+                        final double[] delta = outputTensor.getData();
+                        final double dot = ArrayUtil.dot(value, delta);
+                        final double sum = RefArrays.stream(value).sum();
+                        @Nonnull
+                        final Tensor passback = new Tensor(outputTensor.getDimensions());
+                        if (null != outputTensor)
+                          outputTensor.freeRef();
+                        @Nullable
+                        final double[] passbackData = passback.getData();
+                        if (0 != sum || Double.isFinite(sum)) {
+                          for (int i = 0; i < value.length; i++) {
+                            passbackData[i] = (delta[i] - dot / sum) / sum;
+                          }
+                        }
+                        return passback;
+                      }, inData == null ? null : inData.addRef(), outDelta == null ? null : outDelta.addRef()))
                       .toArray(i -> new Tensor[i]);
-                  assert RefArrays.stream(Tensor.addRefs(passbackArray))
-                      .flatMapToDouble(x -> {
-                        RefDoubleStream temp_26_0004 = RefArrays.stream(x.getData());
-                        if (null != x)
-                          x.freeRef();
-                        return temp_26_0004;
-                      }).allMatch(v -> Double.isFinite(v));
+                  assert RefArrays.stream(Tensor.addRefs(passbackArray)).flatMapToDouble(x -> {
+                    RefDoubleStream temp_26_0004 = RefArrays.stream(x.getData());
+                    if (null != x)
+                      x.freeRef();
+                    return temp_26_0004;
+                  }).allMatch(v -> Double.isFinite(v));
                   @Nonnull
-                  TensorArray tensorArray = new TensorArray(
-                      Tensor.addRefs(passbackArray));
+                  TensorArray tensorArray = new TensorArray(Tensor.addRefs(passbackArray));
                   if (null != passbackArray)
                     ReferenceCounting.freeRefs(passbackArray);
                   in.accumulate(buffer == null ? null : buffer.addRef(), tensorArray == null ? null : tensorArray);
@@ -149,8 +144,7 @@ class L1NormalizationLayer extends LayerBase {
                   buffer.freeRef();
               }
 
-              public @SuppressWarnings("unused")
-              void _free() {
+              public @SuppressWarnings("unused") void _free() {
               }
             }) {
 
@@ -189,13 +183,10 @@ class L1NormalizationLayer extends LayerBase {
     return RefArrays.asList();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  L1NormalizationLayer addRef() {
+  public @Override @SuppressWarnings("unused") L1NormalizationLayer addRef() {
     return (L1NormalizationLayer) super.addRef();
   }
 }

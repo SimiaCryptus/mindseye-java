@@ -38,8 +38,7 @@ import java.util.Map;
 import java.util.function.IntFunction;
 
 @SuppressWarnings("serial")
-public @RefAware
-class RescaledSubnetLayer extends LayerBase {
+public class RescaledSubnetLayer extends LayerBase {
 
   private final int scale;
   @Nullable
@@ -48,12 +47,10 @@ class RescaledSubnetLayer extends LayerBase {
   public RescaledSubnetLayer(final int scale, @org.jetbrains.annotations.Nullable final Layer subnetwork) {
     super();
     this.scale = scale;
-    {
-      Layer temp_11_0001 = subnetwork == null ? null : subnetwork.addRef();
-      this.subnetwork = temp_11_0001 == null ? null : temp_11_0001.addRef();
-      if (null != temp_11_0001)
-        temp_11_0001.freeRef();
-    }
+    Layer temp_11_0001 = subnetwork == null ? null : subnetwork.addRef();
+    this.subnetwork = temp_11_0001 == null ? null : temp_11_0001.addRef();
+    if (null != temp_11_0001)
+      temp_11_0001.freeRef();
     if (null != subnetwork)
       subnetwork.freeRef();
   }
@@ -62,15 +59,13 @@ class RescaledSubnetLayer extends LayerBase {
     super(json);
     scale = json.getAsJsonPrimitive("scale").getAsInt();
     JsonObject subnetwork = json.getAsJsonObject("subnetwork");
-    {
-      Layer temp_11_0005 = Layer.fromJson(subnetwork, rs);
-      Layer temp_11_0002 = subnetwork == null ? null : temp_11_0005.addRef();
-      if (null != temp_11_0005)
-        temp_11_0005.freeRef();
-      this.subnetwork = temp_11_0002 == null ? null : temp_11_0002.addRef();
-      if (null != temp_11_0002)
-        temp_11_0002.freeRef();
-    }
+    Layer temp_11_0005 = Layer.fromJson(subnetwork, rs);
+    Layer temp_11_0002 = subnetwork == null ? null : temp_11_0005.addRef();
+    if (null != temp_11_0005)
+      temp_11_0005.freeRef();
+    this.subnetwork = temp_11_0002 == null ? null : temp_11_0002.addRef();
+    if (null != temp_11_0002)
+      temp_11_0002.freeRef();
   }
 
   @SuppressWarnings("unused")
@@ -78,16 +73,14 @@ class RescaledSubnetLayer extends LayerBase {
     return new RescaledSubnetLayer(json, rs);
   }
 
-  public static @SuppressWarnings("unused")
-  RescaledSubnetLayer[] addRefs(RescaledSubnetLayer[] array) {
+  public static @SuppressWarnings("unused") RescaledSubnetLayer[] addRefs(RescaledSubnetLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(RescaledSubnetLayer::addRef)
         .toArray((x) -> new RescaledSubnetLayer[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  RescaledSubnetLayer[][] addRefs(RescaledSubnetLayer[][] array) {
+  public static @SuppressWarnings("unused") RescaledSubnetLayer[][] addRefs(RescaledSubnetLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(RescaledSubnetLayer::addRefs)
@@ -99,35 +92,36 @@ class RescaledSubnetLayer extends LayerBase {
   public Result eval(@Nonnull final Result... inObj) {
     assert 1 == inObj.length;
     TensorList temp_11_0006 = inObj[0].getData();
-    @Nonnull final int[] inputDims = temp_11_0006.getDimensions();
+    @Nonnull
+    final int[] inputDims = temp_11_0006.getDimensions();
     if (null != temp_11_0006)
       temp_11_0006.freeRef();
     assert 3 == inputDims.length;
     if (1 == scale) {
-      Result temp_11_0004 = subnetwork
-          .eval(Result.addRefs(inObj));
+      Result temp_11_0004 = subnetwork.eval(Result.addRefs(inObj));
       ReferenceCounting.freeRefs(inObj);
       return temp_11_0004;
     }
 
-    @Nonnull final PipelineNetwork network = new PipelineNetwork();
-    @Nullable final DAGNode condensed = network.add(new ImgReshapeLayer(scale, scale, false));
-    RefUtil.freeRef(network.add(new ImgConcatLayer(),
-        RefIntStream.range(0, scale * scale).mapToObj(RefUtil.wrapInterface(
-            (IntFunction<? extends InnerNode>) subband -> {
-              @Nonnull final int[] select = new int[inputDims[2]];
-              for (int i = 0; i < inputDims[2]; i++) {
-                select[i] = subband * inputDims[2] + i;
-              }
-              return network.add(subnetwork == null ? null : subnetwork.addRef(),
-                  network.add(new ImgBandSelectLayer(select), condensed == null ? null : condensed.addRef()));
-            }, condensed == null ? null : condensed.addRef(), network == null ? null : network.addRef()))
-            .toArray(i -> new DAGNode[i])));
+    @Nonnull
+    final PipelineNetwork network = new PipelineNetwork();
+    @Nullable
+    final DAGNode condensed = network.add(new ImgReshapeLayer(scale, scale, false));
+    RefUtil.freeRef(network.add(new ImgConcatLayer(), RefIntStream.range(0, scale * scale)
+        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends InnerNode>) subband -> {
+          @Nonnull
+          final int[] select = new int[inputDims[2]];
+          for (int i = 0; i < inputDims[2]; i++) {
+            select[i] = subband * inputDims[2] + i;
+          }
+          return network.add(subnetwork == null ? null : subnetwork.addRef(),
+              network.add(new ImgBandSelectLayer(select), condensed == null ? null : condensed.addRef()));
+        }, condensed == null ? null : condensed.addRef(), network == null ? null : network.addRef()))
+        .toArray(i -> new DAGNode[i])));
     if (null != condensed)
       condensed.freeRef();
     RefUtil.freeRef(network.add(new ImgReshapeLayer(scale, scale, true)));
-    Result temp_11_0003 = network
-        .eval(Result.addRefs(inObj));
+    Result temp_11_0003 = network.eval(Result.addRefs(inObj));
     ReferenceCounting.freeRefs(inObj);
     network.freeRef();
     return temp_11_0003;
@@ -136,7 +130,8 @@ class RescaledSubnetLayer extends LayerBase {
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull final JsonObject json = super.getJsonStub();
+    @Nonnull
+    final JsonObject json = super.getJsonStub();
     json.addProperty("scale", scale);
     json.add("subnetwork", subnetwork.getJson(resources, dataSerializer));
     return json;
@@ -154,9 +149,7 @@ class RescaledSubnetLayer extends LayerBase {
     super._free();
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  RescaledSubnetLayer addRef() {
+  public @Override @SuppressWarnings("unused") RescaledSubnetLayer addRef() {
     return (RescaledSubnetLayer) super.addRef();
   }
 

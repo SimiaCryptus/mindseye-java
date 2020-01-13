@@ -24,11 +24,7 @@ import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.lang.ReferenceCounting;
-import com.simiacryptus.ref.wrappers.RefArrayList;
-import com.simiacryptus.ref.wrappers.RefArrays;
-import com.simiacryptus.ref.wrappers.RefIntStream;
-import com.simiacryptus.ref.wrappers.RefList;
-import com.simiacryptus.ref.wrappers.RefString;
+import com.simiacryptus.ref.wrappers.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -38,8 +34,7 @@ import java.util.UUID;
 import java.util.function.IntFunction;
 
 @SuppressWarnings("serial")
-public @RefAware
-class PhotoUnpoolingLayer extends LayerBase {
+public class PhotoUnpoolingLayer extends LayerBase {
 
   public PhotoUnpoolingLayer(final int sizeX, final int sizeY) {
     super();
@@ -51,9 +46,11 @@ class PhotoUnpoolingLayer extends LayerBase {
 
   @Nonnull
   public static Tensor copyCondense(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData,
-                                    Tensor referenceData) {
-    @Nonnull final int[] inDim = inputData.getDimensions();
-    @Nonnull final int[] outDim = outputData.getDimensions();
+      Tensor referenceData) {
+    @Nonnull
+    final int[] inDim = inputData.getDimensions();
+    @Nonnull
+    final int[] outDim = outputData.getDimensions();
     assert 3 == inDim.length;
     assert 3 == outDim.length;
     assert inDim[0] >= outDim[0];
@@ -96,9 +93,11 @@ class PhotoUnpoolingLayer extends LayerBase {
 
   @Nonnull
   public static Tensor copyExpand(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData,
-                                  Tensor referenceData) {
-    @Nonnull final int[] inDim = inputData.getDimensions();
-    @Nonnull final int[] outDim = outputData.getDimensions();
+      Tensor referenceData) {
+    @Nonnull
+    final int[] inDim = inputData.getDimensions();
+    @Nonnull
+    final int[] outDim = outputData.getDimensions();
     assert 3 == inDim.length;
     assert 3 == outDim.length;
     assert inDim[0] <= outDim[0];
@@ -142,16 +141,14 @@ class PhotoUnpoolingLayer extends LayerBase {
     return new PhotoUnpoolingLayer(json);
   }
 
-  public static @SuppressWarnings("unused")
-  PhotoUnpoolingLayer[] addRefs(PhotoUnpoolingLayer[] array) {
+  public static @SuppressWarnings("unused") PhotoUnpoolingLayer[] addRefs(PhotoUnpoolingLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(PhotoUnpoolingLayer::addRef)
         .toArray((x) -> new PhotoUnpoolingLayer[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  PhotoUnpoolingLayer[][] addRefs(PhotoUnpoolingLayer[][] array) {
+  public static @SuppressWarnings("unused") PhotoUnpoolingLayer[][] addRefs(PhotoUnpoolingLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(PhotoUnpoolingLayer::addRefs)
@@ -165,7 +162,8 @@ class PhotoUnpoolingLayer extends LayerBase {
     final Result input = inObj[0].addRef();
     final TensorList batch = input.getData();
     final TensorList referencebatch = inObj[1].getData();
-    @Nonnull final int[] inputDims = batch.getDimensions();
+    @Nonnull
+    final int[] inputDims = batch.getDimensions();
     assert 3 == inputDims.length;
     Tensor outputDims;
     TensorList temp_34_0006 = inObj[1].getData();
@@ -173,21 +171,20 @@ class PhotoUnpoolingLayer extends LayerBase {
     if (null != temp_34_0006)
       temp_34_0006.freeRef();
     ReferenceCounting.freeRefs(inObj);
-    TensorArray data = new TensorArray(
-        RefIntStream.range(0, batch.length()).parallel().mapToObj(RefUtil.wrapInterface(
-            (IntFunction<? extends Tensor>) dataIndex -> {
-              Tensor inputData = batch.get(dataIndex);
-              Tensor referenceData = referencebatch.get(dataIndex);
-              Tensor temp_34_0003 = PhotoUnpoolingLayer.copyExpand(
-                  inputData == null ? null : inputData.addRef(), outputDims.copy(),
-                  referenceData == null ? null : referenceData.addRef());
-              if (null != referenceData)
-                referenceData.freeRef();
-              if (null != inputData)
-                inputData.freeRef();
-              return temp_34_0003;
-            }, outputDims == null ? null : outputDims.addRef(), referencebatch == null ? null : referencebatch.addRef(),
-            batch == null ? null : batch.addRef())).toArray(i -> new Tensor[i]));
+    TensorArray data = new TensorArray(RefIntStream.range(0, batch.length()).parallel()
+        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+          Tensor inputData = batch.get(dataIndex);
+          Tensor referenceData = referencebatch.get(dataIndex);
+          Tensor temp_34_0003 = PhotoUnpoolingLayer.copyExpand(inputData == null ? null : inputData.addRef(),
+              outputDims.copy(), referenceData == null ? null : referenceData.addRef());
+          if (null != referenceData)
+            referenceData.freeRef();
+          if (null != inputData)
+            inputData.freeRef();
+          return temp_34_0003;
+        }, outputDims == null ? null : outputDims.addRef(), referencebatch == null ? null : referencebatch.addRef(),
+            batch == null ? null : batch.addRef()))
+        .toArray(i -> new Tensor[i]));
     if (null != outputDims)
       outputDims.freeRef();
     if (null != batch)
@@ -205,21 +202,20 @@ class PhotoUnpoolingLayer extends LayerBase {
               if (input.isAlive()) {
                 @Nonnull
                 TensorArray tensorArray = new TensorArray(RefIntStream.range(0, error.length()).parallel()
-                    .mapToObj(RefUtil.wrapInterface(
-                        (IntFunction<? extends Tensor>) dataIndex -> {
-                          @Nonnull final Tensor passback = new Tensor(inputDims);
-                          @Nullable final Tensor err = error.get(dataIndex);
-                          Tensor referenceData = referencebatch.get(dataIndex);
-                          Tensor temp_34_0005 = PhotoUnpoolingLayer.copyCondense(
-                              err == null ? null : err.addRef(), passback == null ? null : passback,
-                              referenceData == null ? null : referenceData.addRef());
-                          if (null != referenceData)
-                            referenceData.freeRef();
-                          if (null != err)
-                            err.freeRef();
-                          return temp_34_0005;
-                        }, referencebatch == null ? null : referencebatch.addRef(),
-                        error == null ? null : error.addRef()))
+                    .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+                      @Nonnull
+                      final Tensor passback = new Tensor(inputDims);
+                      @Nullable
+                      final Tensor err = error.get(dataIndex);
+                      Tensor referenceData = referencebatch.get(dataIndex);
+                      Tensor temp_34_0005 = PhotoUnpoolingLayer.copyCondense(err == null ? null : err.addRef(),
+                          passback == null ? null : passback, referenceData == null ? null : referenceData.addRef());
+                      if (null != referenceData)
+                        referenceData.freeRef();
+                      if (null != err)
+                        err.freeRef();
+                      return temp_34_0005;
+                    }, referencebatch == null ? null : referencebatch.addRef(), error == null ? null : error.addRef()))
                     .toArray(i -> new Tensor[i]));
                 input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray == null ? null : tensorArray);
               }
@@ -229,8 +225,7 @@ class PhotoUnpoolingLayer extends LayerBase {
                 buffer.freeRef();
             }
 
-            public @SuppressWarnings("unused")
-            void _free() {
+            public @SuppressWarnings("unused") void _free() {
             }
           }) {
 
@@ -271,13 +266,10 @@ class PhotoUnpoolingLayer extends LayerBase {
     return new RefArrayList<>();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  PhotoUnpoolingLayer addRef() {
+  public @Override @SuppressWarnings("unused") PhotoUnpoolingLayer addRef() {
     return (PhotoUnpoolingLayer) super.addRef();
   }
 

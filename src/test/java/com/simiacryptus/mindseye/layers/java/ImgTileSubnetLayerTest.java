@@ -26,19 +26,16 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Random;
 
-public abstract @RefAware
-class ImgTileSubnetLayerTest extends LayerTestBase {
+public abstract class ImgTileSubnetLayerTest extends LayerTestBase {
 
-  public static @SuppressWarnings("unused")
-  ImgTileSubnetLayerTest[] addRefs(ImgTileSubnetLayerTest[] array) {
+  public static @SuppressWarnings("unused") ImgTileSubnetLayerTest[] addRefs(ImgTileSubnetLayerTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ImgTileSubnetLayerTest::addRef)
         .toArray((x) -> new ImgTileSubnetLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  ImgTileSubnetLayerTest[][] addRefs(ImgTileSubnetLayerTest[][] array) {
+  public static @SuppressWarnings("unused") ImgTileSubnetLayerTest[][] addRefs(ImgTileSubnetLayerTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ImgTileSubnetLayerTest::addRefs)
@@ -48,47 +45,39 @@ class ImgTileSubnetLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{{6, 6, 1}};
+    return new int[][] { { 6, 6, 1 } };
   }
 
   @Nonnull
   @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
     LinearActivationLayer subnetwork = new LinearActivationLayer();
-    ImgTileSubnetLayer temp_51_0001 = new ImgTileSubnetLayer(
-        subnetwork == null ? null : subnetwork.addRef(), 3, 3, 2, 2);
+    ImgTileSubnetLayer temp_51_0001 = new ImgTileSubnetLayer(subnetwork == null ? null : subnetwork.addRef(), 3, 3, 2,
+        2);
     if (null != subnetwork)
       subnetwork.freeRef();
     return temp_51_0001;
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  ImgTileSubnetLayerTest addRef() {
+  public @Override @SuppressWarnings("unused") ImgTileSubnetLayerTest addRef() {
     return (ImgTileSubnetLayerTest) super.addRef();
   }
 
-  public static @RefAware
-  class Basic extends ImgTileSubnetLayerTest {
+  public static class Basic extends ImgTileSubnetLayerTest {
 
-    public static @SuppressWarnings("unused")
-    Basic[] addRefs(Basic[] array) {
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
-    public @SuppressWarnings("unused")
-    void _free() {
+    public @SuppressWarnings("unused") void _free() {
     }
 
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
+    public @Override @SuppressWarnings("unused") Basic addRef() {
       return (Basic) super.addRef();
     }
   }

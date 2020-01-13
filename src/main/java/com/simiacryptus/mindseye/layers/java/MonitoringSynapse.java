@@ -25,7 +25,6 @@ import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
-import com.simiacryptus.ref.wrappers.RefHashMap;
 import com.simiacryptus.ref.wrappers.RefList;
 import com.simiacryptus.util.MonitoredItem;
 import com.simiacryptus.util.MonitoredObject;
@@ -39,8 +38,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @SuppressWarnings("serial")
-public final @RefAware
-class MonitoringSynapse extends LayerBase implements MonitoredItem {
+public final class MonitoringSynapse extends LayerBase implements MonitoredItem {
 
   private final ScalarStatistics backpropStatistics = new PercentileStatistics();
   private final ScalarStatistics forwardStatistics = new PercentileStatistics();
@@ -58,7 +56,8 @@ class MonitoringSynapse extends LayerBase implements MonitoredItem {
   @Nonnull
   @Override
   public Map<CharSequence, Object> getMetrics() {
-    @Nonnull final HashMap<CharSequence, Object> map = new HashMap<>();
+    @Nonnull
+    final HashMap<CharSequence, Object> map = new HashMap<>();
     map.put("totalBatches", totalBatches);
     map.put("totalItems", totalItems);
     map.put("forward", forwardStatistics.getMetrics());
@@ -69,7 +68,8 @@ class MonitoringSynapse extends LayerBase implements MonitoredItem {
   @Nonnull
   @SuppressWarnings("unused")
   public static MonitoringSynapse fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
-    @Nonnull final MonitoringSynapse obj = new MonitoringSynapse(json);
+    @Nonnull
+    final MonitoringSynapse obj = new MonitoringSynapse(json);
     obj.totalBatches = json.get("totalBatches").getAsInt();
     obj.totalItems = json.get("totalItems").getAsInt();
     obj.backpropStatistics.readJson(json.getAsJsonObject("backpropStatistics"));
@@ -77,16 +77,14 @@ class MonitoringSynapse extends LayerBase implements MonitoredItem {
     return obj;
   }
 
-  public static @SuppressWarnings("unused")
-  MonitoringSynapse[] addRefs(MonitoringSynapse[] array) {
+  public static @SuppressWarnings("unused") MonitoringSynapse[] addRefs(MonitoringSynapse[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(MonitoringSynapse::addRef)
         .toArray((x) -> new MonitoringSynapse[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  MonitoringSynapse[][] addRefs(MonitoringSynapse[][] array) {
+  public static @SuppressWarnings("unused") MonitoringSynapse[][] addRefs(MonitoringSynapse[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(MonitoringSynapse::addRefs)
@@ -144,8 +142,7 @@ class MonitoringSynapse extends LayerBase implements MonitoredItem {
               data.freeRef();
           }
 
-          public @SuppressWarnings("unused")
-          void _free() {
+          public @SuppressWarnings("unused") void _free() {
           }
         }) {
 
@@ -173,7 +170,8 @@ class MonitoringSynapse extends LayerBase implements MonitoredItem {
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull final JsonObject json = super.getJsonStub();
+    @Nonnull
+    final JsonObject json = super.getJsonStub();
     json.addProperty("totalBatches", totalBatches);
     json.addProperty("totalItems", totalItems);
     return json;
@@ -184,13 +182,10 @@ class MonitoringSynapse extends LayerBase implements MonitoredItem {
     return RefArrays.asList();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  MonitoringSynapse addRef() {
+  public @Override @SuppressWarnings("unused") MonitoringSynapse addRef() {
     return (MonitoringSynapse) super.addRef();
   }
 }

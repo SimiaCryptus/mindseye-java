@@ -41,8 +41,7 @@ import java.util.function.Consumer;
 import java.util.function.IntFunction;
 
 @SuppressWarnings("serial")
-public @RefAware
-class ImgViewLayer extends LayerBase {
+public class ImgViewLayer extends LayerBase {
 
   private double negativeBias = 255;
   private boolean wrap;
@@ -91,12 +90,9 @@ class ImgViewLayer extends LayerBase {
     RefUtil.freeRef(setOffsetX(json.getAsJsonPrimitive("offsetX").getAsInt()));
     RefUtil.freeRef(setOffsetY(json.getAsJsonPrimitive("offsetY").getAsInt()));
     setNegativeBias(json.getAsJsonPrimitive("negativeBias").getAsDouble());
-    RefUtil
-        .freeRef(setRotationCenterX(json.getAsJsonPrimitive("rotationCenterX").getAsInt()));
-    RefUtil
-        .freeRef(setRotationCenterY(json.getAsJsonPrimitive("rotationCenterY").getAsInt()));
-    RefUtil
-        .freeRef(setRotationRadians(json.getAsJsonPrimitive("rotationRadians").getAsDouble()));
+    RefUtil.freeRef(setRotationCenterX(json.getAsJsonPrimitive("rotationCenterX").getAsInt()));
+    RefUtil.freeRef(setRotationCenterY(json.getAsJsonPrimitive("rotationCenterY").getAsInt()));
+    RefUtil.freeRef(setRotationRadians(json.getAsJsonPrimitive("rotationRadians").getAsDouble()));
     JsonArray _channelPermutationFilter = json.getAsJsonArray("channelPermutationFilter");
     if (null != _channelPermutationFilter) {
       RefUtil.freeRef(setChannelSelector(new int[_channelPermutationFilter.size()]));
@@ -202,16 +198,13 @@ class ImgViewLayer extends LayerBase {
     return new ImgViewLayer(json);
   }
 
-  public static @SuppressWarnings("unused")
-  ImgViewLayer[] addRefs(ImgViewLayer[] array) {
+  public static @SuppressWarnings("unused") ImgViewLayer[] addRefs(ImgViewLayer[] array) {
     if (array == null)
       return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(ImgViewLayer::addRef)
-        .toArray((x) -> new ImgViewLayer[x]);
+    return Arrays.stream(array).filter((x) -> x != null).map(ImgViewLayer::addRef).toArray((x) -> new ImgViewLayer[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  ImgViewLayer[][] addRefs(ImgViewLayer[][] array) {
+  public static @SuppressWarnings("unused") ImgViewLayer[][] addRefs(ImgViewLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ImgViewLayer::addRefs)
@@ -219,7 +212,7 @@ class ImgViewLayer extends LayerBase {
   }
 
   private static void set(@Nonnull Tensor tensor, int width, int height, int x, int y, int channel, boolean wrap,
-                          double value) {
+      double value) {
     assert channel >= 0 : channel;
     if (wrap) {
       while (x < 0)
@@ -278,25 +271,26 @@ class ImgViewLayer extends LayerBase {
     final Result input = inObj[0].addRef();
     ReferenceCounting.freeRefs(inObj);
     final TensorList batch = input.getData();
-    @Nonnull final int[] inputDims = batch.getDimensions();
+    @Nonnull
+    final int[] inputDims = batch.getDimensions();
     assert 3 == inputDims.length;
-    @Nonnull final int[] dimOut = getViewDimensions(inputDims, new int[]{getSizeX(), getSizeY(), inputDims[2]},
-        new int[]{getOffsetX(), getOffsetY(), 0});
+    @Nonnull
+    final int[] dimOut = getViewDimensions(inputDims, new int[] { getSizeX(), getSizeY(), inputDims[2] },
+        new int[] { getOffsetX(), getOffsetY(), 0 });
     if (null != channelSelector)
       dimOut[2] = channelSelector.length;
     try {
       try {
-        return new Result(new TensorArray(
-            RefIntStream.range(0, batch.length()).mapToObj(RefUtil.wrapInterface(
-                (IntFunction<? extends Tensor>) dataIndex -> {
-                  @Nonnull final Tensor outputData = new Tensor(dimOut);
-                  Tensor inputData = batch.get(dataIndex);
-                  fwd(inputData == null ? null : inputData.addRef(), outputData == null ? null : outputData.addRef());
-                  if (null != inputData)
-                    inputData.freeRef();
-                  return outputData;
-                }, batch == null ? null : batch.addRef())).toArray(i -> new Tensor[i])),
-            new Result.Accumulator() {
+        return new Result(new TensorArray(RefIntStream.range(0, batch.length())
+            .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+              @Nonnull
+              final Tensor outputData = new Tensor(dimOut);
+              Tensor inputData = batch.get(dataIndex);
+              fwd(inputData == null ? null : inputData.addRef(), outputData == null ? null : outputData.addRef());
+              if (null != inputData)
+                inputData.freeRef();
+              return outputData;
+            }, batch == null ? null : batch.addRef())).toArray(i -> new Tensor[i])), new Result.Accumulator() {
               {
               }
 
@@ -304,17 +298,18 @@ class ImgViewLayer extends LayerBase {
               public void accept(DeltaSet<UUID> buffer, TensorList error) {
                 if (input.isAlive()) {
                   @Nonnull
-                  TensorArray tensorArray = new TensorArray(
-                      RefIntStream.range(0, error.length()).mapToObj(RefUtil.wrapInterface(
-                          (IntFunction<? extends Tensor>) dataIndex -> {
-                            @Nullable final Tensor err = error.get(dataIndex);
-                            @Nonnull final Tensor passback = new Tensor(inputDims);
-                            ImgViewLayer.this.bck(err == null ? null : err.addRef(),
-                                passback == null ? null : passback.addRef());
-                            if (null != err)
-                              err.freeRef();
-                            return passback;
-                          }, error == null ? null : error.addRef())).toArray(i -> new Tensor[i]));
+                  TensorArray tensorArray = new TensorArray(RefIntStream.range(0, error.length())
+                      .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+                        @Nullable
+                        final Tensor err = error.get(dataIndex);
+                        @Nonnull
+                        final Tensor passback = new Tensor(inputDims);
+                        ImgViewLayer.this.bck(err == null ? null : err.addRef(),
+                            passback == null ? null : passback.addRef());
+                        if (null != err)
+                          err.freeRef();
+                        return passback;
+                      }, error == null ? null : error.addRef())).toArray(i -> new Tensor[i]));
                   input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray == null ? null : tensorArray);
                 }
                 if (null != error)
@@ -323,8 +318,7 @@ class ImgViewLayer extends LayerBase {
                   buffer.freeRef();
               }
 
-              public @SuppressWarnings("unused")
-              void _free() {
+              public @SuppressWarnings("unused") void _free() {
               }
             }) {
 
@@ -351,7 +345,8 @@ class ImgViewLayer extends LayerBase {
 
   @Nonnull
   public int[] getViewDimensions(int[] sourceDimensions, int[] destinationDimensions, int[] offset) {
-    @Nonnull final int[] viewDim = new int[3];
+    @Nonnull
+    final int[] viewDim = new int[3];
     RefArrays.parallelSetAll(viewDim, i -> isWrap() ? (destinationDimensions[i])
         : (Math.min(sourceDimensions[i], destinationDimensions[i] + offset[i]) - Math.max(offset[i], 0)));
     return viewDim;
@@ -360,7 +355,8 @@ class ImgViewLayer extends LayerBase {
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull final JsonObject json = super.getJsonStub();
+    @Nonnull
+    final JsonObject json = super.getJsonStub();
     json.addProperty("sizeX", getSizeX());
     json.addProperty("sizeY", getSizeY());
     json.addProperty("offsetX", getOffsetX());
@@ -386,74 +382,70 @@ class ImgViewLayer extends LayerBase {
     return new RefArrayList<>();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  ImgViewLayer addRef() {
+  public @Override @SuppressWarnings("unused") ImgViewLayer addRef() {
     return (ImgViewLayer) super.addRef();
   }
 
   @Nonnull
   protected void fwd(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData) {
     int[] inputDims = inputData.getDimensions();
-    @Nonnull final int[] inDim = inputDims;
-    @Nonnull final int[] outDim = outputData.getDimensions();
+    @Nonnull
+    final int[] inDim = inputDims;
+    @Nonnull
+    final int[] outDim = outputData.getDimensions();
     assert 3 == inDim.length;
     assert 3 == outDim.length;
     assert inDim[2] == outDim[2] : RefArrays.toString(inDim) + "; " + RefArrays.toString(outDim);
-    outputData.coordStream(true).forEach(RefUtil
-        .wrapInterface((Consumer<? super Coordinate>) (c) -> {
-          int[] coords = c.getCoords();
-          double[] xy = coordinateMapping(coords[0], coords[1]);
-          int x = (int) Math.round(xy[0]);
-          int y = (int) Math.round(xy[1]);
-          int channel;
-          if (null != channelSelector)
-            channel = channelSelector[coords[2]];
-          else
-            channel = coords[2] + 1;
-          if (0 < channel) {
-            RefUtil
-                .freeRef(outputData.set(c, get(inputData == null ? null : inputData.addRef(), inputDims[0],
-                    inputDims[1], x, y, channel - 1, wrap)));
-          } else {
-            RefUtil
-                .freeRef(outputData.set(c, getNegativeBias() - get(inputData == null ? null : inputData.addRef(),
-                    inputDims[0], inputDims[1], x, y, -channel - 1, wrap)));
-          }
-        }, inputData == null ? null : inputData, outputData == null ? null : outputData));
+    outputData.coordStream(true).forEach(RefUtil.wrapInterface((Consumer<? super Coordinate>) (c) -> {
+      int[] coords = c.getCoords();
+      double[] xy = coordinateMapping(coords[0], coords[1]);
+      int x = (int) Math.round(xy[0]);
+      int y = (int) Math.round(xy[1]);
+      int channel;
+      if (null != channelSelector)
+        channel = channelSelector[coords[2]];
+      else
+        channel = coords[2] + 1;
+      if (0 < channel) {
+        RefUtil.freeRef(outputData.set(c,
+            get(inputData == null ? null : inputData.addRef(), inputDims[0], inputDims[1], x, y, channel - 1, wrap)));
+      } else {
+        RefUtil.freeRef(outputData.set(c, getNegativeBias() - get(inputData == null ? null : inputData.addRef(),
+            inputDims[0], inputDims[1], x, y, -channel - 1, wrap)));
+      }
+    }, inputData == null ? null : inputData, outputData == null ? null : outputData));
   }
 
   @Nonnull
   protected void bck(@Nonnull final Tensor outputDelta, @Nonnull final Tensor inputDelta) {
     int[] outDeltaDims = outputDelta.getDimensions();
-    @Nonnull final int[] inputDeltaDims = inputDelta.getDimensions();
+    @Nonnull
+    final int[] inputDeltaDims = inputDelta.getDimensions();
     assert 3 == outDeltaDims.length;
     assert 3 == inputDeltaDims.length;
     assert outDeltaDims[2] == inputDeltaDims[2] : RefArrays.toString(outDeltaDims) + "; "
         + RefArrays.toString(inputDeltaDims);
-    outputDelta.coordStream(true).forEach(RefUtil
-        .wrapInterface((Consumer<? super Coordinate>) (c) -> {
-          int[] outCoord = c.getCoords();
-          double[] inCoords = coordinateMapping(outCoord[0], outCoord[1]);
-          int x = (int) Math.round(inCoords[0]);
-          int y = (int) Math.round(inCoords[1]);
-          int channel;
-          if (null != channelSelector)
-            channel = channelSelector[outCoord[2]];
-          else
-            channel = outCoord[2] + 1;
-          if (0 < channel) {
-            set(inputDelta == null ? null : inputDelta.addRef(), inputDeltaDims[0], inputDeltaDims[1], x, y,
-                channel - 1, wrap, outputDelta.get(c));
-          } else {
-            set(inputDelta == null ? null : inputDelta.addRef(), inputDeltaDims[0], inputDeltaDims[1], x, y,
-                -channel - 1, wrap, -outputDelta.get(c));
-          }
-        }, inputDelta == null ? null : inputDelta, outputDelta == null ? null : outputDelta));
+    outputDelta.coordStream(true).forEach(RefUtil.wrapInterface((Consumer<? super Coordinate>) (c) -> {
+      int[] outCoord = c.getCoords();
+      double[] inCoords = coordinateMapping(outCoord[0], outCoord[1]);
+      int x = (int) Math.round(inCoords[0]);
+      int y = (int) Math.round(inCoords[1]);
+      int channel;
+      if (null != channelSelector)
+        channel = channelSelector[outCoord[2]];
+      else
+        channel = outCoord[2] + 1;
+      if (0 < channel) {
+        set(inputDelta == null ? null : inputDelta.addRef(), inputDeltaDims[0], inputDeltaDims[1], x, y, channel - 1,
+            wrap, outputDelta.get(c));
+      } else {
+        set(inputDelta == null ? null : inputDelta.addRef(), inputDeltaDims[0], inputDeltaDims[1], x, y, -channel - 1,
+            wrap, -outputDelta.get(c));
+      }
+    }, inputDelta == null ? null : inputDelta, outputDelta == null ? null : outputDelta));
   }
 
   protected double[] coordinateMapping(double... xy) {

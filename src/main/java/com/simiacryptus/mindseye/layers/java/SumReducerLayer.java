@@ -39,8 +39,7 @@ import java.util.function.IntFunction;
 import java.util.function.IntToDoubleFunction;
 
 @SuppressWarnings("serial")
-public @RefAware
-class SumReducerLayer extends LayerBase {
+public class SumReducerLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(SumReducerLayer.class);
@@ -57,16 +56,14 @@ class SumReducerLayer extends LayerBase {
     return new SumReducerLayer(json);
   }
 
-  public static @SuppressWarnings("unused")
-  SumReducerLayer[] addRefs(SumReducerLayer[] array) {
+  public static @SuppressWarnings("unused") SumReducerLayer[] addRefs(SumReducerLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SumReducerLayer::addRef)
         .toArray((x) -> new SumReducerLayer[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  SumReducerLayer[][] addRefs(SumReducerLayer[][] array) {
+  public static @SuppressWarnings("unused") SumReducerLayer[][] addRefs(SumReducerLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SumReducerLayer::addRefs)
@@ -78,46 +75,47 @@ class SumReducerLayer extends LayerBase {
   public Result eval(@Nonnull final Result... inObj) {
     try {
       TensorList temp_62_0003 = inObj[0].getData();
-      Result temp_62_0002 = new Result(
-          new TensorArray(RefIntStream.range(0, temp_62_0003.length()).parallel().mapToDouble(
-              RefUtil.wrapInterface((IntToDoubleFunction) dataIndex -> {
-                double sum = 0;
-                for (@Nonnull final Result element : inObj) {
-                  @Nullable
-                  Tensor tensor = element.getData().get(dataIndex);
-                  @Nullable final double[] input = tensor.getData();
-                  if (null != tensor)
-                    tensor.freeRef();
-                  for (final double element2 : input) {
-                    sum += element2;
-                  }
-                }
-                return sum;
-              }, Result.addRefs(inObj)))
-              .mapToObj(x -> new Tensor(new double[]{x}, new int[]{1})).toArray(i -> new Tensor[i])),
-          new Result.Accumulator() {
+      Result temp_62_0002 = new Result(new TensorArray(RefIntStream.range(0, temp_62_0003.length()).parallel()
+          .mapToDouble(RefUtil.wrapInterface((IntToDoubleFunction) dataIndex -> {
+            double sum = 0;
+            for (@Nonnull
+            final Result element : inObj) {
+              @Nullable
+              Tensor tensor = element.getData().get(dataIndex);
+              @Nullable
+              final double[] input = tensor.getData();
+              if (null != tensor)
+                tensor.freeRef();
+              for (final double element2 : input) {
+                sum += element2;
+              }
+            }
+            return sum;
+          }, Result.addRefs(inObj))).mapToObj(x -> new Tensor(new double[] { x }, new int[] { 1 }))
+          .toArray(i -> new Tensor[i])), new Result.Accumulator() {
             {
               Result.addRefs(inObj);
             }
 
             @Override
             public void accept(DeltaSet<UUID> buffer, TensorList data) {
-              for (@Nonnull final Result in_l : inObj) {
+              for (@Nonnull
+              final Result in_l : inObj) {
                 if (in_l.isAlive()) {
                   @Nonnull
                   TensorArray tensorArray = new TensorArray(RefIntStream.range(0, in_l.getData().length()).parallel()
-                      .mapToObj(RefUtil.wrapInterface(
-                          (IntFunction<? extends Tensor>) dataIndex -> {
-                            Tensor tensor = data.get(dataIndex);
-                            assert 1 == tensor.length() : RefArrays.toString(tensor.getDimensions());
-                            @Nonnull final Tensor passback = new Tensor(in_l.getData().getDimensions());
-                            for (int i = 0; i < Tensor.length(in_l.getData().getDimensions()); i++) {
-                              passback.set(i, tensor.get(0));
-                            }
-                            if (null != tensor)
-                              tensor.freeRef();
-                            return passback;
-                          }, data == null ? null : data.addRef(), in_l == null ? null : in_l.addRef()))
+                      .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+                        Tensor tensor = data.get(dataIndex);
+                        assert 1 == tensor.length() : RefArrays.toString(tensor.getDimensions());
+                        @Nonnull
+                        final Tensor passback = new Tensor(in_l.getData().getDimensions());
+                        for (int i = 0; i < Tensor.length(in_l.getData().getDimensions()); i++) {
+                          passback.set(i, tensor.get(0));
+                        }
+                        if (null != tensor)
+                          tensor.freeRef();
+                        return passback;
+                      }, data == null ? null : data.addRef(), in_l == null ? null : in_l.addRef()))
                       .toArray(i -> new Tensor[i]));
                   in_l.accumulate(buffer == null ? null : buffer.addRef(), tensorArray == null ? null : tensorArray);
                 }
@@ -128,8 +126,7 @@ class SumReducerLayer extends LayerBase {
                 buffer.freeRef();
             }
 
-            public @SuppressWarnings("unused")
-            void _free() {
+            public @SuppressWarnings("unused") void _free() {
               ReferenceCounting.freeRefs(inObj);
             }
           }) {
@@ -140,7 +137,8 @@ class SumReducerLayer extends LayerBase {
 
         @Override
         public boolean isAlive() {
-          for (@Nonnull final Result element : inObj)
+          for (@Nonnull
+          final Result element : inObj)
             if (element.isAlive()) {
               return true;
             }
@@ -172,13 +170,10 @@ class SumReducerLayer extends LayerBase {
     return RefArrays.asList();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  SumReducerLayer addRef() {
+  public @Override @SuppressWarnings("unused") SumReducerLayer addRef() {
     return (SumReducerLayer) super.addRef();
   }
 }

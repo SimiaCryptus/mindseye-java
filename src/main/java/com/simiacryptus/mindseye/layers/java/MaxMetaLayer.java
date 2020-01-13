@@ -40,8 +40,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 @SuppressWarnings("serial")
-public @RefAware
-class MaxMetaLayer extends LayerBase {
+public class MaxMetaLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(MaxMetaLayer.class);
@@ -58,16 +57,13 @@ class MaxMetaLayer extends LayerBase {
     return new MaxMetaLayer(json);
   }
 
-  public static @SuppressWarnings("unused")
-  MaxMetaLayer[] addRefs(MaxMetaLayer[] array) {
+  public static @SuppressWarnings("unused") MaxMetaLayer[] addRefs(MaxMetaLayer[] array) {
     if (array == null)
       return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(MaxMetaLayer::addRef)
-        .toArray((x) -> new MaxMetaLayer[x]);
+    return Arrays.stream(array).filter((x) -> x != null).map(MaxMetaLayer::addRef).toArray((x) -> new MaxMetaLayer[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  MaxMetaLayer[][] addRefs(MaxMetaLayer[][] array) {
+  public static @SuppressWarnings("unused") MaxMetaLayer[][] addRefs(MaxMetaLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(MaxMetaLayer::addRefs)
@@ -89,54 +85,50 @@ class MaxMetaLayer extends LayerBase {
     if (null != temp_40_0006)
       temp_40_0006.freeRef();
     final int vectorSize = input0Tensor.length();
-    @Nonnull final int[] indicies = new int[vectorSize];
+    @Nonnull
+    final int[] indicies = new int[vectorSize];
     for (int i = 0; i < vectorSize; i++) {
       final int itemNumber = i;
-      indicies[i] = RefIntStream.range(0, itemCnt).mapToObj(x -> x)
-          .max(RefComparator.comparing(RefUtil.wrapInterface(
-              (Function<? super Integer, ? extends Double>) dataIndex -> {
-                TensorList temp_40_0007 = input.getData();
-                Tensor tensor = temp_40_0007.get(dataIndex);
-                if (null != temp_40_0007)
-                  temp_40_0007.freeRef();
-                double temp_40_0003 = tensor.getData()[itemNumber];
-                if (null != tensor)
-                  tensor.freeRef();
-                return temp_40_0003;
-              }, input == null ? null : input.addRef())))
-          .get();
+      indicies[i] = RefUtil.get(RefIntStream.range(0, itemCnt).mapToObj(x -> x).max(
+          RefComparator.comparing(RefUtil.wrapInterface((Function<? super Integer, ? extends Double>) dataIndex -> {
+            TensorList temp_40_0007 = input.getData();
+            Tensor tensor = temp_40_0007.get(dataIndex);
+            if (null != temp_40_0007)
+              temp_40_0007.freeRef();
+            double temp_40_0003 = tensor.getData()[itemNumber];
+            if (null != tensor)
+              tensor.freeRef();
+            return temp_40_0003;
+          }, input == null ? null : input.addRef()))));
     }
     try {
       try {
-        return new Result(new TensorArray(input0Tensor.mapIndex(RefUtil
-            .wrapInterface((v, c) -> {
-              TensorList temp_40_0008 = input.getData();
-              Tensor tensor = temp_40_0008.get(indicies[c]);
-              if (null != temp_40_0008)
-                temp_40_0008.freeRef();
-              double temp_40_0004 = tensor.getData()[c];
-              if (null != tensor)
-                tensor.freeRef();
-              return temp_40_0004;
-            }, input == null ? null : input.addRef()))), new Result.Accumulator() {
+        return new Result(new TensorArray(input0Tensor.mapIndex(RefUtil.wrapInterface((v, c) -> {
+          TensorList temp_40_0008 = input.getData();
+          Tensor tensor = temp_40_0008.get(indicies[c]);
+          if (null != temp_40_0008)
+            temp_40_0008.freeRef();
+          double temp_40_0004 = tensor.getData()[c];
+          if (null != tensor)
+            tensor.freeRef();
+          return temp_40_0004;
+        }, input == null ? null : input.addRef()))), new Result.Accumulator() {
           {
           }
 
           @Override
           public void accept(DeltaSet<UUID> buffer, TensorList data) {
             if (input.isAlive()) {
-              @Nullable final Tensor delta = data.get(0);
-              @Nonnull final Tensor feedback[] = new Tensor[itemCnt];
+              @Nullable
+              final Tensor delta = data.get(0);
+              @Nonnull
+              final Tensor feedback[] = new Tensor[itemCnt];
               RefArrays.parallelSetAll(Tensor.addRefs(feedback),
-                  RefUtil.wrapInterface(
-                      i -> new Tensor(
-                          delta.getDimensions()),
-                      delta == null ? null : delta.addRef()));
-              input0Tensor.coordStream(true).forEach(RefUtil.wrapInterface(
-                  (Consumer<? super Coordinate>) (inputCoord) -> {
+                  RefUtil.wrapInterface(i -> new Tensor(delta.getDimensions()), delta == null ? null : delta.addRef()));
+              input0Tensor.coordStream(true)
+                  .forEach(RefUtil.wrapInterface((Consumer<? super Coordinate>) (inputCoord) -> {
                     feedback[indicies[inputCoord.getIndex()]].add(inputCoord, delta.get(inputCoord));
-                  }, delta == null ? null : delta.addRef(),
-                  Tensor.addRefs(feedback)));
+                  }, delta == null ? null : delta.addRef(), Tensor.addRefs(feedback)));
               if (null != delta)
                 delta.freeRef();
               @Nonnull
@@ -150,8 +142,7 @@ class MaxMetaLayer extends LayerBase {
               buffer.freeRef();
           }
 
-          public @SuppressWarnings("unused")
-          void _free() {
+          public @SuppressWarnings("unused") void _free() {
           }
         }) {
 
@@ -189,13 +180,10 @@ class MaxMetaLayer extends LayerBase {
     return RefArrays.asList();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  MaxMetaLayer addRef() {
+  public @Override @SuppressWarnings("unused") MaxMetaLayer addRef() {
     return (MaxMetaLayer) super.addRef();
   }
 }

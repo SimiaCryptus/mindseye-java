@@ -30,8 +30,7 @@ import com.simiacryptus.ref.wrappers.RefHashMap;
 
 import java.util.Arrays;
 
-public abstract @RefAware
-class HyperbolicActivationLayerTest extends ActivationLayerTestBase {
+public abstract class HyperbolicActivationLayerTest extends ActivationLayerTestBase {
   public HyperbolicActivationLayerTest() {
     super(new HyperbolicActivationLayer());
   }
@@ -39,7 +38,7 @@ class HyperbolicActivationLayerTest extends ActivationLayerTestBase {
   @Override
   protected RefHashMap<Tensor[], Tensor> getReferenceIO() {
     final RefHashMap<Tensor[], Tensor> map = RefUtil.addRef(super.getReferenceIO());
-    RefUtil.freeRef(map.put(new Tensor[]{new Tensor(0.0)}, new Tensor(0.0)));
+    RefUtil.freeRef(map.put(new Tensor[] { new Tensor(0.0) }, new Tensor(0.0)));
     return map;
   }
 
@@ -47,8 +46,7 @@ class HyperbolicActivationLayerTest extends ActivationLayerTestBase {
   public ComponentTest<TrainingTester.ComponentResult> getTrainingTester() {
     TrainingTester temp_69_0002 = new TrainingTester() {
 
-      public @SuppressWarnings("unused")
-      void _free() {
+      public @SuppressWarnings("unused") void _free() {
       }
 
       @Override
@@ -56,15 +54,13 @@ class HyperbolicActivationLayerTest extends ActivationLayerTestBase {
         return HyperbolicActivationLayerTest.this.lossLayer();
       }
     };
-    TrainingTester temp_69_0001 = temp_69_0002
-        .setRandomizationMode(TrainingTester.RandomizationMode.Random);
+    TrainingTester temp_69_0001 = temp_69_0002.setRandomizationMode(TrainingTester.RandomizationMode.Random);
     if (null != temp_69_0002)
       temp_69_0002.freeRef();
     return temp_69_0001;
   }
 
-  public static @SuppressWarnings("unused")
-  HyperbolicActivationLayerTest[] addRefs(
+  public static @SuppressWarnings("unused") HyperbolicActivationLayerTest[] addRefs(
       HyperbolicActivationLayerTest[] array) {
     if (array == null)
       return null;
@@ -72,8 +68,7 @@ class HyperbolicActivationLayerTest extends ActivationLayerTestBase {
         .toArray((x) -> new HyperbolicActivationLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  HyperbolicActivationLayerTest[][] addRefs(
+  public static @SuppressWarnings("unused") HyperbolicActivationLayerTest[][] addRefs(
       HyperbolicActivationLayerTest[][] array) {
     if (array == null)
       return null;
@@ -81,32 +76,24 @@ class HyperbolicActivationLayerTest extends ActivationLayerTestBase {
         .toArray((x) -> new HyperbolicActivationLayerTest[x][]);
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  HyperbolicActivationLayerTest addRef() {
+  public @Override @SuppressWarnings("unused") HyperbolicActivationLayerTest addRef() {
     return (HyperbolicActivationLayerTest) super.addRef();
   }
 
-  public static @RefAware
-  class Basic extends HyperbolicActivationLayerTest {
-    public static @SuppressWarnings("unused")
-    Basic[] addRefs(Basic[] array) {
+  public static class Basic extends HyperbolicActivationLayerTest {
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
-    public @SuppressWarnings("unused")
-    void _free() {
+    public @SuppressWarnings("unused") void _free() {
     }
 
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
+    public @Override @SuppressWarnings("unused") Basic addRef() {
       return (Basic) super.addRef();
     }
 

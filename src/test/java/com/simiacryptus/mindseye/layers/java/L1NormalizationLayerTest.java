@@ -26,19 +26,16 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Random;
 
-public abstract @RefAware
-class L1NormalizationLayerTest extends LayerTestBase {
+public abstract class L1NormalizationLayerTest extends LayerTestBase {
 
-  public static @SuppressWarnings("unused")
-  L1NormalizationLayerTest[] addRefs(L1NormalizationLayerTest[] array) {
+  public static @SuppressWarnings("unused") L1NormalizationLayerTest[] addRefs(L1NormalizationLayerTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(L1NormalizationLayerTest::addRef)
         .toArray((x) -> new L1NormalizationLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  L1NormalizationLayerTest[][] addRefs(L1NormalizationLayerTest[][] array) {
+  public static @SuppressWarnings("unused") L1NormalizationLayerTest[][] addRefs(L1NormalizationLayerTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(L1NormalizationLayerTest::addRefs)
@@ -48,7 +45,7 @@ class L1NormalizationLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{{4}};
+    return new int[][] { { 4 } };
   }
 
   @Nonnull
@@ -62,33 +59,25 @@ class L1NormalizationLayerTest extends LayerTestBase {
     return super.random() * 100;
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  L1NormalizationLayerTest addRef() {
+  public @Override @SuppressWarnings("unused") L1NormalizationLayerTest addRef() {
     return (L1NormalizationLayerTest) super.addRef();
   }
 
-  public static @RefAware
-  class Basic extends L1NormalizationLayerTest {
+  public static class Basic extends L1NormalizationLayerTest {
 
-    public static @SuppressWarnings("unused")
-    Basic[] addRefs(Basic[] array) {
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
-    public @SuppressWarnings("unused")
-    void _free() {
+    public @SuppressWarnings("unused") void _free() {
     }
 
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
+    public @Override @SuppressWarnings("unused") Basic addRef() {
       return (Basic) super.addRef();
     }
   }

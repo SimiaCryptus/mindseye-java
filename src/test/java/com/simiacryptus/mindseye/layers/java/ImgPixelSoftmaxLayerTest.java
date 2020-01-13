@@ -26,19 +26,16 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Random;
 
-public abstract @RefAware
-class ImgPixelSoftmaxLayerTest extends LayerTestBase {
+public abstract class ImgPixelSoftmaxLayerTest extends LayerTestBase {
 
-  public static @SuppressWarnings("unused")
-  ImgPixelSoftmaxLayerTest[] addRefs(ImgPixelSoftmaxLayerTest[] array) {
+  public static @SuppressWarnings("unused") ImgPixelSoftmaxLayerTest[] addRefs(ImgPixelSoftmaxLayerTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ImgPixelSoftmaxLayerTest::addRef)
         .toArray((x) -> new ImgPixelSoftmaxLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  ImgPixelSoftmaxLayerTest[][] addRefs(ImgPixelSoftmaxLayerTest[][] array) {
+  public static @SuppressWarnings("unused") ImgPixelSoftmaxLayerTest[][] addRefs(ImgPixelSoftmaxLayerTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ImgPixelSoftmaxLayerTest::addRefs)
@@ -48,7 +45,7 @@ class ImgPixelSoftmaxLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{{2, 2, 3}};
+    return new int[][] { { 2, 2, 3 } };
   }
 
   @Nonnull
@@ -57,33 +54,25 @@ class ImgPixelSoftmaxLayerTest extends LayerTestBase {
     return new ImgPixelSoftmaxLayer();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  ImgPixelSoftmaxLayerTest addRef() {
+  public @Override @SuppressWarnings("unused") ImgPixelSoftmaxLayerTest addRef() {
     return (ImgPixelSoftmaxLayerTest) super.addRef();
   }
 
-  public static @RefAware
-  class Basic extends ImgPixelSoftmaxLayerTest {
+  public static class Basic extends ImgPixelSoftmaxLayerTest {
 
-    public static @SuppressWarnings("unused")
-    Basic[] addRefs(Basic[] array) {
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
-    public @SuppressWarnings("unused")
-    void _free() {
+    public @SuppressWarnings("unused") void _free() {
     }
 
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
+    public @Override @SuppressWarnings("unused") Basic addRef() {
       return (Basic) super.addRef();
     }
   }

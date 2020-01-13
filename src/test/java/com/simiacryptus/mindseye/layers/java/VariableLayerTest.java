@@ -26,19 +26,16 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Random;
 
-public abstract @RefAware
-class VariableLayerTest extends LayerTestBase {
+public abstract class VariableLayerTest extends LayerTestBase {
 
-  public static @SuppressWarnings("unused")
-  VariableLayerTest[] addRefs(VariableLayerTest[] array) {
+  public static @SuppressWarnings("unused") VariableLayerTest[] addRefs(VariableLayerTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(VariableLayerTest::addRef)
         .toArray((x) -> new VariableLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  VariableLayerTest[][] addRefs(VariableLayerTest[][] array) {
+  public static @SuppressWarnings("unused") VariableLayerTest[][] addRefs(VariableLayerTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(VariableLayerTest::addRefs)
@@ -48,47 +45,38 @@ class VariableLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{{3}};
+    return new int[][] { { 3 } };
   }
 
   @Nonnull
   @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
     MonitoringSynapse inner = new MonitoringSynapse();
-    VariableLayer temp_44_0001 = new VariableLayer(
-        inner == null ? null : inner.addRef());
+    VariableLayer temp_44_0001 = new VariableLayer(inner == null ? null : inner.addRef());
     if (null != inner)
       inner.freeRef();
     return temp_44_0001;
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  VariableLayerTest addRef() {
+  public @Override @SuppressWarnings("unused") VariableLayerTest addRef() {
     return (VariableLayerTest) super.addRef();
   }
 
-  public static @RefAware
-  class Basic extends VariableLayerTest {
+  public static class Basic extends VariableLayerTest {
 
-    public static @SuppressWarnings("unused")
-    Basic[] addRefs(Basic[] array) {
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
-    public @SuppressWarnings("unused")
-    void _free() {
+    public @SuppressWarnings("unused") void _free() {
     }
 
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
+    public @Override @SuppressWarnings("unused") Basic addRef() {
       return (Basic) super.addRef();
     }
   }

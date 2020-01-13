@@ -39,8 +39,7 @@ import java.util.function.IntFunction;
 import java.util.function.IntToDoubleFunction;
 
 @SuppressWarnings("serial")
-public @RefAware
-class MaxImageBandLayer extends LayerBase {
+public class MaxImageBandLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(MaxImageBandLayer.class);
@@ -58,16 +57,14 @@ class MaxImageBandLayer extends LayerBase {
     return new MaxImageBandLayer(json, JsonUtil.getIntArray(json.getAsJsonArray("heapCopy")));
   }
 
-  public static @SuppressWarnings("unused")
-  MaxImageBandLayer[] addRefs(MaxImageBandLayer[] array) {
+  public static @SuppressWarnings("unused") MaxImageBandLayer[] addRefs(MaxImageBandLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(MaxImageBandLayer::addRef)
         .toArray((x) -> new MaxImageBandLayer[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  MaxImageBandLayer[][] addRefs(MaxImageBandLayer[][] array) {
+  public static @SuppressWarnings("unused") MaxImageBandLayer[][] addRefs(MaxImageBandLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(MaxImageBandLayer::addRefs)
@@ -81,20 +78,17 @@ class MaxImageBandLayer extends LayerBase {
     assert 1 == inObj.length;
     final TensorList inputData = inObj[0].getData();
     inputData.length();
-    @Nonnull final int[] inputDims = inputData.getDimensions();
+    @Nonnull
+    final int[] inputDims = inputData.getDimensions();
     assert 3 == inputDims.length;
     final Coordinate[][] maxCoords = inputData.stream().map(data -> {
       Coordinate[] temp_31_0002 = RefIntStream.range(0, inputDims[2])
-          .mapToObj(RefUtil.wrapInterface(
-              (IntFunction<? extends Coordinate>) band -> {
-                return data.coordStream(true).filter(e -> e.getCoords()[2] == band)
-                    .max(RefComparator.comparing(RefUtil.wrapInterface(
-                        (Function<? super Coordinate, ? extends Double>) c -> data
-                            .get(c),
-                        data == null ? null : data.addRef())))
-                    .get();
-              }, data == null ? null : data.addRef()))
-          .toArray(i -> new Coordinate[i]);
+          .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Coordinate>) band -> {
+            return RefUtil.get(data.coordStream(true).filter(e -> e.getCoords()[2] == band)
+                .max(RefComparator
+                    .comparing(RefUtil.wrapInterface((Function<? super Coordinate, ? extends Double>) c -> data.get(c),
+                        data == null ? null : data.addRef()))));
+          }, data == null ? null : data.addRef())).toArray(i -> new Coordinate[i]);
       if (null != data)
         data.freeRef();
       return temp_31_0002;
@@ -102,27 +96,25 @@ class MaxImageBandLayer extends LayerBase {
 
     try {
       try {
-        return new Result(new TensorArray(
-            RefIntStream.range(0, inputData.length()).mapToObj(RefUtil.wrapInterface(
-                (IntFunction<? extends Tensor>) dataIndex -> {
-                  Tensor tensor = inputData.get(dataIndex);
-                  final RefDoubleStream doubleStream = RefIntStream.range(0, inputDims[2]).mapToDouble(
-                      RefUtil.wrapInterface((IntToDoubleFunction) band -> {
-                        final int[] maxCoord = maxCoords[dataIndex][band].getCoords();
-                        return tensor.get(maxCoord[0], maxCoord[1], band);
-                      }, tensor == null ? null : tensor.addRef()));
-                  if (null != tensor)
-                    tensor.freeRef();
-                  Tensor temp_31_0005 = new Tensor(1, 1, inputDims[2]);
-                  Tensor temp_31_0004 = temp_31_0005
-                      .set(Tensor.getDoubles(doubleStream, inputDims[2]));
-                  if (null != temp_31_0005)
-                    temp_31_0005.freeRef();
-                  return temp_31_0004;
-                }, inputData == null ? null : inputData.addRef())).toArray(i -> new Tensor[i])),
-            new Result.Accumulator() {
+        return new Result(new TensorArray(RefIntStream.range(0, inputData.length())
+            .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+              Tensor tensor = inputData.get(dataIndex);
+              final RefDoubleStream doubleStream = RefIntStream.range(0, inputDims[2])
+                  .mapToDouble(RefUtil.wrapInterface((IntToDoubleFunction) band -> {
+                    final int[] maxCoord = maxCoords[dataIndex][band].getCoords();
+                    return tensor.get(maxCoord[0], maxCoord[1], band);
+                  }, tensor == null ? null : tensor.addRef()));
+              if (null != tensor)
+                tensor.freeRef();
+              Tensor temp_31_0005 = new Tensor(1, 1, inputDims[2]);
+              Tensor temp_31_0004 = temp_31_0005.set(Tensor.getDoubles(doubleStream, inputDims[2]));
+              if (null != temp_31_0005)
+                temp_31_0005.freeRef();
+              return temp_31_0004;
+            }, inputData == null ? null : inputData.addRef())).toArray(i -> new Tensor[i])), new Result.Accumulator() {
               {
                 Result.addRefs(inObj);
+                inputData.addRef();
               }
 
               @Override
@@ -130,20 +122,19 @@ class MaxImageBandLayer extends LayerBase {
                 if (inObj[0].isAlive()) {
                   @Nonnull
                   TensorArray tensorArray = new TensorArray(RefIntStream.range(0, delta.length()).parallel()
-                      .mapToObj(RefUtil.wrapInterface(
-                          (IntFunction<? extends Tensor>) dataIndex -> {
-                            Tensor deltaTensor = delta.get(dataIndex);
-                            @Nonnull final Tensor passback = new Tensor(inputData.getDimensions());
-                            RefIntStream.range(0, inputDims[2]).forEach(
-                                RefUtil.wrapInterface(b -> {
-                                      final int[] maxCoord = maxCoords[dataIndex][b].getCoords();
-                                      passback.set(new int[]{maxCoord[0], maxCoord[1], b}, deltaTensor.get(0, 0, b));
-                                    }, passback == null ? null : passback.addRef(),
-                                    deltaTensor == null ? null : deltaTensor.addRef()));
-                            if (null != deltaTensor)
-                              deltaTensor.freeRef();
-                            return passback;
-                          }, delta == null ? null : delta.addRef(), inputData == null ? null : inputData.addRef()))
+                      .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+                        Tensor deltaTensor = delta.get(dataIndex);
+                        @Nonnull
+                        final Tensor passback = new Tensor(inputData.getDimensions());
+                        RefIntStream.range(0, inputDims[2]).forEach(RefUtil.wrapInterface(b -> {
+                          final int[] maxCoord = maxCoords[dataIndex][b].getCoords();
+                          passback.set(new int[] { maxCoord[0], maxCoord[1], b }, deltaTensor.get(0, 0, b));
+                        }, passback == null ? null : passback.addRef(),
+                            deltaTensor == null ? null : deltaTensor.addRef()));
+                        if (null != deltaTensor)
+                          deltaTensor.freeRef();
+                        return passback;
+                      }, delta == null ? null : delta.addRef(), inputData == null ? null : inputData.addRef()))
                       .toArray(i -> new Tensor[i]));
                   inObj[0].accumulate(buffer == null ? null : buffer.addRef(),
                       tensorArray == null ? null : tensorArray);
@@ -154,9 +145,9 @@ class MaxImageBandLayer extends LayerBase {
                   buffer.freeRef();
               }
 
-              public @SuppressWarnings("unused")
-              void _free() {
+              public @SuppressWarnings("unused") void _free() {
                 ReferenceCounting.freeRefs(inObj);
+                inputData.freeRef();
               }
             }) {
 
@@ -194,18 +185,14 @@ class MaxImageBandLayer extends LayerBase {
     return RefArrays.asList();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  MaxImageBandLayer addRef() {
+  public @Override @SuppressWarnings("unused") MaxImageBandLayer addRef() {
     return (MaxImageBandLayer) super.addRef();
   }
 
-  public static @RefAware
-  class CalcRegionsParameter {
+  public static class CalcRegionsParameter {
     public final int[] inputDims;
     public final int[] kernelDims;
 
@@ -225,7 +212,8 @@ class MaxImageBandLayer extends LayerBase {
       if (getClass() != obj.getClass()) {
         return false;
       }
-      @Nonnull final MaxImageBandLayer.CalcRegionsParameter other = (MaxImageBandLayer.CalcRegionsParameter) obj;
+      @Nonnull
+      final MaxImageBandLayer.CalcRegionsParameter other = (MaxImageBandLayer.CalcRegionsParameter) obj;
       if (!RefArrays.equals(inputDims, other.inputDims)) {
         return false;
       }

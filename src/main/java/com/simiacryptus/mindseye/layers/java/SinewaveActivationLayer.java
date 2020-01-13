@@ -28,8 +28,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 @SuppressWarnings("serial")
-public final @RefAware
-class SinewaveActivationLayer extends SimpleActivationLayer<SinewaveActivationLayer> {
+public final class SinewaveActivationLayer extends SimpleActivationLayer<SinewaveActivationLayer> {
 
   private boolean balanced = true;
 
@@ -56,16 +55,14 @@ class SinewaveActivationLayer extends SimpleActivationLayer<SinewaveActivationLa
     return new SinewaveActivationLayer(json);
   }
 
-  public static @SuppressWarnings("unused")
-  SinewaveActivationLayer[] addRefs(SinewaveActivationLayer[] array) {
+  public static @SuppressWarnings("unused") SinewaveActivationLayer[] addRefs(SinewaveActivationLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SinewaveActivationLayer::addRef)
         .toArray((x) -> new SinewaveActivationLayer[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  SinewaveActivationLayer[][] addRefs(SinewaveActivationLayer[][] array) {
+  public static @SuppressWarnings("unused") SinewaveActivationLayer[][] addRefs(SinewaveActivationLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SinewaveActivationLayer::addRefs)
@@ -75,18 +72,16 @@ class SinewaveActivationLayer extends SimpleActivationLayer<SinewaveActivationLa
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull final JsonObject json = super.getJsonStub();
+    @Nonnull
+    final JsonObject json = super.getJsonStub();
     json.addProperty("balanced", balanced);
     return json;
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  SinewaveActivationLayer addRef() {
+  public @Override @SuppressWarnings("unused") SinewaveActivationLayer addRef() {
     return (SinewaveActivationLayer) super.addRef();
   }
 

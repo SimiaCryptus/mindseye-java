@@ -27,23 +27,20 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Random;
 
-public abstract @RefAware
-class LoggingWrapperLayerTest extends LayerTestBase {
+public abstract class LoggingWrapperLayerTest extends LayerTestBase {
 
   public LoggingWrapperLayerTest() {
     validateBatchExecution = false;
   }
 
-  public static @SuppressWarnings("unused")
-  LoggingWrapperLayerTest[] addRefs(LoggingWrapperLayerTest[] array) {
+  public static @SuppressWarnings("unused") LoggingWrapperLayerTest[] addRefs(LoggingWrapperLayerTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(LoggingWrapperLayerTest::addRef)
         .toArray((x) -> new LoggingWrapperLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  LoggingWrapperLayerTest[][] addRefs(LoggingWrapperLayerTest[][] array) {
+  public static @SuppressWarnings("unused") LoggingWrapperLayerTest[][] addRefs(LoggingWrapperLayerTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(LoggingWrapperLayerTest::addRefs)
@@ -53,47 +50,38 @@ class LoggingWrapperLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{{3}};
+    return new int[][] { { 3 } };
   }
 
   @Nonnull
   @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
     LinearActivationLayer inner = new LinearActivationLayer();
-    LoggingWrapperLayer temp_27_0001 = new LoggingWrapperLayer(
-        inner == null ? null : inner.addRef());
+    LoggingWrapperLayer temp_27_0001 = new LoggingWrapperLayer(inner == null ? null : inner.addRef());
     if (null != inner)
       inner.freeRef();
     return temp_27_0001;
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  LoggingWrapperLayerTest addRef() {
+  public @Override @SuppressWarnings("unused") LoggingWrapperLayerTest addRef() {
     return (LoggingWrapperLayerTest) super.addRef();
   }
 
-  public static @RefAware
-  class Basic extends LoggingWrapperLayerTest {
+  public static class Basic extends LoggingWrapperLayerTest {
 
-    public static @SuppressWarnings("unused")
-    Basic[] addRefs(Basic[] array) {
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
-    public @SuppressWarnings("unused")
-    void _free() {
+    public @SuppressWarnings("unused") void _free() {
     }
 
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
+    public @Override @SuppressWarnings("unused") Basic addRef() {
       return (Basic) super.addRef();
     }
   }

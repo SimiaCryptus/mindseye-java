@@ -36,8 +36,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @SuppressWarnings("serial")
-public @RefAware
-class ReshapeLayer extends LayerBase {
+public class ReshapeLayer extends LayerBase {
   private static final Logger log = LoggerFactory.getLogger(ReshapeLayer.class);
   @Nullable
   public final int[] outputDims;
@@ -60,16 +59,13 @@ class ReshapeLayer extends LayerBase {
     return new ReshapeLayer(json, rs);
   }
 
-  public static @SuppressWarnings("unused")
-  ReshapeLayer[] addRefs(ReshapeLayer[] array) {
+  public static @SuppressWarnings("unused") ReshapeLayer[] addRefs(ReshapeLayer[] array) {
     if (array == null)
       return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(ReshapeLayer::addRef)
-        .toArray((x) -> new ReshapeLayer[x]);
+    return Arrays.stream(array).filter((x) -> x != null).map(ReshapeLayer::addRef).toArray((x) -> new ReshapeLayer[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  ReshapeLayer[][] addRefs(ReshapeLayer[][] array) {
+  public static @SuppressWarnings("unused") ReshapeLayer[][] addRefs(ReshapeLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ReshapeLayer::addRefs)
@@ -104,8 +100,7 @@ class ReshapeLayer extends LayerBase {
               buffer.freeRef();
           }
 
-          public @SuppressWarnings("unused")
-          void _free() {
+          public @SuppressWarnings("unused") void _free() {
             ReferenceCounting.freeRefs(inObj);
           }
         }) {
@@ -136,7 +131,8 @@ class ReshapeLayer extends LayerBase {
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull final JsonObject json = super.getJsonStub();
+    @Nonnull
+    final JsonObject json = super.getJsonStub();
     json.add("outputDims", JsonUtil.getJson(outputDims));
     return json;
   }
@@ -147,13 +143,10 @@ class ReshapeLayer extends LayerBase {
     return RefArrays.asList();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  ReshapeLayer addRef() {
+  public @Override @SuppressWarnings("unused") ReshapeLayer addRef() {
     return (ReshapeLayer) super.addRef();
   }
 

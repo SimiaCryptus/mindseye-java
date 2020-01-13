@@ -38,8 +38,7 @@ import java.util.function.IntToDoubleFunction;
 import java.util.function.ToDoubleFunction;
 
 @SuppressWarnings("serial")
-public @RefAware
-class ImgPixelSumLayer extends LayerBase {
+public class ImgPixelSumLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(ImgPixelSumLayer.class);
@@ -57,16 +56,14 @@ class ImgPixelSumLayer extends LayerBase {
     return new ImgPixelSumLayer(json);
   }
 
-  public static @SuppressWarnings("unused")
-  ImgPixelSumLayer[] addRefs(ImgPixelSumLayer[] array) {
+  public static @SuppressWarnings("unused") ImgPixelSumLayer[] addRefs(ImgPixelSumLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ImgPixelSumLayer::addRef)
         .toArray((x) -> new ImgPixelSumLayer[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  ImgPixelSumLayer[][] addRefs(ImgPixelSumLayer[][] array) {
+  public static @SuppressWarnings("unused") ImgPixelSumLayer[][] addRefs(ImgPixelSumLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ImgPixelSumLayer::addRefs)
@@ -92,14 +89,12 @@ class ImgPixelSumLayer extends LayerBase {
       try {
         return new Result(new TensorArray(inputData.stream().map(tensor -> {
           Tensor temp_47_0006 = new Tensor(inputDims[0], inputDims[1], 1);
-          Tensor temp_47_0002 = temp_47_0006.setByCoord(RefUtil
-              .wrapInterface((ToDoubleFunction<Coordinate>) c -> {
-                return RefIntStream.range(0, inputDims[2]).mapToDouble(
-                    RefUtil.wrapInterface((IntToDoubleFunction) i -> {
-                      int[] coords = c.getCoords();
-                      return tensor.get(coords[0], coords[1], i);
-                    }, tensor == null ? null : tensor.addRef())).sum();
-              }, tensor == null ? null : tensor.addRef()));
+          Tensor temp_47_0002 = temp_47_0006.setByCoord(RefUtil.wrapInterface((ToDoubleFunction<Coordinate>) c -> {
+            return RefIntStream.range(0, inputDims[2]).mapToDouble(RefUtil.wrapInterface((IntToDoubleFunction) i -> {
+              int[] coords = c.getCoords();
+              return tensor.get(coords[0], coords[1], i);
+            }, tensor == null ? null : tensor.addRef())).sum();
+          }, tensor == null ? null : tensor.addRef()));
           if (null != temp_47_0006)
             temp_47_0006.freeRef();
           if (null != tensor)
@@ -116,14 +111,11 @@ class ImgPixelSumLayer extends LayerBase {
               @Nonnull
               TensorArray tensorArray = new TensorArray(delta.stream().map(deltaTensor -> {
                 int[] deltaDims = deltaTensor.getDimensions();
-                Tensor temp_47_0007 = new Tensor(deltaDims[0], deltaDims[1],
-                    inputDims[2]);
-                Tensor temp_47_0003 = temp_47_0007
-                    .setByCoord(RefUtil.wrapInterface(
-                        c -> {
-                          int[] coords = c.getCoords();
-                          return deltaTensor.get(coords[0], coords[1], 0);
-                        }, deltaTensor == null ? null : deltaTensor.addRef()));
+                Tensor temp_47_0007 = new Tensor(deltaDims[0], deltaDims[1], inputDims[2]);
+                Tensor temp_47_0003 = temp_47_0007.setByCoord(RefUtil.wrapInterface(c -> {
+                  int[] coords = c.getCoords();
+                  return deltaTensor.get(coords[0], coords[1], 0);
+                }, deltaTensor == null ? null : deltaTensor.addRef()));
                 if (null != temp_47_0007)
                   temp_47_0007.freeRef();
                 if (null != deltaTensor)
@@ -138,8 +130,7 @@ class ImgPixelSumLayer extends LayerBase {
               buffer.freeRef();
           }
 
-          public @SuppressWarnings("unused")
-          void _free() {
+          public @SuppressWarnings("unused") void _free() {
             input.freeRef();
           }
         }) {
@@ -178,13 +169,10 @@ class ImgPixelSumLayer extends LayerBase {
     return RefArrays.asList();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  ImgPixelSumLayer addRef() {
+  public @Override @SuppressWarnings("unused") ImgPixelSumLayer addRef() {
     return (ImgPixelSumLayer) super.addRef();
   }
 }

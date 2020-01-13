@@ -36,8 +36,7 @@ import java.util.UUID;
 import java.util.function.IntFunction;
 
 @SuppressWarnings("serial")
-public @RefAware
-class CrossProductLayer extends LayerBase {
+public class CrossProductLayer extends LayerBase {
 
   public CrossProductLayer() {
   }
@@ -55,16 +54,14 @@ class CrossProductLayer extends LayerBase {
     return max * (max - 1) / 2 - (max - x) * (max - x - 1) / 2 + y - x - 1;
   }
 
-  public static @SuppressWarnings("unused")
-  CrossProductLayer[] addRefs(CrossProductLayer[] array) {
+  public static @SuppressWarnings("unused") CrossProductLayer[] addRefs(CrossProductLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(CrossProductLayer::addRef)
         .toArray((x) -> new CrossProductLayer[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  CrossProductLayer[][] addRefs(CrossProductLayer[][] array) {
+  public static @SuppressWarnings("unused") CrossProductLayer[][] addRefs(CrossProductLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(CrossProductLayer::addRefs)
@@ -83,11 +80,14 @@ class CrossProductLayer extends LayerBase {
           return new Result(new TensorArray(indata.stream().parallel().map(tensor -> {
             final int inputDim = tensor.length();
             final int outputDim = (inputDim * inputDim - inputDim) / 2;
-            @Nonnull final Tensor result1 = new Tensor(outputDim);
-            @Nullable final double[] inputData = tensor.getData();
+            @Nonnull
+            final Tensor result1 = new Tensor(outputDim);
+            @Nullable
+            final double[] inputData = tensor.getData();
             if (null != tensor)
               tensor.freeRef();
-            @Nullable final double[] resultData = result1.getData();
+            @Nullable
+            final double[] resultData = result1.getData();
             RefIntStream.range(0, inputDim).forEach(x -> {
               RefIntStream.range(x + 1, inputDim).forEach(y -> {
                 resultData[CrossProductLayer.index(x, y, inputDim)] = inputData[x] * inputData[y];
@@ -104,28 +104,32 @@ class CrossProductLayer extends LayerBase {
                 assert delta.length() == delta.length();
                 @Nonnull
                 TensorArray tensorArray = new TensorArray(RefIntStream.range(0, delta.length()).parallel()
-                    .mapToObj(RefUtil.wrapInterface(
-                        (IntFunction<? extends Tensor>) batchIndex -> {
-                          @Nullable final Tensor deltaTensor = delta.get(batchIndex);
-                          final int outputDim = deltaTensor.length();
-                          final int inputDim = (1 + (int) Math.sqrt(1 + 8 * outputDim)) / 2;
-                          @Nonnull final Tensor passback = new Tensor(inputDim);
-                          @Nullable final double[] passbackData = passback.getData();
-                          @Nullable final double[] tensorData = deltaTensor.getData();
-                          if (null != deltaTensor)
-                            deltaTensor.freeRef();
-                          Tensor inputTensor = indata.get(batchIndex);
-                          @Nullable final double[] inputData = inputTensor.getData();
-                          if (null != inputTensor)
-                            inputTensor.freeRef();
-                          RefIntStream.range(0, inputDim).forEach(x -> {
-                            RefIntStream.range(x + 1, inputDim).forEach(y -> {
-                              passbackData[x] += tensorData[CrossProductLayer.index(x, y, inputDim)] * inputData[y];
-                              passbackData[y] += tensorData[CrossProductLayer.index(x, y, inputDim)] * inputData[x];
-                            });
-                          });
-                          return passback;
-                        }, indata == null ? null : indata.addRef(), delta == null ? null : delta.addRef()))
+                    .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) batchIndex -> {
+                      @Nullable
+                      final Tensor deltaTensor = delta.get(batchIndex);
+                      final int outputDim = deltaTensor.length();
+                      final int inputDim = (1 + (int) Math.sqrt(1 + 8 * outputDim)) / 2;
+                      @Nonnull
+                      final Tensor passback = new Tensor(inputDim);
+                      @Nullable
+                      final double[] passbackData = passback.getData();
+                      @Nullable
+                      final double[] tensorData = deltaTensor.getData();
+                      if (null != deltaTensor)
+                        deltaTensor.freeRef();
+                      Tensor inputTensor = indata.get(batchIndex);
+                      @Nullable
+                      final double[] inputData = inputTensor.getData();
+                      if (null != inputTensor)
+                        inputTensor.freeRef();
+                      RefIntStream.range(0, inputDim).forEach(x -> {
+                        RefIntStream.range(x + 1, inputDim).forEach(y -> {
+                          passbackData[x] += tensorData[CrossProductLayer.index(x, y, inputDim)] * inputData[y];
+                          passbackData[y] += tensorData[CrossProductLayer.index(x, y, inputDim)] * inputData[x];
+                        });
+                      });
+                      return passback;
+                    }, indata == null ? null : indata.addRef(), delta == null ? null : delta.addRef()))
                     .toArray(i -> new Tensor[i]));
                 in.accumulate(buffer == null ? null : buffer.addRef(), tensorArray == null ? null : tensorArray);
               }
@@ -135,8 +139,7 @@ class CrossProductLayer extends LayerBase {
                 buffer.freeRef();
             }
 
-            public @SuppressWarnings("unused")
-            void _free() {
+            public @SuppressWarnings("unused") void _free() {
             }
           }) {
 
@@ -146,7 +149,8 @@ class CrossProductLayer extends LayerBase {
 
             @Override
             public boolean isAlive() {
-              for (@Nonnull final Result element : inObj)
+              for (@Nonnull
+              final Result element : inObj)
                 if (element.isAlive()) {
                   return true;
                 }
@@ -183,13 +187,10 @@ class CrossProductLayer extends LayerBase {
     return RefArrays.asList();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  CrossProductLayer addRef() {
+  public @Override @SuppressWarnings("unused") CrossProductLayer addRef() {
     return (CrossProductLayer) super.addRef();
   }
 

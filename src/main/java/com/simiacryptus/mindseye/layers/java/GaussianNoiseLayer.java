@@ -39,8 +39,7 @@ import java.util.UUID;
 import java.util.function.IntFunction;
 
 @SuppressWarnings("serial")
-public @RefAware
-class GaussianNoiseLayer extends LayerBase {
+public class GaussianNoiseLayer extends LayerBase {
 
   public static final ThreadLocal<Random> random = new ThreadLocal<Random>() {
     @Override
@@ -78,16 +77,14 @@ class GaussianNoiseLayer extends LayerBase {
     return new GaussianNoiseLayer(json);
   }
 
-  public static @SuppressWarnings("unused")
-  GaussianNoiseLayer[] addRefs(GaussianNoiseLayer[] array) {
+  public static @SuppressWarnings("unused") GaussianNoiseLayer[] addRefs(GaussianNoiseLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(GaussianNoiseLayer::addRef)
         .toArray((x) -> new GaussianNoiseLayer[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  GaussianNoiseLayer[][] addRefs(GaussianNoiseLayer[][] array) {
+  public static @SuppressWarnings("unused") GaussianNoiseLayer[][] addRefs(GaussianNoiseLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(GaussianNoiseLayer::addRefs)
@@ -102,10 +99,12 @@ class GaussianNoiseLayer extends LayerBase {
       ReferenceCounting.freeRefs(inObj);
     final TensorList inputData = in0.getData();
     final int itemCnt = inputData.length();
-    final Tensor[] outputA = RefIntStream.range(0, itemCnt).mapToObj(RefUtil
-        .wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-          @Nonnull final Random random = new Random(seed);
-          @Nullable final Tensor input = inputData.get(dataIndex);
+    final Tensor[] outputA = RefIntStream.range(0, itemCnt)
+        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+          @Nonnull
+          final Random random = new Random(seed);
+          @Nullable
+          final Tensor input = inputData.get(dataIndex);
           Tensor temp_59_0002 = input.map(x -> {
             return x + random.nextGaussian() * getValue();
           });
@@ -118,40 +117,39 @@ class GaussianNoiseLayer extends LayerBase {
       inputData.freeRef();
     try {
       try {
-        return new Result(new TensorArray(Tensor.addRefs(outputA)),
-            new Result.Accumulator() {
-              {
-              }
+        return new Result(new TensorArray(Tensor.addRefs(outputA)), new Result.Accumulator() {
+          {
+          }
 
-              @Override
-              public void accept(DeltaSet<UUID> buffer, TensorList delta) {
-                if (in0.isAlive()) {
-                  @Nonnull
-                  TensorArray tensorArray = new TensorArray(
-                      RefIntStream.range(0, delta.length()).mapToObj(RefUtil.wrapInterface(
-                          (IntFunction<? extends Tensor>) dataIndex -> {
-                            Tensor tensor = delta.get(dataIndex);
-                            @Nullable final double[] deltaData = tensor.getData();
-                            if (null != tensor)
-                              tensor.freeRef();
-                            @Nonnull final Tensor passback = new Tensor(dimensions);
-                            for (int i = 0; i < passback.length(); i++) {
-                              RefUtil.freeRef(passback.set(i, deltaData[i]));
-                            }
-                            return passback;
-                          }, delta == null ? null : delta.addRef())).toArray(i -> new Tensor[i]));
-                  in0.accumulate(buffer == null ? null : buffer.addRef(), tensorArray == null ? null : tensorArray);
-                }
-                if (null != delta)
-                  delta.freeRef();
-                if (null != buffer)
-                  buffer.freeRef();
-              }
+          @Override
+          public void accept(DeltaSet<UUID> buffer, TensorList delta) {
+            if (in0.isAlive()) {
+              @Nonnull
+              TensorArray tensorArray = new TensorArray(RefIntStream.range(0, delta.length())
+                  .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+                    Tensor tensor = delta.get(dataIndex);
+                    @Nullable
+                    final double[] deltaData = tensor.getData();
+                    if (null != tensor)
+                      tensor.freeRef();
+                    @Nonnull
+                    final Tensor passback = new Tensor(dimensions);
+                    for (int i = 0; i < passback.length(); i++) {
+                      RefUtil.freeRef(passback.set(i, deltaData[i]));
+                    }
+                    return passback;
+                  }, delta == null ? null : delta.addRef())).toArray(i -> new Tensor[i]));
+              in0.accumulate(buffer == null ? null : buffer.addRef(), tensorArray == null ? null : tensorArray);
+            }
+            if (null != delta)
+              delta.freeRef();
+            if (null != buffer)
+              buffer.freeRef();
+          }
 
-              public @SuppressWarnings("unused")
-              void _free() {
-              }
-            }) {
+          public @SuppressWarnings("unused") void _free() {
+          }
+        }) {
 
           {
           }
@@ -177,7 +175,8 @@ class GaussianNoiseLayer extends LayerBase {
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull final JsonObject json = super.getJsonStub();
+    @Nonnull
+    final JsonObject json = super.getJsonStub();
     json.addProperty("value", value);
     return json;
   }
@@ -192,13 +191,10 @@ class GaussianNoiseLayer extends LayerBase {
     return RefArrays.asList();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  GaussianNoiseLayer addRef() {
+  public @Override @SuppressWarnings("unused") GaussianNoiseLayer addRef() {
     return (GaussianNoiseLayer) super.addRef();
   }
 

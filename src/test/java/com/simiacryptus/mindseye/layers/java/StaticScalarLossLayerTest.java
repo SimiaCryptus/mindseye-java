@@ -26,23 +26,20 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Random;
 
-public abstract @RefAware
-class StaticScalarLossLayerTest extends LayerTestBase {
+public abstract class StaticScalarLossLayerTest extends LayerTestBase {
 
   public StaticScalarLossLayerTest() {
     validateBatchExecution = false;
   }
 
-  public static @SuppressWarnings("unused")
-  StaticScalarLossLayerTest[] addRefs(StaticScalarLossLayerTest[] array) {
+  public static @SuppressWarnings("unused") StaticScalarLossLayerTest[] addRefs(StaticScalarLossLayerTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(StaticScalarLossLayerTest::addRef)
         .toArray((x) -> new StaticScalarLossLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  StaticScalarLossLayerTest[][] addRefs(StaticScalarLossLayerTest[][] array) {
+  public static @SuppressWarnings("unused") StaticScalarLossLayerTest[][] addRefs(StaticScalarLossLayerTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(StaticScalarLossLayerTest::addRefs)
@@ -52,7 +49,7 @@ class StaticScalarLossLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{{1}};
+    return new int[][] { { 1 } };
   }
 
   @Nonnull
@@ -61,33 +58,25 @@ class StaticScalarLossLayerTest extends LayerTestBase {
     return new StaticScalarLossLayer();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  StaticScalarLossLayerTest addRef() {
+  public @Override @SuppressWarnings("unused") StaticScalarLossLayerTest addRef() {
     return (StaticScalarLossLayerTest) super.addRef();
   }
 
-  public static @RefAware
-  class Basic extends StaticScalarLossLayerTest {
+  public static class Basic extends StaticScalarLossLayerTest {
 
-    public static @SuppressWarnings("unused")
-    Basic[] addRefs(Basic[] array) {
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
-    public @SuppressWarnings("unused")
-    void _free() {
+    public @SuppressWarnings("unused") void _free() {
     }
 
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
+    public @Override @SuppressWarnings("unused") Basic addRef() {
       return (Basic) super.addRef();
     }
   }

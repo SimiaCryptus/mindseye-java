@@ -32,8 +32,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 @SuppressWarnings("serial")
-public @RefAware
-class NormalizationMetaLayer extends PipelineNetwork {
+public class NormalizationMetaLayer extends PipelineNetwork {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(NormalizationMetaLayer.class);
@@ -59,29 +58,24 @@ class NormalizationMetaLayer extends PipelineNetwork {
     return new NormalizationMetaLayer(json, rs);
   }
 
-  public static @SuppressWarnings("unused")
-  NormalizationMetaLayer[] addRefs(NormalizationMetaLayer[] array) {
+  public static @SuppressWarnings("unused") NormalizationMetaLayer[] addRefs(NormalizationMetaLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(NormalizationMetaLayer::addRef)
         .toArray((x) -> new NormalizationMetaLayer[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  NormalizationMetaLayer[][] addRefs(NormalizationMetaLayer[][] array) {
+  public static @SuppressWarnings("unused") NormalizationMetaLayer[][] addRefs(NormalizationMetaLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(NormalizationMetaLayer::addRefs)
         .toArray((x) -> new NormalizationMetaLayer[x][]);
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  NormalizationMetaLayer addRef() {
+  public @Override @SuppressWarnings("unused") NormalizationMetaLayer addRef() {
     return (NormalizationMetaLayer) super.addRef();
   }
 

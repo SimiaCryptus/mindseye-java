@@ -26,13 +26,10 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Random;
 
-public @RefAware
-class SignReducerLayerTest {
-  public static @RefAware
-  class Normal extends LayerTestBase {
+public class SignReducerLayerTest {
+  public static class Normal extends LayerTestBase {
 
-    public static @SuppressWarnings("unused")
-    Normal[] addRefs(Normal[] array) {
+    public static @SuppressWarnings("unused") Normal[] addRefs(Normal[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(Normal::addRef).toArray((x) -> new Normal[x]);
@@ -41,7 +38,7 @@ class SignReducerLayerTest {
     @Nonnull
     @Override
     public int[][] getSmallDims(Random random) {
-      return new int[][]{{3}};
+      return new int[][] { { 3 } };
     }
 
     @Nonnull
@@ -50,19 +47,15 @@ class SignReducerLayerTest {
       return new SignReducerLayer();
     }
 
-    public @SuppressWarnings("unused")
-    void _free() {
+    public @SuppressWarnings("unused") void _free() {
     }
 
-    public @Override
-    @SuppressWarnings("unused")
-    Normal addRef() {
+    public @Override @SuppressWarnings("unused") Normal addRef() {
       return (Normal) super.addRef();
     }
   }
 
-  public static @RefAware
-  class Basic extends SignReducerLayerTest {
+  public static class Basic extends SignReducerLayerTest {
   }
 
 }

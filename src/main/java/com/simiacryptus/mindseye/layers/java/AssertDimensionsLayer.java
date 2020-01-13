@@ -34,8 +34,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 @SuppressWarnings("serial")
-public @RefAware
-class AssertDimensionsLayer extends LayerBase {
+public class AssertDimensionsLayer extends LayerBase {
 
   private final int[] dims;
 
@@ -60,16 +59,14 @@ class AssertDimensionsLayer extends LayerBase {
     return new AssertDimensionsLayer(json);
   }
 
-  public static @SuppressWarnings("unused")
-  AssertDimensionsLayer[] addRefs(AssertDimensionsLayer[] array) {
+  public static @SuppressWarnings("unused") AssertDimensionsLayer[] addRefs(AssertDimensionsLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(AssertDimensionsLayer::addRef)
         .toArray((x) -> new AssertDimensionsLayer[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  AssertDimensionsLayer[][] addRefs(AssertDimensionsLayer[][] array) {
+  public static @SuppressWarnings("unused") AssertDimensionsLayer[][] addRefs(AssertDimensionsLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(AssertDimensionsLayer::addRefs)
@@ -93,7 +90,8 @@ class AssertDimensionsLayer extends LayerBase {
     if (null != temp_77_0001)
       temp_77_0001.freeRef();
     TensorList temp_77_0002 = input.getData();
-    @Nonnull final int[] inputDims = temp_77_0002.getDimensions();
+    @Nonnull
+    final int[] inputDims = temp_77_0002.getDimensions();
     if (null != temp_77_0002)
       temp_77_0002.freeRef();
     if (Tensor.length(inputDims) != Tensor.length(dims)) {
@@ -108,8 +106,10 @@ class AssertDimensionsLayer extends LayerBase {
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull final JsonObject json = super.getJsonStub();
-    @Nonnull final JsonArray dimsJson = new JsonArray();
+    @Nonnull
+    final JsonObject json = super.getJsonStub();
+    @Nonnull
+    final JsonArray dimsJson = new JsonArray();
     for (final int dim : dims) {
       dimsJson.add(new JsonPrimitive(dim));
     }
@@ -123,13 +123,10 @@ class AssertDimensionsLayer extends LayerBase {
     return RefArrays.asList();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  AssertDimensionsLayer addRef() {
+  public @Override @SuppressWarnings("unused") AssertDimensionsLayer addRef() {
     return (AssertDimensionsLayer) super.addRef();
   }
 

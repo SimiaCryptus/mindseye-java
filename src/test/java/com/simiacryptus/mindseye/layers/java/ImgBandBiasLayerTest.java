@@ -26,19 +26,16 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Random;
 
-public abstract @RefAware
-class ImgBandBiasLayerTest extends LayerTestBase {
+public abstract class ImgBandBiasLayerTest extends LayerTestBase {
 
-  public static @SuppressWarnings("unused")
-  ImgBandBiasLayerTest[] addRefs(ImgBandBiasLayerTest[] array) {
+  public static @SuppressWarnings("unused") ImgBandBiasLayerTest[] addRefs(ImgBandBiasLayerTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ImgBandBiasLayerTest::addRef)
         .toArray((x) -> new ImgBandBiasLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  ImgBandBiasLayerTest[][] addRefs(ImgBandBiasLayerTest[][] array) {
+  public static @SuppressWarnings("unused") ImgBandBiasLayerTest[][] addRefs(ImgBandBiasLayerTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ImgBandBiasLayerTest::addRefs)
@@ -48,7 +45,7 @@ class ImgBandBiasLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{{2, 2, 3}};
+    return new int[][] { { 2, 2, 3 } };
   }
 
   @Nonnull
@@ -61,33 +58,25 @@ class ImgBandBiasLayerTest extends LayerTestBase {
     return temp_68_0001;
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  ImgBandBiasLayerTest addRef() {
+  public @Override @SuppressWarnings("unused") ImgBandBiasLayerTest addRef() {
     return (ImgBandBiasLayerTest) super.addRef();
   }
 
-  public static @RefAware
-  class Basic extends ImgBandBiasLayerTest {
+  public static class Basic extends ImgBandBiasLayerTest {
 
-    public static @SuppressWarnings("unused")
-    Basic[] addRefs(Basic[] array) {
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
-    public @SuppressWarnings("unused")
-    void _free() {
+    public @SuppressWarnings("unused") void _free() {
     }
 
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
+    public @Override @SuppressWarnings("unused") Basic addRef() {
       return (Basic) super.addRef();
     }
   }

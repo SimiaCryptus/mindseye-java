@@ -42,8 +42,7 @@ import java.util.function.DoubleSupplier;
 import java.util.function.IntToDoubleFunction;
 
 @SuppressWarnings("serial")
-public @RefAware
-class BiasLayer extends LayerBase {
+public class BiasLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(BiasLayer.class);
@@ -52,31 +51,25 @@ class BiasLayer extends LayerBase {
 
   protected BiasLayer() {
     super();
-    {
-      Tensor temp_06_0001 = null;
-      bias = temp_06_0001 == null ? null : temp_06_0001.addRef();
-      if (null != temp_06_0001)
-        temp_06_0001.freeRef();
-    }
+    Tensor temp_06_0001 = null;
+    bias = temp_06_0001 == null ? null : temp_06_0001.addRef();
+    if (null != temp_06_0001)
+      temp_06_0001.freeRef();
   }
 
   public BiasLayer(final int... dims) {
-    {
-      Tensor temp_06_0002 = new Tensor(dims);
-      bias = temp_06_0002 == null ? null : temp_06_0002.addRef();
-      if (null != temp_06_0002)
-        temp_06_0002.freeRef();
-    }
+    Tensor temp_06_0002 = new Tensor(dims);
+    bias = temp_06_0002 == null ? null : temp_06_0002.addRef();
+    if (null != temp_06_0002)
+      temp_06_0002.freeRef();
   }
 
   protected BiasLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json);
-    {
-      Tensor temp_06_0003 = Tensor.fromJson(json.get("bias"), rs);
-      bias = temp_06_0003 == null ? null : temp_06_0003.addRef();
-      if (null != temp_06_0003)
-        temp_06_0003.freeRef();
-    }
+    Tensor temp_06_0003 = Tensor.fromJson(json.get("bias"), rs);
+    bias = temp_06_0003 == null ? null : temp_06_0003.addRef();
+    if (null != temp_06_0003)
+      temp_06_0003.freeRef();
   }
 
   @Nonnull
@@ -102,20 +95,16 @@ class BiasLayer extends LayerBase {
     return new BiasLayer(json, rs);
   }
 
-  public static @SuppressWarnings("unused")
-  BiasLayer[] addRefs(BiasLayer[] array) {
+  public static @SuppressWarnings("unused") BiasLayer[] addRefs(BiasLayer[] array) {
     if (array == null)
       return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(BiasLayer::addRef)
-        .toArray((x) -> new BiasLayer[x]);
+    return Arrays.stream(array).filter((x) -> x != null).map(BiasLayer::addRef).toArray((x) -> new BiasLayer[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  BiasLayer[][] addRefs(BiasLayer[][] array) {
+  public static @SuppressWarnings("unused") BiasLayer[][] addRefs(BiasLayer[][] array) {
     if (array == null)
       return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(BiasLayer::addRefs)
-        .toArray((x) -> new BiasLayer[x][]);
+    return Arrays.stream(array).filter((x) -> x != null).map(BiasLayer::addRefs).toArray((x) -> new BiasLayer[x][]);
   }
 
   public double[] add(@Nonnull final double[] input) {
@@ -161,6 +150,8 @@ class BiasLayer extends LayerBase {
           }).toArray(i -> new Tensor[i])), new Result.Accumulator() {
             {
               Result.addRefs(inObj);
+              bias.addRef();
+              biasLayer.addRef();
             }
 
             @Override
@@ -168,21 +159,20 @@ class BiasLayer extends LayerBase {
               if (!BiasLayer.this.isFrozen()) {
                 final Delta<UUID> deltaBuffer = buffer.get(biasLayer.getId(), bias == null ? null : bias.addRef());
                 if (1 == bias.length()) {
-                  delta.stream().parallel().forEach(RefUtil
-                      .wrapInterface((Consumer<? super Tensor>) d -> {
-                        @Nullable final double[] array = d.getData();
-                        if (null != d)
-                          d.freeRef();
-                        RefUtil.freeRef(deltaBuffer
-                            .addInPlace(1 == array.length ? array : new double[]{RefArrays.stream(array).sum()}));
-                      }, deltaBuffer == null ? null : deltaBuffer.addRef()));
+                  delta.stream().parallel().forEach(RefUtil.wrapInterface((Consumer<? super Tensor>) d -> {
+                    @Nullable
+                    final double[] array = d.getData();
+                    if (null != d)
+                      d.freeRef();
+                    RefUtil.freeRef(deltaBuffer
+                        .addInPlace(1 == array.length ? array : new double[] { RefArrays.stream(array).sum() }));
+                  }, deltaBuffer == null ? null : deltaBuffer.addRef()));
                 } else {
-                  delta.stream().parallel().forEach(RefUtil
-                      .wrapInterface((Consumer<? super Tensor>) d -> {
-                        RefUtil.freeRef(deltaBuffer.addInPlace(d.getData()));
-                        if (null != d)
-                          d.freeRef();
-                      }, deltaBuffer == null ? null : deltaBuffer.addRef()));
+                  delta.stream().parallel().forEach(RefUtil.wrapInterface((Consumer<? super Tensor>) d -> {
+                    RefUtil.freeRef(deltaBuffer.addInPlace(d.getData()));
+                    if (null != d)
+                      d.freeRef();
+                  }, deltaBuffer == null ? null : deltaBuffer.addRef()));
                 }
                 if (null != deltaBuffer)
                   deltaBuffer.freeRef();
@@ -196,9 +186,10 @@ class BiasLayer extends LayerBase {
                 buffer.freeRef();
             }
 
-            public @SuppressWarnings("unused")
-            void _free() {
+            public @SuppressWarnings("unused") void _free() {
               ReferenceCounting.freeRefs(inObj);
+              bias.freeRef();
+              biasLayer.freeRef();
             }
           }) {
 
@@ -231,7 +222,8 @@ class BiasLayer extends LayerBase {
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull final JsonObject json = super.getJsonStub();
+    @Nonnull
+    final JsonObject json = super.getJsonStub();
     json.add("bias", bias.getJson(resources, dataSerializer));
     return json;
   }
@@ -268,9 +260,7 @@ class BiasLayer extends LayerBase {
     super._free();
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  BiasLayer addRef() {
+  public @Override @SuppressWarnings("unused") BiasLayer addRef() {
     return (BiasLayer) super.addRef();
   }
 }

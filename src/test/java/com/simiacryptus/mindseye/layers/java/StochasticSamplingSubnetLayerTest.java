@@ -28,11 +28,9 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Random;
 
-public abstract @RefAware
-class StochasticSamplingSubnetLayerTest extends LayerTestBase {
+public abstract class StochasticSamplingSubnetLayerTest extends LayerTestBase {
 
-  public static @SuppressWarnings("unused")
-  StochasticSamplingSubnetLayerTest[] addRefs(
+  public static @SuppressWarnings("unused") StochasticSamplingSubnetLayerTest[] addRefs(
       StochasticSamplingSubnetLayerTest[] array) {
     if (array == null)
       return null;
@@ -40,8 +38,7 @@ class StochasticSamplingSubnetLayerTest extends LayerTestBase {
         .toArray((x) -> new StochasticSamplingSubnetLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  StochasticSamplingSubnetLayerTest[][] addRefs(
+  public static @SuppressWarnings("unused") StochasticSamplingSubnetLayerTest[][] addRefs(
       StochasticSamplingSubnetLayerTest[][] array) {
     if (array == null)
       return null;
@@ -52,7 +49,7 @@ class StochasticSamplingSubnetLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{{6, 6, 1}};
+    return new int[][] { { 6, 6, 1 } };
   }
 
   @Nonnull
@@ -69,33 +66,25 @@ class StochasticSamplingSubnetLayerTest extends LayerTestBase {
     return temp_38_0001;
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  StochasticSamplingSubnetLayerTest addRef() {
+  public @Override @SuppressWarnings("unused") StochasticSamplingSubnetLayerTest addRef() {
     return (StochasticSamplingSubnetLayerTest) super.addRef();
   }
 
-  public static @RefAware
-  class Basic extends StochasticSamplingSubnetLayerTest {
+  public static class Basic extends StochasticSamplingSubnetLayerTest {
 
-    public static @SuppressWarnings("unused")
-    Basic[] addRefs(Basic[] array) {
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
-    public @SuppressWarnings("unused")
-    void _free() {
+    public @SuppressWarnings("unused") void _free() {
     }
 
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
+    public @Override @SuppressWarnings("unused") Basic addRef() {
       return (Basic) super.addRef();
     }
   }

@@ -28,8 +28,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 @SuppressWarnings("serial")
-public final @RefAware
-class SqActivationLayer extends SimpleActivationLayer<SqActivationLayer> {
+public final class SqActivationLayer extends SimpleActivationLayer<SqActivationLayer> {
 
   public SqActivationLayer() {
   }
@@ -43,16 +42,14 @@ class SqActivationLayer extends SimpleActivationLayer<SqActivationLayer> {
     return new SqActivationLayer(json);
   }
 
-  public static @SuppressWarnings("unused")
-  SqActivationLayer[] addRefs(SqActivationLayer[] array) {
+  public static @SuppressWarnings("unused") SqActivationLayer[] addRefs(SqActivationLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SqActivationLayer::addRef)
         .toArray((x) -> new SqActivationLayer[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  SqActivationLayer[][] addRefs(SqActivationLayer[][] array) {
+  public static @SuppressWarnings("unused") SqActivationLayer[][] addRefs(SqActivationLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SqActivationLayer::addRefs)
@@ -65,13 +62,10 @@ class SqActivationLayer extends SimpleActivationLayer<SqActivationLayer> {
     return super.getJsonStub();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  SqActivationLayer addRef() {
+  public @Override @SuppressWarnings("unused") SqActivationLayer addRef() {
     return (SqActivationLayer) super.addRef();
   }
 

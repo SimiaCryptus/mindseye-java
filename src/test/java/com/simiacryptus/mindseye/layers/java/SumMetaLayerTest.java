@@ -27,23 +27,20 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Random;
 
-public abstract @RefAware
-class SumMetaLayerTest extends MetaLayerTestBase {
+public abstract class SumMetaLayerTest extends MetaLayerTestBase {
   public SumMetaLayerTest() {
     super();
     validateBatchExecution = false;
   }
 
-  public static @SuppressWarnings("unused")
-  SumMetaLayerTest[] addRefs(SumMetaLayerTest[] array) {
+  public static @SuppressWarnings("unused") SumMetaLayerTest[] addRefs(SumMetaLayerTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SumMetaLayerTest::addRef)
         .toArray((x) -> new SumMetaLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  SumMetaLayerTest[][] addRefs(SumMetaLayerTest[][] array) {
+  public static @SuppressWarnings("unused") SumMetaLayerTest[][] addRefs(SumMetaLayerTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SumMetaLayerTest::addRefs)
@@ -53,7 +50,7 @@ class SumMetaLayerTest extends MetaLayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{{3}};
+    return new int[][] { { 3 } };
   }
 
   @Nonnull
@@ -69,16 +66,13 @@ class SumMetaLayerTest extends MetaLayerTestBase {
   @Nonnull
   @Override
   public int[][] getLargeDims(Random random) {
-    return new int[][]{{100}};
+    return new int[][] { { 100 } };
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  SumMetaLayerTest addRef() {
+  public @Override @SuppressWarnings("unused") SumMetaLayerTest addRef() {
     return (SumMetaLayerTest) super.addRef();
   }
 
@@ -87,23 +81,18 @@ class SumMetaLayerTest extends MetaLayerTestBase {
     return new MeanSqLossLayer();
   }
 
-  public static @RefAware
-  class Basic extends SumMetaLayerTest {
+  public static class Basic extends SumMetaLayerTest {
 
-    public static @SuppressWarnings("unused")
-    Basic[] addRefs(Basic[] array) {
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
-    public @SuppressWarnings("unused")
-    void _free() {
+    public @SuppressWarnings("unused") void _free() {
     }
 
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
+    public @Override @SuppressWarnings("unused") Basic addRef() {
       return (Basic) super.addRef();
     }
   }

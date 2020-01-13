@@ -34,8 +34,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 @SuppressWarnings("serial")
-public @RefAware
-class ImgZeroPaddingLayer extends LayerBase {
+public class ImgZeroPaddingLayer extends LayerBase {
 
   private final int sizeX;
   private final int sizeY;
@@ -57,16 +56,14 @@ class ImgZeroPaddingLayer extends LayerBase {
     return new ImgZeroPaddingLayer(json);
   }
 
-  public static @SuppressWarnings("unused")
-  ImgZeroPaddingLayer[] addRefs(ImgZeroPaddingLayer[] array) {
+  public static @SuppressWarnings("unused") ImgZeroPaddingLayer[] addRefs(ImgZeroPaddingLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ImgZeroPaddingLayer::addRef)
         .toArray((x) -> new ImgZeroPaddingLayer[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  ImgZeroPaddingLayer[][] addRefs(ImgZeroPaddingLayer[][] array) {
+  public static @SuppressWarnings("unused") ImgZeroPaddingLayer[][] addRefs(ImgZeroPaddingLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ImgZeroPaddingLayer::addRefs)
@@ -83,8 +80,7 @@ class ImgZeroPaddingLayer extends LayerBase {
     if (null != temp_25_0002)
       temp_25_0002.freeRef();
     ImgCropLayer imgCropLayer = new ImgCropLayer(dimensions[0] + 2 * this.sizeX, dimensions[1] + 2 * this.sizeY);
-    Result temp_25_0001 = imgCropLayer
-        .eval(Result.addRefs(inObj));
+    Result temp_25_0001 = imgCropLayer.eval(Result.addRefs(inObj));
     ReferenceCounting.freeRefs(inObj);
     if (null != imgCropLayer)
       imgCropLayer.freeRef();
@@ -94,7 +90,8 @@ class ImgZeroPaddingLayer extends LayerBase {
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull final JsonObject json = super.getJsonStub();
+    @Nonnull
+    final JsonObject json = super.getJsonStub();
     json.addProperty("sizeX", sizeX);
     json.addProperty("sizeY", sizeX);
     return json;
@@ -106,13 +103,10 @@ class ImgZeroPaddingLayer extends LayerBase {
     return new RefArrayList<>();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  ImgZeroPaddingLayer addRef() {
+  public @Override @SuppressWarnings("unused") ImgZeroPaddingLayer addRef() {
     return (ImgZeroPaddingLayer) super.addRef();
   }
 

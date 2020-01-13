@@ -28,8 +28,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 @SuppressWarnings("serial")
-public final @RefAware
-class GaussianActivationLayer extends SimpleActivationLayer<GaussianActivationLayer> {
+public final class GaussianActivationLayer extends SimpleActivationLayer<GaussianActivationLayer> {
 
   private static final double MIN_X = -20;
   private static final double MAX_X = -GaussianActivationLayer.MIN_X;
@@ -54,16 +53,14 @@ class GaussianActivationLayer extends SimpleActivationLayer<GaussianActivationLa
     return new GaussianActivationLayer(json);
   }
 
-  public static @SuppressWarnings("unused")
-  GaussianActivationLayer[] addRefs(GaussianActivationLayer[] array) {
+  public static @SuppressWarnings("unused") GaussianActivationLayer[] addRefs(GaussianActivationLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(GaussianActivationLayer::addRef)
         .toArray((x) -> new GaussianActivationLayer[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  GaussianActivationLayer[][] addRefs(GaussianActivationLayer[][] array) {
+  public static @SuppressWarnings("unused") GaussianActivationLayer[][] addRefs(GaussianActivationLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(GaussianActivationLayer::addRefs)
@@ -73,19 +70,17 @@ class GaussianActivationLayer extends SimpleActivationLayer<GaussianActivationLa
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull final JsonObject json = super.getJsonStub();
+    @Nonnull
+    final JsonObject json = super.getJsonStub();
     json.addProperty("mean", mean);
     json.addProperty("stddev", stddev);
     return json;
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  GaussianActivationLayer addRef() {
+  public @Override @SuppressWarnings("unused") GaussianActivationLayer addRef() {
     return (GaussianActivationLayer) super.addRef();
   }
 

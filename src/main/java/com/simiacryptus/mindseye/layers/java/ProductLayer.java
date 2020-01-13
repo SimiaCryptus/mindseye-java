@@ -38,8 +38,7 @@ import java.util.UUID;
 import java.util.function.IntFunction;
 
 @SuppressWarnings("serial")
-public @RefAware
-class ProductLayer extends LayerBase {
+public class ProductLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(ProductLayer.class);
@@ -56,16 +55,13 @@ class ProductLayer extends LayerBase {
     return new ProductLayer(json);
   }
 
-  public static @SuppressWarnings("unused")
-  ProductLayer[] addRefs(ProductLayer[] array) {
+  public static @SuppressWarnings("unused") ProductLayer[] addRefs(ProductLayer[] array) {
     if (array == null)
       return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(ProductLayer::addRef)
-        .toArray((x) -> new ProductLayer[x]);
+    return Arrays.stream(array).filter((x) -> x != null).map(ProductLayer::addRef).toArray((x) -> new ProductLayer[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  ProductLayer[][] addRefs(ProductLayer[][] array) {
+  public static @SuppressWarnings("unused") ProductLayer[][] addRefs(ProductLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ProductLayer::addRefs)
@@ -84,30 +80,32 @@ class ProductLayer extends LayerBase {
       if (null != x)
         x.freeRef();
       return temp_49_0001;
-    }).distinct().count() == 1 : RefArrays
-        .toString(RefArrays.stream(Result.addRefs(inObj)).mapToInt(x -> {
-          TensorList temp_49_0006 = x.getData();
-          int temp_49_0002 = temp_49_0006.length();
-          if (null != temp_49_0006)
-            temp_49_0006.freeRef();
-          if (null != x)
-            x.freeRef();
-          return temp_49_0002;
-        }).toArray());
+    }).distinct().count() == 1 : RefArrays.toString(RefArrays.stream(Result.addRefs(inObj)).mapToInt(x -> {
+      TensorList temp_49_0006 = x.getData();
+      int temp_49_0002 = temp_49_0006.length();
+      if (null != temp_49_0006)
+        temp_49_0006.freeRef();
+      if (null != x)
+        x.freeRef();
+      return temp_49_0002;
+    }).toArray());
     TensorList temp_49_0007 = in0.getData();
-    @Nonnull final double[] sum_A = new double[temp_49_0007.length()];
+    @Nonnull
+    final double[] sum_A = new double[temp_49_0007.length()];
     if (null != temp_49_0007)
       temp_49_0007.freeRef();
     TensorList temp_49_0008 = in0.getData();
-    final Tensor[] outputA = RefIntStream.range(0, temp_49_0008.length()).mapToObj(RefUtil
-        .wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+    final Tensor[] outputA = RefIntStream.range(0, temp_49_0008.length())
+        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
           double sum = 1;
-          for (@Nonnull final Result input : inObj) {
+          for (@Nonnull
+          final Result input : inObj) {
             TensorList temp_49_0009 = input.getData();
             Tensor tensor = temp_49_0009.get(dataIndex);
             if (null != temp_49_0009)
               temp_49_0009.freeRef();
-            @Nullable final double[] tensorData = tensor.getData();
+            @Nullable
+            final double[] tensorData = tensor.getData();
             if (null != tensor)
               tensor.freeRef();
             for (final double element2 : tensorData) {
@@ -115,7 +113,7 @@ class ProductLayer extends LayerBase {
             }
           }
           sum_A[dataIndex] = sum;
-          return new Tensor(new double[]{sum}, 1);
+          return new Tensor(new double[] { sum }, 1);
         }, Result.addRefs(inObj))).toArray(i -> new Tensor[i]);
     if (null != temp_49_0008)
       temp_49_0008.freeRef();
@@ -123,51 +121,50 @@ class ProductLayer extends LayerBase {
       in0.freeRef();
     try {
       try {
-        return new Result(new TensorArray(Tensor.addRefs(outputA)),
-            new Result.Accumulator() {
-              {
-                Result.addRefs(inObj);
-              }
+        return new Result(new TensorArray(Tensor.addRefs(outputA)), new Result.Accumulator() {
+          {
+            Result.addRefs(inObj);
+          }
 
-              @Override
-              public void accept(DeltaSet<UUID> buffer, TensorList delta) {
-                for (@Nonnull final Result input : inObj) {
-                  if (input.isAlive()) {
-                    TensorList data = input.getData();
-                    input.accumulate(buffer == null ? null : buffer.addRef(), new TensorArray(
-                        RefIntStream.range(0, delta.length()).mapToObj(RefUtil.wrapInterface(
-                            (IntFunction<? extends Tensor>) dataIndex -> {
-                              Tensor dataTensor = delta.get(dataIndex);
-                              Tensor lTensor = data.get(dataIndex);
-                              @Nonnull final Tensor passback = new Tensor(lTensor.getDimensions());
-                              for (int i = 0; i < lTensor.length(); i++) {
-                                double d = lTensor.getData()[i];
-                                double deltaV = dataTensor.get(0);
-                                RefUtil
-                                    .freeRef(passback.set(i, d == 0 ? 0 : (deltaV * sum_A[dataIndex] / d)));
-                              }
-                              if (null != lTensor)
-                                lTensor.freeRef();
-                              if (null != dataTensor)
-                                dataTensor.freeRef();
-                              return passback;
-                            }, data == null ? null : data.addRef(), delta == null ? null : delta.addRef()))
-                            .toArray(i -> new Tensor[i])));
-                    if (null != data)
-                      data.freeRef();
-                  }
-                }
-                if (null != delta)
-                  delta.freeRef();
-                if (null != buffer)
-                  buffer.freeRef();
+          @Override
+          public void accept(DeltaSet<UUID> buffer, TensorList delta) {
+            for (@Nonnull
+            final Result input : inObj) {
+              if (input.isAlive()) {
+                TensorList data = input.getData();
+                input.accumulate(buffer == null ? null : buffer.addRef(),
+                    new TensorArray(RefIntStream.range(0, delta.length())
+                        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+                          Tensor dataTensor = delta.get(dataIndex);
+                          Tensor lTensor = data.get(dataIndex);
+                          @Nonnull
+                          final Tensor passback = new Tensor(lTensor.getDimensions());
+                          for (int i = 0; i < lTensor.length(); i++) {
+                            double d = lTensor.getData()[i];
+                            double deltaV = dataTensor.get(0);
+                            RefUtil.freeRef(passback.set(i, d == 0 ? 0 : (deltaV * sum_A[dataIndex] / d)));
+                          }
+                          if (null != lTensor)
+                            lTensor.freeRef();
+                          if (null != dataTensor)
+                            dataTensor.freeRef();
+                          return passback;
+                        }, data == null ? null : data.addRef(), delta == null ? null : delta.addRef()))
+                        .toArray(i -> new Tensor[i])));
+                if (null != data)
+                  data.freeRef();
               }
+            }
+            if (null != delta)
+              delta.freeRef();
+            if (null != buffer)
+              buffer.freeRef();
+          }
 
-              public @SuppressWarnings("unused")
-              void _free() {
-                ReferenceCounting.freeRefs(inObj);
-              }
-            }) {
+          public @SuppressWarnings("unused") void _free() {
+            ReferenceCounting.freeRefs(inObj);
+          }
+        }) {
 
           {
             Result.addRefs(inObj);
@@ -175,7 +172,8 @@ class ProductLayer extends LayerBase {
 
           @Override
           public boolean isAlive() {
-            for (@Nonnull final Result element : inObj)
+            for (@Nonnull
+            final Result element : inObj)
               if (element.isAlive()) {
                 return true;
               }
@@ -208,13 +206,10 @@ class ProductLayer extends LayerBase {
     return RefArrays.asList();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  ProductLayer addRef() {
+  public @Override @SuppressWarnings("unused") ProductLayer addRef() {
     return (ProductLayer) super.addRef();
   }
 }

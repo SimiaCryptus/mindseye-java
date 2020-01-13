@@ -36,8 +36,7 @@ import java.util.UUID;
 import java.util.function.IntFunction;
 
 @SuppressWarnings("serial")
-public @RefAware
-class UnpoolingLayer extends LayerBase {
+public class UnpoolingLayer extends LayerBase {
 
   private final int sizeX;
   private final int sizeY;
@@ -56,8 +55,10 @@ class UnpoolingLayer extends LayerBase {
 
   @Nonnull
   public static Tensor copyCondense(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData) {
-    @Nonnull final int[] inDim = inputData.getDimensions();
-    @Nonnull final int[] outDim = outputData.getDimensions();
+    @Nonnull
+    final int[] inDim = inputData.getDimensions();
+    @Nonnull
+    final int[] outDim = outputData.getDimensions();
     assert 3 == inDim.length;
     assert 3 == outDim.length;
     assert inDim[0] >= outDim[0];
@@ -68,7 +69,8 @@ class UnpoolingLayer extends LayerBase {
     final int kernelSizeX = inDim[0] / outDim[0];
     final int kernelSizeY = inDim[0] / outDim[0];
     int index = 0;
-    @Nullable final double[] outputDataData = outputData.getData();
+    @Nullable
+    final double[] outputDataData = outputData.getData();
     for (int z = 0; z < inDim[2]; z++) {
       for (int y = 0; y < inDim[1]; y += kernelSizeY) {
         for (int x = 0; x < inDim[0]; x += kernelSizeX) {
@@ -90,8 +92,10 @@ class UnpoolingLayer extends LayerBase {
 
   @Nonnull
   public static Tensor copyExpand(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData) {
-    @Nonnull final int[] inDim = inputData.getDimensions();
-    @Nonnull final int[] outDim = outputData.getDimensions();
+    @Nonnull
+    final int[] inDim = inputData.getDimensions();
+    @Nonnull
+    final int[] outDim = outputData.getDimensions();
     assert 3 == inDim.length;
     assert 3 == outDim.length;
     assert inDim[0] <= outDim[0];
@@ -125,16 +129,14 @@ class UnpoolingLayer extends LayerBase {
     return new UnpoolingLayer(json);
   }
 
-  public static @SuppressWarnings("unused")
-  UnpoolingLayer[] addRefs(UnpoolingLayer[] array) {
+  public static @SuppressWarnings("unused") UnpoolingLayer[] addRefs(UnpoolingLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(UnpoolingLayer::addRef)
         .toArray((x) -> new UnpoolingLayer[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  UnpoolingLayer[][] addRefs(UnpoolingLayer[][] array) {
+  public static @SuppressWarnings("unused") UnpoolingLayer[][] addRefs(UnpoolingLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(UnpoolingLayer::addRefs)
@@ -148,21 +150,21 @@ class UnpoolingLayer extends LayerBase {
     final Result input = inObj[0].addRef();
     ReferenceCounting.freeRefs(inObj);
     final TensorList batch = input.getData();
-    @Nonnull final int[] inputDims = batch.getDimensions();
+    @Nonnull
+    final int[] inputDims = batch.getDimensions();
     assert 3 == inputDims.length;
     Tensor outputDims;
     outputDims = new Tensor(inputDims[0] * sizeX, inputDims[1] * sizeY, inputDims[2]);
-    TensorArray data = new TensorArray(
-        RefIntStream.range(0, batch.length()).parallel().mapToObj(RefUtil.wrapInterface(
-            (IntFunction<? extends Tensor>) dataIndex -> {
-              Tensor inputData = batch.get(dataIndex);
-              Tensor temp_58_0002 = UnpoolingLayer
-                  .copyExpand(inputData == null ? null : inputData.addRef(), outputDims.copy());
-              if (null != inputData)
-                inputData.freeRef();
-              return temp_58_0002;
-            }, outputDims == null ? null : outputDims.addRef(), batch == null ? null : batch.addRef()))
-            .toArray(i -> new Tensor[i]));
+    TensorArray data = new TensorArray(RefIntStream.range(0, batch.length()).parallel()
+        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+          Tensor inputData = batch.get(dataIndex);
+          Tensor temp_58_0002 = UnpoolingLayer.copyExpand(inputData == null ? null : inputData.addRef(),
+              outputDims.copy());
+          if (null != inputData)
+            inputData.freeRef();
+          return temp_58_0002;
+        }, outputDims == null ? null : outputDims.addRef(), batch == null ? null : batch.addRef()))
+        .toArray(i -> new Tensor[i]));
     if (null != outputDims)
       outputDims.freeRef();
     if (null != batch)
@@ -179,17 +181,17 @@ class UnpoolingLayer extends LayerBase {
             if (input.isAlive()) {
               @Nonnull
               TensorArray tensorArray = new TensorArray(RefIntStream.range(0, error.length()).parallel()
-                  .mapToObj(RefUtil.wrapInterface(
-                      (IntFunction<? extends Tensor>) dataIndex -> {
-                        @Nonnull final Tensor passback = new Tensor(inputDims);
-                        @Nullable final Tensor err = error.get(dataIndex);
-                        Tensor temp_58_0004 = UnpoolingLayer
-                            .copyCondense(err == null ? null : err.addRef(), passback == null ? null : passback);
-                        if (null != err)
-                          err.freeRef();
-                        return temp_58_0004;
-                      }, error == null ? null : error.addRef()))
-                  .toArray(i -> new Tensor[i]));
+                  .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+                    @Nonnull
+                    final Tensor passback = new Tensor(inputDims);
+                    @Nullable
+                    final Tensor err = error.get(dataIndex);
+                    Tensor temp_58_0004 = UnpoolingLayer.copyCondense(err == null ? null : err.addRef(),
+                        passback == null ? null : passback);
+                    if (null != err)
+                      err.freeRef();
+                    return temp_58_0004;
+                  }, error == null ? null : error.addRef())).toArray(i -> new Tensor[i]));
               input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray == null ? null : tensorArray);
             }
             if (null != error)
@@ -198,8 +200,7 @@ class UnpoolingLayer extends LayerBase {
               buffer.freeRef();
           }
 
-          public @SuppressWarnings("unused")
-          void _free() {
+          public @SuppressWarnings("unused") void _free() {
           }
         }) {
 
@@ -227,7 +228,8 @@ class UnpoolingLayer extends LayerBase {
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull final JsonObject json = super.getJsonStub();
+    @Nonnull
+    final JsonObject json = super.getJsonStub();
     json.addProperty("sizeX", sizeX);
     json.addProperty("sizeY", sizeX);
     return json;
@@ -239,13 +241,10 @@ class UnpoolingLayer extends LayerBase {
     return new RefArrayList<>();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  UnpoolingLayer addRef() {
+  public @Override @SuppressWarnings("unused") UnpoolingLayer addRef() {
     return (UnpoolingLayer) super.addRef();
   }
 

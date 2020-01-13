@@ -38,8 +38,7 @@ import java.util.UUID;
 import java.util.function.IntFunction;
 
 @SuppressWarnings("serial")
-public @RefAware
-class StaticScalarLossLayer extends LayerBase {
+public class StaticScalarLossLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(StaticScalarLossLayer.class);
@@ -67,16 +66,14 @@ class StaticScalarLossLayer extends LayerBase {
     return new StaticScalarLossLayer(json);
   }
 
-  public static @SuppressWarnings("unused")
-  StaticScalarLossLayer[] addRefs(StaticScalarLossLayer[] array) {
+  public static @SuppressWarnings("unused") StaticScalarLossLayer[] addRefs(StaticScalarLossLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(StaticScalarLossLayer::addRef)
         .toArray((x) -> new StaticScalarLossLayer[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  StaticScalarLossLayer[][] addRefs(StaticScalarLossLayer[][] array) {
+  public static @SuppressWarnings("unused") StaticScalarLossLayer[][] addRefs(StaticScalarLossLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(StaticScalarLossLayer::addRefs)
@@ -96,16 +93,15 @@ class StaticScalarLossLayer extends LayerBase {
     TensorList indata = in0.getData();
     try {
       try {
-        return new Result(new TensorArray(
-            RefIntStream.range(0, indata.length()).parallel().mapToObj(RefUtil.wrapInterface(
-                (IntFunction<? extends Tensor>) dataIndex -> {
-                  @Nullable final Tensor a = indata.get(dataIndex);
-                  final double diff = Math.abs(a.get(0) - getTarget());
-                  if (null != a)
-                    a.freeRef();
-                  return new Tensor(new double[]{diff}, 1);
-                }, indata == null ? null : indata.addRef())).toArray(i -> new Tensor[i])),
-            new Result.Accumulator() {
+        return new Result(new TensorArray(RefIntStream.range(0, indata.length()).parallel()
+            .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+              @Nullable
+              final Tensor a = indata.get(dataIndex);
+              final double diff = Math.abs(a.get(0) - getTarget());
+              if (null != a)
+                a.freeRef();
+              return new Tensor(new double[] { diff }, 1);
+            }, indata == null ? null : indata.addRef())).toArray(i -> new Tensor[i])), new Result.Accumulator() {
               {
               }
 
@@ -114,18 +110,18 @@ class StaticScalarLossLayer extends LayerBase {
                 if (in0.isAlive()) {
                   @Nonnull
                   TensorArray tensorArray = new TensorArray(RefIntStream.range(0, data.length()).parallel()
-                      .mapToObj(RefUtil.wrapInterface(
-                          (IntFunction<? extends Tensor>) dataIndex -> {
-                            @Nullable final Tensor a = indata.get(dataIndex);
-                            Tensor tensor = data.get(dataIndex);
-                            final double deriv = tensor.get(0)
-                                * (a.get(0) - StaticScalarLossLayer.this.getTarget() < 0 ? -1 : 1);
-                            if (null != tensor)
-                              tensor.freeRef();
-                            if (null != a)
-                              a.freeRef();
-                            return new Tensor(new double[]{deriv}, 1);
-                          }, indata == null ? null : indata.addRef(), data == null ? null : data.addRef()))
+                      .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+                        @Nullable
+                        final Tensor a = indata.get(dataIndex);
+                        Tensor tensor = data.get(dataIndex);
+                        final double deriv = tensor.get(0)
+                            * (a.get(0) - StaticScalarLossLayer.this.getTarget() < 0 ? -1 : 1);
+                        if (null != tensor)
+                          tensor.freeRef();
+                        if (null != a)
+                          a.freeRef();
+                        return new Tensor(new double[] { deriv }, 1);
+                      }, indata == null ? null : indata.addRef(), data == null ? null : data.addRef()))
                       .toArray(i -> new Tensor[i]));
                   in0.accumulate(buffer == null ? null : buffer.addRef(), tensorArray == null ? null : tensorArray);
                 }
@@ -135,8 +131,7 @@ class StaticScalarLossLayer extends LayerBase {
                   buffer.freeRef();
               }
 
-              public @SuppressWarnings("unused")
-              void _free() {
+              public @SuppressWarnings("unused") void _free() {
               }
             }) {
 
@@ -174,13 +169,10 @@ class StaticScalarLossLayer extends LayerBase {
     return RefArrays.asList();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  StaticScalarLossLayer addRef() {
+  public @Override @SuppressWarnings("unused") StaticScalarLossLayer addRef() {
     return (StaticScalarLossLayer) super.addRef();
   }
 }

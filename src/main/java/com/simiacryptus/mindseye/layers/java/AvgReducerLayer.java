@@ -39,8 +39,7 @@ import java.util.function.IntFunction;
 import java.util.function.IntToDoubleFunction;
 
 @SuppressWarnings("serial")
-public @RefAware
-class AvgReducerLayer extends LayerBase {
+public class AvgReducerLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(SumReducerLayer.class);
@@ -57,16 +56,14 @@ class AvgReducerLayer extends LayerBase {
     return new AvgReducerLayer(json);
   }
 
-  public static @SuppressWarnings("unused")
-  AvgReducerLayer[] addRefs(AvgReducerLayer[] array) {
+  public static @SuppressWarnings("unused") AvgReducerLayer[] addRefs(AvgReducerLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(AvgReducerLayer::addRef)
         .toArray((x) -> new AvgReducerLayer[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  AvgReducerLayer[][] addRefs(AvgReducerLayer[][] array) {
+  public static @SuppressWarnings("unused") AvgReducerLayer[][] addRefs(AvgReducerLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(AvgReducerLayer::addRefs)
@@ -78,46 +75,48 @@ class AvgReducerLayer extends LayerBase {
   public Result eval(@Nonnull final Result... inObj) {
     try {
       TensorList temp_64_0003 = inObj[0].getData();
-      Result temp_64_0002 = new Result(
-          new TensorArray(RefIntStream.range(0, temp_64_0003.length()).parallel().mapToDouble(
-              RefUtil.wrapInterface((IntToDoubleFunction) dataIndex -> {
-                double sum = 0;
-                for (@Nonnull final Result element : inObj) {
-                  Tensor tensor = element.getData().get(dataIndex);
-                  @Nullable final double[] input = tensor.getData();
-                  if (null != tensor)
-                    tensor.freeRef();
-                  for (final double element2 : input) {
-                    sum += element2 / input.length;
-                  }
-                }
-                return sum;
-              }, Result.addRefs(inObj)))
-              .mapToObj(x -> new Tensor(new double[]{x}, new int[]{1})).toArray(i -> new Tensor[i])),
-          new Result.Accumulator() {
+      Result temp_64_0002 = new Result(new TensorArray(RefIntStream.range(0, temp_64_0003.length()).parallel()
+          .mapToDouble(RefUtil.wrapInterface((IntToDoubleFunction) dataIndex -> {
+            double sum = 0;
+            for (@Nonnull
+            final Result element : inObj) {
+              Tensor tensor = element.getData().get(dataIndex);
+              @Nullable
+              final double[] input = tensor.getData();
+              if (null != tensor)
+                tensor.freeRef();
+              for (final double element2 : input) {
+                sum += element2 / input.length;
+              }
+            }
+            return sum;
+          }, Result.addRefs(inObj))).mapToObj(x -> new Tensor(new double[] { x }, new int[] { 1 }))
+          .toArray(i -> new Tensor[i])), new Result.Accumulator() {
             {
               Result.addRefs(inObj);
             }
 
             @Override
             public void accept(DeltaSet<UUID> buffer, TensorList delta) {
-              for (@Nonnull final Result in_l : inObj) {
+              for (@Nonnull
+              final Result in_l : inObj) {
                 if (in_l.isAlive()) {
                   TensorList inData = in_l.getData();
-                  @Nonnull final TensorList tensorList = new TensorArray(RefIntStream.range(0, inData.length()).parallel()
-                      .mapToObj(RefUtil.wrapInterface(
-                          (IntFunction<? extends Tensor>) dataIndex -> {
-                            Tensor deltaTensor = delta.get(dataIndex);
-                            final double deltaV = deltaTensor.get(0);
-                            if (null != deltaTensor)
-                              deltaTensor.freeRef();
-                            @Nonnull final Tensor passback = new Tensor(inData.getDimensions());
-                            final int dim = passback.length();
-                            for (int i = 0; i < dim; i++) {
-                              passback.set(i, deltaV / dim);
-                            }
-                            return passback;
-                          }, delta == null ? null : delta.addRef(), inData == null ? null : inData.addRef()))
+                  @Nonnull
+                  final TensorList tensorList = new TensorArray(RefIntStream.range(0, inData.length()).parallel()
+                      .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+                        Tensor deltaTensor = delta.get(dataIndex);
+                        final double deltaV = deltaTensor.get(0);
+                        if (null != deltaTensor)
+                          deltaTensor.freeRef();
+                        @Nonnull
+                        final Tensor passback = new Tensor(inData.getDimensions());
+                        final int dim = passback.length();
+                        for (int i = 0; i < dim; i++) {
+                          passback.set(i, deltaV / dim);
+                        }
+                        return passback;
+                      }, delta == null ? null : delta.addRef(), inData == null ? null : inData.addRef()))
                       .toArray(i -> new Tensor[i]));
                   if (null != inData)
                     inData.freeRef();
@@ -130,8 +129,7 @@ class AvgReducerLayer extends LayerBase {
                 buffer.freeRef();
             }
 
-            public @SuppressWarnings("unused")
-            void _free() {
+            public @SuppressWarnings("unused") void _free() {
               ReferenceCounting.freeRefs(inObj);
             }
           }) {
@@ -142,7 +140,8 @@ class AvgReducerLayer extends LayerBase {
 
         @Override
         public boolean isAlive() {
-          for (@Nonnull final Result element : inObj)
+          for (@Nonnull
+          final Result element : inObj)
             if (element.isAlive()) {
               return true;
             }
@@ -174,13 +173,10 @@ class AvgReducerLayer extends LayerBase {
     return RefArrays.asList();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  AvgReducerLayer addRef() {
+  public @Override @SuppressWarnings("unused") AvgReducerLayer addRef() {
     return (AvgReducerLayer) super.addRef();
   }
 }

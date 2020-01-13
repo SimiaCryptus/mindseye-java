@@ -28,24 +28,21 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Random;
 
-public abstract @RefAware
-class EntropyLossLayerTest extends LayerTestBase {
+public abstract class EntropyLossLayerTest extends LayerTestBase {
 
   @Override
   public SingleDerivativeTester getDerivativeTester() {
     return new SingleDerivativeTester(1e-4, 1e-8);
   }
 
-  public static @SuppressWarnings("unused")
-  EntropyLossLayerTest[] addRefs(EntropyLossLayerTest[] array) {
+  public static @SuppressWarnings("unused") EntropyLossLayerTest[] addRefs(EntropyLossLayerTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(EntropyLossLayerTest::addRef)
         .toArray((x) -> new EntropyLossLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  EntropyLossLayerTest[][] addRefs(EntropyLossLayerTest[][] array) {
+  public static @SuppressWarnings("unused") EntropyLossLayerTest[][] addRefs(EntropyLossLayerTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(EntropyLossLayerTest::addRefs)
@@ -55,7 +52,7 @@ class EntropyLossLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{{4}, {4}};
+    return new int[][] { { 4 }, { 4 } };
   }
 
   @Nonnull
@@ -69,33 +66,25 @@ class EntropyLossLayerTest extends LayerTestBase {
     return Util.R.get().nextDouble();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  EntropyLossLayerTest addRef() {
+  public @Override @SuppressWarnings("unused") EntropyLossLayerTest addRef() {
     return (EntropyLossLayerTest) super.addRef();
   }
 
-  public static @RefAware
-  class Basic extends EntropyLossLayerTest {
+  public static class Basic extends EntropyLossLayerTest {
 
-    public static @SuppressWarnings("unused")
-    Basic[] addRefs(Basic[] array) {
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
-    public @SuppressWarnings("unused")
-    void _free() {
+    public @SuppressWarnings("unused") void _free() {
     }
 
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
+    public @Override @SuppressWarnings("unused") Basic addRef() {
       return (Basic) super.addRef();
     }
   }

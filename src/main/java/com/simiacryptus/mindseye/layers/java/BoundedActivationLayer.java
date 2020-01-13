@@ -28,8 +28,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 @SuppressWarnings("serial")
-public @RefAware
-class BoundedActivationLayer extends SimpleActivationLayer<BoundedActivationLayer> {
+public class BoundedActivationLayer extends SimpleActivationLayer<BoundedActivationLayer> {
 
   private double maxValue = Double.POSITIVE_INFINITY;
   private double minValue = Double.NEGATIVE_INFINITY;
@@ -64,21 +63,20 @@ class BoundedActivationLayer extends SimpleActivationLayer<BoundedActivationLaye
   @Nonnull
   @SuppressWarnings("unused")
   public static BoundedActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
-    @Nonnull final BoundedActivationLayer obj = new BoundedActivationLayer(json);
+    @Nonnull
+    final BoundedActivationLayer obj = new BoundedActivationLayer(json);
     obj.maxValue = json.get("maxValue").getAsDouble();
     return obj;
   }
 
-  public static @SuppressWarnings("unused")
-  BoundedActivationLayer[] addRefs(BoundedActivationLayer[] array) {
+  public static @SuppressWarnings("unused") BoundedActivationLayer[] addRefs(BoundedActivationLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(BoundedActivationLayer::addRef)
         .toArray((x) -> new BoundedActivationLayer[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  BoundedActivationLayer[][] addRefs(BoundedActivationLayer[][] array) {
+  public static @SuppressWarnings("unused") BoundedActivationLayer[][] addRefs(BoundedActivationLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(BoundedActivationLayer::addRefs)
@@ -88,18 +86,16 @@ class BoundedActivationLayer extends SimpleActivationLayer<BoundedActivationLaye
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull final JsonObject json = super.getJsonStub();
+    @Nonnull
+    final JsonObject json = super.getJsonStub();
     json.addProperty("maxValue", maxValue);
     return json;
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  BoundedActivationLayer addRef() {
+  public @Override @SuppressWarnings("unused") BoundedActivationLayer addRef() {
     return (BoundedActivationLayer) super.addRef();
   }
 

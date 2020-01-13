@@ -26,11 +26,9 @@ import com.simiacryptus.ref.lang.RefAware;
 
 import java.util.Arrays;
 
-public @RefAware
-class NthPowerActivationLayerTest {
+public class NthPowerActivationLayerTest {
 
-  public static @RefAware
-  class InvPowerTest extends ActivationLayerTestBase {
+  public static class InvPowerTest extends ActivationLayerTestBase {
     public InvPowerTest() {
       super(new NthPowerActivationLayer(-1));
     }
@@ -40,8 +38,7 @@ class NthPowerActivationLayerTest {
       return new SingleDerivativeTester(1e-2, 1e-4);
     }
 
-    public static @SuppressWarnings("unused")
-    InvPowerTest[] addRefs(InvPowerTest[] array) {
+    public static @SuppressWarnings("unused") InvPowerTest[] addRefs(InvPowerTest[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(InvPowerTest::addRef)
@@ -56,13 +53,10 @@ class NthPowerActivationLayerTest {
       return v;
     }
 
-    public @SuppressWarnings("unused")
-    void _free() {
+    public @SuppressWarnings("unused") void _free() {
     }
 
-    public @Override
-    @SuppressWarnings("unused")
-    InvPowerTest addRef() {
+    public @Override @SuppressWarnings("unused") InvPowerTest addRef() {
       return (InvPowerTest) super.addRef();
     }
 
@@ -72,8 +66,7 @@ class NthPowerActivationLayerTest {
     }
   }
 
-  public static @RefAware
-  class InvSqrtPowerTest extends ActivationLayerTestBase {
+  public static class InvSqrtPowerTest extends ActivationLayerTestBase {
     public InvSqrtPowerTest() {
       super(new NthPowerActivationLayer(-0.5));
     }
@@ -83,8 +76,7 @@ class NthPowerActivationLayerTest {
       return new SingleDerivativeTester(1e-2, 1e-4);
     }
 
-    public static @SuppressWarnings("unused")
-    InvSqrtPowerTest[] addRefs(InvSqrtPowerTest[] array) {
+    public static @SuppressWarnings("unused") InvSqrtPowerTest[] addRefs(InvSqrtPowerTest[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(InvSqrtPowerTest::addRef)
@@ -99,13 +91,10 @@ class NthPowerActivationLayerTest {
       return v;
     }
 
-    public @SuppressWarnings("unused")
-    void _free() {
+    public @SuppressWarnings("unused") void _free() {
     }
 
-    public @Override
-    @SuppressWarnings("unused")
-    InvSqrtPowerTest addRef() {
+    public @Override @SuppressWarnings("unused") InvSqrtPowerTest addRef() {
       return (InvSqrtPowerTest) super.addRef();
     }
 
@@ -115,27 +104,22 @@ class NthPowerActivationLayerTest {
     }
   }
 
-  public static @RefAware
-  class NthPowerTest extends ActivationLayerTestBase {
+  public static class NthPowerTest extends ActivationLayerTestBase {
     public NthPowerTest() {
       super(new NthPowerActivationLayer(Math.PI));
     }
 
-    public static @SuppressWarnings("unused")
-    NthPowerTest[] addRefs(NthPowerTest[] array) {
+    public static @SuppressWarnings("unused") NthPowerTest[] addRefs(NthPowerTest[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(NthPowerTest::addRef)
           .toArray((x) -> new NthPowerTest[x]);
     }
 
-    public @SuppressWarnings("unused")
-    void _free() {
+    public @SuppressWarnings("unused") void _free() {
     }
 
-    public @Override
-    @SuppressWarnings("unused")
-    NthPowerTest addRef() {
+    public @Override @SuppressWarnings("unused") NthPowerTest addRef() {
       return (NthPowerTest) super.addRef();
     }
 
@@ -157,27 +141,22 @@ class NthPowerActivationLayerTest {
   //    }
   //  }
 
-  public static @RefAware
-  class SquarePowerTest extends ActivationLayerTestBase {
+  public static class SquarePowerTest extends ActivationLayerTestBase {
     public SquarePowerTest() {
       super(new NthPowerActivationLayer(2));
     }
 
-    public static @SuppressWarnings("unused")
-    SquarePowerTest[] addRefs(SquarePowerTest[] array) {
+    public static @SuppressWarnings("unused") SquarePowerTest[] addRefs(SquarePowerTest[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(SquarePowerTest::addRef)
           .toArray((x) -> new SquarePowerTest[x]);
     }
 
-    public @SuppressWarnings("unused")
-    void _free() {
+    public @SuppressWarnings("unused") void _free() {
     }
 
-    public @Override
-    @SuppressWarnings("unused")
-    SquarePowerTest addRef() {
+    public @Override @SuppressWarnings("unused") SquarePowerTest addRef() {
       return (SquarePowerTest) super.addRef();
     }
 
@@ -187,27 +166,22 @@ class NthPowerActivationLayerTest {
     }
   }
 
-  public static @RefAware
-  class ZeroPowerTest extends ActivationLayerTestBase {
+  public static class ZeroPowerTest extends ActivationLayerTestBase {
     public ZeroPowerTest() {
       super(new NthPowerActivationLayer(0));
     }
 
-    public static @SuppressWarnings("unused")
-    ZeroPowerTest[] addRefs(ZeroPowerTest[] array) {
+    public static @SuppressWarnings("unused") ZeroPowerTest[] addRefs(ZeroPowerTest[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(ZeroPowerTest::addRef)
           .toArray((x) -> new ZeroPowerTest[x]);
     }
 
-    public @SuppressWarnings("unused")
-    void _free() {
+    public @SuppressWarnings("unused") void _free() {
     }
 
-    public @Override
-    @SuppressWarnings("unused")
-    ZeroPowerTest addRef() {
+    public @Override @SuppressWarnings("unused") ZeroPowerTest addRef() {
       return (ZeroPowerTest) super.addRef();
     }
 

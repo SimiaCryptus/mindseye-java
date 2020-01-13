@@ -26,14 +26,12 @@ import com.simiacryptus.ref.wrappers.RefIntStream;
 
 import java.util.Arrays;
 
-public abstract @RefAware
-class BinaryEntropyActivationLayerTest extends ActivationLayerTestBase {
+public abstract class BinaryEntropyActivationLayerTest extends ActivationLayerTestBase {
   public BinaryEntropyActivationLayerTest() {
     super(new BinaryEntropyActivationLayer());
   }
 
-  public static @SuppressWarnings("unused")
-  BinaryEntropyActivationLayerTest[] addRefs(
+  public static @SuppressWarnings("unused") BinaryEntropyActivationLayerTest[] addRefs(
       BinaryEntropyActivationLayerTest[] array) {
     if (array == null)
       return null;
@@ -41,8 +39,7 @@ class BinaryEntropyActivationLayerTest extends ActivationLayerTestBase {
         .toArray((x) -> new BinaryEntropyActivationLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  BinaryEntropyActivationLayerTest[][] addRefs(
+  public static @SuppressWarnings("unused") BinaryEntropyActivationLayerTest[][] addRefs(
       BinaryEntropyActivationLayerTest[][] array) {
     if (array == null)
       return null;
@@ -60,13 +57,10 @@ class BinaryEntropyActivationLayerTest extends ActivationLayerTestBase {
     return RefIntStream.range(50, 450).mapToDouble(x -> x * 1.0 / 500.0);
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  BinaryEntropyActivationLayerTest addRef() {
+  public @Override @SuppressWarnings("unused") BinaryEntropyActivationLayerTest addRef() {
     return (BinaryEntropyActivationLayerTest) super.addRef();
   }
 

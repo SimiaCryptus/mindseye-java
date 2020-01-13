@@ -27,8 +27,7 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Random;
 
-public abstract @RefAware
-class FullyConnectedLayerTest extends LayerTestBase {
+public abstract class FullyConnectedLayerTest extends LayerTestBase {
 
   @Nonnull
   private final FullyConnectedLayer fullyConnectedLayer;
@@ -36,13 +35,10 @@ class FullyConnectedLayerTest extends LayerTestBase {
   private final int outputs;
 
   protected FullyConnectedLayerTest(int inputs, int outputs) {
-    {
-      FullyConnectedLayer temp_19_0001 = new FullyConnectedLayer(
-          new int[]{inputs}, new int[]{outputs});
-      fullyConnectedLayer = temp_19_0001 == null ? null : temp_19_0001.addRef();
-      if (null != temp_19_0001)
-        temp_19_0001.freeRef();
-    }
+    FullyConnectedLayer temp_19_0001 = new FullyConnectedLayer(new int[] { inputs }, new int[] { outputs });
+    fullyConnectedLayer = temp_19_0001 == null ? null : temp_19_0001.addRef();
+    if (null != temp_19_0001)
+      temp_19_0001.freeRef();
     this.inputs = inputs;
     this.outputs = outputs;
   }
@@ -53,16 +49,14 @@ class FullyConnectedLayerTest extends LayerTestBase {
     return FullyConnectedReferenceLayer.class;
   }
 
-  public static @SuppressWarnings("unused")
-  FullyConnectedLayerTest[] addRefs(FullyConnectedLayerTest[] array) {
+  public static @SuppressWarnings("unused") FullyConnectedLayerTest[] addRefs(FullyConnectedLayerTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(FullyConnectedLayerTest::addRef)
         .toArray((x) -> new FullyConnectedLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  FullyConnectedLayerTest[][] addRefs(FullyConnectedLayerTest[][] array) {
+  public static @SuppressWarnings("unused") FullyConnectedLayerTest[][] addRefs(FullyConnectedLayerTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(FullyConnectedLayerTest::addRefs)
@@ -72,7 +66,7 @@ class FullyConnectedLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{{inputs}};
+    return new int[][] { { inputs } };
   }
 
   @Nonnull
@@ -81,37 +75,29 @@ class FullyConnectedLayerTest extends LayerTestBase {
     return fullyConnectedLayer == null ? null : fullyConnectedLayer.addRef();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
     fullyConnectedLayer.freeRef();
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  FullyConnectedLayerTest addRef() {
+  public @Override @SuppressWarnings("unused") FullyConnectedLayerTest addRef() {
     return (FullyConnectedLayerTest) super.addRef();
   }
 
-  public static @RefAware
-  class Basic extends FullyConnectedLayerTest {
+  public static class Basic extends FullyConnectedLayerTest {
     public Basic() {
       super(3, 3);
     }
 
-    public static @SuppressWarnings("unused")
-    Basic[] addRefs(Basic[] array) {
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
-    public @SuppressWarnings("unused")
-    void _free() {
+    public @SuppressWarnings("unused") void _free() {
     }
 
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
+    public @Override @SuppressWarnings("unused") Basic addRef() {
       return (Basic) super.addRef();
     }
   }

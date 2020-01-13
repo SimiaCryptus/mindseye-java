@@ -33,8 +33,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 @SuppressWarnings("serial")
-public @RefAware
-class StdDevMetaLayer extends PipelineNetwork {
+public class StdDevMetaLayer extends PipelineNetwork {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(StdDevMetaLayer.class);
@@ -51,8 +50,7 @@ class StdDevMetaLayer extends PipelineNetwork {
       temp_70_0001.freeRef();
     RefUtil.freeRef(add(new AvgReducerLayer()));
     InnerNode square = add(new SqActivationLayer());
-    RefUtil
-        .freeRef(add(new SqActivationLayer(), getInput(0), square == null ? null : square.addRef()));
+    RefUtil.freeRef(add(new SqActivationLayer(), getInput(0), square == null ? null : square.addRef()));
     AvgMetaLayer temp_70_0002 = new AvgMetaLayer();
     RefUtil.freeRef(add(temp_70_0002.setMinBatchCount(minBatchCount)));
     if (null != temp_70_0002)
@@ -83,29 +81,24 @@ class StdDevMetaLayer extends PipelineNetwork {
     return new StdDevMetaLayer(json, rs);
   }
 
-  public static @SuppressWarnings("unused")
-  StdDevMetaLayer[] addRefs(StdDevMetaLayer[] array) {
+  public static @SuppressWarnings("unused") StdDevMetaLayer[] addRefs(StdDevMetaLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(StdDevMetaLayer::addRef)
         .toArray((x) -> new StdDevMetaLayer[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  StdDevMetaLayer[][] addRefs(StdDevMetaLayer[][] array) {
+  public static @SuppressWarnings("unused") StdDevMetaLayer[][] addRefs(StdDevMetaLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(StdDevMetaLayer::addRefs)
         .toArray((x) -> new StdDevMetaLayer[x][]);
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  StdDevMetaLayer addRef() {
+  public @Override @SuppressWarnings("unused") StdDevMetaLayer addRef() {
     return (StdDevMetaLayer) super.addRef();
   }
 

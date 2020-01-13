@@ -30,8 +30,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 @SuppressWarnings("serial")
-public @RefAware
-class VariableLayer extends WrapperLayer {
+public class VariableLayer extends WrapperLayer {
 
   protected VariableLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json, rs);
@@ -39,8 +38,6 @@ class VariableLayer extends WrapperLayer {
 
   public VariableLayer(final Layer inner) {
     super(inner);
-    if (null != inner)
-      inner.freeRef();
   }
 
   @Override
@@ -53,29 +50,24 @@ class VariableLayer extends WrapperLayer {
     return new VariableLayer(json, rs);
   }
 
-  public static @SuppressWarnings("unused")
-  VariableLayer[] addRefs(VariableLayer[] array) {
+  public static @SuppressWarnings("unused") VariableLayer[] addRefs(VariableLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(VariableLayer::addRef)
         .toArray((x) -> new VariableLayer[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  VariableLayer[][] addRefs(VariableLayer[][] array) {
+  public static @SuppressWarnings("unused") VariableLayer[][] addRefs(VariableLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(VariableLayer::addRefs)
         .toArray((x) -> new VariableLayer[x][]);
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  VariableLayer addRef() {
+  public @Override @SuppressWarnings("unused") VariableLayer addRef() {
     return (VariableLayer) super.addRef();
   }
 

@@ -37,8 +37,7 @@ import java.util.UUID;
 import java.util.function.IntFunction;
 
 @SuppressWarnings("serial")
-public @RefAware
-class ImgPixelSoftmaxLayer extends LayerBase {
+public class ImgPixelSoftmaxLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(ImgPixelSoftmaxLayer.class);
@@ -56,16 +55,14 @@ class ImgPixelSoftmaxLayer extends LayerBase {
     return new ImgPixelSoftmaxLayer(json);
   }
 
-  public static @SuppressWarnings("unused")
-  ImgPixelSoftmaxLayer[] addRefs(ImgPixelSoftmaxLayer[] array) {
+  public static @SuppressWarnings("unused") ImgPixelSoftmaxLayer[] addRefs(ImgPixelSoftmaxLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ImgPixelSoftmaxLayer::addRef)
         .toArray((x) -> new ImgPixelSoftmaxLayer[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  ImgPixelSoftmaxLayer[][] addRefs(ImgPixelSoftmaxLayer[][] array) {
+  public static @SuppressWarnings("unused") ImgPixelSoftmaxLayer[][] addRefs(ImgPixelSoftmaxLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ImgPixelSoftmaxLayer::addRefs)
@@ -92,80 +89,69 @@ class ImgPixelSoftmaxLayer extends LayerBase {
     final int height = inputDims[1];
     TensorArray maxima = new TensorArray(inputData.stream().map(inputTensor -> {
       Tensor temp_52_0013 = new Tensor(width, height, 1);
-      Tensor temp_52_0002 = temp_52_0013.setByCoord(RefUtil
-          .wrapInterface(c -> {
-            return RefIntStream.range(0, inputBands).mapToDouble(
-                RefUtil.wrapInterface(band -> {
-                  int[] coords = c.getCoords();
-                  return inputTensor.get(coords[0], coords[1], band);
-                }, inputTensor == null ? null : inputTensor.addRef())).max().getAsDouble();
-          }, inputTensor == null ? null : inputTensor.addRef()));
+      Tensor temp_52_0002 = temp_52_0013.setByCoord(RefUtil.wrapInterface(c -> {
+        return RefIntStream.range(0, inputBands).mapToDouble(RefUtil.wrapInterface(band -> {
+          int[] coords = c.getCoords();
+          return inputTensor.get(coords[0], coords[1], band);
+        }, inputTensor == null ? null : inputTensor.addRef())).max().getAsDouble();
+      }, inputTensor == null ? null : inputTensor.addRef()));
       if (null != temp_52_0013)
         temp_52_0013.freeRef();
       if (null != inputTensor)
         inputTensor.freeRef();
       return temp_52_0002;
     }).toArray(i -> new Tensor[i]));
-    TensorArray exps = new TensorArray(
-        RefIntStream.range(0, inputData.length()).mapToObj(RefUtil
-            .wrapInterface((IntFunction<? extends Tensor>) index -> {
-              final Tensor inputTensor = inputData.get(index);
-              Tensor maxTensor = maxima.get(index);
-              Tensor temp_52_0014 = new Tensor(inputDims);
-              Tensor temp_52_0003 = temp_52_0014
-                  .setByCoord(RefUtil.wrapInterface(
-                      c -> {
-                        int[] coords = c.getCoords();
-                        return Math.exp(inputTensor.get(c) - maxTensor.get(coords[0], coords[1], 0));
-                      }, maxTensor == null ? null : maxTensor.addRef(),
-                      inputTensor == null ? null : inputTensor.addRef()));
-              if (null != temp_52_0014)
-                temp_52_0014.freeRef();
-              if (null != maxTensor)
-                maxTensor.freeRef();
-              if (null != inputTensor)
-                inputTensor.freeRef();
-              return temp_52_0003;
-            }, inputData == null ? null : inputData.addRef(), maxima == null ? null : maxima.addRef()))
-            .toArray(i -> new Tensor[i]));
+    TensorArray exps = new TensorArray(RefIntStream.range(0, inputData.length())
+        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) index -> {
+          final Tensor inputTensor = inputData.get(index);
+          Tensor maxTensor = maxima.get(index);
+          Tensor temp_52_0014 = new Tensor(inputDims);
+          Tensor temp_52_0003 = temp_52_0014.setByCoord(RefUtil.wrapInterface(c -> {
+            int[] coords = c.getCoords();
+            return Math.exp(inputTensor.get(c) - maxTensor.get(coords[0], coords[1], 0));
+          }, maxTensor == null ? null : maxTensor.addRef(), inputTensor == null ? null : inputTensor.addRef()));
+          if (null != temp_52_0014)
+            temp_52_0014.freeRef();
+          if (null != maxTensor)
+            maxTensor.freeRef();
+          if (null != inputTensor)
+            inputTensor.freeRef();
+          return temp_52_0003;
+        }, inputData == null ? null : inputData.addRef(), maxima == null ? null : maxima.addRef()))
+        .toArray(i -> new Tensor[i]));
     if (null != maxima)
       maxima.freeRef();
     TensorArray sums = new TensorArray(exps.stream().map(expTensor -> {
       Tensor temp_52_0015 = new Tensor(width, height, 1);
-      Tensor temp_52_0005 = temp_52_0015.setByCoord(RefUtil
-          .wrapInterface(c -> {
-            return RefIntStream.range(0, inputBands).mapToDouble(
-                RefUtil.wrapInterface(band -> {
-                  int[] coords = c.getCoords();
-                  return expTensor.get(coords[0], coords[1], band);
-                }, expTensor == null ? null : expTensor.addRef())).sum();
-          }, expTensor == null ? null : expTensor.addRef()));
+      Tensor temp_52_0005 = temp_52_0015.setByCoord(RefUtil.wrapInterface(c -> {
+        return RefIntStream.range(0, inputBands).mapToDouble(RefUtil.wrapInterface(band -> {
+          int[] coords = c.getCoords();
+          return expTensor.get(coords[0], coords[1], band);
+        }, expTensor == null ? null : expTensor.addRef())).sum();
+      }, expTensor == null ? null : expTensor.addRef()));
       if (null != temp_52_0015)
         temp_52_0015.freeRef();
       if (null != expTensor)
         expTensor.freeRef();
       return temp_52_0005;
     }).toArray(i -> new Tensor[i]));
-    TensorArray output = new TensorArray(
-        RefIntStream.range(0, inputData.length()).mapToObj(RefUtil
-            .wrapInterface((IntFunction<? extends Tensor>) index -> {
-              Tensor sumTensor = sums.get(index);
-              Tensor expTensor = exps.get(index);
-              Tensor temp_52_0016 = new Tensor(inputDims);
-              Tensor temp_52_0007 = temp_52_0016
-                  .setByCoord(RefUtil.wrapInterface(
-                      c -> {
-                        int[] coords = c.getCoords();
-                        return (expTensor.get(c) / sumTensor.get(coords[0], coords[1], 0));
-                      }, sumTensor == null ? null : sumTensor.addRef(), expTensor == null ? null : expTensor.addRef()));
-              if (null != temp_52_0016)
-                temp_52_0016.freeRef();
-              if (null != expTensor)
-                expTensor.freeRef();
-              if (null != sumTensor)
-                sumTensor.freeRef();
-              return temp_52_0007;
-            }, sums == null ? null : sums.addRef(), exps == null ? null : exps.addRef())).toArray(i -> new Tensor[i]));
+    TensorArray output = new TensorArray(RefIntStream.range(0, inputData.length())
+        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) index -> {
+          Tensor sumTensor = sums.get(index);
+          Tensor expTensor = exps.get(index);
+          Tensor temp_52_0016 = new Tensor(inputDims);
+          Tensor temp_52_0007 = temp_52_0016.setByCoord(RefUtil.wrapInterface(c -> {
+            int[] coords = c.getCoords();
+            return (expTensor.get(c) / sumTensor.get(coords[0], coords[1], 0));
+          }, sumTensor == null ? null : sumTensor.addRef(), expTensor == null ? null : expTensor.addRef()));
+          if (null != temp_52_0016)
+            temp_52_0016.freeRef();
+          if (null != expTensor)
+            expTensor.freeRef();
+          if (null != sumTensor)
+            sumTensor.freeRef();
+          return temp_52_0007;
+        }, sums == null ? null : sums.addRef(), exps == null ? null : exps.addRef())).toArray(i -> new Tensor[i]));
     try {
       try {
         try {
@@ -174,75 +160,67 @@ class ImgPixelSoftmaxLayer extends LayerBase {
               return new Result(output, new Result.Accumulator() {
                 {
                   input.addRef();
+                  sums.addRef();
+                  inputData.addRef();
                 }
 
                 @Override
                 public void accept(DeltaSet<UUID> buffer, TensorList delta) {
                   if (input.isAlive()) {
-
                     TensorArray dots = new TensorArray(RefIntStream.range(0, inputData.length())
-                        .mapToObj(RefUtil.wrapInterface(
-                            (IntFunction<? extends Tensor>) index -> {
-                              final Tensor deltaTensor = delta.get(index);
-                              Tensor expTensor = exps.get(index);
-                              Tensor temp_52_0017 = new Tensor(width, height, 1);
-                              Tensor temp_52_0009 = temp_52_0017
-                                  .setByCoord(RefUtil.wrapInterface(
-                                      c -> {
-                                        return RefIntStream.range(0, inputBands)
-                                            .mapToDouble(RefUtil
-                                                .wrapInterface(band -> {
-                                                      int[] coords = c.getCoords();
-                                                      return expTensor.get(coords[0], coords[1], band)
-                                                          * deltaTensor.get(coords[0], coords[1], band);
-                                                    }, deltaTensor == null ? null : deltaTensor.addRef(),
-                                                    expTensor == null ? null : expTensor.addRef()))
-                                            .sum();
-                                      }, deltaTensor == null ? null : deltaTensor.addRef(),
-                                      expTensor == null ? null : expTensor.addRef()));
-                              if (null != temp_52_0017)
-                                temp_52_0017.freeRef();
-                              if (null != expTensor)
-                                expTensor.freeRef();
-                              if (null != deltaTensor)
-                                deltaTensor.freeRef();
-                              return temp_52_0009;
-                            }, delta == null ? null : delta.addRef(), exps == null ? null : exps.addRef()))
+                        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) index -> {
+                          final Tensor deltaTensor = delta.get(index);
+                          Tensor expTensor = exps.get(index);
+                          Tensor temp_52_0017 = new Tensor(width, height, 1);
+                          Tensor temp_52_0009 = temp_52_0017.setByCoord(RefUtil.wrapInterface(c -> {
+                            return RefIntStream.range(0, inputBands).mapToDouble(RefUtil.wrapInterface(band -> {
+                              int[] coords = c.getCoords();
+                              return expTensor.get(coords[0], coords[1], band)
+                                  * deltaTensor.get(coords[0], coords[1], band);
+                            }, deltaTensor == null ? null : deltaTensor.addRef(),
+                                expTensor == null ? null : expTensor.addRef())).sum();
+                          }, deltaTensor == null ? null : deltaTensor.addRef(),
+                              expTensor == null ? null : expTensor.addRef()));
+                          if (null != temp_52_0017)
+                            temp_52_0017.freeRef();
+                          if (null != expTensor)
+                            expTensor.freeRef();
+                          if (null != deltaTensor)
+                            deltaTensor.freeRef();
+                          return temp_52_0009;
+                        }, delta == null ? null : delta.addRef(), exps == null ? null : exps.addRef()))
                         .toArray(i -> new Tensor[i]));
 
                     TensorArray passback = new TensorArray(RefIntStream.range(0, inputData.length())
-                        .mapToObj(RefUtil.wrapInterface(
-                            (IntFunction<? extends Tensor>) index -> {
-                              final Tensor deltaTensor = delta.get(index);
-                              final Tensor expTensor = exps.get(index);
-                              Tensor sumTensor = sums.get(index);
-                              Tensor dotTensor = dots.get(index);
-                              Tensor temp_52_0018 = new Tensor(inputDims);
-                              Tensor temp_52_0010 = temp_52_0018
-                                  .setByCoord(RefUtil.wrapInterface(
-                                      c -> {
-                                        int[] coords = c.getCoords();
-                                        double sum = sumTensor.get(coords[0], coords[1], 0);
-                                        double dot = dotTensor.get(coords[0], coords[1], 0);
-                                        double deltaValue = deltaTensor.get(c);
-                                        double expValue = expTensor.get(c);
-                                        return (sum * deltaValue - dot) * expValue / (sum * sum);
-                                      }, deltaTensor == null ? null : deltaTensor.addRef(),
-                                      expTensor == null ? null : expTensor.addRef(),
-                                      dotTensor == null ? null : dotTensor.addRef(),
-                                      sumTensor == null ? null : sumTensor.addRef()));
-                              if (null != temp_52_0018)
-                                temp_52_0018.freeRef();
-                              if (null != dotTensor)
-                                dotTensor.freeRef();
-                              if (null != sumTensor)
-                                sumTensor.freeRef();
-                              if (null != expTensor)
-                                expTensor.freeRef();
-                              if (null != deltaTensor)
-                                deltaTensor.freeRef();
-                              return temp_52_0010;
-                            }, sums == null ? null : sums.addRef(), dots == null ? null : dots.addRef(),
+                        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) index -> {
+                          final Tensor deltaTensor = delta.get(index);
+                          final Tensor expTensor = exps.get(index);
+                          Tensor sumTensor = sums.get(index);
+                          Tensor dotTensor = dots.get(index);
+                          Tensor temp_52_0018 = new Tensor(inputDims);
+                          Tensor temp_52_0010 = temp_52_0018.setByCoord(RefUtil.wrapInterface(c -> {
+                            int[] coords = c.getCoords();
+                            double sum = sumTensor.get(coords[0], coords[1], 0);
+                            double dot = dotTensor.get(coords[0], coords[1], 0);
+                            double deltaValue = deltaTensor.get(c);
+                            double expValue = expTensor.get(c);
+                            return (sum * deltaValue - dot) * expValue / (sum * sum);
+                          }, deltaTensor == null ? null : deltaTensor.addRef(),
+                              expTensor == null ? null : expTensor.addRef(),
+                              dotTensor == null ? null : dotTensor.addRef(),
+                              sumTensor == null ? null : sumTensor.addRef()));
+                          if (null != temp_52_0018)
+                            temp_52_0018.freeRef();
+                          if (null != dotTensor)
+                            dotTensor.freeRef();
+                          if (null != sumTensor)
+                            sumTensor.freeRef();
+                          if (null != expTensor)
+                            expTensor.freeRef();
+                          if (null != deltaTensor)
+                            deltaTensor.freeRef();
+                          return temp_52_0010;
+                        }, sums == null ? null : sums.addRef(), dots == null ? null : dots.addRef(),
                             delta == null ? null : delta.addRef(), exps == null ? null : exps.addRef()))
                         .toArray(i -> new Tensor[i]));
 
@@ -259,9 +237,10 @@ class ImgPixelSoftmaxLayer extends LayerBase {
                     buffer.freeRef();
                 }
 
-                public @SuppressWarnings("unused")
-                void _free() {
+                public @SuppressWarnings("unused") void _free() {
                   input.freeRef();
+                  sums.freeRef();
+                  inputData.freeRef();
                 }
               }) {
 
@@ -311,13 +290,10 @@ class ImgPixelSoftmaxLayer extends LayerBase {
     return RefArrays.asList();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  ImgPixelSoftmaxLayer addRef() {
+  public @Override @SuppressWarnings("unused") ImgPixelSoftmaxLayer addRef() {
     return (ImgPixelSoftmaxLayer) super.addRef();
   }
 }

@@ -25,54 +25,43 @@ import com.simiacryptus.ref.lang.RefAware;
 
 import java.util.Arrays;
 
-public abstract @RefAware
-class LinearActivationLayerTest extends ActivationLayerTestBase {
+public abstract class LinearActivationLayerTest extends ActivationLayerTestBase {
   public LinearActivationLayerTest() {
     super(new LinearActivationLayer());
   }
 
-  public static @SuppressWarnings("unused")
-  LinearActivationLayerTest[] addRefs(LinearActivationLayerTest[] array) {
+  public static @SuppressWarnings("unused") LinearActivationLayerTest[] addRefs(LinearActivationLayerTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(LinearActivationLayerTest::addRef)
         .toArray((x) -> new LinearActivationLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  LinearActivationLayerTest[][] addRefs(LinearActivationLayerTest[][] array) {
+  public static @SuppressWarnings("unused") LinearActivationLayerTest[][] addRefs(LinearActivationLayerTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(LinearActivationLayerTest::addRefs)
         .toArray((x) -> new LinearActivationLayerTest[x][]);
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  LinearActivationLayerTest addRef() {
+  public @Override @SuppressWarnings("unused") LinearActivationLayerTest addRef() {
     return (LinearActivationLayerTest) super.addRef();
   }
 
-  public static @RefAware
-  class Basic extends LinearActivationLayerTest {
-    public static @SuppressWarnings("unused")
-    Basic[] addRefs(Basic[] array) {
+  public static class Basic extends LinearActivationLayerTest {
+    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
-    public @SuppressWarnings("unused")
-    void _free() {
+    public @SuppressWarnings("unused") void _free() {
     }
 
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
+    public @Override @SuppressWarnings("unused") Basic addRef() {
       return (Basic) super.addRef();
     }
 

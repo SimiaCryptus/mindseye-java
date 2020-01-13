@@ -38,8 +38,7 @@ import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntFunction;
 
 @SuppressWarnings("serial")
-public @RefAware
-class SumInputsLayer extends LayerBase {
+public class SumInputsLayer extends LayerBase {
 
   public SumInputsLayer() {
   }
@@ -54,23 +53,20 @@ class SumInputsLayer extends LayerBase {
   }
 
   public static PipelineNetwork combine(PipelineNetwork... networks) {
-    PipelineNetwork temp_55_0005 = PipelineNetwork.combine(new SumInputsLayer(),
-        PipelineNetwork.addRefs(networks));
+    PipelineNetwork temp_55_0005 = PipelineNetwork.combine(new SumInputsLayer(), PipelineNetwork.addRefs(networks));
     if (null != networks)
       ReferenceCounting.freeRefs(networks);
     return temp_55_0005;
   }
 
-  public static @SuppressWarnings("unused")
-  SumInputsLayer[] addRefs(SumInputsLayer[] array) {
+  public static @SuppressWarnings("unused") SumInputsLayer[] addRefs(SumInputsLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SumInputsLayer::addRef)
         .toArray((x) -> new SumInputsLayer[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  SumInputsLayer[][] addRefs(SumInputsLayer[][] array) {
+  public static @SuppressWarnings("unused") SumInputsLayer[][] addRefs(SumInputsLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SumInputsLayer::addRefs)
@@ -81,59 +77,60 @@ class SumInputsLayer extends LayerBase {
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     try {
-      return new Result(RefArrays.stream(Result.addRefs(inObj)).parallel().map(x -> {
+      return new Result(RefUtil.get(RefArrays.stream(Result.addRefs(inObj)).parallel().map(x -> {
         TensorList temp_55_0001 = x.getData();
         if (null != x)
           x.freeRef();
         return temp_55_0001;
       }).reduce((l, r) -> {
         assert l.length() == r.length() || 1 == l.length() || 1 == r.length();
-        TensorArray temp_55_0002 = new TensorArray(
-            RefIntStream.range(0, l.length()).parallel().mapToObj(RefUtil
-                .wrapInterface((IntFunction<? extends Tensor>) i -> {
-                  @Nullable final Tensor left = l.get(1 == l.length() ? 0 : i);
-                  @Nullable final Tensor right = r.get(1 == r.length() ? 0 : i);
-                  @Nullable
-                  Tensor tensor;
-                  if (right.length() == 1) {
-                    tensor = left.mapParallel(RefUtil.wrapInterface(
-                        (DoubleUnaryOperator) v -> v + right.get(0),
-                        right == null ? null : right.addRef()));
-                  } else {
-                    tensor = left.reduceParallel(right == null ? null : right.addRef(), (v1, v2) -> v1 + v2);
-                  }
-                  if (null != right)
-                    right.freeRef();
-                  if (null != left)
-                    left.freeRef();
-                  return tensor;
-                }, r == null ? null : r.addRef(), l == null ? null : l.addRef())).toArray(i -> new Tensor[i]));
+        TensorArray temp_55_0002 = new TensorArray(RefIntStream.range(0, l.length()).parallel()
+            .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) i -> {
+              @Nullable
+              final Tensor left = l.get(1 == l.length() ? 0 : i);
+              @Nullable
+              final Tensor right = r.get(1 == r.length() ? 0 : i);
+              @Nullable
+              Tensor tensor;
+              if (right.length() == 1) {
+                tensor = left.mapParallel(RefUtil.wrapInterface((DoubleUnaryOperator) v -> v + right.get(0),
+                    right == null ? null : right.addRef()));
+              } else {
+                tensor = left.reduceParallel(right == null ? null : right.addRef(), (v1, v2) -> v1 + v2);
+              }
+              if (null != right)
+                right.freeRef();
+              if (null != left)
+                left.freeRef();
+              return tensor;
+            }, r == null ? null : r.addRef(), l == null ? null : l.addRef())).toArray(i -> new Tensor[i]));
         if (null != r)
           r.freeRef();
         if (null != l)
           l.freeRef();
         return temp_55_0002;
-      }).get(), new Result.Accumulator() {
+      })), new Result.Accumulator() {
         {
           Result.addRefs(inObj);
         }
 
         @Override
         public void accept(DeltaSet<UUID> buffer, TensorList delta) {
-          for (@Nonnull final Result input : inObj) {
+          for (@Nonnull
+          final Result input : inObj) {
             if (input.isAlive()) {
               @Nonnull
               TensorList projectedDelta = delta == null ? null : delta.addRef();
               TensorList temp_55_0007 = input.getData();
               if (1 < projectedDelta.length() && temp_55_0007.length() == 1) {
-                projectedDelta = new TensorArray(projectedDelta.stream().parallel().reduce((a, b) -> {
+                projectedDelta = new TensorArray(RefUtil.get(projectedDelta.stream().parallel().reduce((a, b) -> {
                   Tensor temp_55_0003 = a.addAndFree(b == null ? null : b.addRef());
                   if (null != b)
                     b.freeRef();
                   if (null != a)
                     a.freeRef();
                   return temp_55_0003;
-                }).get());
+                })));
               }
               if (null != temp_55_0007)
                 temp_55_0007.freeRef();
@@ -142,7 +139,7 @@ class SumInputsLayer extends LayerBase {
                   && Tensor.length(temp_55_0008.getDimensions()) == 1) {
                 @Nonnull
                 TensorArray new_projectedDelta = new TensorArray(projectedDelta.stream().map(t -> {
-                  Tensor temp_55_0004 = new Tensor(new double[]{t.sum()});
+                  Tensor temp_55_0004 = new Tensor(new double[] { t.sum() });
                   if (null != t)
                     t.freeRef();
                   return temp_55_0004;
@@ -160,8 +157,7 @@ class SumInputsLayer extends LayerBase {
             buffer.freeRef();
         }
 
-        public @SuppressWarnings("unused")
-        void _free() {
+        public @SuppressWarnings("unused") void _free() {
           ReferenceCounting.freeRefs(inObj);
         }
       }) {
@@ -172,7 +168,8 @@ class SumInputsLayer extends LayerBase {
 
         @Override
         public boolean isAlive() {
-          for (@Nonnull final Result element : inObj)
+          for (@Nonnull
+          final Result element : inObj)
             if (element.isAlive()) {
               return true;
             }
@@ -201,13 +198,10 @@ class SumInputsLayer extends LayerBase {
     return RefArrays.asList();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  SumInputsLayer addRef() {
+  public @Override @SuppressWarnings("unused") SumInputsLayer addRef() {
     return (SumInputsLayer) super.addRef();
   }
 
