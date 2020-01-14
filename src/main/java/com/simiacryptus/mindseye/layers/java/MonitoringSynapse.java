@@ -21,17 +21,18 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefList;
+import com.simiacryptus.ref.wrappers.RefSystem;
 import com.simiacryptus.util.MonitoredItem;
 import com.simiacryptus.util.MonitoredObject;
 import com.simiacryptus.util.data.PercentileStatistics;
 import com.simiacryptus.util.data.ScalarStatistics;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -56,8 +57,7 @@ public final class MonitoringSynapse extends LayerBase implements MonitoredItem 
   @Nonnull
   @Override
   public Map<CharSequence, Object> getMetrics() {
-    @Nonnull
-    final HashMap<CharSequence, Object> map = new HashMap<>();
+    @Nonnull final HashMap<CharSequence, Object> map = new HashMap<>();
     map.put("totalBatches", totalBatches);
     map.put("totalItems", totalItems);
     map.put("forward", forwardStatistics.getMetrics());
@@ -68,8 +68,7 @@ public final class MonitoringSynapse extends LayerBase implements MonitoredItem 
   @Nonnull
   @SuppressWarnings("unused")
   public static MonitoringSynapse fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
-    @Nonnull
-    final MonitoringSynapse obj = new MonitoringSynapse(json);
+    @Nonnull final MonitoringSynapse obj = new MonitoringSynapse(json);
     obj.totalBatches = json.get("totalBatches").getAsInt();
     obj.totalItems = json.get("totalItems").getAsInt();
     obj.backpropStatistics.readJson(json.getAsJsonObject("backpropStatistics"));
@@ -77,14 +76,18 @@ public final class MonitoringSynapse extends LayerBase implements MonitoredItem 
     return obj;
   }
 
-  public static @SuppressWarnings("unused") MonitoringSynapse[] addRefs(MonitoringSynapse[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  MonitoringSynapse[] addRefs(@Nullable MonitoringSynapse[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(MonitoringSynapse::addRef)
         .toArray((x) -> new MonitoringSynapse[x]);
   }
 
-  public static @SuppressWarnings("unused") MonitoringSynapse[][] addRefs(MonitoringSynapse[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  MonitoringSynapse[][] addRefs(@Nullable MonitoringSynapse[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(MonitoringSynapse::addRefs)
@@ -93,7 +96,7 @@ public final class MonitoringSynapse extends LayerBase implements MonitoredItem 
 
   @Nonnull
   public MonitoringSynapse addTo(@Nonnull final MonitoredObject obj) {
-    MonitoringSynapse temp_37_0003 = addTo(obj == null ? null : obj, getName());
+    MonitoringSynapse temp_37_0003 = addTo(obj, getName());
     return temp_37_0003;
   }
 
@@ -105,21 +108,21 @@ public final class MonitoringSynapse extends LayerBase implements MonitoredItem 
     return this.addRef();
   }
 
+  @Nonnull
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     assert 1 == inObj.length;
     final Result input = inObj[0].addRef();
     ReferenceCounting.freeRefs(inObj);
     final TensorList inputdata = input.getData();
-    com.simiacryptus.ref.wrappers.RefSystem.nanoTime();
-    com.simiacryptus.ref.wrappers.RefSystem.nanoTime();
+    RefSystem.nanoTime();
+    RefSystem.nanoTime();
     totalBatches++;
     totalItems += inputdata.length();
     forwardStatistics.clear();
     inputdata.stream().parallel().forEach(t -> {
       forwardStatistics.add(t.getData());
-      if (null != t)
-        t.freeRef();
+      t.freeRef();
     });
     try {
       try {
@@ -128,21 +131,21 @@ public final class MonitoringSynapse extends LayerBase implements MonitoredItem 
           }
 
           @Override
-          public void accept(DeltaSet<UUID> buffer, TensorList data) {
+          public void accept(@Nullable DeltaSet<UUID> buffer, @Nullable TensorList data) {
             backpropStatistics.clear();
             input.accumulate(buffer == null ? null : buffer.addRef(), data == null ? null : data.addRef());
             if (null != buffer)
               buffer.freeRef();
+            assert data != null;
             data.stream().parallel().forEach(t -> {
               backpropStatistics.add(t.getData());
-              if (null != t)
-                t.freeRef();
+              t.freeRef();
             });
-            if (null != data)
-              data.freeRef();
+            data.freeRef();
           }
 
-          public @SuppressWarnings("unused") void _free() {
+          public @SuppressWarnings("unused")
+          void _free() {
           }
         }) {
 
@@ -158,34 +161,36 @@ public final class MonitoringSynapse extends LayerBase implements MonitoredItem 
           }
         };
       } finally {
-        if (null != inputdata)
-          inputdata.freeRef();
+        inputdata.freeRef();
       }
     } finally {
-      if (null != input)
-        input.freeRef();
+      input.freeRef();
     }
   }
 
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull
-    final JsonObject json = super.getJsonStub();
+    @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("totalBatches", totalBatches);
     json.addProperty("totalItems", totalItems);
     return json;
   }
 
+  @Nonnull
   @Override
   public RefList<double[]> state() {
     return RefArrays.asList();
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") MonitoringSynapse addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  MonitoringSynapse addRef() {
     return (MonitoringSynapse) super.addRef();
   }
 }

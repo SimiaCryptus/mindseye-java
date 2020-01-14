@@ -21,7 +21,6 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrayList;
@@ -57,10 +56,8 @@ public class ImgCropLayer extends LayerBase {
 
   @Nonnull
   public static void copy(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData) {
-    @Nonnull
-    final int[] inDim = inputData.getDimensions();
-    @Nonnull
-    final int[] outDim = outputData.getDimensions();
+    @Nonnull final int[] inDim = inputData.getDimensions();
+    @Nonnull final int[] outDim = outputData.getDimensions();
     assert 3 == inDim.length;
     assert 3 == outDim.length;
     assert inDim[2] == outDim[2] : RefArrays.toString(inDim) + "; " + RefArrays.toString(outDim);
@@ -87,21 +84,26 @@ public class ImgCropLayer extends LayerBase {
         value = inputData.get(x, y, z);
       }
       RefUtil.freeRef(outputData.set(c, value));
-    }, outputData == null ? null : outputData, inputData == null ? null : inputData));
+    }, outputData, inputData));
   }
 
+  @Nonnull
   @SuppressWarnings("unused")
   public static ImgCropLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ImgCropLayer(json);
   }
 
-  public static @SuppressWarnings("unused") ImgCropLayer[] addRefs(ImgCropLayer[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  ImgCropLayer[] addRefs(@Nullable ImgCropLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ImgCropLayer::addRef).toArray((x) -> new ImgCropLayer[x]);
   }
 
-  public static @SuppressWarnings("unused") ImgCropLayer[][] addRefs(ImgCropLayer[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  ImgCropLayer[][] addRefs(@Nullable ImgCropLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ImgCropLayer::addRefs)
@@ -114,51 +116,45 @@ public class ImgCropLayer extends LayerBase {
     final Result input = inObj[0].addRef();
     ReferenceCounting.freeRefs(inObj);
     final TensorList batch = input.getData();
-    @Nonnull
-    final int[] inputDims = batch.getDimensions();
+    @Nonnull final int[] inputDims = batch.getDimensions();
     assert 3 == inputDims.length;
     try {
       try {
         return new Result(new TensorArray(RefIntStream.range(0, batch.length()).parallel()
             .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-              @Nonnull
-              final Tensor outputData = new Tensor(sizeX, sizeY, inputDims[2]);
+              @Nonnull final Tensor outputData = new Tensor(sizeX, sizeY, inputDims[2]);
               Tensor inputData = batch.get(dataIndex);
-              ImgCropLayer.copy(inputData == null ? null : inputData.addRef(),
-                  outputData == null ? null : outputData.addRef());
-              if (null != inputData)
-                inputData.freeRef();
+              ImgCropLayer.copy(inputData.addRef(),
+                  outputData.addRef());
+              inputData.freeRef();
               return outputData;
-            }, batch == null ? null : batch.addRef())).toArray(i -> new Tensor[i])), new Result.Accumulator() {
-              {
-              }
+            }, batch.addRef())).toArray(i -> new Tensor[i])), new Result.Accumulator() {
+          {
+          }
 
-              @Override
-              public void accept(DeltaSet<UUID> buffer, TensorList error) {
-                if (input.isAlive()) {
-                  @Nonnull
-                  TensorArray tensorArray = new TensorArray(RefIntStream.range(0, error.length()).parallel()
-                      .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-                        @Nullable
-                        final Tensor err = error.get(dataIndex);
-                        @Nonnull
-                        final Tensor passback = new Tensor(inputDims);
-                        copy(err == null ? null : err.addRef(), passback == null ? null : passback.addRef());
-                        if (null != err)
-                          err.freeRef();
-                        return passback;
-                      }, error == null ? null : error.addRef())).toArray(i -> new Tensor[i]));
-                  input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray == null ? null : tensorArray);
-                }
-                if (null != error)
-                  error.freeRef();
-                if (null != buffer)
-                  buffer.freeRef();
-              }
+          @Override
+          public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList error) {
+            if (input.isAlive()) {
+              @Nonnull
+              TensorArray tensorArray = new TensorArray(RefIntStream.range(0, error.length()).parallel()
+                  .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+                    @Nullable final Tensor err = error.get(dataIndex);
+                    @Nonnull final Tensor passback = new Tensor(inputDims);
+                    copy(err.addRef(), passback.addRef());
+                    err.freeRef();
+                    return passback;
+                  }, error.addRef())).toArray(i -> new Tensor[i]));
+              input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
+            }
+            error.freeRef();
+            if (null != buffer)
+              buffer.freeRef();
+          }
 
-              public @SuppressWarnings("unused") void _free() {
-              }
-            }) {
+          public @SuppressWarnings("unused")
+          void _free() {
+          }
+        }) {
 
           {
           }
@@ -172,20 +168,17 @@ public class ImgCropLayer extends LayerBase {
           }
         };
       } finally {
-        if (null != batch)
-          batch.freeRef();
+        batch.freeRef();
       }
     } finally {
-      if (null != input)
-        input.freeRef();
+      input.freeRef();
     }
   }
 
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull
-    final JsonObject json = super.getJsonStub();
+    @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("sizeX", sizeX);
     json.addProperty("sizeY", sizeY);
     return json;
@@ -197,10 +190,14 @@ public class ImgCropLayer extends LayerBase {
     return new RefArrayList<>();
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") ImgCropLayer addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  ImgCropLayer addRef() {
     return (ImgCropLayer) super.addRef();
   }
 

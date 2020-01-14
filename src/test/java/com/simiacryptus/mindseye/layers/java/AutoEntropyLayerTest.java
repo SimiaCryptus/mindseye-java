@@ -21,9 +21,9 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.MetaLayerTestBase;
-import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -34,14 +34,18 @@ public abstract class AutoEntropyLayerTest extends MetaLayerTestBase {
     //validateDifferentials = false;
   }
 
-  public static @SuppressWarnings("unused") AutoEntropyLayerTest[] addRefs(AutoEntropyLayerTest[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  AutoEntropyLayerTest[] addRefs(@Nullable AutoEntropyLayerTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(AutoEntropyLayerTest::addRef)
         .toArray((x) -> new AutoEntropyLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused") AutoEntropyLayerTest[][] addRefs(AutoEntropyLayerTest[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  AutoEntropyLayerTest[][] addRefs(@Nullable AutoEntropyLayerTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(AutoEntropyLayerTest::addRefs)
@@ -51,7 +55,7 @@ public abstract class AutoEntropyLayerTest extends MetaLayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][] { { 3 } };
+    return new int[][]{{3}};
   }
 
   @Nonnull
@@ -63,30 +67,41 @@ public abstract class AutoEntropyLayerTest extends MetaLayerTestBase {
   @Nonnull
   @Override
   public int[][] getLargeDims(Random random) {
-    return new int[][] { { 100 } };
+    return new int[][]{{100}};
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") AutoEntropyLayerTest addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  AutoEntropyLayerTest addRef() {
     return (AutoEntropyLayerTest) super.addRef();
   }
 
   public static class Basic extends AutoEntropyLayerTest {
-    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    Basic[] addRefs(@Nullable Basic[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") Basic addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    Basic addRef() {
       return (Basic) super.addRef();
     }
 
+    @Nonnull
     @Override
     protected Layer lossLayer() {
       return new EntropyLossLayer();

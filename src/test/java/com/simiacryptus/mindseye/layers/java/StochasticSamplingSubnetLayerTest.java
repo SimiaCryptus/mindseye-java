@@ -21,25 +21,29 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Random;
 
 public abstract class StochasticSamplingSubnetLayerTest extends LayerTestBase {
 
-  public static @SuppressWarnings("unused") StochasticSamplingSubnetLayerTest[] addRefs(
-      StochasticSamplingSubnetLayerTest[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  StochasticSamplingSubnetLayerTest[] addRefs(
+      @Nullable StochasticSamplingSubnetLayerTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(StochasticSamplingSubnetLayerTest::addRef)
         .toArray((x) -> new StochasticSamplingSubnetLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused") StochasticSamplingSubnetLayerTest[][] addRefs(
-      StochasticSamplingSubnetLayerTest[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  StochasticSamplingSubnetLayerTest[][] addRefs(
+      @Nullable StochasticSamplingSubnetLayerTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(StochasticSamplingSubnetLayerTest::addRefs)
@@ -49,7 +53,7 @@ public abstract class StochasticSamplingSubnetLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][] { { 6, 6, 1 } };
+    return new int[][]{{6, 6, 1}};
   }
 
   @Nonnull
@@ -60,31 +64,40 @@ public abstract class StochasticSamplingSubnetLayerTest extends LayerTestBase {
         subnetwork.add(new BinaryNoiseLayer(0.5), subnetwork.getInput(0))));
 
     StochasticSamplingSubnetLayer temp_38_0001 = new StochasticSamplingSubnetLayer(
-        subnetwork == null ? null : subnetwork.addRef(), 2);
-    if (null != subnetwork)
-      subnetwork.freeRef();
+        subnetwork.addRef(), 2);
+    subnetwork.freeRef();
     return temp_38_0001;
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") StochasticSamplingSubnetLayerTest addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  StochasticSamplingSubnetLayerTest addRef() {
     return (StochasticSamplingSubnetLayerTest) super.addRef();
   }
 
   public static class Basic extends StochasticSamplingSubnetLayerTest {
 
-    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    Basic[] addRefs(@Nullable Basic[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") Basic addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    Basic addRef() {
       return (Basic) super.addRef();
     }
   }

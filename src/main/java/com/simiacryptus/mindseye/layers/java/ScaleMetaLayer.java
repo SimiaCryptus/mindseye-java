@@ -21,7 +21,6 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
@@ -51,19 +50,24 @@ public class ScaleMetaLayer extends LayerBase {
     super(id);
   }
 
+  @Nonnull
   @SuppressWarnings("unused")
   public static ScaleMetaLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ScaleMetaLayer(json);
   }
 
-  public static @SuppressWarnings("unused") ScaleMetaLayer[] addRefs(ScaleMetaLayer[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  ScaleMetaLayer[] addRefs(@Nullable ScaleMetaLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ScaleMetaLayer::addRef)
         .toArray((x) -> new ScaleMetaLayer[x]);
   }
 
-  public static @SuppressWarnings("unused") ScaleMetaLayer[][] addRefs(ScaleMetaLayer[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  ScaleMetaLayer[][] addRefs(@Nullable ScaleMetaLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ScaleMetaLayer::addRefs)
@@ -80,15 +84,16 @@ public class ScaleMetaLayer extends LayerBase {
     final TensorList data1 = in1.getData();
     final int itemCnt = data0.length();
     final Tensor data10 = data1.get(0);
-    if (null != data1)
-      data1.freeRef();
+    data1.freeRef();
     final Tensor[] tensors = RefIntStream.range(0, itemCnt)
         .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-          return data0.get(dataIndex)
-              .mapIndex(RefUtil.wrapInterface((v, c) -> v * data10.get(c), data10 == null ? null : data10.addRef()));
-        }, data10 == null ? null : data10.addRef(), data0 == null ? null : data0.addRef())).toArray(i -> new Tensor[i]);
-    if (null != data0)
-      data0.freeRef();
+          Tensor tensor = data0.get(dataIndex);
+          Tensor tensor1 = tensor
+              .mapIndex(RefUtil.wrapInterface((v, c) -> v * data10.get(c), data10.addRef()));
+          tensor.freeRef();
+          return tensor1;
+        }, data10.addRef(), data0.addRef())).toArray(i -> new Tensor[i]);
+    data0.freeRef();
     Tensor tensor0 = tensors[0].addRef();
     try {
       try {
@@ -100,44 +105,46 @@ public class ScaleMetaLayer extends LayerBase {
                 }
 
                 @Override
-                public void accept(DeltaSet<UUID> buffer, TensorList data) {
+                public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList data) {
                   if (in0.isAlive()) {
                     @Nonnull
                     TensorArray tensorArray = new TensorArray(
                         data.stream().map(RefUtil.wrapInterface((Function<? super Tensor, ? extends Tensor>) t -> {
                           Tensor temp_56_0006 = t.mapIndex(RefUtil.wrapInterface((v, c) -> {
                             return v * data10.get(c);
-                          }, data10 == null ? null : data10.addRef()));
-                          if (null != t)
-                            t.freeRef();
+                          }, data10.addRef()));
+                          t.freeRef();
                           return temp_56_0006;
-                        }, data10 == null ? null : data10.addRef())).toArray(i -> new Tensor[i]));
-                    in0.accumulate(buffer == null ? null : buffer.addRef(), tensorArray == null ? null : tensorArray);
+                        }, data10.addRef())).toArray(i -> new Tensor[i]));
+                    in0.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
                   }
                   if (in1.isAlive()) {
-                    @Nullable
-                    final Tensor passback = tensor0.mapIndex(RefUtil.wrapInterface((v, c) -> {
+                    @Nullable final Tensor passback = tensor0.mapIndex(RefUtil.wrapInterface((v, c) -> {
                       return RefIntStream.range(0, itemCnt).mapToDouble(RefUtil.wrapInterface(i -> {
-                        return data.get(i).get(c) * data.get(i).get(c);
-                      }, data == null ? null : data.addRef())).sum();
-                    }, data == null ? null : data.addRef()));
+                        Tensor tensor = data.get(i);
+                        double v1 = tensor.get(c) * tensor.get(c);
+                        tensor.freeRef();
+                        return v1;
+                      }, data.addRef())).sum();
+                    }, data.addRef()));
                     @Nonnull
                     TensorArray tensorArray = new TensorArray(RefIntStream.range(0, data.length())
                         .mapToObj(RefUtil.wrapInterface(
-                            (IntFunction<? extends Tensor>) i -> i == 0 ? passback : passback.map(v -> 0),
-                            passback == null ? null : passback.addRef()))
+                            (IntFunction<? extends Tensor>) i -> {
+                              return i == 0 ? passback.addRef() : passback.map(v -> 0);
+                            },
+                            passback.addRef()))
                         .toArray(i -> new Tensor[i]));
-                    if (null != passback)
-                      passback.freeRef();
-                    in1.accumulate(buffer == null ? null : buffer.addRef(), tensorArray == null ? null : tensorArray);
+                    passback.freeRef();
+                    in1.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
                   }
-                  if (null != data)
-                    data.freeRef();
+                  data.freeRef();
                   if (null != buffer)
                     buffer.freeRef();
                 }
 
-                public @SuppressWarnings("unused") void _free() {
+                public @SuppressWarnings("unused")
+                void _free() {
                 }
               }) {
 
@@ -154,24 +161,19 @@ public class ScaleMetaLayer extends LayerBase {
 
               };
             } finally {
-              if (null != tensor0)
-                tensor0.freeRef();
+              tensor0.freeRef();
             }
           } finally {
-            if (null != tensors)
-              ReferenceCounting.freeRefs(tensors);
+            ReferenceCounting.freeRefs(tensors);
           }
         } finally {
-          if (null != data10)
-            data10.freeRef();
+          data10.freeRef();
         }
       } finally {
-        if (null != in1)
-          in1.freeRef();
+        in1.freeRef();
       }
     } finally {
-      if (null != in0)
-        in0.freeRef();
+      in0.freeRef();
     }
   }
 
@@ -187,10 +189,14 @@ public class ScaleMetaLayer extends LayerBase {
     return RefArrays.asList();
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") ScaleMetaLayer addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  ScaleMetaLayer addRef() {
     return (ScaleMetaLayer) super.addRef();
   }
 }

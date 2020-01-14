@@ -21,7 +21,6 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefList;
@@ -47,19 +46,24 @@ public class CrossDotMetaLayer extends LayerBase {
     super(id);
   }
 
+  @Nonnull
   @SuppressWarnings("unused")
   public static CrossDotMetaLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new CrossDotMetaLayer(json);
   }
 
-  public static @SuppressWarnings("unused") CrossDotMetaLayer[] addRefs(CrossDotMetaLayer[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  CrossDotMetaLayer[] addRefs(@Nullable CrossDotMetaLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(CrossDotMetaLayer::addRef)
         .toArray((x) -> new CrossDotMetaLayer[x]);
   }
 
-  public static @SuppressWarnings("unused") CrossDotMetaLayer[][] addRefs(CrossDotMetaLayer[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  CrossDotMetaLayer[][] addRefs(@Nullable CrossDotMetaLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(CrossDotMetaLayer::addRefs)
@@ -74,8 +78,7 @@ public class CrossDotMetaLayer extends LayerBase {
     final TensorList indata = input.getData();
     final int itemCnt = indata.length();
     final int dim = Tensor.length(indata.getDimensions());
-    @Nonnull
-    final Tensor results = new Tensor(dim, dim);
+    @Nonnull final Tensor results = new Tensor(dim, dim);
     for (int i = 0; i < dim; i++) {
       for (int j = 0; j < dim; j++) {
         if (i == j) {
@@ -84,29 +87,25 @@ public class CrossDotMetaLayer extends LayerBase {
         double v = 0;
         for (int k = 0; k < itemCnt; k++) {
           Tensor tensor = indata.get(k);
-          @Nullable
-          final double[] kk = tensor.getData();
-          if (null != tensor)
-            tensor.freeRef();
+          @Nullable final double[] kk = tensor.getData();
+          tensor.freeRef();
           v += kk[i] * kk[j];
         }
-        results.set(new int[] { i, j }, v);
+        results.set(new int[]{i, j}, v);
       }
     }
     try {
       try {
         try {
-          return new Result(new TensorArray(results == null ? null : results.addRef()), new Result.Accumulator() {
+          return new Result(new TensorArray(results.addRef()), new Result.Accumulator() {
             {
             }
 
             @Override
-            public void accept(DeltaSet<UUID> buffer, TensorList delta) {
+            public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
               if (input.isAlive()) {
-                @Nullable
-                final Tensor deltaTensor = delta.get(0);
-                @Nonnull
-                final Tensor feedback[] = new Tensor[itemCnt];
+                @Nullable final Tensor deltaTensor = delta.get(0);
+                @Nonnull final Tensor feedback[] = new Tensor[itemCnt];
                 RefArrays.parallelSetAll(Tensor.addRefs(feedback), i -> new Tensor(dim));
 
                 for (int i = 0; i < dim; i++) {
@@ -117,29 +116,26 @@ public class CrossDotMetaLayer extends LayerBase {
                     final double v = deltaTensor.get(i, j);
                     for (int k = 0; k < itemCnt; k++) {
                       Tensor tensor = indata.get(k);
-                      @Nullable
-                      final double[] kk = tensor.getData();
-                      if (null != tensor)
-                        tensor.freeRef();
+                      @Nullable final double[] kk = tensor.getData();
+                      tensor.freeRef();
                       feedback[k].add(i, v * kk[j]);
                       feedback[k].add(j, v * kk[i]);
                     }
                   }
                 }
-                if (null != deltaTensor)
-                  deltaTensor.freeRef();
+                deltaTensor.freeRef();
                 @Nonnull
                 TensorArray tensorArray = new TensorArray(Tensor.addRefs(feedback));
                 ReferenceCounting.freeRefs(feedback);
-                input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray == null ? null : tensorArray);
+                input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
               }
-              if (null != delta)
-                delta.freeRef();
+              delta.freeRef();
               if (null != buffer)
                 buffer.freeRef();
             }
 
-            public @SuppressWarnings("unused") void _free() {
+            public @SuppressWarnings("unused")
+            void _free() {
             }
           }) {
 
@@ -159,12 +155,10 @@ public class CrossDotMetaLayer extends LayerBase {
           results.freeRef();
         }
       } finally {
-        if (null != indata)
-          indata.freeRef();
+        indata.freeRef();
       }
     } finally {
-      if (null != input)
-        input.freeRef();
+      input.freeRef();
     }
   }
 
@@ -180,10 +174,14 @@ public class CrossDotMetaLayer extends LayerBase {
     return RefArrays.asList();
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") CrossDotMetaLayer addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  CrossDotMetaLayer addRef() {
     return (CrossDotMetaLayer) super.addRef();
   }
 }

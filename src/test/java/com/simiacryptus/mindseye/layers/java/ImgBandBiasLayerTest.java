@@ -20,22 +20,26 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
-import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Random;
 
 public abstract class ImgBandBiasLayerTest extends LayerTestBase {
 
-  public static @SuppressWarnings("unused") ImgBandBiasLayerTest[] addRefs(ImgBandBiasLayerTest[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  ImgBandBiasLayerTest[] addRefs(@Nullable ImgBandBiasLayerTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ImgBandBiasLayerTest::addRef)
         .toArray((x) -> new ImgBandBiasLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused") ImgBandBiasLayerTest[][] addRefs(ImgBandBiasLayerTest[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  ImgBandBiasLayerTest[][] addRefs(@Nullable ImgBandBiasLayerTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ImgBandBiasLayerTest::addRefs)
@@ -45,7 +49,7 @@ public abstract class ImgBandBiasLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][] { { 2, 2, 3 } };
+    return new int[][]{{2, 2, 3}};
   }
 
   @Nonnull
@@ -53,30 +57,39 @@ public abstract class ImgBandBiasLayerTest extends LayerTestBase {
   public Layer getLayer(final int[][] inputSize, Random random) {
     ImgBandBiasLayer temp_68_0002 = new ImgBandBiasLayer(3);
     ImgBandBiasLayer temp_68_0001 = temp_68_0002.addWeights(this::random);
-    if (null != temp_68_0002)
-      temp_68_0002.freeRef();
+    temp_68_0002.freeRef();
     return temp_68_0001;
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") ImgBandBiasLayerTest addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  ImgBandBiasLayerTest addRef() {
     return (ImgBandBiasLayerTest) super.addRef();
   }
 
   public static class Basic extends ImgBandBiasLayerTest {
 
-    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    Basic[] addRefs(@Nullable Basic[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") Basic addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    Basic addRef() {
       return (Basic) super.addRef();
     }
   }

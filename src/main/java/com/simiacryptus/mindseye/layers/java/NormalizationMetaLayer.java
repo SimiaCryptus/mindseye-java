@@ -21,13 +21,12 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.RefUtil;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -44,8 +43,7 @@ public class NormalizationMetaLayer extends PipelineNetwork {
     RefUtil.freeRef(add(new AvgMetaLayer()));
     NthPowerActivationLayer temp_74_0001 = new NthPowerActivationLayer();
     RefUtil.freeRef(add(temp_74_0001.setPower(-0.5)));
-    if (null != temp_74_0001)
-      temp_74_0001.freeRef();
+    temp_74_0001.freeRef();
     RefUtil.freeRef(add(new ProductInputsLayer(), getHead(), getInput(0)));
   }
 
@@ -53,29 +51,38 @@ public class NormalizationMetaLayer extends PipelineNetwork {
     super(json, rs);
   }
 
+  @Nonnull
   @SuppressWarnings("unused")
-  public static NormalizationMetaLayer fromJson(@NotNull final JsonObject json, Map<CharSequence, byte[]> rs) {
+  public static NormalizationMetaLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new NormalizationMetaLayer(json, rs);
   }
 
-  public static @SuppressWarnings("unused") NormalizationMetaLayer[] addRefs(NormalizationMetaLayer[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  NormalizationMetaLayer[] addRefs(@Nullable NormalizationMetaLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(NormalizationMetaLayer::addRef)
         .toArray((x) -> new NormalizationMetaLayer[x]);
   }
 
-  public static @SuppressWarnings("unused") NormalizationMetaLayer[][] addRefs(NormalizationMetaLayer[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  NormalizationMetaLayer[][] addRefs(@Nullable NormalizationMetaLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(NormalizationMetaLayer::addRefs)
         .toArray((x) -> new NormalizationMetaLayer[x][]);
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") NormalizationMetaLayer addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  NormalizationMetaLayer addRef() {
     return (NormalizationMetaLayer) super.addRef();
   }
 

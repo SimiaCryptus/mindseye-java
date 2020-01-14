@@ -21,7 +21,6 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
@@ -42,6 +41,7 @@ import java.util.function.IntFunction;
 public class GaussianNoiseLayer extends LayerBase {
 
   public static final ThreadLocal<Random> random = new ThreadLocal<Random>() {
+    @Nonnull
     @Override
     protected Random initialValue() {
       return new Random();
@@ -72,19 +72,24 @@ public class GaussianNoiseLayer extends LayerBase {
     return this.addRef();
   }
 
+  @Nonnull
   @SuppressWarnings("unused")
   public static GaussianNoiseLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new GaussianNoiseLayer(json);
   }
 
-  public static @SuppressWarnings("unused") GaussianNoiseLayer[] addRefs(GaussianNoiseLayer[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  GaussianNoiseLayer[] addRefs(@Nullable GaussianNoiseLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(GaussianNoiseLayer::addRef)
         .toArray((x) -> new GaussianNoiseLayer[x]);
   }
 
-  public static @SuppressWarnings("unused") GaussianNoiseLayer[][] addRefs(GaussianNoiseLayer[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  GaussianNoiseLayer[][] addRefs(@Nullable GaussianNoiseLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(GaussianNoiseLayer::addRefs)
@@ -93,28 +98,24 @@ public class GaussianNoiseLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public Result eval(final Result... inObj) {
+  public Result eval(@Nullable final Result... inObj) {
+    assert inObj != null;
     final Result in0 = inObj[0].addRef();
-    if (null != inObj)
-      ReferenceCounting.freeRefs(inObj);
+    ReferenceCounting.freeRefs(inObj);
     final TensorList inputData = in0.getData();
     final int itemCnt = inputData.length();
     final Tensor[] outputA = RefIntStream.range(0, itemCnt)
         .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-          @Nonnull
-          final Random random = new Random(seed);
-          @Nullable
-          final Tensor input = inputData.get(dataIndex);
+          @Nonnull final Random random = new Random(seed);
+          @Nullable final Tensor input = inputData.get(dataIndex);
           Tensor temp_59_0002 = input.map(x -> {
             return x + random.nextGaussian() * getValue();
           });
-          if (null != input)
-            input.freeRef();
+          input.freeRef();
           return temp_59_0002;
-        }, inputData == null ? null : inputData.addRef())).toArray(i -> new Tensor[i]);
+        }, inputData.addRef())).toArray(i -> new Tensor[i]);
     int[] dimensions = inputData.getDimensions();
-    if (null != inputData)
-      inputData.freeRef();
+    inputData.freeRef();
     try {
       try {
         return new Result(new TensorArray(Tensor.addRefs(outputA)), new Result.Accumulator() {
@@ -122,32 +123,29 @@ public class GaussianNoiseLayer extends LayerBase {
           }
 
           @Override
-          public void accept(DeltaSet<UUID> buffer, TensorList delta) {
+          public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
             if (in0.isAlive()) {
               @Nonnull
               TensorArray tensorArray = new TensorArray(RefIntStream.range(0, delta.length())
                   .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
                     Tensor tensor = delta.get(dataIndex);
-                    @Nullable
-                    final double[] deltaData = tensor.getData();
-                    if (null != tensor)
-                      tensor.freeRef();
-                    @Nonnull
-                    final Tensor passback = new Tensor(dimensions);
+                    @Nullable final double[] deltaData = tensor.getData();
+                    tensor.freeRef();
+                    @Nonnull final Tensor passback = new Tensor(dimensions);
                     for (int i = 0; i < passback.length(); i++) {
                       RefUtil.freeRef(passback.set(i, deltaData[i]));
                     }
                     return passback;
-                  }, delta == null ? null : delta.addRef())).toArray(i -> new Tensor[i]));
-              in0.accumulate(buffer == null ? null : buffer.addRef(), tensorArray == null ? null : tensorArray);
+                  }, delta.addRef())).toArray(i -> new Tensor[i]));
+              in0.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
             }
-            if (null != delta)
-              delta.freeRef();
+            delta.freeRef();
             if (null != buffer)
               buffer.freeRef();
           }
 
-          public @SuppressWarnings("unused") void _free() {
+          public @SuppressWarnings("unused")
+          void _free() {
           }
         }) {
 
@@ -163,20 +161,17 @@ public class GaussianNoiseLayer extends LayerBase {
           }
         };
       } finally {
-        if (null != outputA)
-          ReferenceCounting.freeRefs(outputA);
+        ReferenceCounting.freeRefs(outputA);
       }
     } finally {
-      if (null != in0)
-        in0.freeRef();
+      in0.freeRef();
     }
   }
 
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull
-    final JsonObject json = super.getJsonStub();
+    @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("value", value);
     return json;
   }
@@ -191,10 +186,14 @@ public class GaussianNoiseLayer extends LayerBase {
     return RefArrays.asList();
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") GaussianNoiseLayer addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  GaussianNoiseLayer addRef() {
     return (GaussianNoiseLayer) super.addRef();
   }
 

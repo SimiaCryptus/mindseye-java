@@ -24,12 +24,10 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.*;
 import com.simiacryptus.util.JsonUtil;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,19 +64,24 @@ public class AvgPoolingLayer extends LayerBase {
     this.kernelDims = RefArrays.copyOf(kernelDims, kernelDims.length);
   }
 
+  @Nonnull
   @SuppressWarnings("unused")
   public static AvgPoolingLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new AvgPoolingLayer(json, JsonUtil.getIntArray(json.getAsJsonArray("heapCopy")));
   }
 
-  public static @SuppressWarnings("unused") AvgPoolingLayer[] addRefs(AvgPoolingLayer[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  AvgPoolingLayer[] addRefs(@Nullable AvgPoolingLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(AvgPoolingLayer::addRef)
         .toArray((x) -> new AvgPoolingLayer[x]);
   }
 
-  public static @SuppressWarnings("unused") AvgPoolingLayer[][] addRefs(AvgPoolingLayer[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  AvgPoolingLayer[][] addRefs(@Nullable AvgPoolingLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(AvgPoolingLayer::addRefs)
@@ -86,7 +89,7 @@ public class AvgPoolingLayer extends LayerBase {
   }
 
   private static synchronized RefMap<Coordinate, RefList<int[]>> getCoordMap(final int[] kernelDims,
-      final int[] outDims) {
+                                                                             final int[] outDims) {
     try {
       return AvgPoolingLayer.indexMapCache.get(new AvgPoolingLayer.IndexMapKey(kernelDims, outDims));
     } catch (@Nonnull final ExecutionException e) {
@@ -100,40 +103,34 @@ public class AvgPoolingLayer extends LayerBase {
   public Result eval(@Nonnull final Result... inObj) {
     final int kernelSize = Tensor.length(kernelDims);
     final TensorList data = inObj[0].getData();
-    @Nonnull
-    final int[] inputDims = data.getDimensions();
+    @Nonnull final int[] inputDims = data.getDimensions();
     final int[] newDims = RefIntStream.range(0, inputDims.length).map(i -> {
       assert 0 == inputDims[i] % kernelDims[i] : inputDims[i] + ":" + kernelDims[i];
       return inputDims[i] / kernelDims[i];
     }).toArray();
     final RefMap<Coordinate, RefList<int[]>> coordMap = AvgPoolingLayer.getCoordMap(kernelDims, newDims);
+    final RefSet<Entry<Coordinate, RefList<int[]>>> entries = coordMap.entrySet();
     final Tensor[] outputValues = RefIntStream.range(0, data.length())
-        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-          @Nullable
-          final Tensor input = data.get(dataIndex);
-          @Nonnull
-          final Tensor output = new Tensor(newDims);
-          for (@Nonnull
-          final Entry<Coordinate, RefList<int[]>> entry : coordMap.entrySet()) {
+        .mapToObj(RefUtil.wrapInterface((IntFunction<Tensor>) dataIndex -> {
+          @Nullable final Tensor input = data.get(dataIndex);
+          @Nonnull final Tensor output = new Tensor(newDims);
+          entries.forEach(entry -> {
             RefList<int[]> temp_30_0006 = entry.getValue();
             double sum = temp_30_0006.stream()
                 .mapToDouble(
-                    RefUtil.wrapInterface((ToDoubleFunction<? super int[]>) inputCoord -> input.get(inputCoord),
-                        input == null ? null : input.addRef()))
+                    RefUtil.wrapInterface((ToDoubleFunction<? super int[]>) input::get,
+                        input.addRef()))
                 .sum();
-            if (null != temp_30_0006)
-              temp_30_0006.freeRef();
+            temp_30_0006.freeRef();
             if (Double.isFinite(sum)) {
               output.add(entry.getKey(), sum / kernelSize);
             }
-          }
-          if (null != input)
-            input.freeRef();
+          });
+          input.freeRef();
           return output;
-        }, data == null ? null : data.addRef(), coordMap == null ? null : coordMap.addRef()))
+        }, data.addRef(), coordMap.addRef(), entries.addRef()))
         .toArray(i -> new Tensor[i]);
-    if (null != data)
-      data.freeRef();
+    data.freeRef();
     try {
       try {
         try {
@@ -144,42 +141,40 @@ public class AvgPoolingLayer extends LayerBase {
             }
 
             @Override
-            public void accept(DeltaSet<UUID> buffer, TensorList delta) {
+            public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
               if (inObj[0].isAlive()) {
                 final Tensor[] passback = RefIntStream.range(0, delta.length())
                     .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
                       @Nullable
                       Tensor tensor = delta.get(dataIndex);
-                      @Nonnull
-                      final Tensor backSignal = new Tensor(inputDims);
-                      for (@Nonnull
-                      final Entry<Coordinate, RefList<int[]>> outputMapping : coordMap.entrySet()) {
+                      @Nonnull final Tensor backSignal = new Tensor(inputDims);
+                      entries.forEach(outputMapping -> {
                         final double outputValue = tensor.get(outputMapping.getKey());
-                        for (@Nonnull
-                        final int[] inputCoord : outputMapping.getValue()) {
+                        RefList<int[]> outputMappingValue = outputMapping.getValue();
+                        for (@Nonnull final int[] inputCoord : outputMappingValue) {
                           backSignal.add(inputCoord, outputValue / kernelSize);
                         }
-                      }
-                      if (null != tensor)
-                        tensor.freeRef();
+                        outputMappingValue.freeRef();
+                      });
+                      tensor.freeRef();
                       return backSignal;
-                    }, delta == null ? null : delta.addRef(), coordMap == null ? null : coordMap.addRef()))
+                    }, delta.addRef(), coordMap.addRef()))
                     .toArray(i -> new Tensor[i]);
                 @Nonnull
                 TensorArray tensorArray = new TensorArray(Tensor.addRefs(passback));
-                if (null != passback)
-                  ReferenceCounting.freeRefs(passback);
-                inObj[0].accumulate(buffer == null ? null : buffer.addRef(), tensorArray == null ? null : tensorArray);
+                ReferenceCounting.freeRefs(passback);
+                inObj[0].accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
               }
-              if (null != delta)
-                delta.freeRef();
+              delta.freeRef();
               if (null != buffer)
                 buffer.freeRef();
             }
 
-            public @SuppressWarnings("unused") void _free() {
+            public @SuppressWarnings("unused")
+            void _free() {
               ReferenceCounting.freeRefs(inObj);
               RefUtil.freeRef(coordMap);
+              entries.freeRef();
             }
           }) {
 
@@ -200,20 +195,17 @@ public class AvgPoolingLayer extends LayerBase {
           ReferenceCounting.freeRefs(inObj);
         }
       } finally {
-        if (null != outputValues)
-          ReferenceCounting.freeRefs(outputValues);
+        ReferenceCounting.freeRefs(outputValues);
       }
     } finally {
-      if (null != coordMap)
-        coordMap.freeRef();
+      coordMap.freeRef();
     }
   }
 
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull
-    final JsonObject json = super.getJsonStub();
+    @Nonnull final JsonObject json = super.getJsonStub();
     json.add("heapCopy", JsonUtil.getJson(kernelDims));
     return json;
   }
@@ -224,10 +216,14 @@ public class AvgPoolingLayer extends LayerBase {
     return RefArrays.asList();
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") AvgPoolingLayer addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  AvgPoolingLayer addRef() {
     return (AvgPoolingLayer) super.addRef();
   }
 
@@ -241,7 +237,7 @@ public class AvgPoolingLayer extends LayerBase {
       this.output = output;
     }
 
-    public IndexMapKey(@Nonnull final Tensor kernel, final Tensor input, @Nonnull final Tensor output) {
+    public IndexMapKey(@Nonnull final Tensor kernel, @Nullable final Tensor input, @Nonnull final Tensor output) {
       super();
       if (null != input)
         input.freeRef();
@@ -262,8 +258,7 @@ public class AvgPoolingLayer extends LayerBase {
       if (getClass() != obj.getClass()) {
         return false;
       }
-      @Nullable
-      final AvgPoolingLayer.IndexMapKey other = (AvgPoolingLayer.IndexMapKey) obj;
+      @Nullable final AvgPoolingLayer.IndexMapKey other = (AvgPoolingLayer.IndexMapKey) obj;
       if (!RefArrays.equals(kernel, other.kernel)) {
         return false;
       }
@@ -282,7 +277,7 @@ public class AvgPoolingLayer extends LayerBase {
 
   private static class LayerCacheLoader extends CacheLoader<IndexMapKey, RefMap<Coordinate, RefList<int[]>>> {
     @Override
-    public RefMap<Coordinate, RefList<int[]>> load(@NotNull final IndexMapKey key) {
+    public RefMap<Coordinate, RefList<int[]>> load(@Nonnull final IndexMapKey key) {
       final int[] ksize = key.kernel;
       Tensor tensor = new Tensor(key.output);
       RefMap<Coordinate, RefList<int[]>> temp_30_0003 = tensor.coordStream(true)
@@ -291,19 +286,16 @@ public class AvgPoolingLayer extends LayerBase {
             Tensor blank = new Tensor(ksize);
             RefList<int[]> temp_30_0004 = blank.coordStream(true).map(kernelCoord -> {
               int[] coords = o.getCoords();
-              @Nonnull
-              final int[] r = new int[coords.length];
+              @Nonnull final int[] r = new int[coords.length];
               for (int i = 0; i < coords.length; i++) {
                 r[i] = coords[i] * ksize[i] + kernelCoord.getCoords()[i];
               }
               return r;
             }).collect(RefCollectors.toList());
-            if (null != blank)
-              blank.freeRef();
+            blank.freeRef();
             return temp_30_0004;
           }));
-      if (null != tensor)
-        tensor.freeRef();
+      tensor.freeRef();
       return temp_30_0003;
     }
   }

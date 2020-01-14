@@ -21,7 +21,6 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.*;
@@ -52,19 +51,24 @@ public class MaxImageBandLayer extends LayerBase {
     super(id);
   }
 
+  @Nonnull
   @SuppressWarnings("unused")
   public static MaxImageBandLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new MaxImageBandLayer(json, JsonUtil.getIntArray(json.getAsJsonArray("heapCopy")));
   }
 
-  public static @SuppressWarnings("unused") MaxImageBandLayer[] addRefs(MaxImageBandLayer[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  MaxImageBandLayer[] addRefs(@Nullable MaxImageBandLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(MaxImageBandLayer::addRef)
         .toArray((x) -> new MaxImageBandLayer[x]);
   }
 
-  public static @SuppressWarnings("unused") MaxImageBandLayer[][] addRefs(MaxImageBandLayer[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  MaxImageBandLayer[][] addRefs(@Nullable MaxImageBandLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(MaxImageBandLayer::addRefs)
@@ -78,8 +82,7 @@ public class MaxImageBandLayer extends LayerBase {
     assert 1 == inObj.length;
     final TensorList inputData = inObj[0].getData();
     inputData.length();
-    @Nonnull
-    final int[] inputDims = inputData.getDimensions();
+    @Nonnull final int[] inputDims = inputData.getDimensions();
     assert 3 == inputDims.length;
     final Coordinate[][] maxCoords = inputData.stream().map(data -> {
       Coordinate[] temp_31_0002 = RefIntStream.range(0, inputDims[2])
@@ -87,7 +90,7 @@ public class MaxImageBandLayer extends LayerBase {
             return RefUtil.get(data.coordStream(true).filter(e -> e.getCoords()[2] == band)
                 .max(RefComparator
                     .comparing(RefUtil.wrapInterface((Function<? super Coordinate, ? extends Double>) c -> data.get(c),
-                        data == null ? null : data.addRef()))));
+                        data.addRef()))));
           }, data == null ? null : data.addRef())).toArray(i -> new Coordinate[i]);
       if (null != data)
         data.freeRef();
@@ -103,53 +106,49 @@ public class MaxImageBandLayer extends LayerBase {
                   .mapToDouble(RefUtil.wrapInterface((IntToDoubleFunction) band -> {
                     final int[] maxCoord = maxCoords[dataIndex][band].getCoords();
                     return tensor.get(maxCoord[0], maxCoord[1], band);
-                  }, tensor == null ? null : tensor.addRef()));
-              if (null != tensor)
-                tensor.freeRef();
+                  }, tensor.addRef()));
+              tensor.freeRef();
               Tensor temp_31_0005 = new Tensor(1, 1, inputDims[2]);
               Tensor temp_31_0004 = temp_31_0005.set(Tensor.getDoubles(doubleStream, inputDims[2]));
-              if (null != temp_31_0005)
-                temp_31_0005.freeRef();
+              temp_31_0005.freeRef();
               return temp_31_0004;
-            }, inputData == null ? null : inputData.addRef())).toArray(i -> new Tensor[i])), new Result.Accumulator() {
-              {
-                Result.addRefs(inObj);
-                inputData.addRef();
-              }
+            }, inputData.addRef())).toArray(i -> new Tensor[i])), new Result.Accumulator() {
+          {
+            Result.addRefs(inObj);
+            inputData.addRef();
+          }
 
-              @Override
-              public void accept(DeltaSet<UUID> buffer, TensorList delta) {
-                if (inObj[0].isAlive()) {
-                  @Nonnull
-                  TensorArray tensorArray = new TensorArray(RefIntStream.range(0, delta.length()).parallel()
-                      .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-                        Tensor deltaTensor = delta.get(dataIndex);
-                        @Nonnull
-                        final Tensor passback = new Tensor(inputData.getDimensions());
-                        RefIntStream.range(0, inputDims[2]).forEach(RefUtil.wrapInterface(b -> {
+          @Override
+          public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
+            if (inObj[0].isAlive()) {
+              @Nonnull
+              TensorArray tensorArray = new TensorArray(RefIntStream.range(0, delta.length()).parallel()
+                  .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+                    Tensor deltaTensor = delta.get(dataIndex);
+                    @Nonnull final Tensor passback = new Tensor(inputData.getDimensions());
+                    RefIntStream.range(0, inputDims[2]).forEach(RefUtil.wrapInterface(b -> {
                           final int[] maxCoord = maxCoords[dataIndex][b].getCoords();
-                          passback.set(new int[] { maxCoord[0], maxCoord[1], b }, deltaTensor.get(0, 0, b));
-                        }, passback == null ? null : passback.addRef(),
-                            deltaTensor == null ? null : deltaTensor.addRef()));
-                        if (null != deltaTensor)
-                          deltaTensor.freeRef();
-                        return passback;
-                      }, delta == null ? null : delta.addRef(), inputData == null ? null : inputData.addRef()))
-                      .toArray(i -> new Tensor[i]));
-                  inObj[0].accumulate(buffer == null ? null : buffer.addRef(),
-                      tensorArray == null ? null : tensorArray);
-                }
-                if (null != delta)
-                  delta.freeRef();
-                if (null != buffer)
-                  buffer.freeRef();
-              }
+                          passback.set(new int[]{maxCoord[0], maxCoord[1], b}, deltaTensor.get(0, 0, b));
+                        }, passback.addRef(),
+                        deltaTensor.addRef()));
+                    deltaTensor.freeRef();
+                    return passback;
+                  }, delta.addRef(), inputData.addRef()))
+                  .toArray(i -> new Tensor[i]));
+              inObj[0].accumulate(buffer == null ? null : buffer.addRef(),
+                  tensorArray);
+            }
+            delta.freeRef();
+            if (null != buffer)
+              buffer.freeRef();
+          }
 
-              public @SuppressWarnings("unused") void _free() {
-                ReferenceCounting.freeRefs(inObj);
-                inputData.freeRef();
-              }
-            }) {
+          public @SuppressWarnings("unused")
+          void _free() {
+            ReferenceCounting.freeRefs(inObj);
+            inputData.freeRef();
+          }
+        }) {
 
           {
             Result.addRefs(inObj);
@@ -168,8 +167,7 @@ public class MaxImageBandLayer extends LayerBase {
         ReferenceCounting.freeRefs(inObj);
       }
     } finally {
-      if (null != inputData)
-        inputData.freeRef();
+      inputData.freeRef();
     }
   }
 
@@ -185,10 +183,14 @@ public class MaxImageBandLayer extends LayerBase {
     return RefArrays.asList();
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") MaxImageBandLayer addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  MaxImageBandLayer addRef() {
     return (MaxImageBandLayer) super.addRef();
   }
 
@@ -212,8 +214,7 @@ public class MaxImageBandLayer extends LayerBase {
       if (getClass() != obj.getClass()) {
         return false;
       }
-      @Nonnull
-      final MaxImageBandLayer.CalcRegionsParameter other = (MaxImageBandLayer.CalcRegionsParameter) obj;
+      @Nonnull final MaxImageBandLayer.CalcRegionsParameter other = (MaxImageBandLayer.CalcRegionsParameter) obj;
       if (!RefArrays.equals(inputDims, other.inputDims)) {
         return false;
       }

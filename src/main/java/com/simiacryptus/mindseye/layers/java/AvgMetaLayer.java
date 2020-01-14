@@ -21,7 +21,6 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
@@ -71,18 +70,23 @@ public class AvgMetaLayer extends LayerBase {
     return this.addRef();
   }
 
+  @Nonnull
   @SuppressWarnings("unused")
   public static AvgMetaLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new AvgMetaLayer(json, rs);
   }
 
-  public static @SuppressWarnings("unused") AvgMetaLayer[] addRefs(AvgMetaLayer[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  AvgMetaLayer[] addRefs(@Nullable AvgMetaLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(AvgMetaLayer::addRef).toArray((x) -> new AvgMetaLayer[x]);
   }
 
-  public static @SuppressWarnings("unused") AvgMetaLayer[][] addRefs(AvgMetaLayer[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  AvgMetaLayer[][] addRefs(@Nullable AvgMetaLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(AvgMetaLayer::addRefs)
@@ -91,43 +95,38 @@ public class AvgMetaLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public Result eval(final Result... inObj) {
+  public Result eval(@Nullable final Result... inObj) {
+    assert inObj != null;
     final Result input = inObj[0].addRef();
-    if (null != inObj)
-      ReferenceCounting.freeRefs(inObj);
+    ReferenceCounting.freeRefs(inObj);
     TensorList inputData = input.getData();
     final int itemCnt = inputData.length();
     @Nullable
     Tensor thisResult;
     boolean passback;
     if (null == lastResult || inputData.length() > minBatchCount) {
-      @Nonnull
-      final ToDoubleFunction<Coordinate> f = RefUtil
+      @Nonnull final ToDoubleFunction<Coordinate> f = RefUtil
           .wrapInterface((c) -> RefIntStream.range(0, itemCnt).mapToDouble(RefUtil.wrapInterface(dataIndex -> {
-            Tensor tensor = inputData.get(dataIndex);
-            double temp_21_0005 = tensor.get(c);
-            if (null != tensor)
-              tensor.freeRef();
-            return temp_21_0005;
-          }, inputData == null ? null : inputData.addRef())).sum() / itemCnt,
-              inputData == null ? null : inputData.addRef());
+                Tensor tensor = inputData.get(dataIndex);
+                double temp_21_0005 = tensor.get(c);
+                tensor.freeRef();
+                return temp_21_0005;
+              }, inputData.addRef())).sum() / itemCnt,
+              inputData.addRef());
       Tensor tensor = inputData.get(0);
       thisResult = tensor.mapCoords(f);
-      if (null != tensor)
-        tensor.freeRef();
+      tensor.freeRef();
       passback = true;
-      Tensor temp_21_0002 = thisResult == null ? null : thisResult.addRef();
+      Tensor temp_21_0002 = thisResult.addRef();
       if (null != lastResult)
         lastResult.freeRef();
-      lastResult = temp_21_0002 == null ? null : temp_21_0002.addRef();
-      if (null != temp_21_0002)
-        temp_21_0002.freeRef();
+      lastResult = temp_21_0002.addRef();
+      temp_21_0002.freeRef();
     } else {
       passback = false;
       thisResult = lastResult == null ? null : lastResult.addRef();
     }
-    if (null != inputData)
-      inputData.freeRef();
+    inputData.freeRef();
     try {
       try {
         return new Result(new TensorArray(thisResult == null ? null : thisResult.addRef()), new Result.Accumulator() {
@@ -135,34 +134,31 @@ public class AvgMetaLayer extends LayerBase {
           }
 
           @Override
-          public void accept(DeltaSet<UUID> buffer, TensorList data) {
+          public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList data) {
             if (passback && input.isAlive()) {
-              @Nullable
-              final Tensor delta = data.get(0);
-              @Nonnull
-              final Tensor feedback[] = new Tensor[itemCnt];
+              @Nullable final Tensor delta = data.get(0);
+              @Nonnull final Tensor feedback[] = new Tensor[itemCnt];
               RefArrays.parallelSetAll(Tensor.addRefs(feedback),
-                  RefUtil.wrapInterface(i -> new Tensor(delta.getDimensions()), delta == null ? null : delta.addRef()));
+                  RefUtil.wrapInterface(i -> new Tensor(delta.getDimensions()), delta.addRef()));
               thisResult.coordStream(true)
                   .forEach(RefUtil.wrapInterface((Consumer<? super Coordinate>) (inputCoord) -> {
                     for (int inputItem = 0; inputItem < itemCnt; inputItem++) {
                       feedback[inputItem].add(inputCoord, delta.get(inputCoord) / itemCnt);
                     }
-                  }, delta == null ? null : delta.addRef(), Tensor.addRefs(feedback)));
-              if (null != delta)
-                delta.freeRef();
+                  }, delta.addRef(), Tensor.addRefs(feedback)));
+              delta.freeRef();
               @Nonnull
               TensorArray tensorArray = new TensorArray(Tensor.addRefs(feedback));
               ReferenceCounting.freeRefs(feedback);
-              input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray == null ? null : tensorArray);
+              input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
             }
-            if (null != data)
-              data.freeRef();
+            data.freeRef();
             if (null != buffer)
               buffer.freeRef();
           }
 
-          public @SuppressWarnings("unused") void _free() {
+          public @SuppressWarnings("unused")
+          void _free() {
           }
         }) {
 
@@ -183,16 +179,14 @@ public class AvgMetaLayer extends LayerBase {
           thisResult.freeRef();
       }
     } finally {
-      if (null != input)
-        input.freeRef();
+      input.freeRef();
     }
   }
 
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, @Nonnull DataSerializer dataSerializer) {
-    @Nonnull
-    final JsonObject json = super.getJsonStub();
+    @Nonnull final JsonObject json = super.getJsonStub();
     if (null != lastResult) {
       json.add("lastResult", lastResult.getJson(resources, dataSerializer));
     }
@@ -213,7 +207,10 @@ public class AvgMetaLayer extends LayerBase {
     super._free();
   }
 
-  public @Override @SuppressWarnings("unused") AvgMetaLayer addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  AvgMetaLayer addRef() {
     return (AvgMetaLayer) super.addRef();
   }
 }

@@ -21,9 +21,9 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.DataSerializer;
-import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -55,6 +55,7 @@ public class BoundedActivationLayer extends SimpleActivationLayer<BoundedActivat
     return minValue;
   }
 
+  @Nonnull
   public BoundedActivationLayer setMinValue(double minValue) {
     this.minValue = minValue;
     return this.addRef();
@@ -63,20 +64,23 @@ public class BoundedActivationLayer extends SimpleActivationLayer<BoundedActivat
   @Nonnull
   @SuppressWarnings("unused")
   public static BoundedActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
-    @Nonnull
-    final BoundedActivationLayer obj = new BoundedActivationLayer(json);
+    @Nonnull final BoundedActivationLayer obj = new BoundedActivationLayer(json);
     obj.maxValue = json.get("maxValue").getAsDouble();
     return obj;
   }
 
-  public static @SuppressWarnings("unused") BoundedActivationLayer[] addRefs(BoundedActivationLayer[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  BoundedActivationLayer[] addRefs(@Nullable BoundedActivationLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(BoundedActivationLayer::addRef)
         .toArray((x) -> new BoundedActivationLayer[x]);
   }
 
-  public static @SuppressWarnings("unused") BoundedActivationLayer[][] addRefs(BoundedActivationLayer[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  BoundedActivationLayer[][] addRefs(@Nullable BoundedActivationLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(BoundedActivationLayer::addRefs)
@@ -86,16 +90,19 @@ public class BoundedActivationLayer extends SimpleActivationLayer<BoundedActivat
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull
-    final JsonObject json = super.getJsonStub();
+    @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("maxValue", maxValue);
     return json;
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") BoundedActivationLayer addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  BoundedActivationLayer addRef() {
     return (BoundedActivationLayer) super.addRef();
   }
 

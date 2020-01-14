@@ -22,13 +22,12 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.network.DAGNode;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.RefUtil;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -42,38 +41,46 @@ public class AutoEntropyLayer extends PipelineNetwork {
     super(1);
     DAGNode input = getInput(0);
     RefUtil.freeRef(
-        add(new EntropyLossLayer(), input == null ? null : input.addRef(), input == null ? null : input.addRef()));
-    if (null != input)
-      input.freeRef();
+        add(new EntropyLossLayer(), input.addRef(), input.addRef()));
+    input.freeRef();
   }
 
   protected AutoEntropyLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json, rs);
   }
 
+  @Nonnull
   @SuppressWarnings("unused")
-  public static AutoEntropyLayer fromJson(@NotNull final JsonObject json, Map<CharSequence, byte[]> rs) {
+  public static AutoEntropyLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new AutoEntropyLayer(json, rs);
   }
 
-  public static @SuppressWarnings("unused") AutoEntropyLayer[] addRefs(AutoEntropyLayer[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  AutoEntropyLayer[] addRefs(@Nullable AutoEntropyLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(AutoEntropyLayer::addRef)
         .toArray((x) -> new AutoEntropyLayer[x]);
   }
 
-  public static @SuppressWarnings("unused") AutoEntropyLayer[][] addRefs(AutoEntropyLayer[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  AutoEntropyLayer[][] addRefs(@Nullable AutoEntropyLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(AutoEntropyLayer::addRefs)
         .toArray((x) -> new AutoEntropyLayer[x][]);
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") AutoEntropyLayer addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  AutoEntropyLayer addRef() {
     return (AutoEntropyLayer) super.addRef();
   }
 

@@ -21,8 +21,9 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
-import com.simiacryptus.ref.lang.RefAware;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 
 public abstract class BoundedActivationLayerTest extends ActivationLayerTestBase {
@@ -30,28 +31,37 @@ public abstract class BoundedActivationLayerTest extends ActivationLayerTestBase
     super(new BoundedActivationLayer());
   }
 
-  public static @SuppressWarnings("unused") BoundedActivationLayerTest[] addRefs(BoundedActivationLayerTest[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  BoundedActivationLayerTest[] addRefs(@Nullable BoundedActivationLayerTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(BoundedActivationLayerTest::addRef)
         .toArray((x) -> new BoundedActivationLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused") BoundedActivationLayerTest[][] addRefs(
-      BoundedActivationLayerTest[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  BoundedActivationLayerTest[][] addRefs(
+      @Nullable BoundedActivationLayerTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(BoundedActivationLayerTest::addRefs)
         .toArray((x) -> new BoundedActivationLayerTest[x][]);
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") BoundedActivationLayerTest addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  BoundedActivationLayerTest addRef() {
     return (BoundedActivationLayerTest) super.addRef();
   }
 
+  @Nonnull
   @Override
   protected Layer lossLayer() {
     return new MeanSqLossLayer();
@@ -59,16 +69,22 @@ public abstract class BoundedActivationLayerTest extends ActivationLayerTestBase
 
   public static class Basic extends BoundedActivationLayerTest {
 
-    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    Basic[] addRefs(@Nullable Basic[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") Basic addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    Basic addRef() {
       return (Basic) super.addRef();
     }
   }

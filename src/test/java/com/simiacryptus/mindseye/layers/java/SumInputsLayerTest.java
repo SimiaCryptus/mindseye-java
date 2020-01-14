@@ -22,17 +22,19 @@ package com.simiacryptus.mindseye.layers.java;
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.network.DAGNode;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Random;
 
 public class SumInputsLayerTest {
   public static class N1Test extends LayerTestBase {
 
-    public static @SuppressWarnings("unused") N1Test[] addRefs(N1Test[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    N1Test[] addRefs(@Nullable N1Test[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(N1Test::addRef).toArray((x) -> new N1Test[x]);
@@ -41,7 +43,7 @@ public class SumInputsLayerTest {
     @Nonnull
     @Override
     public int[][] getSmallDims(Random random) {
-      return new int[][] { { 3 }, { 1 } };
+      return new int[][]{{3}, {1}};
     }
 
     @Nonnull
@@ -53,13 +55,17 @@ public class SumInputsLayerTest {
     @Nonnull
     @Override
     public int[][] getLargeDims(Random random) {
-      return new int[][] { { 100 }, { 1 } };
+      return new int[][]{{100}, {1}};
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") N1Test addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    N1Test addRef() {
       return (N1Test) super.addRef();
     }
 
@@ -67,7 +73,9 @@ public class SumInputsLayerTest {
 
   public static class NNTest extends LayerTestBase {
 
-    public static @SuppressWarnings("unused") NNTest[] addRefs(NNTest[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    NNTest[] addRefs(@Nullable NNTest[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(NNTest::addRef).toArray((x) -> new NNTest[x]);
@@ -76,7 +84,7 @@ public class SumInputsLayerTest {
     @Nonnull
     @Override
     public int[][] getSmallDims(Random random) {
-      return new int[][] { { 3 }, { 3 } };
+      return new int[][]{{3}, {3}};
     }
 
     @Nonnull
@@ -88,13 +96,17 @@ public class SumInputsLayerTest {
     @Nonnull
     @Override
     public int[][] getLargeDims(Random random) {
-      return new int[][] { { 100 }, { 100 } };
+      return new int[][]{{100}, {100}};
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") NNTest addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    NNTest addRef() {
       return (NNTest) super.addRef();
     }
 
@@ -117,7 +129,9 @@ public class SumInputsLayerTest {
       return SumInputsLayer.class;
     }
 
-    public static @SuppressWarnings("unused") OnePlusOne[] addRefs(OnePlusOne[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    OnePlusOne[] addRefs(@Nullable OnePlusOne[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(OnePlusOne::addRef).toArray((x) -> new OnePlusOne[x]);
@@ -129,17 +143,16 @@ public class SumInputsLayerTest {
       @Nonnull
       PipelineNetwork network = new PipelineNetwork();
       DAGNode input = network.getInput(0);
-      RefUtil.freeRef(network.add(new SumInputsLayer(), input == null ? null : input.addRef(),
-          input == null ? null : input.addRef()));
-      if (null != input)
-        input.freeRef();
+      RefUtil.freeRef(network.add(new SumInputsLayer(), input.addRef(),
+          input.addRef()));
+      input.freeRef();
       return network;
     }
 
     @Nonnull
     @Override
     public int[][] getSmallDims(Random random) {
-      return new int[][] { { 1, 1, 1 } };
+      return new int[][]{{1, 1, 1}};
     }
 
     @Nonnull
@@ -148,10 +161,14 @@ public class SumInputsLayerTest {
       return getSmallDims(random);
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") OnePlusOne addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    OnePlusOne addRef() {
       return (OnePlusOne) super.addRef();
     }
 

@@ -20,9 +20,9 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
-import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -34,14 +34,18 @@ public abstract class BiasLayerTest extends LayerTestBase {
     this.dimension = dimension;
   }
 
-  public static @SuppressWarnings("unused") BiasLayerTest[] addRefs(BiasLayerTest[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  BiasLayerTest[] addRefs(@Nullable BiasLayerTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(BiasLayerTest::addRef)
         .toArray((x) -> new BiasLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused") BiasLayerTest[][] addRefs(BiasLayerTest[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  BiasLayerTest[][] addRefs(@Nullable BiasLayerTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(BiasLayerTest::addRefs)
@@ -51,7 +55,7 @@ public abstract class BiasLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][] { { dimension } };
+    return new int[][]{{dimension}};
   }
 
   @Nonnull
@@ -59,15 +63,18 @@ public abstract class BiasLayerTest extends LayerTestBase {
   public Layer getLayer(final int[][] inputSize, Random random) {
     BiasLayer temp_75_0002 = new BiasLayer(dimension);
     BiasLayer temp_75_0001 = temp_75_0002.addWeights(this::random);
-    if (null != temp_75_0002)
-      temp_75_0002.freeRef();
+    temp_75_0002.freeRef();
     return temp_75_0001;
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") BiasLayerTest addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  BiasLayerTest addRef() {
     return (BiasLayerTest) super.addRef();
   }
 
@@ -76,16 +83,22 @@ public abstract class BiasLayerTest extends LayerTestBase {
       super(5);
     }
 
-    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    Basic[] addRefs(@Nullable Basic[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") Basic addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    Basic addRef() {
       return (Basic) super.addRef();
     }
   }
@@ -96,7 +109,9 @@ public abstract class BiasLayerTest extends LayerTestBase {
       super(5);
     }
 
-    public static @SuppressWarnings("unused") Reducing[] addRefs(Reducing[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    Reducing[] addRefs(@Nullable Reducing[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(Reducing::addRef).toArray((x) -> new Reducing[x]);
@@ -107,15 +122,18 @@ public abstract class BiasLayerTest extends LayerTestBase {
     public Layer getLayer(final int[][] inputSize, Random random) {
       BiasLayer temp_75_0004 = new BiasLayer(1);
       BiasLayer temp_75_0003 = temp_75_0004.addWeights(this::random);
-      if (null != temp_75_0004)
-        temp_75_0004.freeRef();
+      temp_75_0004.freeRef();
       return temp_75_0003;
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") Reducing addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    Reducing addRef() {
       return (Reducing) super.addRef();
     }
 

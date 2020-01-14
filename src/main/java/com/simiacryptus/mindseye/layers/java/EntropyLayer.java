@@ -21,9 +21,9 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.DataSerializer;
-import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -38,18 +38,23 @@ public class EntropyLayer extends SimpleActivationLayer<EntropyLayer> {
     super(id);
   }
 
+  @Nonnull
   @SuppressWarnings("unused")
-  public static EntropyLayer fromJson(final JsonObject json, Map<CharSequence, byte[]> rs) {
+  public static EntropyLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new EntropyLayer(json);
   }
 
-  public static @SuppressWarnings("unused") EntropyLayer[] addRefs(EntropyLayer[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  EntropyLayer[] addRefs(@Nullable EntropyLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(EntropyLayer::addRef).toArray((x) -> new EntropyLayer[x]);
   }
 
-  public static @SuppressWarnings("unused") EntropyLayer[][] addRefs(EntropyLayer[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  EntropyLayer[][] addRefs(@Nullable EntropyLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(EntropyLayer::addRefs)
@@ -62,10 +67,14 @@ public class EntropyLayer extends SimpleActivationLayer<EntropyLayer> {
     return super.getJsonStub();
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") EntropyLayer addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  EntropyLayer addRef() {
     return (EntropyLayer) super.addRef();
   }
 

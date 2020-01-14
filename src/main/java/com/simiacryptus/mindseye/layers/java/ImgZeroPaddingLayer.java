@@ -24,12 +24,12 @@ import com.simiacryptus.mindseye.lang.DataSerializer;
 import com.simiacryptus.mindseye.lang.LayerBase;
 import com.simiacryptus.mindseye.lang.Result;
 import com.simiacryptus.mindseye.lang.TensorList;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrayList;
 import com.simiacryptus.ref.wrappers.RefList;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -51,19 +51,24 @@ public class ImgZeroPaddingLayer extends LayerBase {
     sizeY = json.getAsJsonPrimitive("sizeY").getAsInt();
   }
 
+  @Nonnull
   @SuppressWarnings("unused")
   public static ImgZeroPaddingLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ImgZeroPaddingLayer(json);
   }
 
-  public static @SuppressWarnings("unused") ImgZeroPaddingLayer[] addRefs(ImgZeroPaddingLayer[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  ImgZeroPaddingLayer[] addRefs(@Nullable ImgZeroPaddingLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ImgZeroPaddingLayer::addRef)
         .toArray((x) -> new ImgZeroPaddingLayer[x]);
   }
 
-  public static @SuppressWarnings("unused") ImgZeroPaddingLayer[][] addRefs(ImgZeroPaddingLayer[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  ImgZeroPaddingLayer[][] addRefs(@Nullable ImgZeroPaddingLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ImgZeroPaddingLayer::addRefs)
@@ -77,21 +82,18 @@ public class ImgZeroPaddingLayer extends LayerBase {
     TensorList temp_25_0002 = inObj[0].getData();
     @Nonnull
     int[] dimensions = temp_25_0002.getDimensions();
-    if (null != temp_25_0002)
-      temp_25_0002.freeRef();
+    temp_25_0002.freeRef();
     ImgCropLayer imgCropLayer = new ImgCropLayer(dimensions[0] + 2 * this.sizeX, dimensions[1] + 2 * this.sizeY);
     Result temp_25_0001 = imgCropLayer.eval(Result.addRefs(inObj));
     ReferenceCounting.freeRefs(inObj);
-    if (null != imgCropLayer)
-      imgCropLayer.freeRef();
+    imgCropLayer.freeRef();
     return temp_25_0001;
   }
 
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull
-    final JsonObject json = super.getJsonStub();
+    @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("sizeX", sizeX);
     json.addProperty("sizeY", sizeX);
     return json;
@@ -103,10 +105,14 @@ public class ImgZeroPaddingLayer extends LayerBase {
     return new RefArrayList<>();
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") ImgZeroPaddingLayer addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  ImgZeroPaddingLayer addRef() {
     return (ImgZeroPaddingLayer) super.addRef();
   }
 

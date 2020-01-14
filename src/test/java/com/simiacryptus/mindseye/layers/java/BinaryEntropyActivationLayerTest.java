@@ -20,10 +20,11 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.wrappers.RefDoubleStream;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 
 public abstract class BinaryEntropyActivationLayerTest extends ActivationLayerTestBase {
@@ -31,16 +32,20 @@ public abstract class BinaryEntropyActivationLayerTest extends ActivationLayerTe
     super(new BinaryEntropyActivationLayer());
   }
 
-  public static @SuppressWarnings("unused") BinaryEntropyActivationLayerTest[] addRefs(
-      BinaryEntropyActivationLayerTest[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  BinaryEntropyActivationLayerTest[] addRefs(
+      @Nullable BinaryEntropyActivationLayerTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(BinaryEntropyActivationLayerTest::addRef)
         .toArray((x) -> new BinaryEntropyActivationLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused") BinaryEntropyActivationLayerTest[][] addRefs(
-      BinaryEntropyActivationLayerTest[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  BinaryEntropyActivationLayerTest[][] addRefs(
+      @Nullable BinaryEntropyActivationLayerTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(BinaryEntropyActivationLayerTest::addRefs)
@@ -52,15 +57,20 @@ public abstract class BinaryEntropyActivationLayerTest extends ActivationLayerTe
     return 0.1 * Math.random() + 1.0;
   }
 
+  @Nonnull
   @Override
   public RefDoubleStream scan() {
     return RefIntStream.range(50, 450).mapToDouble(x -> x * 1.0 / 500.0);
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") BinaryEntropyActivationLayerTest addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  BinaryEntropyActivationLayerTest addRef() {
     return (BinaryEntropyActivationLayerTest) super.addRef();
   }
 

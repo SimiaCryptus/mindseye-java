@@ -21,7 +21,6 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
@@ -50,19 +49,24 @@ public class BiasMetaLayer extends LayerBase {
     super(id);
   }
 
+  @Nonnull
   @SuppressWarnings("unused")
   public static BiasMetaLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new BiasMetaLayer(json);
   }
 
-  public static @SuppressWarnings("unused") BiasMetaLayer[] addRefs(BiasMetaLayer[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  BiasMetaLayer[] addRefs(@Nullable BiasMetaLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(BiasMetaLayer::addRef)
         .toArray((x) -> new BiasMetaLayer[x]);
   }
 
-  public static @SuppressWarnings("unused") BiasMetaLayer[][] addRefs(BiasMetaLayer[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  BiasMetaLayer[][] addRefs(@Nullable BiasMetaLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(BiasMetaLayer::addRefs)
@@ -79,23 +83,19 @@ public class BiasMetaLayer extends LayerBase {
     final int itemCnt = data0.length();
     final TensorList data1 = in1.getData();
     Tensor tensor1 = data1.get(0);
-    if (null != data1)
-      data1.freeRef();
+    data1.freeRef();
     final Tensor[] tensors = RefIntStream.range(0, itemCnt).parallel()
         .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
           Tensor tensor = data0.get(dataIndex);
           Tensor temp_48_0003 = tensor.mapIndex(RefUtil.wrapInterface((v, c) -> {
             return v + tensor1.get(c);
-          }, tensor1 == null ? null : tensor1.addRef()));
-          if (null != tensor)
-            tensor.freeRef();
+          }, tensor1.addRef()));
+          tensor.freeRef();
           return temp_48_0003;
-        }, tensor1 == null ? null : tensor1.addRef(), data0 == null ? null : data0.addRef()))
+        }, tensor1.addRef(), data0.addRef()))
         .toArray(i -> new Tensor[i]);
-    if (null != tensor1)
-      tensor1.freeRef();
-    if (null != data0)
-      data0.freeRef();
+    tensor1.freeRef();
+    data0.freeRef();
     Tensor tensor0 = tensors[0].addRef();
     try {
       try {
@@ -106,7 +106,7 @@ public class BiasMetaLayer extends LayerBase {
               }
 
               @Override
-              public void accept(DeltaSet<UUID> buffer, TensorList data) {
+              public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList data) {
                 if (in1.isAlive()) {
                   @Nonnull
                   TensorArray tensorArray = new TensorArray(RefIntStream.range(0, data.length())
@@ -116,28 +116,27 @@ public class BiasMetaLayer extends LayerBase {
                             return RefIntStream.range(0, itemCnt).mapToDouble(RefUtil.wrapInterface(j -> {
                               Tensor tensor = data.get(j);
                               double temp_48_0006 = tensor.get(c);
-                              if (null != tensor)
-                                tensor.freeRef();
+                              tensor.freeRef();
                               return temp_48_0006;
-                            }, data == null ? null : data.addRef())).sum();
-                          }, data == null ? null : data.addRef()));
+                            }, data.addRef())).sum();
+                          }, data.addRef()));
                         else {
                           return tensor0.mapCoords(v -> 0);
                         }
-                      }, data == null ? null : data.addRef(), tensor0 == null ? null : tensor0.addRef()))
+                      }, data.addRef(), tensor0.addRef()))
                       .toArray(i -> new Tensor[i]));
-                  in1.accumulate(buffer == null ? null : buffer.addRef(), tensorArray == null ? null : tensorArray);
+                  in1.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
                 }
                 if (in0.isAlive()) {
-                  in0.accumulate(buffer == null ? null : buffer.addRef(), data == null ? null : data.addRef());
+                  in0.accumulate(buffer == null ? null : buffer.addRef(), data.addRef());
                 }
-                if (null != data)
-                  data.freeRef();
+                data.freeRef();
                 if (null != buffer)
                   buffer.freeRef();
               }
 
-              public @SuppressWarnings("unused") void _free() {
+              public @SuppressWarnings("unused")
+              void _free() {
               }
             }) {
 
@@ -154,20 +153,16 @@ public class BiasMetaLayer extends LayerBase {
 
             };
           } finally {
-            if (null != tensor0)
-              tensor0.freeRef();
+            tensor0.freeRef();
           }
         } finally {
-          if (null != tensors)
-            ReferenceCounting.freeRefs(tensors);
+          ReferenceCounting.freeRefs(tensors);
         }
       } finally {
-        if (null != in1)
-          in1.freeRef();
+        in1.freeRef();
       }
     } finally {
-      if (null != in0)
-        in0.freeRef();
+      in0.freeRef();
     }
   }
 
@@ -183,10 +178,14 @@ public class BiasMetaLayer extends LayerBase {
     return RefArrays.asList();
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") BiasMetaLayer addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  BiasMetaLayer addRef() {
     return (BiasMetaLayer) super.addRef();
   }
 }

@@ -23,13 +23,13 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.simiacryptus.mindseye.lang.*;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefList;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -54,19 +54,24 @@ public class AssertDimensionsLayer extends LayerBase {
     return super.getChildren();
   }
 
+  @Nonnull
   @SuppressWarnings("unused")
   public static AssertDimensionsLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new AssertDimensionsLayer(json);
   }
 
-  public static @SuppressWarnings("unused") AssertDimensionsLayer[] addRefs(AssertDimensionsLayer[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  AssertDimensionsLayer[] addRefs(@Nullable AssertDimensionsLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(AssertDimensionsLayer::addRef)
         .toArray((x) -> new AssertDimensionsLayer[x]);
   }
 
-  public static @SuppressWarnings("unused") AssertDimensionsLayer[][] addRefs(AssertDimensionsLayer[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  AssertDimensionsLayer[][] addRefs(@Nullable AssertDimensionsLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(AssertDimensionsLayer::addRefs)
@@ -83,20 +88,15 @@ public class AssertDimensionsLayer extends LayerBase {
     ReferenceCounting.freeRefs(array);
     TensorList temp_77_0001 = input.getData();
     if (0 == temp_77_0001.length()) {
-      if (null != input)
-        input.freeRef();
+      input.freeRef();
       throw new IllegalArgumentException(getName());
     }
-    if (null != temp_77_0001)
-      temp_77_0001.freeRef();
+    temp_77_0001.freeRef();
     TensorList temp_77_0002 = input.getData();
-    @Nonnull
-    final int[] inputDims = temp_77_0002.getDimensions();
-    if (null != temp_77_0002)
-      temp_77_0002.freeRef();
+    @Nonnull final int[] inputDims = temp_77_0002.getDimensions();
+    temp_77_0002.freeRef();
     if (Tensor.length(inputDims) != Tensor.length(dims)) {
-      if (null != input)
-        input.freeRef();
+      input.freeRef();
       throw new IllegalArgumentException(
           getName() + ": " + RefArrays.toString(inputDims) + " != " + RefArrays.toString(dims));
     }
@@ -106,10 +106,8 @@ public class AssertDimensionsLayer extends LayerBase {
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull
-    final JsonObject json = super.getJsonStub();
-    @Nonnull
-    final JsonArray dimsJson = new JsonArray();
+    @Nonnull final JsonObject json = super.getJsonStub();
+    @Nonnull final JsonArray dimsJson = new JsonArray();
     for (final int dim : dims) {
       dimsJson.add(new JsonPrimitive(dim));
     }
@@ -123,10 +121,14 @@ public class AssertDimensionsLayer extends LayerBase {
     return RefArrays.asList();
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") AssertDimensionsLayer addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  AssertDimensionsLayer addRef() {
     return (AssertDimensionsLayer) super.addRef();
   }
 

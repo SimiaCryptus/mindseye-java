@@ -22,7 +22,6 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.mindseye.layers.WrapperLayer;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrayList;
 import com.simiacryptus.ref.wrappers.RefArrays;
@@ -44,7 +43,7 @@ public class ImgTileSubnetLayer extends WrapperLayer {
   private final int strideY;
 
   public ImgTileSubnetLayer(final Layer subnetwork, final int width, final int height, final int strideX,
-      final int strideY) {
+                            final int strideY) {
     super(subnetwork);
     this.height = height;
     this.width = width;
@@ -65,19 +64,24 @@ public class ImgTileSubnetLayer extends WrapperLayer {
     JsonObject subnetwork = json.getAsJsonObject("subnetwork");
   }
 
+  @Nonnull
   @SuppressWarnings("unused")
   public static ImgTileSubnetLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ImgTileSubnetLayer(json, rs);
   }
 
-  public static @SuppressWarnings("unused") ImgTileSubnetLayer[] addRefs(ImgTileSubnetLayer[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  ImgTileSubnetLayer[] addRefs(@Nullable ImgTileSubnetLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ImgTileSubnetLayer::addRef)
         .toArray((x) -> new ImgTileSubnetLayer[x]);
   }
 
-  public static @SuppressWarnings("unused") ImgTileSubnetLayer[][] addRefs(ImgTileSubnetLayer[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  ImgTileSubnetLayer[][] addRefs(@Nullable ImgTileSubnetLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ImgTileSubnetLayer::addRefs)
@@ -90,20 +94,17 @@ public class ImgTileSubnetLayer extends WrapperLayer {
     assert 1 == inObj.length;
     Result input = inObj[0].addRef();
     final TensorList inputData = input.getData();
-    @Nonnull
-    final int[] inputDims = inputData.getDimensions();
+    @Nonnull final int[] inputDims = inputData.getDimensions();
     assert 3 == inputDims.length;
     int cols = (int) (Math.ceil((inputDims[0] - width) * 1.0 / strideX) + 1);
     int rows = (int) (Math.ceil((inputDims[1] - height) * 1.0 / strideY) + 1);
     if (cols == 1 && rows == 1) {
-      if (null != input)
-        input.freeRef();
-      if (null != inputData)
-        inputData.freeRef();
+      input.freeRef();
+      inputData.freeRef();
       Layer temp_12_0006 = getInner();
+      assert temp_12_0006 != null;
       Result temp_12_0005 = temp_12_0006.eval(Result.addRefs(inObj));
-      if (null != temp_12_0006)
-        temp_12_0006.freeRef();
+      temp_12_0006.freeRef();
       ReferenceCounting.freeRefs(inObj);
       return temp_12_0005;
     }
@@ -127,7 +128,7 @@ public class ImgTileSubnetLayer extends WrapperLayer {
           }
 
           @Override
-          public void accept(DeltaSet<UUID> ctx, TensorList delta) {
+          public void accept(@Nullable DeltaSet<UUID> ctx, @Nullable TensorList delta) {
             TensorList temp_12_0001 = delta == null ? null : delta.addRef();
             if (null != passback[finalIndex])
               passback[finalIndex].freeRef();
@@ -142,14 +143,15 @@ public class ImgTileSubnetLayer extends WrapperLayer {
               Result temp_12_0007 = imgTileAssemblyLayer.eval(RefArrays.stream(TensorList.addRefs(passback)).map(t -> {
                 Result temp_12_0004 = new Result(t == null ? null : t.addRef(), new Result.Accumulator() {
                   @Override
-                  public void accept(DeltaSet<UUID> c2, TensorList d2) {
+                  public void accept(@Nullable DeltaSet<UUID> c2, @Nullable TensorList d2) {
                     if (null != d2)
                       d2.freeRef();
                     if (null != c2)
                       c2.freeRef();
                   }
 
-                  public @SuppressWarnings("unused") void _free() {
+                  public @SuppressWarnings("unused")
+                  void _free() {
                   }
                 });
                 if (null != t)
@@ -157,61 +159,51 @@ public class ImgTileSubnetLayer extends WrapperLayer {
                 return temp_12_0004;
               }).<Result>toArray(i -> new Result[i]));
               TensorList reassembled = temp_12_0007.getData();
-              if (null != temp_12_0007)
-                temp_12_0007.freeRef();
-              if (null != imgTileAssemblyLayer)
-                imgTileAssemblyLayer.freeRef();
-              input.accumulate(ctx == null ? null : ctx.addRef(), reassembled == null ? null : reassembled.addRef());
-              if (null != reassembled)
-                reassembled.freeRef();
+              temp_12_0007.freeRef();
+              imgTileAssemblyLayer.freeRef();
+              input.accumulate(ctx == null ? null : ctx.addRef(), reassembled.addRef());
+              reassembled.freeRef();
             }
             if (null != ctx)
               ctx.freeRef();
           }
 
-          public @SuppressWarnings("unused") void _free() {
+          public @SuppressWarnings("unused")
+          void _free() {
           }
         }) {
           public void _free() {
             super._free();
           }
         });
-        if (null != tileSelectLayer)
-          tileSelectLayer.freeRef();
+        tileSelectLayer.freeRef();
         Layer temp_12_0008 = getInner();
-        Result temp_12_0002 = temp_12_0008.eval(selectedTile == null ? null : selectedTile.addRef());
-        if (null != temp_12_0008)
-          temp_12_0008.freeRef();
+        assert temp_12_0008 != null;
+        Result temp_12_0002 = temp_12_0008.eval(selectedTile.addRef());
+        temp_12_0008.freeRef();
         if (null != results[index])
           results[index].freeRef();
         results[index] = temp_12_0002 == null ? null : temp_12_0002.addRef();
         if (null != temp_12_0002)
           temp_12_0002.freeRef();
-        if (null != selectedTile)
-          selectedTile.freeRef();
+        selectedTile.freeRef();
         index = index + 1;
       }
     }
-    if (null != passback)
-      ReferenceCounting.freeRefs(passback);
-    if (null != inputData)
-      inputData.freeRef();
-    if (null != input)
-      input.freeRef();
+    ReferenceCounting.freeRefs(passback);
+    inputData.freeRef();
+    input.freeRef();
     ImgTileAssemblyLayer imgTileAssemblyLayer = new ImgTileAssemblyLayer(cols, rows);
     Result temp_12_0003 = imgTileAssemblyLayer.eval(Result.addRefs(results));
-    if (null != imgTileAssemblyLayer)
-      imgTileAssemblyLayer.freeRef();
-    if (null != results)
-      ReferenceCounting.freeRefs(results);
+    imgTileAssemblyLayer.freeRef();
+    ReferenceCounting.freeRefs(results);
     return temp_12_0003;
   }
 
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull
-    final JsonObject json = super.getJson(resources, dataSerializer);
+    @Nonnull final JsonObject json = super.getJson(resources, dataSerializer);
     json.addProperty("height", height);
     json.addProperty("width", width);
     json.addProperty("strideX", strideX);
@@ -225,10 +217,14 @@ public class ImgTileSubnetLayer extends WrapperLayer {
     return new RefArrayList<>();
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") ImgTileSubnetLayer addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  ImgTileSubnetLayer addRef() {
     return (ImgTileSubnetLayer) super.addRef();
   }
 

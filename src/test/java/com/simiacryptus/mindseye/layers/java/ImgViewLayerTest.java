@@ -20,9 +20,9 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
-import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -32,14 +32,18 @@ public abstract class ImgViewLayerTest extends LayerTestBase {
     validateBatchExecution = false;
   }
 
-  public static @SuppressWarnings("unused") ImgViewLayerTest[] addRefs(ImgViewLayerTest[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  ImgViewLayerTest[] addRefs(@Nullable ImgViewLayerTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ImgViewLayerTest::addRef)
         .toArray((x) -> new ImgViewLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused") ImgViewLayerTest[][] addRefs(ImgViewLayerTest[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  ImgViewLayerTest[][] addRefs(@Nullable ImgViewLayerTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ImgViewLayerTest::addRefs)
@@ -49,19 +53,25 @@ public abstract class ImgViewLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][] { { 8, 8, 2 } };
+    return new int[][]{{8, 8, 2}};
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") ImgViewLayerTest addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  ImgViewLayerTest addRef() {
     return (ImgViewLayerTest) super.addRef();
   }
 
   public static class Basic extends ImgViewLayerTest {
 
-    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    Basic[] addRefs(@Nullable Basic[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
@@ -73,17 +83,23 @@ public abstract class ImgViewLayerTest extends LayerTestBase {
       return new ImgViewLayer(3, 2, 2, 3);
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") Basic addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    Basic addRef() {
       return (Basic) super.addRef();
     }
   }
 
   public static class Rotated extends ImgViewLayerTest {
 
-    public static @SuppressWarnings("unused") Rotated[] addRefs(Rotated[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    Rotated[] addRefs(@Nullable Rotated[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(Rotated::addRef).toArray((x) -> new Rotated[x]);
@@ -94,22 +110,27 @@ public abstract class ImgViewLayerTest extends LayerTestBase {
     public Layer getLayer(final int[][] inputSize, Random random) {
       ImgViewLayer temp_72_0002 = new ImgViewLayer(3, 2, 2, 3);
       ImgViewLayer temp_72_0001 = temp_72_0002.setRotationRadians(Math.PI / 2);
-      if (null != temp_72_0002)
-        temp_72_0002.freeRef();
+      temp_72_0002.freeRef();
       return temp_72_0001;
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") Rotated addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    Rotated addRef() {
       return (Rotated) super.addRef();
     }
   }
 
   public static class RotatedChannels extends ImgViewLayerTest {
 
-    public static @SuppressWarnings("unused") RotatedChannels[] addRefs(RotatedChannels[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    RotatedChannels[] addRefs(@Nullable RotatedChannels[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(RotatedChannels::addRef)
@@ -122,17 +143,19 @@ public abstract class ImgViewLayerTest extends LayerTestBase {
       ImgViewLayer temp_72_0004 = new ImgViewLayer(3, 2, 2, 3);
       ImgViewLayer temp_72_0005 = temp_72_0004.setRotationRadians(Math.PI / 2);
       ImgViewLayer temp_72_0003 = temp_72_0005.setChannelSelector(2, -1);
-      if (null != temp_72_0005)
-        temp_72_0005.freeRef();
-      if (null != temp_72_0004)
-        temp_72_0004.freeRef();
+      temp_72_0005.freeRef();
+      temp_72_0004.freeRef();
       return temp_72_0003;
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") RotatedChannels addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    RotatedChannels addRef() {
       return (RotatedChannels) super.addRef();
     }
   }

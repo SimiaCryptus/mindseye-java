@@ -21,7 +21,6 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrayList;
@@ -58,10 +57,8 @@ public class ImgReshapeLayer extends LayerBase {
 
   @Nonnull
   public static Tensor copyCondense(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData) {
-    @Nonnull
-    final int[] inDim = inputData.getDimensions();
-    @Nonnull
-    final int[] outDim = outputData.getDimensions();
+    @Nonnull final int[] inDim = inputData.getDimensions();
+    @Nonnull final int[] outDim = outputData.getDimensions();
     assert 3 == inDim.length;
     assert 3 == outDim.length;
     assert inDim[0] >= outDim[0];
@@ -72,8 +69,7 @@ public class ImgReshapeLayer extends LayerBase {
     final int kernelSizeX = inDim[0] / outDim[0];
     final int kernelSizeY = inDim[0] / outDim[0];
     int index = 0;
-    @Nullable
-    final double[] outputDataData = outputData.getData();
+    @Nullable final double[] outputDataData = outputData.getData();
     for (int z = 0; z < inDim[2]; z++) {
       for (int xx = 0; xx < kernelSizeX; xx++) {
         for (int yy = 0; yy < kernelSizeY; yy++) {
@@ -91,10 +87,8 @@ public class ImgReshapeLayer extends LayerBase {
 
   @Nonnull
   public static Tensor copyExpand(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData) {
-    @Nonnull
-    final int[] inDim = inputData.getDimensions();
-    @Nonnull
-    final int[] outDim = outputData.getDimensions();
+    @Nonnull final int[] inDim = inputData.getDimensions();
+    @Nonnull final int[] outDim = outputData.getDimensions();
     assert 3 == inDim.length;
     assert 3 == outDim.length;
     assert inDim[0] <= outDim[0];
@@ -120,19 +114,24 @@ public class ImgReshapeLayer extends LayerBase {
     return outputData;
   }
 
+  @Nonnull
   @SuppressWarnings("unused")
   public static ImgReshapeLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ImgReshapeLayer(json);
   }
 
-  public static @SuppressWarnings("unused") ImgReshapeLayer[] addRefs(ImgReshapeLayer[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  ImgReshapeLayer[] addRefs(@Nullable ImgReshapeLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ImgReshapeLayer::addRef)
         .toArray((x) -> new ImgReshapeLayer[x]);
   }
 
-  public static @SuppressWarnings("unused") ImgReshapeLayer[][] addRefs(ImgReshapeLayer[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  ImgReshapeLayer[][] addRefs(@Nullable ImgReshapeLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ImgReshapeLayer::addRefs)
@@ -146,8 +145,7 @@ public class ImgReshapeLayer extends LayerBase {
     final Result input = inObj[0].addRef();
     ReferenceCounting.freeRefs(inObj);
     final TensorList batch = input.getData();
-    @Nonnull
-    final int[] inputDims = batch.getDimensions();
+    @Nonnull final int[] inputDims = batch.getDimensions();
     assert 3 == inputDims.length;
     assert expand || 0 == inputDims[0] % kernelSizeX : (inputDims[0] + " % " + kernelSizeX);
     assert expand || 0 == inputDims[1] % kernelSizeY : (inputDims[1] + " % " + kernelSizeY);
@@ -165,17 +163,14 @@ public class ImgReshapeLayer extends LayerBase {
         .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
           Tensor inputData = batch.get(dataIndex);
           Tensor temp_43_0002 = expand
-              ? ImgReshapeLayer.copyExpand(inputData == null ? null : inputData.addRef(), outputDims.copy())
-              : ImgReshapeLayer.copyCondense(inputData == null ? null : inputData.addRef(), outputDims.copy());
-          if (null != inputData)
-            inputData.freeRef();
+              ? ImgReshapeLayer.copyExpand(inputData.addRef(), outputDims.copy())
+              : ImgReshapeLayer.copyCondense(inputData.addRef(), outputDims.copy());
+          inputData.freeRef();
           return temp_43_0002;
-        }, outputDims == null ? null : outputDims.addRef(), batch == null ? null : batch.addRef()))
+        }, outputDims.addRef(), batch.addRef()))
         .toArray(i -> new Tensor[i]));
-    if (null != outputDims)
-      outputDims.freeRef();
-    if (null != batch)
-      batch.freeRef();
+    outputDims.freeRef();
+    batch.freeRef();
     try {
       try {
         return new Result(data, new Result.Accumulator() {
@@ -183,34 +178,31 @@ public class ImgReshapeLayer extends LayerBase {
           }
 
           @Override
-          public void accept(DeltaSet<UUID> buffer, TensorList error) {
+          public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList error) {
             //assert error.stream().flatMapToDouble(x-> Arrays.stream(x.getData())).allMatch(v->Double.isFinite(v));
             if (input.isAlive()) {
               @Nonnull
               TensorArray tensorArray = new TensorArray(RefIntStream.range(0, error.length()).parallel()
                   .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-                    @Nonnull
-                    final Tensor passback = new Tensor(inputDims);
-                    @Nullable
-                    final Tensor err = error.get(dataIndex);
+                    @Nonnull final Tensor passback = new Tensor(inputDims);
+                    @Nullable final Tensor err = error.get(dataIndex);
                     Tensor temp_43_0004 = expand
-                        ? ImgReshapeLayer.copyCondense(err == null ? null : err.addRef(),
-                            passback == null ? null : passback)
-                        : ImgReshapeLayer.copyExpand(err == null ? null : err.addRef(),
-                            passback == null ? null : passback.addRef());
-                    if (null != err)
-                      err.freeRef();
+                        ? ImgReshapeLayer.copyCondense(err.addRef(),
+                        passback)
+                        : ImgReshapeLayer.copyExpand(err.addRef(),
+                        passback.addRef());
+                    err.freeRef();
                     return temp_43_0004;
-                  }, error == null ? null : error.addRef())).toArray(i -> new Tensor[i]));
-              input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray == null ? null : tensorArray);
+                  }, error.addRef())).toArray(i -> new Tensor[i]));
+              input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
             }
-            if (null != error)
-              error.freeRef();
+            error.freeRef();
             if (null != buffer)
               buffer.freeRef();
           }
 
-          public @SuppressWarnings("unused") void _free() {
+          public @SuppressWarnings("unused")
+          void _free() {
           }
         }) {
 
@@ -226,20 +218,17 @@ public class ImgReshapeLayer extends LayerBase {
           }
         };
       } finally {
-        if (null != data)
-          data.freeRef();
+        data.freeRef();
       }
     } finally {
-      if (null != input)
-        input.freeRef();
+      input.freeRef();
     }
   }
 
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull
-    final JsonObject json = super.getJsonStub();
+    @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("kernelSizeX", kernelSizeX);
     json.addProperty("kernelSizeY", kernelSizeX);
     json.addProperty("expandPlasma", expand);
@@ -252,10 +241,14 @@ public class ImgReshapeLayer extends LayerBase {
     return new RefArrayList<>();
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") ImgReshapeLayer addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  ImgReshapeLayer addRef() {
     return (ImgReshapeLayer) super.addRef();
   }
 

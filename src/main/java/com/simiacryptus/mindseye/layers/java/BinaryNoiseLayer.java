@@ -24,17 +24,17 @@ import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.mindseye.layers.StochasticComponent;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrayList;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefList;
-import org.jetbrains.annotations.NotNull;
+import com.simiacryptus.ref.wrappers.RefSystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Random;
@@ -44,6 +44,7 @@ import java.util.UUID;
 public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
 
   public static final ThreadLocal<Random> random = new ThreadLocal<Random>() {
+    @Nonnull
     @Override
     protected Random initialValue() {
       return new Random();
@@ -54,7 +55,7 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
   @Nonnull
   final RefList<Tensor> maskList = new RefArrayList<>();
   private double value;
-  private long seed = com.simiacryptus.ref.wrappers.RefSystem.nanoTime();
+  private long seed = RefSystem.nanoTime();
 
   public BinaryNoiseLayer() {
     this(0.5);
@@ -83,12 +84,13 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
     shuffle(StochasticComponent.random.get().nextLong());
   }
 
+  @Nonnull
   @SuppressWarnings("unused")
   public static BinaryNoiseLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new BinaryNoiseLayer(json);
   }
 
-  @NotNull
+  @Nonnull
   public static Layer maskLayer(double density) {
     PipelineNetwork subnet = new PipelineNetwork(1);
     RefUtil.freeRef(subnet.add(new ProductInputsLayer(), subnet.add(new BinaryNoiseLayer(density), subnet.getInput(0)),
@@ -96,14 +98,18 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
     return subnet;
   }
 
-  public static @SuppressWarnings("unused") BinaryNoiseLayer[] addRefs(BinaryNoiseLayer[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  BinaryNoiseLayer[] addRefs(@Nullable BinaryNoiseLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(BinaryNoiseLayer::addRef)
         .toArray((x) -> new BinaryNoiseLayer[x]);
   }
 
-  public static @SuppressWarnings("unused") BinaryNoiseLayer[][] addRefs(BinaryNoiseLayer[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  BinaryNoiseLayer[][] addRefs(@Nullable BinaryNoiseLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(BinaryNoiseLayer::addRefs)
@@ -115,17 +121,14 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
     final Result input = inObj[0].addRef();
     ReferenceCounting.freeRefs(inObj);
     TensorList inputData = input.getData();
-    @Nonnull
-    final int[] dimensions = inputData.getDimensions();
+    @Nonnull final int[] dimensions = inputData.getDimensions();
     final int length = inputData.length();
     Tensor temp_32_0004 = maskList.get(0);
-    if (maskList.size() > 0 && !RefArrays.equals(temp_32_0004.getDimensions(), dimensions)) {
+    if (!RefArrays.equals(temp_32_0004.getDimensions(), dimensions)) {
       clear();
     }
-    if (null != temp_32_0004)
-      temp_32_0004.freeRef();
-    @Nonnull
-    final Tensor tensorPrototype = new Tensor(dimensions);
+    temp_32_0004.freeRef();
+    @Nonnull final Tensor tensorPrototype = new Tensor(dimensions);
     double amplitude = 1.0 / getValue();
     while (length > maskList.size()) {
       if (seed == 0) {
@@ -138,8 +141,7 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
     tensorPrototype.freeRef();
     TensorArray data = new TensorArray(maskList.stream().limit(length).toArray(i -> new Tensor[i]));
     assert inputData.length() == data.length() : (inputData.length() + " != " + data.length());
-    if (null != inputData)
-      inputData.freeRef();
+    inputData.freeRef();
     try {
       try {
         return new Result(data, new Result.Accumulator() {
@@ -147,20 +149,19 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
           }
 
           @Override
-          public void accept(DeltaSet<UUID> buffer, TensorList delta) {
+          public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
             input.accumulate(buffer == null ? null : buffer.addRef(), new TensorArray(delta.stream().map(t -> {
               Tensor temp_32_0003 = t.map(x -> 0);
-              if (null != t)
-                t.freeRef();
+              t.freeRef();
               return temp_32_0003;
             }).toArray(i -> new Tensor[i])));
-            if (null != delta)
-              delta.freeRef();
+            delta.freeRef();
             if (null != buffer)
               buffer.freeRef();
           }
 
-          public @SuppressWarnings("unused") void _free() {
+          public @SuppressWarnings("unused")
+          void _free() {
           }
         }) {
 
@@ -176,12 +177,10 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
           }
         };
       } finally {
-        if (null != data)
-          data.freeRef();
+        data.freeRef();
       }
     } finally {
-      if (null != input)
-        input.freeRef();
+      input.freeRef();
     }
   }
 
@@ -190,15 +189,13 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
     synchronized (maskList) {
       maskList.clear();
     }
-    if (null != maskList)
-      maskList.freeRef();
+    maskList.freeRef();
   }
 
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull
-    final JsonObject json = super.getJsonStub();
+    @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("value", value);
     json.addProperty("seed", seed);
     //    json.addProperty("enabled", enabled);
@@ -229,7 +226,10 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
     super._free();
   }
 
-  public @Override @SuppressWarnings("unused") BinaryNoiseLayer addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  BinaryNoiseLayer addRef() {
     return (BinaryNoiseLayer) super.addRef();
   }
 

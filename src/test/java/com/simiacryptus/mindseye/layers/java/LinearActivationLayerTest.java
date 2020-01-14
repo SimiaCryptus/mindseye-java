@@ -21,8 +21,9 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
-import com.simiacryptus.ref.lang.RefAware;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 
 public abstract class LinearActivationLayerTest extends ActivationLayerTestBase {
@@ -30,41 +31,56 @@ public abstract class LinearActivationLayerTest extends ActivationLayerTestBase 
     super(new LinearActivationLayer());
   }
 
-  public static @SuppressWarnings("unused") LinearActivationLayerTest[] addRefs(LinearActivationLayerTest[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  LinearActivationLayerTest[] addRefs(@Nullable LinearActivationLayerTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(LinearActivationLayerTest::addRef)
         .toArray((x) -> new LinearActivationLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused") LinearActivationLayerTest[][] addRefs(LinearActivationLayerTest[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  LinearActivationLayerTest[][] addRefs(@Nullable LinearActivationLayerTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(LinearActivationLayerTest::addRefs)
         .toArray((x) -> new LinearActivationLayerTest[x][]);
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") LinearActivationLayerTest addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  LinearActivationLayerTest addRef() {
     return (LinearActivationLayerTest) super.addRef();
   }
 
   public static class Basic extends LinearActivationLayerTest {
-    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    Basic[] addRefs(@Nullable Basic[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") Basic addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    Basic addRef() {
       return (Basic) super.addRef();
     }
 
+    @Nonnull
     @Override
     protected Layer lossLayer() {
       return new EntropyLossLayer();

@@ -22,13 +22,12 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.network.InnerNode;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.RefUtil;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -46,59 +45,62 @@ public class StdDevMetaLayer extends PipelineNetwork {
     super(1);
     AvgMetaLayer temp_70_0001 = new AvgMetaLayer();
     RefUtil.freeRef(add(temp_70_0001.setMinBatchCount(minBatchCount)));
-    if (null != temp_70_0001)
-      temp_70_0001.freeRef();
+    temp_70_0001.freeRef();
     RefUtil.freeRef(add(new AvgReducerLayer()));
     InnerNode square = add(new SqActivationLayer());
-    RefUtil.freeRef(add(new SqActivationLayer(), getInput(0), square == null ? null : square.addRef()));
+    RefUtil.freeRef(add(new SqActivationLayer(), getInput(0), square.addRef()));
     AvgMetaLayer temp_70_0002 = new AvgMetaLayer();
     RefUtil.freeRef(add(temp_70_0002.setMinBatchCount(minBatchCount)));
-    if (null != temp_70_0002)
-      temp_70_0002.freeRef();
+    temp_70_0002.freeRef();
     RefUtil.freeRef(add(new AvgReducerLayer()));
     LinearActivationLayer temp_70_0003 = new LinearActivationLayer();
     LinearActivationLayer temp_70_0005 = temp_70_0003.setScale(-1);
     RefUtil.freeRef(
-        add(new SumInputsLayer(), getHead(), add(temp_70_0005.freeze(), square == null ? null : square.addRef())));
-    if (null != temp_70_0005)
-      temp_70_0005.freeRef();
-    if (null != temp_70_0003)
-      temp_70_0003.freeRef();
-    if (null != square)
-      square.freeRef();
+        add(new SumInputsLayer(), getHead(), add(temp_70_0005.freeze(), square.addRef())));
+    temp_70_0005.freeRef();
+    temp_70_0003.freeRef();
+    square.freeRef();
     NthPowerActivationLayer temp_70_0004 = new NthPowerActivationLayer();
     RefUtil.freeRef(add(temp_70_0004.setPower(0.5)));
-    if (null != temp_70_0004)
-      temp_70_0004.freeRef();
+    temp_70_0004.freeRef();
   }
 
   protected StdDevMetaLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json, rs);
   }
 
+  @Nonnull
   @SuppressWarnings("unused")
-  public static StdDevMetaLayer fromJson(@NotNull final JsonObject json, Map<CharSequence, byte[]> rs) {
+  public static StdDevMetaLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new StdDevMetaLayer(json, rs);
   }
 
-  public static @SuppressWarnings("unused") StdDevMetaLayer[] addRefs(StdDevMetaLayer[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  StdDevMetaLayer[] addRefs(@Nullable StdDevMetaLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(StdDevMetaLayer::addRef)
         .toArray((x) -> new StdDevMetaLayer[x]);
   }
 
-  public static @SuppressWarnings("unused") StdDevMetaLayer[][] addRefs(StdDevMetaLayer[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  StdDevMetaLayer[][] addRefs(@Nullable StdDevMetaLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(StdDevMetaLayer::addRefs)
         .toArray((x) -> new StdDevMetaLayer[x][]);
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") StdDevMetaLayer addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  StdDevMetaLayer addRef() {
     return (StdDevMetaLayer) super.addRef();
   }
 

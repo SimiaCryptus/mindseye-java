@@ -20,22 +20,26 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
-import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Random;
 
 public abstract class ImgBandScaleLayerTest extends LayerTestBase {
 
-  public static @SuppressWarnings("unused") ImgBandScaleLayerTest[] addRefs(ImgBandScaleLayerTest[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  ImgBandScaleLayerTest[] addRefs(@Nullable ImgBandScaleLayerTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ImgBandScaleLayerTest::addRef)
         .toArray((x) -> new ImgBandScaleLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused") ImgBandScaleLayerTest[][] addRefs(ImgBandScaleLayerTest[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  ImgBandScaleLayerTest[][] addRefs(@Nullable ImgBandScaleLayerTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ImgBandScaleLayerTest::addRefs)
@@ -45,7 +49,7 @@ public abstract class ImgBandScaleLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][] { { 2, 2, 3 } };
+    return new int[][]{{2, 2, 3}};
   }
 
   @Nonnull
@@ -53,30 +57,39 @@ public abstract class ImgBandScaleLayerTest extends LayerTestBase {
   public Layer getLayer(final int[][] inputSize, Random random) {
     ImgBandScaleLayer temp_76_0002 = new ImgBandScaleLayer(0.0, 0.0, 0.0);
     ImgBandScaleLayer temp_76_0001 = temp_76_0002.addWeights(this::random);
-    if (null != temp_76_0002)
-      temp_76_0002.freeRef();
+    temp_76_0002.freeRef();
     return temp_76_0001;
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") ImgBandScaleLayerTest addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  ImgBandScaleLayerTest addRef() {
     return (ImgBandScaleLayerTest) super.addRef();
   }
 
   public static class Basic extends ImgBandScaleLayerTest {
 
-    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    Basic[] addRefs(@Nullable Basic[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") Basic addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    Basic addRef() {
       return (Basic) super.addRef();
     }
   }

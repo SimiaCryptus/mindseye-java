@@ -21,9 +21,9 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.MetaLayerTestBase;
-import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -33,14 +33,18 @@ public abstract class SumMetaLayerTest extends MetaLayerTestBase {
     validateBatchExecution = false;
   }
 
-  public static @SuppressWarnings("unused") SumMetaLayerTest[] addRefs(SumMetaLayerTest[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  SumMetaLayerTest[] addRefs(@Nullable SumMetaLayerTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SumMetaLayerTest::addRef)
         .toArray((x) -> new SumMetaLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused") SumMetaLayerTest[][] addRefs(SumMetaLayerTest[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  SumMetaLayerTest[][] addRefs(@Nullable SumMetaLayerTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SumMetaLayerTest::addRefs)
@@ -50,7 +54,7 @@ public abstract class SumMetaLayerTest extends MetaLayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][] { { 3 } };
+    return new int[][]{{3}};
   }
 
   @Nonnull
@@ -58,24 +62,28 @@ public abstract class SumMetaLayerTest extends MetaLayerTestBase {
   public Layer getLayer(final int[][] inputSize, Random random) {
     SumMetaLayer temp_73_0002 = new SumMetaLayer();
     SumMetaLayer temp_73_0001 = temp_73_0002.setMinBatches(0);
-    if (null != temp_73_0002)
-      temp_73_0002.freeRef();
+    temp_73_0002.freeRef();
     return temp_73_0001;
   }
 
   @Nonnull
   @Override
   public int[][] getLargeDims(Random random) {
-    return new int[][] { { 100 } };
+    return new int[][]{{100}};
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") SumMetaLayerTest addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  SumMetaLayerTest addRef() {
     return (SumMetaLayerTest) super.addRef();
   }
 
+  @Nonnull
   @Override
   protected Layer lossLayer() {
     return new MeanSqLossLayer();
@@ -83,16 +91,22 @@ public abstract class SumMetaLayerTest extends MetaLayerTestBase {
 
   public static class Basic extends SumMetaLayerTest {
 
-    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    Basic[] addRefs(@Nullable Basic[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") Basic addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    Basic addRef() {
       return (Basic) super.addRef();
     }
   }

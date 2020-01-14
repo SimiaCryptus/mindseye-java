@@ -21,8 +21,9 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
-import com.simiacryptus.ref.lang.RefAware;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 
 public abstract class AbsActivationLayerTest extends ActivationLayerTestBase {
@@ -30,42 +31,57 @@ public abstract class AbsActivationLayerTest extends ActivationLayerTestBase {
     super(new AbsActivationLayer());
   }
 
-  public static @SuppressWarnings("unused") AbsActivationLayerTest[] addRefs(AbsActivationLayerTest[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  AbsActivationLayerTest[] addRefs(@Nullable AbsActivationLayerTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(AbsActivationLayerTest::addRef)
         .toArray((x) -> new AbsActivationLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused") AbsActivationLayerTest[][] addRefs(AbsActivationLayerTest[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  AbsActivationLayerTest[][] addRefs(@Nullable AbsActivationLayerTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(AbsActivationLayerTest::addRefs)
         .toArray((x) -> new AbsActivationLayerTest[x][]);
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") AbsActivationLayerTest addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  AbsActivationLayerTest addRef() {
     return (AbsActivationLayerTest) super.addRef();
   }
 
   public static class Basic extends AbsActivationLayerTest {
 
-    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    Basic[] addRefs(@Nullable Basic[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") Basic addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    Basic addRef() {
       return (Basic) super.addRef();
     }
 
+    @Nonnull
     @Override
     protected Layer lossLayer() {
       return new EntropyLossLayer();

@@ -22,7 +22,6 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.simiacryptus.mindseye.lang.*;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrayList;
@@ -99,13 +98,11 @@ public class ImgTileAssemblyLayer extends LayerBase {
 
   @Nonnull
   public static void copy(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData, final int offsetX,
-      final int offsetY, final int paddingX, final int paddingY, final boolean toroidal, final double rowF,
-      final double colF) {
+                          final int offsetY, final int paddingX, final int paddingY, final boolean toroidal, final double rowF,
+                          final double colF) {
     int[] inputDataDimensions = inputData.getDimensions();
-    @Nonnull
-    final int[] inDim = inputDataDimensions;
-    @Nonnull
-    final int[] outDim = outputData.getDimensions();
+    @Nonnull final int[] inDim = inputDataDimensions;
+    @Nonnull final int[] outDim = outputData.getDimensions();
     assert 3 == inDim.length;
     assert 3 == outDim.length;
     assert inDim[2] == outDim[2] : RefArrays.toString(inDim) + "; " + RefArrays.toString(outDim);
@@ -160,23 +157,28 @@ public class ImgTileAssemblyLayer extends LayerBase {
         return;
       }
       outputData.set(x, y, z, inputValue);
-    }, outputData == null ? null : outputData, inputData == null ? null : inputData));
+    }, outputData, inputData));
 
   }
 
+  @Nonnull
   @SuppressWarnings("unused")
   public static ImgTileAssemblyLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ImgTileAssemblyLayer(json);
   }
 
-  public static @SuppressWarnings("unused") ImgTileAssemblyLayer[] addRefs(ImgTileAssemblyLayer[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  ImgTileAssemblyLayer[] addRefs(@Nullable ImgTileAssemblyLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ImgTileAssemblyLayer::addRef)
         .toArray((x) -> new ImgTileAssemblyLayer[x]);
   }
 
-  public static @SuppressWarnings("unused") ImgTileAssemblyLayer[][] addRefs(ImgTileAssemblyLayer[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  ImgTileAssemblyLayer[][] addRefs(@Nullable ImgTileAssemblyLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ImgTileAssemblyLayer::addRefs)
@@ -188,15 +190,13 @@ public class ImgTileAssemblyLayer extends LayerBase {
   public Result eval(@Nonnull final Result... inObj) {
     TensorList temp_63_0002 = inObj[0].getData();
     assert 3 == temp_63_0002.getDimensions().length;
-    if (null != temp_63_0002)
-      temp_63_0002.freeRef();
+    temp_63_0002.freeRef();
     int[] outputDims = getOutputDims(Result.addRefs(inObj));
     try {
       TensorList temp_63_0004 = inObj[0].getData();
       Result temp_63_0003 = new Result(new TensorArray(RefIntStream.range(0, temp_63_0004.length()).parallel()
           .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-            @Nonnull
-            final Tensor outputData = new Tensor(outputDims);
+            @Nonnull final Tensor outputData = new Tensor(outputDims);
 
             int totalWidth = 0;
             int positionY = offsetY;
@@ -209,14 +209,12 @@ public class ImgTileAssemblyLayer extends LayerBase {
                 int[] tileDimensions = tileTensor.getDimensions();
                 rowHeight = Math.max(rowHeight, tileDimensions[1]);
                 Tensor inputData = tileTensor.get(dataIndex);
-                if (null != tileTensor)
-                  tileTensor.freeRef();
-                ImgTileAssemblyLayer.copy(inputData == null ? null : inputData.addRef(),
-                    outputData == null ? null : outputData.addRef(), positionX, positionY,
+                tileTensor.freeRef();
+                ImgTileAssemblyLayer.copy(inputData.addRef(),
+                    outputData.addRef(), positionX, positionY,
                     0 >= positionX ? 0 : getPaddingX() / 2, 0 >= positionY ? 0 : getPaddingY() / 2,
                     offsetX < 0 || offsetY < 0, (double) row / (rows - 1), (double) col / (columns - 1));
-                if (null != inputData)
-                  inputData.freeRef();
+                inputData.freeRef();
                 positionX += tileDimensions[0] - getPaddingX();
                 inputIndex += 1;
               }
@@ -226,58 +224,56 @@ public class ImgTileAssemblyLayer extends LayerBase {
 
             return outputData;
           }, Result.addRefs(inObj))).toArray(i -> new Tensor[i])), new Result.Accumulator() {
-            {
-              Result.addRefs(inObj);
-            }
+        {
+          Result.addRefs(inObj);
+        }
 
-            @Override
-            public void accept(DeltaSet<UUID> buffer, TensorList delta) {
-              final AtomicInteger positionY = new AtomicInteger(offsetX);
-              int inputIndex = 0;
-              for (int row = 0; row < rows; row++) {
-                final AtomicInteger positionX = new AtomicInteger(offsetY);
-                int rowHeight = 0;
-                for (int col = 0; col < columns; col++) {
-                  Result in = inObj[inputIndex++].addRef();
-                  int[] inputDataDimensions = in.getData().getDimensions();
-                  rowHeight = Math.max(rowHeight, inputDataDimensions[1]);
-                  if (in.isAlive()) {
-                    final int finalRow = row;
-                    final int finalCol = col;
-                    @Nonnull
-                    TensorArray tensorArray = new TensorArray(RefIntStream.range(0, delta.length()).parallel()
-                        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-                          @Nullable
-                          final Tensor deltaTensor = delta.get(dataIndex);
-                          @Nonnull
-                          final Tensor passbackTensor = new Tensor(inputDataDimensions);
-                          ImgTileAssemblyLayer.copy(deltaTensor == null ? null : deltaTensor.addRef(),
-                              passbackTensor == null ? null : passbackTensor.addRef(), -positionX.get(),
-                              -positionY.get(), 0 == positionX.get() ? 0 : ImgTileAssemblyLayer.this.getPaddingX() / 2,
-                              0 == positionY.get() ? 0 : ImgTileAssemblyLayer.this.getPaddingY() / 2,
-                              offsetX < 0 || offsetY < 0, (double) finalRow / rows, (double) finalCol / columns);
-                          if (null != deltaTensor)
-                            deltaTensor.freeRef();
-                          return passbackTensor;
-                        }, delta == null ? null : delta.addRef())).toArray(i -> new Tensor[i]));
-                    in.accumulate(buffer == null ? null : buffer.addRef(), tensorArray == null ? null : tensorArray);
-                  }
-                  if (null != in)
-                    in.freeRef();
-                  positionX.addAndGet(inputDataDimensions[0] - ImgTileAssemblyLayer.this.getPaddingX());
-                }
-                positionY.addAndGet(rowHeight - ImgTileAssemblyLayer.this.getPaddingY());
+        @Override
+        public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
+          final AtomicInteger positionY = new AtomicInteger(offsetX);
+          int inputIndex = 0;
+          for (int row = 0; row < rows; row++) {
+            final AtomicInteger positionX = new AtomicInteger(offsetY);
+            int rowHeight = 0;
+            for (int col = 0; col < columns; col++) {
+              Result in = inObj[inputIndex++].addRef();
+              TensorList data = in.getData();
+              int[] inputDataDimensions = data.getDimensions();
+              data.freeRef();
+              rowHeight = Math.max(rowHeight, inputDataDimensions[1]);
+              if (in.isAlive()) {
+                final int finalRow = row;
+                final int finalCol = col;
+                @Nonnull
+                TensorArray tensorArray = new TensorArray(RefIntStream.range(0, delta.length()).parallel()
+                    .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+                      @Nullable final Tensor deltaTensor = delta.get(dataIndex);
+                      @Nonnull final Tensor passbackTensor = new Tensor(inputDataDimensions);
+                      ImgTileAssemblyLayer.copy(deltaTensor.addRef(),
+                          passbackTensor.addRef(), -positionX.get(),
+                          -positionY.get(), 0 == positionX.get() ? 0 : ImgTileAssemblyLayer.this.getPaddingX() / 2,
+                          0 == positionY.get() ? 0 : ImgTileAssemblyLayer.this.getPaddingY() / 2,
+                          offsetX < 0 || offsetY < 0, (double) finalRow / rows, (double) finalCol / columns);
+                      deltaTensor.freeRef();
+                      return passbackTensor;
+                    }, delta.addRef())).toArray(i -> new Tensor[i]));
+                in.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
               }
-              if (null != delta)
-                delta.freeRef();
-              if (null != buffer)
-                buffer.freeRef();
+              in.freeRef();
+              positionX.addAndGet(inputDataDimensions[0] - ImgTileAssemblyLayer.this.getPaddingX());
             }
+            positionY.addAndGet(rowHeight - ImgTileAssemblyLayer.this.getPaddingY());
+          }
+          delta.freeRef();
+          if (null != buffer)
+            buffer.freeRef();
+        }
 
-            public @SuppressWarnings("unused") void _free() {
-              ReferenceCounting.freeRefs(inObj);
-            }
-          }) {
+        public @SuppressWarnings("unused")
+        void _free() {
+          ReferenceCounting.freeRefs(inObj);
+        }
+      }) {
 
         {
           Result.addRefs(inObj);
@@ -292,8 +288,7 @@ public class ImgTileAssemblyLayer extends LayerBase {
           ReferenceCounting.freeRefs(inObj);
         }
       };
-      if (null != temp_63_0004)
-        temp_63_0004.freeRef();
+      temp_63_0004.freeRef();
       return temp_63_0003;
     } finally {
       ReferenceCounting.freeRefs(inObj);
@@ -303,8 +298,7 @@ public class ImgTileAssemblyLayer extends LayerBase {
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull
-    final JsonObject json = super.getJsonStub();
+    @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("columns", columns);
     json.addProperty("rows", rows);
     json.addProperty("paddingX", getPaddingX());
@@ -320,10 +314,14 @@ public class ImgTileAssemblyLayer extends LayerBase {
     return new RefArrayList<>();
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") ImgTileAssemblyLayer addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  ImgTileAssemblyLayer addRef() {
     return (ImgTileAssemblyLayer) super.addRef();
   }
 
@@ -332,11 +330,11 @@ public class ImgTileAssemblyLayer extends LayerBase {
     return null == asJsonPrimitive ? defaultValue : asJsonPrimitive.getAsInt();
   }
 
+  @Nonnull
   private int[] getOutputDims(@Nonnull final Result[] inObj) {
     TensorList temp_63_0006 = inObj[0].getData();
     int[] dimensions1 = temp_63_0006.getDimensions();
-    if (null != temp_63_0006)
-      temp_63_0006.freeRef();
+    temp_63_0006.freeRef();
     int bands = dimensions1.length < 2 ? 1 : dimensions1[2];
     int totalWidth = 0;
     int totalHeight = 0;
@@ -347,8 +345,7 @@ public class ImgTileAssemblyLayer extends LayerBase {
       for (int col = 0; col < columns; col++) {
         TensorList temp_63_0007 = inObj[inputIndex].getData();
         int[] dimensions = temp_63_0007.getDimensions();
-        if (null != temp_63_0007)
-          temp_63_0007.freeRef();
+        temp_63_0007.freeRef();
         rowHeight = Math.max(rowHeight, dimensions[1]);
         //positionX += dimensions[0] - positionX==0?0:getPaddingX();
         positionX += dimensions[0] - getPaddingX();
@@ -359,6 +356,6 @@ public class ImgTileAssemblyLayer extends LayerBase {
       totalWidth = Math.max(totalWidth, positionX);
     }
     ReferenceCounting.freeRefs(inObj);
-    return new int[] { totalWidth + getPaddingX(), totalHeight + getPaddingY(), bands };
+    return new int[]{totalWidth + getPaddingX(), totalHeight + getPaddingY(), bands};
   }
 }

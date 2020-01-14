@@ -20,16 +20,18 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
-import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Random;
 
 public class TargetValueLayerTest {
   public static class Normal extends LayerTestBase {
 
-    public static @SuppressWarnings("unused") Normal[] addRefs(Normal[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    Normal[] addRefs(@Nullable Normal[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(Normal::addRef).toArray((x) -> new Normal[x]);
@@ -38,7 +40,7 @@ public class TargetValueLayerTest {
     @Nonnull
     @Override
     public int[][] getSmallDims(Random random) {
-      return new int[][] { { 3 } };
+      return new int[][]{{3}};
     }
 
     @Nonnull
@@ -47,10 +49,14 @@ public class TargetValueLayerTest {
       return new TargetValueLayer(0.0, 0.1, 0.2);
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") Normal addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    Normal addRef() {
       return (Normal) super.addRef();
     }
   }

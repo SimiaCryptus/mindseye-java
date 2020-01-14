@@ -20,22 +20,26 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
-import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Random;
 
 public abstract class UnpoolingLayerTest extends LayerTestBase {
 
-  public static @SuppressWarnings("unused") UnpoolingLayerTest[] addRefs(UnpoolingLayerTest[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  UnpoolingLayerTest[] addRefs(@Nullable UnpoolingLayerTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(UnpoolingLayerTest::addRef)
         .toArray((x) -> new UnpoolingLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused") UnpoolingLayerTest[][] addRefs(UnpoolingLayerTest[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  UnpoolingLayerTest[][] addRefs(@Nullable UnpoolingLayerTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(UnpoolingLayerTest::addRefs)
@@ -45,7 +49,7 @@ public abstract class UnpoolingLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][] { { 4, 4, 2 } };
+    return new int[][]{{4, 4, 2}};
   }
 
   @Nonnull
@@ -54,25 +58,35 @@ public abstract class UnpoolingLayerTest extends LayerTestBase {
     return new UnpoolingLayer(2, 2);
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") UnpoolingLayerTest addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  UnpoolingLayerTest addRef() {
     return (UnpoolingLayerTest) super.addRef();
   }
 
   public static class Basic extends UnpoolingLayerTest {
 
-    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    Basic[] addRefs(@Nullable Basic[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") Basic addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    Basic addRef() {
       return (Basic) super.addRef();
     }
   }

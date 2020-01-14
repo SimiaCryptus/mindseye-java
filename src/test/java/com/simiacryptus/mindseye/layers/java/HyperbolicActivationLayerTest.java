@@ -24,10 +24,11 @@ import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 import com.simiacryptus.mindseye.test.unit.ComponentTest;
 import com.simiacryptus.mindseye.test.unit.TrainingTester;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.RefHashMap;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 
 public abstract class HyperbolicActivationLayerTest extends ActivationLayerTestBase {
@@ -35,10 +36,12 @@ public abstract class HyperbolicActivationLayerTest extends ActivationLayerTestB
     super(new HyperbolicActivationLayer());
   }
 
+  @Nullable
   @Override
   protected RefHashMap<Tensor[], Tensor> getReferenceIO() {
     final RefHashMap<Tensor[], Tensor> map = RefUtil.addRef(super.getReferenceIO());
-    RefUtil.freeRef(map.put(new Tensor[] { new Tensor(0.0) }, new Tensor(0.0)));
+    assert map != null;
+    RefUtil.freeRef(map.put(new Tensor[]{new Tensor(0.0)}, new Tensor(0.0)));
     return map;
   }
 
@@ -46,7 +49,8 @@ public abstract class HyperbolicActivationLayerTest extends ActivationLayerTestB
   public ComponentTest<TrainingTester.ComponentResult> getTrainingTester() {
     TrainingTester temp_69_0002 = new TrainingTester() {
 
-      public @SuppressWarnings("unused") void _free() {
+      public @SuppressWarnings("unused")
+      void _free() {
       }
 
       @Override
@@ -55,48 +59,62 @@ public abstract class HyperbolicActivationLayerTest extends ActivationLayerTestB
       }
     };
     TrainingTester temp_69_0001 = temp_69_0002.setRandomizationMode(TrainingTester.RandomizationMode.Random);
-    if (null != temp_69_0002)
-      temp_69_0002.freeRef();
+    temp_69_0002.freeRef();
     return temp_69_0001;
   }
 
-  public static @SuppressWarnings("unused") HyperbolicActivationLayerTest[] addRefs(
-      HyperbolicActivationLayerTest[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  HyperbolicActivationLayerTest[] addRefs(
+      @Nullable HyperbolicActivationLayerTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(HyperbolicActivationLayerTest::addRef)
         .toArray((x) -> new HyperbolicActivationLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused") HyperbolicActivationLayerTest[][] addRefs(
-      HyperbolicActivationLayerTest[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  HyperbolicActivationLayerTest[][] addRefs(
+      @Nullable HyperbolicActivationLayerTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(HyperbolicActivationLayerTest::addRefs)
         .toArray((x) -> new HyperbolicActivationLayerTest[x][]);
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") HyperbolicActivationLayerTest addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  HyperbolicActivationLayerTest addRef() {
     return (HyperbolicActivationLayerTest) super.addRef();
   }
 
   public static class Basic extends HyperbolicActivationLayerTest {
-    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    Basic[] addRefs(@Nullable Basic[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") Basic addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    Basic addRef() {
       return (Basic) super.addRef();
     }
 
+    @Nonnull
     @Override
     protected Layer lossLayer() {
       return new EntropyLossLayer();

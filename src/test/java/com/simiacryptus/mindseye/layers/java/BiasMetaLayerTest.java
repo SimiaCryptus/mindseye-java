@@ -20,9 +20,9 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
-import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -31,14 +31,18 @@ public abstract class BiasMetaLayerTest extends LayerTestBase {
     validateBatchExecution = false;
   }
 
-  public static @SuppressWarnings("unused") BiasMetaLayerTest[] addRefs(BiasMetaLayerTest[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  BiasMetaLayerTest[] addRefs(@Nullable BiasMetaLayerTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(BiasMetaLayerTest::addRef)
         .toArray((x) -> new BiasMetaLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused") BiasMetaLayerTest[][] addRefs(BiasMetaLayerTest[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  BiasMetaLayerTest[][] addRefs(@Nullable BiasMetaLayerTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(BiasMetaLayerTest::addRefs)
@@ -48,7 +52,7 @@ public abstract class BiasMetaLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][] { { 3 }, { 3 } };
+    return new int[][]{{3}, {3}};
   }
 
   @Nonnull
@@ -57,25 +61,35 @@ public abstract class BiasMetaLayerTest extends LayerTestBase {
     return new BiasMetaLayer();
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") BiasMetaLayerTest addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  BiasMetaLayerTest addRef() {
     return (BiasMetaLayerTest) super.addRef();
   }
 
   public static class Basic extends BiasMetaLayerTest {
 
-    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    Basic[] addRefs(@Nullable Basic[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") Basic addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    Basic addRef() {
       return (Basic) super.addRef();
     }
   }

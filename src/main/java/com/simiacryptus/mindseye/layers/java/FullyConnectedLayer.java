@@ -22,7 +22,6 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RecycleBin;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
@@ -60,9 +59,7 @@ public class FullyConnectedLayer extends LayerBase {
     super();
     outputDims = null;
     Tensor temp_15_0001 = null;
-    weights = temp_15_0001 == null ? null : temp_15_0001.addRef();
-    if (null != temp_15_0001)
-      temp_15_0001.freeRef();
+    weights = null;
     inputDims = null;
   }
 
@@ -72,9 +69,8 @@ public class FullyConnectedLayer extends LayerBase {
     this.outputDims = RefArrays.copyOf(outputDims, outputDims.length);
     final int outs = Tensor.length(outputDims);
     Tensor temp_15_0002 = new Tensor(inputs, outs);
-    weights = temp_15_0002 == null ? null : temp_15_0002.addRef();
-    if (null != temp_15_0002)
-      temp_15_0002.freeRef();
+    weights = temp_15_0002.addRef();
+    temp_15_0002.freeRef();
     RefUtil.freeRef(set(() -> {
       final double ratio = Math.sqrt(6. / (inputs + outs + 1));
       final double fate = Util.R.get().nextDouble();
@@ -108,46 +104,44 @@ public class FullyConnectedLayer extends LayerBase {
   @Nonnull
   public FullyConnectedLayer setByCoord(@Nonnull final ToDoubleFunction<Coordinate> f) {
     Tensor temp_15_0013 = getWeights();
+    assert temp_15_0013 != null;
     temp_15_0013.coordStream(true).forEach(c -> {
       Tensor temp_15_0014 = getWeights();
       RefUtil.freeRef(temp_15_0014.set(c, f.applyAsDouble(c)));
-      if (null != temp_15_0014)
-        temp_15_0014.freeRef();
+      temp_15_0014.freeRef();
     });
-    if (null != temp_15_0013)
-      temp_15_0013.freeRef();
+    temp_15_0013.freeRef();
     return this.addRef();
   }
 
   @Nonnull
   public void setByCoord(@Nonnull final ToDoubleBiFunction<Coordinate, Coordinate> f) {
+    assert inputDims != null;
     Tensor temp_15_0011 = new Tensor(inputDims);
     temp_15_0011.coordStream(true).forEach(in -> {
+      assert outputDims != null;
       Tensor temp_15_0012 = new Tensor(outputDims);
       temp_15_0012.coordStream(true).forEach(out -> {
         Tensor temp_15_0015 = getWeights();
-        temp_15_0015.set(new int[] { in.getIndex(), out.getIndex() }, f.applyAsDouble(in, out));
-        if (null != temp_15_0015)
-          temp_15_0015.freeRef();
+        assert temp_15_0015 != null;
+        temp_15_0015.set(new int[]{in.getIndex(), out.getIndex()}, f.applyAsDouble(in, out));
+        temp_15_0015.freeRef();
       });
-      if (null != temp_15_0012)
-        temp_15_0012.freeRef();
+      temp_15_0012.freeRef();
     });
-    if (null != temp_15_0011)
-      temp_15_0011.freeRef();
+    temp_15_0011.freeRef();
   }
 
   @Nonnull
   public FullyConnectedLayer setWeightsLog(final double value) {
     Tensor temp_15_0016 = getWeights();
+    assert temp_15_0016 != null;
     temp_15_0016.coordStream(false).forEach(c -> {
       Tensor temp_15_0017 = getWeights();
       RefUtil.freeRef(temp_15_0017.set(c, (FastRandom.INSTANCE.random() - 0.5) * Math.pow(10, value)));
-      if (null != temp_15_0017)
-        temp_15_0017.freeRef();
+      temp_15_0017.freeRef();
     });
-    if (null != temp_15_0016)
-      temp_15_0016.freeRef();
+    temp_15_0016.freeRef();
     return this.addRef();
   }
 
@@ -169,30 +163,28 @@ public class FullyConnectedLayer extends LayerBase {
     }
   }
 
+  @Nonnull
   @SuppressWarnings("unused")
   public static FullyConnectedLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new FullyConnectedLayer(json, rs);
   }
 
   public static void multiply(final double[] matrix, @Nonnull final double[] in, @Nonnull final double[] out) {
-    @Nonnull
-    final DoubleMatrix matrixObj = new DoubleMatrix(out.length, in.length, matrix);
+    @Nonnull final DoubleMatrix matrixObj = new DoubleMatrix(out.length, in.length, matrix);
     matrixObj.mmuli(new DoubleMatrix(in.length, 1, in), new DoubleMatrix(out.length, 1, out));
   }
 
   public static void multiplyT(final double[] matrix, @Nonnull final double[] in, @Nonnull final double[] out) {
     @Nonnull
     DoubleMatrix doubleMatrix = new DoubleMatrix(in.length, out.length, matrix);
-    @Nonnull
-    final DoubleMatrix matrixObj = FullyConnectedLayer.transpose(doubleMatrix);
+    @Nonnull final DoubleMatrix matrixObj = FullyConnectedLayer.transpose(doubleMatrix);
     matrixObj.mmuli(new DoubleMatrix(in.length, 1, in), new DoubleMatrix(out.length, 1, out));
     RecycleBin.DOUBLES.recycle(matrixObj.data, matrixObj.data.length);
   }
 
   @Nonnull
   public static DoubleMatrix transpose(@Nonnull final DoubleMatrix doubleMatrix) {
-    @Nonnull
-    final DoubleMatrix result = new DoubleMatrix(doubleMatrix.columns, doubleMatrix.rows,
+    @Nonnull final DoubleMatrix result = new DoubleMatrix(doubleMatrix.columns, doubleMatrix.rows,
         RecycleBin.DOUBLES.obtain(doubleMatrix.length));
     for (int i = 0; i < doubleMatrix.rows; ++i) {
       for (int j = 0; j < doubleMatrix.columns; ++j) {
@@ -202,14 +194,18 @@ public class FullyConnectedLayer extends LayerBase {
     return result;
   }
 
-  public static @SuppressWarnings("unused") FullyConnectedLayer[] addRefs(FullyConnectedLayer[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  FullyConnectedLayer[] addRefs(@Nullable FullyConnectedLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(FullyConnectedLayer::addRef)
         .toArray((x) -> new FullyConnectedLayer[x]);
   }
 
-  public static @SuppressWarnings("unused") FullyConnectedLayer[][] addRefs(FullyConnectedLayer[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  FullyConnectedLayer[][] addRefs(@Nullable FullyConnectedLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(FullyConnectedLayer::addRefs)
@@ -221,26 +217,25 @@ public class FullyConnectedLayer extends LayerBase {
   public Result eval(@Nonnull final Result... inObj) {
     final TensorList indata = inObj[0].getData();
     final FullyConnectedLayer fullyConnectedLayer = this.addRef();
+    assert fullyConnectedLayer.inputDims != null;
     assert Tensor.length(indata.getDimensions()) == Tensor.length(fullyConnectedLayer.inputDims) : RefArrays
         .toString(indata.getDimensions()) + " == " + RefArrays.toString(fullyConnectedLayer.inputDims);
+    assert fullyConnectedLayer.weights != null;
+    assert outputDims != null;
     @Nonnull
     DoubleMatrix doubleMatrix = new DoubleMatrix(Tensor.length(indata.getDimensions()), Tensor.length(outputDims),
         fullyConnectedLayer.weights.getData());
-    @Nonnull
-    final DoubleMatrix matrixObj = FullyConnectedLayer.transpose(doubleMatrix);
+    @Nonnull final DoubleMatrix matrixObj = FullyConnectedLayer.transpose(doubleMatrix);
     @Nonnull
     TensorArray tensorArray = new TensorArray(RefIntStream.range(0, indata.length()).parallel()
         .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-          @Nullable
-          final Tensor input = indata.get(dataIndex);
-          @Nullable
-          final Tensor output = new Tensor(outputDims);
+          @Nullable final Tensor input = indata.get(dataIndex);
+          @Nullable final Tensor output = new Tensor(outputDims);
           matrixObj.mmuli(new DoubleMatrix(input.length(), 1, input.getData()),
               new DoubleMatrix(output.length(), 1, output.getData()));
-          if (null != input)
-            input.freeRef();
+          input.freeRef();
           return output;
-        }, indata == null ? null : indata.addRef())).toArray(i -> new Tensor[i]));
+        }, indata.addRef())).toArray(i -> new Tensor[i]));
     RecycleBin.DOUBLES.recycle(matrixObj.data, matrixObj.data.length);
     try {
       try {
@@ -254,7 +249,7 @@ public class FullyConnectedLayer extends LayerBase {
               }
 
               @Override
-              public void accept(DeltaSet<UUID> buffer, TensorList delta) {
+              public void accept(@Nonnull DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
                 if (!FullyConnectedLayer.this.isFrozen()) {
                   final Delta<UUID> deltaBuffer = buffer.get(fullyConnectedLayer.getId(),
                       fullyConnectedLayer.weights.getData());
@@ -263,64 +258,56 @@ public class FullyConnectedLayer extends LayerBase {
                       RefUtil.wrapInterface((Function<? super Integer, ? extends Stream<? extends Tensor>>) thread -> {
                         return RefIntStream.range(0, indata.length()).filter(i -> thread == i % threads)
                             .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-                              @Nonnull
-                              final Tensor weightDelta = new Tensor(Tensor.length(inputDims),
+                              assert inputDims != null;
+                              @Nonnull final Tensor weightDelta = new Tensor(Tensor.length(inputDims),
                                   Tensor.length(outputDims));
                               Tensor deltaTensor = delta.get(dataIndex);
                               Tensor inputTensor = indata.get(dataIndex);
                               FullyConnectedLayer.crossMultiplyT(deltaTensor.getData(), inputTensor.getData(),
                                   weightDelta.getData());
-                              if (null != inputTensor)
-                                inputTensor.freeRef();
-                              if (null != deltaTensor)
-                                deltaTensor.freeRef();
+                              inputTensor.freeRef();
+                              deltaTensor.freeRef();
                               return weightDelta;
-                            }, indata == null ? null : indata.addRef(), delta == null ? null : delta.addRef()));
-                      }, indata == null ? null : indata.addRef(), delta == null ? null : delta.addRef()))
+                            }, indata.addRef(), delta.addRef()));
+                      }, indata.addRef(), delta.addRef()))
                       .reduce((a, b) -> {
                         Tensor temp_15_0007 = a.addAndFree(b == null ? null : b.addRef());
                         if (null != b)
                           b.freeRef();
-                        if (null != a)
-                          a.freeRef();
+                        a.freeRef();
                         return temp_15_0007;
                       });
                   RefUtil.freeRef(
                       temp_15_0018.map(RefUtil.wrapInterface((Function<? super Tensor, ? extends Delta<UUID>>) data -> {
+                        assert deltaBuffer != null;
                         Delta<UUID> temp_15_0008 = deltaBuffer.addInPlace(data.getData());
-                        if (null != data)
-                          data.freeRef();
+                        data.freeRef();
                         return temp_15_0008;
                       }, deltaBuffer == null ? null : deltaBuffer.addRef())));
-                  if (null != temp_15_0018)
-                    RefUtil.freeRef(temp_15_0018);
+                  RefUtil.freeRef(temp_15_0018);
                   if (null != deltaBuffer)
                     deltaBuffer.freeRef();
                 }
                 if (inObj[0].isAlive()) {
-                  @Nonnull
-                  final TensorList tensorList = new TensorArray(RefIntStream.range(0, indata.length()).parallel()
+                  @Nonnull final TensorList tensorList = new TensorArray(RefIntStream.range(0, indata.length()).parallel()
                       .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-                        Tensor deltaTensor = delta.get(dataIndex);
-                        @Nonnull
-                        final Tensor passback = new Tensor(indata.getDimensions());
-                        FullyConnectedLayer.multiply(fullyConnectedLayer.weights.getData(), deltaTensor.getData(),
-                            passback.getData());
-                        if (null != deltaTensor)
-                          deltaTensor.freeRef();
-                        return passback;
-                      }, fullyConnectedLayer == null ? null : fullyConnectedLayer.addRef(),
-                          indata == null ? null : indata.addRef(), delta == null ? null : delta.addRef()))
+                            Tensor deltaTensor = delta.get(dataIndex);
+                            @Nonnull final Tensor passback = new Tensor(indata.getDimensions());
+                            FullyConnectedLayer.multiply(fullyConnectedLayer.weights.getData(), deltaTensor.getData(),
+                                passback.getData());
+                            deltaTensor.freeRef();
+                            return passback;
+                          }, fullyConnectedLayer.addRef(),
+                          indata.addRef(), delta.addRef()))
                       .toArray(i -> new Tensor[i]));
-                  inObj[0].accumulate(buffer == null ? null : buffer.addRef(), tensorList == null ? null : tensorList);
+                  inObj[0].accumulate(buffer.addRef(), tensorList);
                 }
-                if (null != delta)
-                  delta.freeRef();
-                if (null != buffer)
-                  buffer.freeRef();
+                delta.freeRef();
+                buffer.freeRef();
               }
 
-              public @SuppressWarnings("unused") void _free() {
+              public @SuppressWarnings("unused")
+              void _free() {
                 ReferenceCounting.freeRefs(inObj);
                 fullyConnectedLayer.freeRef();
                 indata.freeRef();
@@ -335,8 +322,7 @@ public class FullyConnectedLayer extends LayerBase {
               public boolean isAlive() {
                 return !isFrozen() || RefArrays.stream(Result.addRefs(inObj)).anyMatch(x -> {
                   boolean temp_15_0009 = x.isAlive();
-                  if (null != x)
-                    x.freeRef();
+                  x.freeRef();
                   return temp_15_0009;
                 });
               }
@@ -353,51 +339,52 @@ public class FullyConnectedLayer extends LayerBase {
           tensorArray.freeRef();
         }
       } finally {
-        if (null != fullyConnectedLayer)
-          fullyConnectedLayer.freeRef();
+        fullyConnectedLayer.freeRef();
       }
     } finally {
-      if (null != indata)
-        indata.freeRef();
+      indata.freeRef();
     }
   }
 
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, @Nonnull DataSerializer dataSerializer) {
-    @Nonnull
-    final JsonObject json = super.getJsonStub();
+    @Nonnull final JsonObject json = super.getJsonStub();
+    assert outputDims != null;
     json.add("outputDims", JsonUtil.getJson(outputDims));
+    assert inputDims != null;
     json.add("inputDims", JsonUtil.getJson(inputDims));
     Tensor temp_15_0019 = getWeights();
+    assert temp_15_0019 != null;
     json.add("weights", temp_15_0019.getJson(resources, dataSerializer));
-    if (null != temp_15_0019)
-      temp_15_0019.freeRef();
+    temp_15_0019.freeRef();
     return json;
   }
 
   @Nonnull
   public FullyConnectedLayer set(@Nonnull final DoubleSupplier f) {
     Tensor temp_15_0020 = getWeights();
+    assert temp_15_0020 != null;
     RefArrays.parallelSetAll(temp_15_0020.getData(), i -> f.getAsDouble());
-    if (null != temp_15_0020)
-      temp_15_0020.freeRef();
+    temp_15_0020.freeRef();
     return this.addRef();
   }
 
   @Nonnull
   public FullyConnectedLayer set(@Nonnull final IntToDoubleFunction f) {
     Tensor temp_15_0021 = getWeights();
+    assert temp_15_0021 != null;
     RefUtil.freeRef(temp_15_0021.set(f));
-    if (null != temp_15_0021)
-      temp_15_0021.freeRef();
+    temp_15_0021.freeRef();
     return this.addRef();
   }
 
   public void initSpacial(final double radius, final double stiffness, final double peak) {
     setByCoord((@Nonnull final Coordinate in, @Nonnull final Coordinate out) -> {
       final double[] doubleCoords = RefIntStream.range(0, in.getCoords().length).mapToDouble(d -> {
+        assert FullyConnectedLayer.this.inputDims != null;
         final double from = in.getCoords()[d] * 1.0 / FullyConnectedLayer.this.inputDims[d];
+        assert FullyConnectedLayer.this.outputDims != null;
         final double to = out.getCoords()[d] * 1.0 / FullyConnectedLayer.this.outputDims[d];
         return from - to;
       }).toArray();
@@ -410,27 +397,27 @@ public class FullyConnectedLayer extends LayerBase {
   @Nonnull
   public FullyConnectedLayer set(final double[] data) {
     Tensor temp_15_0022 = getWeights();
+    assert temp_15_0022 != null;
     RefUtil.freeRef(temp_15_0022.set(data));
-    if (null != temp_15_0022)
-      temp_15_0022.freeRef();
+    temp_15_0022.freeRef();
     return this.addRef();
   }
 
   @Nonnull
   public FullyConnectedLayer set(@Nonnull final Tensor data) {
     Tensor temp_15_0023 = getWeights();
-    temp_15_0023.set(data == null ? null : data);
-    if (null != temp_15_0023)
-      temp_15_0023.freeRef();
+    assert temp_15_0023 != null;
+    temp_15_0023.set(data);
+    temp_15_0023.freeRef();
     return this.addRef();
   }
 
   @Nonnull
   public FullyConnectedLayer scale(final double value) {
     Tensor temp_15_0024 = getWeights();
+    assert temp_15_0024 != null;
     RefUtil.freeRef(temp_15_0024.scaleInPlace(value));
-    if (null != temp_15_0024)
-      temp_15_0024.freeRef();
+    temp_15_0024.freeRef();
     return this.addRef();
   }
 
@@ -438,17 +425,18 @@ public class FullyConnectedLayer extends LayerBase {
   @Override
   public RefList<double[]> state() {
     Tensor temp_15_0026 = getWeights();
+    assert temp_15_0026 != null;
     RefList<double[]> temp_15_0025 = RefArrays.asList(temp_15_0026.getData());
-    if (null != temp_15_0026)
-      temp_15_0026.freeRef();
+    temp_15_0026.freeRef();
     return temp_15_0025;
   }
 
+  @Nonnull
   public FullyConnectedLayer randomize(double amplitude) {
     Tensor temp_15_0027 = getWeights();
+    assert temp_15_0027 != null;
     RefUtil.freeRef(temp_15_0027.randomize(amplitude));
-    if (null != temp_15_0027)
-      temp_15_0027.freeRef();
+    temp_15_0027.freeRef();
     return this.addRef();
   }
 
@@ -458,7 +446,10 @@ public class FullyConnectedLayer extends LayerBase {
     super._free();
   }
 
-  public @Override @SuppressWarnings("unused") FullyConnectedLayer addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  FullyConnectedLayer addRef() {
     return (FullyConnectedLayer) super.addRef();
   }
 }

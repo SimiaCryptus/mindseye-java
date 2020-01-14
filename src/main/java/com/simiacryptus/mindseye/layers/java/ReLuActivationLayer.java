@@ -21,7 +21,6 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
@@ -50,9 +49,8 @@ public class ReLuActivationLayer extends LayerBase {
   public ReLuActivationLayer() {
     super();
     Tensor temp_23_0001 = new Tensor(1);
-    weights = temp_23_0001 == null ? null : temp_23_0001.addRef();
-    if (null != temp_23_0001)
-      temp_23_0001.freeRef();
+    weights = temp_23_0001.addRef();
+    temp_23_0001.freeRef();
     RefUtil.freeRef(weights.set(0, 1.));
     this.frozen = true;
   }
@@ -71,29 +69,36 @@ public class ReLuActivationLayer extends LayerBase {
 
   @Nonnull
   public ReLuActivationLayer setWeight(final double data) {
+    assert weights != null;
     RefUtil.freeRef(weights.set(0, data));
     return this.addRef();
   }
 
   @Nonnull
   public ReLuActivationLayer setWeights(@Nonnull final DoubleSupplier f) {
+    assert weights != null;
     RefArrays.parallelSetAll(weights.getData(), i -> f.getAsDouble());
     return this.addRef();
   }
 
+  @Nonnull
   @SuppressWarnings("unused")
   public static ReLuActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ReLuActivationLayer(json, rs);
   }
 
-  public static @SuppressWarnings("unused") ReLuActivationLayer[] addRefs(ReLuActivationLayer[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  ReLuActivationLayer[] addRefs(@Nullable ReLuActivationLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ReLuActivationLayer::addRef)
         .toArray((x) -> new ReLuActivationLayer[x]);
   }
 
-  public static @SuppressWarnings("unused") ReLuActivationLayer[][] addRefs(ReLuActivationLayer[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  ReLuActivationLayer[][] addRefs(@Nullable ReLuActivationLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ReLuActivationLayer::addRefs)
@@ -102,16 +107,17 @@ public class ReLuActivationLayer extends LayerBase {
 
   @Nonnull
   public ReLuActivationLayer addWeights(@Nonnull final DoubleSupplier f) {
+    assert weights != null;
     Util.add(f, weights.getData());
     return this.addRef();
   }
 
   @Nonnull
   @Override
-  public Result eval(final Result... inObj) {
+  public Result eval(@Nullable final Result... inObj) {
+    assert inObj != null;
     final Result input = inObj[0].addRef();
-    if (null != inObj)
-      ReferenceCounting.freeRefs(inObj);
+    ReferenceCounting.freeRefs(inObj);
     final TensorList indata = input.getData();
     final int itemCnt = indata.length();
     final ReLuActivationLayer reLuActivationLayer = ReLuActivationLayer.this.addRef();
@@ -122,92 +128,79 @@ public class ReLuActivationLayer extends LayerBase {
               .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
                 @Nullable
                 Tensor tensorElement = indata.get(dataIndex);
-                @Nonnull
-                final Tensor tensor = tensorElement.multiply(weights.get(0));
-                if (null != tensorElement)
-                  tensorElement.freeRef();
-                @Nullable
-                final double[] outputData = tensor.getData();
+                assert weights != null;
+                @Nonnull final Tensor tensor = tensorElement.multiply(weights.get(0));
+                tensorElement.freeRef();
+                @Nullable final double[] outputData = tensor.getData();
                 for (int i = 0; i < outputData.length; i++) {
                   if (outputData[i] < 0) {
                     outputData[i] = 0;
                   }
                 }
                 return tensor;
-              }, indata == null ? null : indata.addRef())).toArray(i -> new Tensor[i])), new Result.Accumulator() {
-                {
-                }
+              }, indata.addRef())).toArray(i -> new Tensor[i])), new Result.Accumulator() {
+            {
+            }
 
-                @Override
-                public void accept(DeltaSet<UUID> buffer, TensorList delta) {
-                  if (!ReLuActivationLayer.this.isFrozen()) {
-                    RefIntStream.range(0, delta.length()).parallel().forEach(RefUtil.wrapInterface(dataIndex -> {
+            @Override
+            public void accept(@Nonnull DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
+              if (!ReLuActivationLayer.this.isFrozen()) {
+                RefIntStream.range(0, delta.length()).parallel().forEach(RefUtil.wrapInterface(dataIndex -> {
                       @Nullable
                       Tensor deltaTensor = delta.get(dataIndex);
-                      @Nullable
-                      final double[] deltaData = deltaTensor.getData();
-                      if (null != deltaTensor)
-                        deltaTensor.freeRef();
+                      @Nullable final double[] deltaData = deltaTensor.getData();
+                      deltaTensor.freeRef();
                       @Nullable
                       Tensor inputTensor = indata.get(dataIndex);
-                      @Nullable
-                      final double[] inputData = inputTensor.getData();
-                      if (null != inputTensor)
-                        inputTensor.freeRef();
-                      @Nonnull
-                      final Tensor weightDelta = new Tensor(weights.getDimensions());
-                      @Nullable
-                      final double[] weightDeltaData = weightDelta.getData();
+                      @Nullable final double[] inputData = inputTensor.getData();
+                      inputTensor.freeRef();
+                      assert weights != null;
+                      @Nonnull final Tensor weightDelta = new Tensor(weights.getDimensions());
+                      @Nullable final double[] weightDeltaData = weightDelta.getData();
                       weightDelta.freeRef();
                       for (int i = 0; i < deltaData.length; i++) {
                         weightDeltaData[0] += inputData[i] < 0 ? 0 : deltaData[i] * inputData[i];
                       }
                       Delta<UUID> temp_23_0006 = buffer.get(reLuActivationLayer.getId(), weights.getData());
+                      assert temp_23_0006 != null;
                       RefUtil.freeRef(temp_23_0006.addInPlace(weightDeltaData));
-                      if (null != temp_23_0006)
-                        temp_23_0006.freeRef();
-                    }, buffer == null ? null : buffer.addRef(), delta == null ? null : delta.addRef(),
-                        indata == null ? null : indata.addRef(),
-                        reLuActivationLayer == null ? null : reLuActivationLayer.addRef()));
-                  }
-                  if (input.isAlive()) {
-                    final double weight = weights.getData()[0];
-                    @Nonnull
-                    TensorArray tensorArray = new TensorArray(RefIntStream.range(0, delta.length()).parallel()
-                        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-                          @Nullable
-                          Tensor deltaTensor = delta.get(dataIndex);
-                          @Nullable
-                          final double[] deltaData = deltaTensor.getData();
-                          if (null != deltaTensor)
-                            deltaTensor.freeRef();
-                          @Nullable
-                          Tensor inTensor = indata.get(dataIndex);
-                          @Nullable
-                          final double[] inputData = inTensor.getData();
-                          @Nonnull
-                          final int[] dims = inTensor.getDimensions();
-                          if (null != inTensor)
-                            inTensor.freeRef();
-                          @Nonnull
-                          final Tensor passback = new Tensor(dims);
-                          for (int i = 0; i < passback.length(); i++) {
-                            RefUtil.freeRef(passback.set(i, inputData[i] < 0 ? 0 : deltaData[i] * weight));
-                          }
-                          return passback;
-                        }, delta == null ? null : delta.addRef(), indata == null ? null : indata.addRef()))
-                        .toArray(i -> new Tensor[i]));
-                    input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray == null ? null : tensorArray);
-                  }
-                  if (null != delta)
-                    delta.freeRef();
-                  if (null != buffer)
-                    buffer.freeRef();
-                }
+                      temp_23_0006.freeRef();
+                    }, buffer.addRef(), delta.addRef(),
+                    indata.addRef(),
+                    reLuActivationLayer.addRef()));
+              }
+              if (input.isAlive()) {
+                assert weights != null;
+                final double weight = weights.getData()[0];
+                @Nonnull
+                TensorArray tensorArray = new TensorArray(RefIntStream.range(0, delta.length()).parallel()
+                    .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+                      @Nullable
+                      Tensor deltaTensor = delta.get(dataIndex);
+                      @Nullable final double[] deltaData = deltaTensor.getData();
+                      deltaTensor.freeRef();
+                      @Nullable
+                      Tensor inTensor = indata.get(dataIndex);
+                      @Nullable final double[] inputData = inTensor.getData();
+                      @Nonnull final int[] dims = inTensor.getDimensions();
+                      inTensor.freeRef();
+                      @Nonnull final Tensor passback = new Tensor(dims);
+                      for (int i = 0; i < passback.length(); i++) {
+                        RefUtil.freeRef(passback.set(i, inputData[i] < 0 ? 0 : deltaData[i] * weight));
+                      }
+                      return passback;
+                    }, delta.addRef(), indata.addRef()))
+                    .toArray(i -> new Tensor[i]));
+                input.accumulate(buffer.addRef(), tensorArray);
+              }
+              delta.freeRef();
+              buffer.freeRef();
+            }
 
-                public @SuppressWarnings("unused") void _free() {
-                }
-              }) {
+            public @SuppressWarnings("unused")
+            void _free() {
+            }
+          }) {
 
             {
             }
@@ -222,24 +215,21 @@ public class ReLuActivationLayer extends LayerBase {
 
           };
         } finally {
-          if (null != reLuActivationLayer)
-            reLuActivationLayer.freeRef();
+          reLuActivationLayer.freeRef();
         }
       } finally {
-        if (null != indata)
-          indata.freeRef();
+        indata.freeRef();
       }
     } finally {
-      if (null != input)
-        input.freeRef();
+      input.freeRef();
     }
   }
 
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, @Nonnull DataSerializer dataSerializer) {
-    @Nonnull
-    final JsonObject json = super.getJsonStub();
+    @Nonnull final JsonObject json = super.getJsonStub();
+    assert weights != null;
     json.add("weights", weights.getJson(resources, dataSerializer));
     return json;
   }
@@ -247,6 +237,7 @@ public class ReLuActivationLayer extends LayerBase {
   @Nonnull
   @Override
   public RefList<double[]> state() {
+    assert weights != null;
     return RefArrays.asList(weights.getData());
   }
 
@@ -256,7 +247,10 @@ public class ReLuActivationLayer extends LayerBase {
     super._free();
   }
 
-  public @Override @SuppressWarnings("unused") ReLuActivationLayer addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  ReLuActivationLayer addRef() {
     return (ReLuActivationLayer) super.addRef();
   }
 

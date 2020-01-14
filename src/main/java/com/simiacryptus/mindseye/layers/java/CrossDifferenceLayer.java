@@ -21,7 +21,6 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
@@ -43,6 +42,7 @@ public class CrossDifferenceLayer extends LayerBase {
     super(id);
   }
 
+  @Nonnull
   @SuppressWarnings("unused")
   public static CrossDifferenceLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new CrossDifferenceLayer(json);
@@ -52,14 +52,18 @@ public class CrossDifferenceLayer extends LayerBase {
     return max * (max - 1) / 2 - (max - x) * (max - x - 1) / 2 + y - x - 1;
   }
 
-  public static @SuppressWarnings("unused") CrossDifferenceLayer[] addRefs(CrossDifferenceLayer[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  CrossDifferenceLayer[] addRefs(@Nullable CrossDifferenceLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(CrossDifferenceLayer::addRef)
         .toArray((x) -> new CrossDifferenceLayer[x]);
   }
 
-  public static @SuppressWarnings("unused") CrossDifferenceLayer[][] addRefs(CrossDifferenceLayer[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  CrossDifferenceLayer[][] addRefs(@Nullable CrossDifferenceLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(CrossDifferenceLayer::addRefs)
@@ -75,14 +79,10 @@ public class CrossDifferenceLayer extends LayerBase {
       Result temp_65_0002 = new Result(new TensorArray(temp_65_0003.stream().parallel().map(tensor -> {
         final int inputDim = tensor.length();
         final int outputDim = (inputDim * inputDim - inputDim) / 2;
-        @Nonnull
-        final Tensor result1 = new Tensor(outputDim);
-        @Nullable
-        final double[] inputData = tensor.getData();
-        if (null != tensor)
-          tensor.freeRef();
-        @Nullable
-        final double[] resultData = result1.getData();
+        @Nonnull final Tensor result1 = new Tensor(outputDim);
+        @Nullable final double[] inputData = tensor.getData();
+        tensor.freeRef();
+        @Nullable final double[] resultData = result1.getData();
         RefIntStream.range(0, inputDim).forEach(x -> {
           RefIntStream.range(x + 1, inputDim).forEach(y -> {
             resultData[CrossDifferenceLayer.index(x, y, inputDim)] = inputData[x] - inputData[y];
@@ -95,21 +95,17 @@ public class CrossDifferenceLayer extends LayerBase {
         }
 
         @Override
-        public void accept(DeltaSet<UUID> buffer, TensorList data) {
+        public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList data) {
           final Result input = inObj[0].addRef();
           if (input.isAlive()) {
             @Nonnull
             TensorArray tensorArray = new TensorArray(data.stream().parallel().map(tensor -> {
               final int outputDim = tensor.length();
               final int inputDim = (1 + (int) Math.sqrt(1 + 8 * outputDim)) / 2;
-              @Nonnull
-              final Tensor passback = new Tensor(inputDim);
-              @Nullable
-              final double[] passbackData = passback.getData();
-              @Nullable
-              final double[] tensorData = tensor.getData();
-              if (null != tensor)
-                tensor.freeRef();
+              @Nonnull final Tensor passback = new Tensor(inputDim);
+              @Nullable final double[] passbackData = passback.getData();
+              @Nullable final double[] tensorData = tensor.getData();
+              tensor.freeRef();
               RefIntStream.range(0, inputDim).forEach(x -> {
                 RefIntStream.range(x + 1, inputDim).forEach(y -> {
                   passbackData[x] += tensorData[CrossDifferenceLayer.index(x, y, inputDim)];
@@ -118,17 +114,16 @@ public class CrossDifferenceLayer extends LayerBase {
               });
               return passback;
             }).toArray(i -> new Tensor[i]));
-            input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray == null ? null : tensorArray);
+            input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
           }
-          if (null != data)
-            data.freeRef();
+          data.freeRef();
           if (null != buffer)
             buffer.freeRef();
-          if (null != input)
-            input.freeRef();
+          input.freeRef();
         }
 
-        public @SuppressWarnings("unused") void _free() {
+        public @SuppressWarnings("unused")
+        void _free() {
           ReferenceCounting.freeRefs(inObj);
         }
       }) {
@@ -139,8 +134,7 @@ public class CrossDifferenceLayer extends LayerBase {
 
         @Override
         public boolean isAlive() {
-          for (@Nonnull
-          final Result element : inObj)
+          for (@Nonnull final Result element : inObj)
             if (element.isAlive()) {
               return true;
             }
@@ -152,8 +146,7 @@ public class CrossDifferenceLayer extends LayerBase {
         }
 
       };
-      if (null != temp_65_0003)
-        temp_65_0003.freeRef();
+      temp_65_0003.freeRef();
       return temp_65_0002;
     } finally {
       ReferenceCounting.freeRefs(inObj);
@@ -172,10 +165,14 @@ public class CrossDifferenceLayer extends LayerBase {
     return RefArrays.asList();
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") CrossDifferenceLayer addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  CrossDifferenceLayer addRef() {
     return (CrossDifferenceLayer) super.addRef();
   }
 

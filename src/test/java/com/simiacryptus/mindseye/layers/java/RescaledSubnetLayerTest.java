@@ -20,22 +20,26 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
-import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Random;
 
 public abstract class RescaledSubnetLayerTest extends LayerTestBase {
 
-  public static @SuppressWarnings("unused") RescaledSubnetLayerTest[] addRefs(RescaledSubnetLayerTest[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  RescaledSubnetLayerTest[] addRefs(@Nullable RescaledSubnetLayerTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(RescaledSubnetLayerTest::addRef)
         .toArray((x) -> new RescaledSubnetLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused") RescaledSubnetLayerTest[][] addRefs(RescaledSubnetLayerTest[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  RescaledSubnetLayerTest[][] addRefs(@Nullable RescaledSubnetLayerTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(RescaledSubnetLayerTest::addRefs)
@@ -45,38 +49,47 @@ public abstract class RescaledSubnetLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][] { { 6, 6, 1 } };
+    return new int[][]{{6, 6, 1}};
   }
 
   @Nonnull
   @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
     SigmoidActivationLayer subnetwork = new SigmoidActivationLayer();
-    RescaledSubnetLayer temp_60_0001 = new RescaledSubnetLayer(2, subnetwork == null ? null : subnetwork.addRef());
-    if (null != subnetwork)
-      subnetwork.freeRef();
+    RescaledSubnetLayer temp_60_0001 = new RescaledSubnetLayer(2, subnetwork.addRef());
+    subnetwork.freeRef();
     return temp_60_0001;
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") RescaledSubnetLayerTest addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  RescaledSubnetLayerTest addRef() {
     return (RescaledSubnetLayerTest) super.addRef();
   }
 
   public static class Basic extends RescaledSubnetLayerTest {
 
-    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    Basic[] addRefs(@Nullable Basic[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") Basic addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    Basic addRef() {
       return (Basic) super.addRef();
     }
   }

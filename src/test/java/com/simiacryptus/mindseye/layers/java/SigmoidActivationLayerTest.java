@@ -21,8 +21,9 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
-import com.simiacryptus.ref.lang.RefAware;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 
 public abstract class SigmoidActivationLayerTest extends ActivationLayerTestBase {
@@ -30,28 +31,37 @@ public abstract class SigmoidActivationLayerTest extends ActivationLayerTestBase
     super(new SigmoidActivationLayer());
   }
 
-  public static @SuppressWarnings("unused") SigmoidActivationLayerTest[] addRefs(SigmoidActivationLayerTest[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  SigmoidActivationLayerTest[] addRefs(@Nullable SigmoidActivationLayerTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SigmoidActivationLayerTest::addRef)
         .toArray((x) -> new SigmoidActivationLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused") SigmoidActivationLayerTest[][] addRefs(
-      SigmoidActivationLayerTest[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  SigmoidActivationLayerTest[][] addRefs(
+      @Nullable SigmoidActivationLayerTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SigmoidActivationLayerTest::addRefs)
         .toArray((x) -> new SigmoidActivationLayerTest[x][]);
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") SigmoidActivationLayerTest addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  SigmoidActivationLayerTest addRef() {
     return (SigmoidActivationLayerTest) super.addRef();
   }
 
+  @Nonnull
   @Override
   protected Layer lossLayer() {
     return new MeanSqLossLayer();
@@ -59,16 +69,22 @@ public abstract class SigmoidActivationLayerTest extends ActivationLayerTestBase
 
   public static class Basic extends SigmoidActivationLayerTest {
 
-    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    Basic[] addRefs(@Nullable Basic[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") Basic addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    Basic addRef() {
       return (Basic) super.addRef();
     }
   }

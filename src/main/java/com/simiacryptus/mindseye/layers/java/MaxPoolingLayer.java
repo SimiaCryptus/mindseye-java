@@ -22,7 +22,6 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonObject;
 import com.simiacryptus.lang.Tuple2;
 import com.simiacryptus.mindseye.lang.*;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
@@ -64,19 +63,24 @@ public class MaxPoolingLayer extends LayerBase {
     this.kernelDims = RefArrays.copyOf(kernelDims, kernelDims.length);
   }
 
+  @Nonnull
   @SuppressWarnings("unused")
   public static MaxPoolingLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new MaxPoolingLayer(json, JsonUtil.getIntArray(json.getAsJsonArray("heapCopy")));
   }
 
-  public static @SuppressWarnings("unused") MaxPoolingLayer[] addRefs(MaxPoolingLayer[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  MaxPoolingLayer[] addRefs(@Nullable MaxPoolingLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(MaxPoolingLayer::addRef)
         .toArray((x) -> new MaxPoolingLayer[x]);
   }
 
-  public static @SuppressWarnings("unused") MaxPoolingLayer[][] addRefs(MaxPoolingLayer[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  MaxPoolingLayer[][] addRefs(@Nullable MaxPoolingLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(MaxPoolingLayer::addRefs)
@@ -84,22 +88,19 @@ public class MaxPoolingLayer extends LayerBase {
   }
 
   private static RefList<Tuple2<Integer, int[]>> calcRegions(@Nonnull final MaxPoolingLayer.CalcRegionsParameter p) {
-    @Nonnull
-    final Tensor input = new Tensor(p.inputDims);
+    @Nonnull final Tensor input = new Tensor(p.inputDims);
     final int[] newDims = RefIntStream.range(0, p.inputDims.length).map(i -> {
       //assert 0 == p.inputDims[i] % p.kernelDims[i];
       return (int) Math.ceil(p.inputDims[i] * 1.0 / p.kernelDims[i]);
     }).toArray();
-    @Nonnull
-    final Tensor output = new Tensor(newDims);
+    @Nonnull final Tensor output = new Tensor(newDims);
 
     RefList<Tuple2<Integer, int[]>> temp_53_0001 = output.coordStream(true)
         .map(RefUtil.wrapInterface((Function<? super Coordinate, ? extends Tuple2<Integer, int[]>>) o -> {
           Tensor tensor = new Tensor(p.kernelDims);
           final int[] inCoords = tensor.coordStream(true)
               .mapToInt(RefUtil.wrapInterface((ToIntFunction<? super Coordinate>) kernelCoord -> {
-                @Nonnull
-                final int[] result = new int[o.getCoords().length];
+                @Nonnull final int[] result = new int[o.getCoords().length];
                 for (int index = 0; index < o.getCoords().length; index++) {
                   final int outputCoordinate = o.getCoords()[index];
                   final int kernelSize = p.kernelDims[index];
@@ -108,11 +109,10 @@ public class MaxPoolingLayer extends LayerBase {
                   result[index] = baseCoordinate + kernelCoordinate;
                 }
                 return input.index(result);
-              }, input == null ? null : input.addRef())).toArray();
-          if (null != tensor)
-            tensor.freeRef();
+              }, input.addRef())).toArray();
+          tensor.freeRef();
           return new Tuple2<>(o.getIndex(), inCoords);
-        }, input == null ? null : input)).collect(RefCollectors.toList());
+        }, input)).collect(RefCollectors.toList());
     output.freeRef();
     return temp_53_0001;
   }
@@ -126,13 +126,10 @@ public class MaxPoolingLayer extends LayerBase {
     TensorList temp_53_0005 = in.getData();
     temp_53_0005.length();
 
-    if (null != temp_53_0005)
-      temp_53_0005.freeRef();
+    temp_53_0005.freeRef();
     TensorList temp_53_0006 = in.getData();
-    @Nonnull
-    final int[] inputDims = temp_53_0006.getDimensions();
-    if (null != temp_53_0006)
-      temp_53_0006.freeRef();
+    @Nonnull final int[] inputDims = temp_53_0006.getDimensions();
+    temp_53_0006.freeRef();
     final RefList<Tuple2<Integer, int[]>> regions = MaxPoolingLayer.calcRegionsCache
         .apply(new MaxPoolingLayer.CalcRegionsParameter(inputDims, kernelDims));
     TensorList temp_53_0007 = in.getData();
@@ -142,32 +139,24 @@ public class MaxPoolingLayer extends LayerBase {
       }).toArray();
       return new Tensor(newDims);
     }).toArray(i -> new Tensor[i]);
-    if (null != temp_53_0007)
-      temp_53_0007.freeRef();
+    temp_53_0007.freeRef();
     RefArrays.stream(Tensor.addRefs(outputA)).mapToInt(x -> {
       int temp_53_0004 = x.length();
-      if (null != x)
-        x.freeRef();
+      x.freeRef();
       return temp_53_0004;
     }).sum();
     TensorList temp_53_0008 = in.getData();
-    @Nonnull
-    final int[][] gradientMapA = new int[temp_53_0008.length()][];
-    if (null != temp_53_0008)
-      temp_53_0008.freeRef();
+    @Nonnull final int[][] gradientMapA = new int[temp_53_0008.length()][];
+    temp_53_0008.freeRef();
     TensorList temp_53_0009 = in.getData();
     RefIntStream.range(0, temp_53_0009.length()).forEach(RefUtil.wrapInterface(dataIndex -> {
       TensorList temp_53_0010 = in.getData();
-      @Nullable
-      final Tensor input = temp_53_0010.get(dataIndex);
-      if (null != temp_53_0010)
-        temp_53_0010.freeRef();
+      @Nullable final Tensor input = temp_53_0010.get(dataIndex);
+      temp_53_0010.freeRef();
       final Tensor output = outputA[dataIndex].addRef();
-      @Nonnull
-      final IntToDoubleFunction keyExtractor = RefUtil.wrapInterface(inputCoords -> input.get(inputCoords),
-          input == null ? null : input.addRef());
-      @Nonnull
-      final int[] gradientMap = new int[input.length()];
+      @Nonnull final IntToDoubleFunction keyExtractor = RefUtil.wrapInterface(inputCoords -> input.get(inputCoords),
+          input.addRef());
+      @Nonnull final int[] gradientMap = new int[input.length()];
       regions.parallelStream().forEach(RefUtil.wrapInterface((Consumer<? super Tuple2<Integer, int[]>>) tuple -> {
         final Integer from = tuple.getFirst();
         final int[] toList = tuple.getSecond();
@@ -182,15 +171,12 @@ public class MaxPoolingLayer extends LayerBase {
         }
         gradientMap[from] = toMax;
         RefUtil.freeRef(output.set(from, input.get(toMax)));
-      }, output == null ? null : output.addRef(), input == null ? null : input.addRef()));
-      if (null != output)
-        output.freeRef();
-      if (null != input)
-        input.freeRef();
+      }, output.addRef(), input.addRef()));
+      output.freeRef();
+      input.freeRef();
       gradientMapA[dataIndex] = gradientMap;
-    }, in == null ? null : in.addRef(), Tensor.addRefs(outputA), regions == null ? null : regions.addRef()));
-    if (null != temp_53_0009)
-      temp_53_0009.freeRef();
+    }, in.addRef(), Tensor.addRefs(outputA), regions == null ? null : regions.addRef()));
+    temp_53_0009.freeRef();
     if (null != regions)
       regions.freeRef();
     try {
@@ -200,35 +186,31 @@ public class MaxPoolingLayer extends LayerBase {
           }
 
           @Override
-          public void accept(DeltaSet<UUID> buffer, TensorList data) {
+          public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList data) {
             if (in.isAlive()) {
               TensorList temp_53_0011 = in.getData();
               @Nonnull
               TensorArray tensorArray = new TensorArray(RefIntStream.range(0, temp_53_0011.length()).parallel()
                   .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-                    @Nonnull
-                    final Tensor backSignal = new Tensor(inputDims);
+                    @Nonnull final Tensor backSignal = new Tensor(inputDims);
                     final int[] ints = gradientMapA[dataIndex];
-                    @Nullable
-                    final Tensor datum = data.get(dataIndex);
+                    @Nullable final Tensor datum = data.get(dataIndex);
                     for (int i = 0; i < datum.length(); i++) {
                       backSignal.add(ints[i], datum.get(i));
                     }
-                    if (null != datum)
-                      datum.freeRef();
+                    datum.freeRef();
                     return backSignal;
-                  }, data == null ? null : data.addRef())).toArray(i -> new Tensor[i]));
-              if (null != temp_53_0011)
-                temp_53_0011.freeRef();
-              in.accumulate(buffer == null ? null : buffer.addRef(), tensorArray == null ? null : tensorArray);
+                  }, data.addRef())).toArray(i -> new Tensor[i]));
+              temp_53_0011.freeRef();
+              in.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
             }
-            if (null != data)
-              data.freeRef();
+            data.freeRef();
             if (null != buffer)
               buffer.freeRef();
           }
 
-          public @SuppressWarnings("unused") void _free() {
+          public @SuppressWarnings("unused")
+          void _free() {
           }
         }) {
 
@@ -244,20 +226,17 @@ public class MaxPoolingLayer extends LayerBase {
           }
         };
       } finally {
-        if (null != outputA)
-          ReferenceCounting.freeRefs(outputA);
+        ReferenceCounting.freeRefs(outputA);
       }
     } finally {
-      if (null != in)
-        in.freeRef();
+      in.freeRef();
     }
   }
 
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull
-    final JsonObject json = super.getJsonStub();
+    @Nonnull final JsonObject json = super.getJsonStub();
     json.add("heapCopy", JsonUtil.getJson(kernelDims));
     return json;
   }
@@ -268,10 +247,14 @@ public class MaxPoolingLayer extends LayerBase {
     return RefArrays.asList();
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") MaxPoolingLayer addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  MaxPoolingLayer addRef() {
     return (MaxPoolingLayer) super.addRef();
   }
 
@@ -295,8 +278,7 @@ public class MaxPoolingLayer extends LayerBase {
       if (getClass() != obj.getClass()) {
         return false;
       }
-      @Nonnull
-      final MaxPoolingLayer.CalcRegionsParameter other = (MaxPoolingLayer.CalcRegionsParameter) obj;
+      @Nonnull final MaxPoolingLayer.CalcRegionsParameter other = (MaxPoolingLayer.CalcRegionsParameter) obj;
       if (!RefArrays.equals(inputDims, other.inputDims)) {
         return false;
       }

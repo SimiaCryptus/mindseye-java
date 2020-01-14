@@ -23,7 +23,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.simiacryptus.mindseye.lang.*;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrayList;
@@ -57,19 +56,24 @@ public class ImgBandSelectLayer extends LayerBase {
     }
   }
 
+  @Nonnull
   @SuppressWarnings("unused")
   public static ImgBandSelectLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ImgBandSelectLayer(json);
   }
 
-  public static @SuppressWarnings("unused") ImgBandSelectLayer[] addRefs(ImgBandSelectLayer[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  ImgBandSelectLayer[] addRefs(@Nullable ImgBandSelectLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ImgBandSelectLayer::addRef)
         .toArray((x) -> new ImgBandSelectLayer[x]);
   }
 
-  public static @SuppressWarnings("unused") ImgBandSelectLayer[][] addRefs(ImgBandSelectLayer[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  ImgBandSelectLayer[][] addRefs(@Nullable ImgBandSelectLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ImgBandSelectLayer::addRefs)
@@ -82,26 +86,22 @@ public class ImgBandSelectLayer extends LayerBase {
     final Result input = inObj[0].addRef();
     ReferenceCounting.freeRefs(inObj);
     final TensorList batch = input.getData();
-    @Nonnull
-    final int[] inputDims = batch.getDimensions();
+    @Nonnull final int[] inputDims = batch.getDimensions();
     assert 3 == inputDims.length;
-    @Nonnull
-    final Tensor outputDims = new Tensor(inputDims[0], inputDims[1], bands.length);
+    @Nonnull final Tensor outputDims = new Tensor(inputDims[0], inputDims[1], bands.length);
     @Nonnull
     TensorArray wrap = new TensorArray(RefIntStream.range(0, batch.length()).parallel().mapToObj(RefUtil
         .wrapInterface((IntFunction<? extends Tensor>) dataIndex -> outputDims.mapCoords(RefUtil.wrapInterface((c) -> {
-          int[] coords = c.getCoords();
-          @Nullable
-          Tensor tensor = batch.get(dataIndex);
-          double temp_45_0002 = tensor.get(coords[0], coords[1], bands[coords[2]]);
-          if (null != tensor)
-            tensor.freeRef();
-          return temp_45_0002;
-        }, batch == null ? null : batch.addRef())), outputDims == null ? null : outputDims,
-            batch == null ? null : batch.addRef()))
+              int[] coords = c.getCoords();
+              @Nullable
+              Tensor tensor = batch.get(dataIndex);
+              double temp_45_0002 = tensor.get(coords[0], coords[1], bands[coords[2]]);
+              tensor.freeRef();
+              return temp_45_0002;
+            }, batch.addRef())), outputDims,
+            batch.addRef()))
         .toArray(i -> new Tensor[i]));
-    if (null != batch)
-      batch.freeRef();
+    batch.freeRef();
     try {
       try {
         return new Result(wrap, new Result.Accumulator() {
@@ -109,32 +109,29 @@ public class ImgBandSelectLayer extends LayerBase {
           }
 
           @Override
-          public void accept(DeltaSet<UUID> buffer, TensorList error) {
+          public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList error) {
             if (input.isAlive()) {
               @Nonnull
               TensorArray tensorArray = new TensorArray(RefIntStream.range(0, error.length()).parallel()
                   .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-                    @Nonnull
-                    final Tensor passback = new Tensor(inputDims);
-                    @Nullable
-                    final Tensor err = error.get(dataIndex);
+                    @Nonnull final Tensor passback = new Tensor(inputDims);
+                    @Nullable final Tensor err = error.get(dataIndex);
                     err.coordStream(false).forEach(RefUtil.wrapInterface((Consumer<? super Coordinate>) c -> {
                       int[] coords = c.getCoords();
                       passback.set(coords[0], coords[1], bands[coords[2]], err.get(c));
-                    }, passback == null ? null : passback.addRef(), err == null ? null : err.addRef()));
-                    if (null != err)
-                      err.freeRef();
+                    }, passback.addRef(), err.addRef()));
+                    err.freeRef();
                     return passback;
-                  }, error == null ? null : error.addRef())).toArray(i -> new Tensor[i]));
-              input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray == null ? null : tensorArray);
+                  }, error.addRef())).toArray(i -> new Tensor[i]));
+              input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
             }
-            if (null != error)
-              error.freeRef();
+            error.freeRef();
             if (null != buffer)
               buffer.freeRef();
           }
 
-          public @SuppressWarnings("unused") void _free() {
+          public @SuppressWarnings("unused")
+          void _free() {
           }
         }) {
 
@@ -154,18 +151,15 @@ public class ImgBandSelectLayer extends LayerBase {
         wrap.freeRef();
       }
     } finally {
-      if (null != input)
-        input.freeRef();
+      input.freeRef();
     }
   }
 
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull
-    final JsonObject json = super.getJsonStub();
-    @Nonnull
-    final JsonArray array = new JsonArray();
+    @Nonnull final JsonObject json = super.getJsonStub();
+    @Nonnull final JsonArray array = new JsonArray();
     for (final int b : bands) {
       array.add(new JsonPrimitive(b));
     }
@@ -179,10 +173,14 @@ public class ImgBandSelectLayer extends LayerBase {
     return new RefArrayList<>();
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") ImgBandSelectLayer addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  ImgBandSelectLayer addRef() {
     return (ImgBandSelectLayer) super.addRef();
   }
 

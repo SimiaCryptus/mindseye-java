@@ -21,7 +21,6 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefList;
@@ -54,18 +53,23 @@ public class ReshapeLayer extends LayerBase {
     outputDims = JsonUtil.getIntArray(json.getAsJsonArray("outputDims"));
   }
 
+  @Nonnull
   @SuppressWarnings("unused")
   public static ReshapeLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ReshapeLayer(json, rs);
   }
 
-  public static @SuppressWarnings("unused") ReshapeLayer[] addRefs(ReshapeLayer[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  ReshapeLayer[] addRefs(@Nullable ReshapeLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ReshapeLayer::addRef).toArray((x) -> new ReshapeLayer[x]);
   }
 
-  public static @SuppressWarnings("unused") ReshapeLayer[][] addRefs(ReshapeLayer[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  ReshapeLayer[][] addRefs(@Nullable ReshapeLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ReshapeLayer::addRefs)
@@ -79,9 +83,8 @@ public class ReshapeLayer extends LayerBase {
     TensorList data = inObj[0].getData();
     @Nonnull
     int[] inputDims = data.getDimensions();
-    ReshapedTensorList reshapedTensorList = new ReshapedTensorList(data == null ? null : data.addRef(), outputDims);
-    if (null != data)
-      data.freeRef();
+    ReshapedTensorList reshapedTensorList = new ReshapedTensorList(data.addRef(), outputDims);
+    data.freeRef();
     try {
       try {
         return new Result(reshapedTensorList, new Result.Accumulator() {
@@ -90,17 +93,18 @@ public class ReshapeLayer extends LayerBase {
           }
 
           @Override
-          public void accept(DeltaSet<UUID> buffer, TensorList delta) {
+          public void accept(@Nullable DeltaSet<UUID> buffer, @Nullable TensorList delta) {
             @Nonnull
             ReshapedTensorList tensorList = new ReshapedTensorList(delta == null ? null : delta.addRef(), inputDims);
             if (null != delta)
               delta.freeRef();
-            inObj[0].accumulate(buffer == null ? null : buffer.addRef(), tensorList == null ? null : tensorList);
+            inObj[0].accumulate(buffer == null ? null : buffer.addRef(), tensorList);
             if (null != buffer)
               buffer.freeRef();
           }
 
-          public @SuppressWarnings("unused") void _free() {
+          public @SuppressWarnings("unused")
+          void _free() {
             ReferenceCounting.freeRefs(inObj);
           }
         }) {
@@ -122,8 +126,7 @@ public class ReshapeLayer extends LayerBase {
         ReferenceCounting.freeRefs(inObj);
       }
     } finally {
-      if (null != reshapedTensorList)
-        reshapedTensorList.freeRef();
+      reshapedTensorList.freeRef();
     }
 
   }
@@ -131,8 +134,8 @@ public class ReshapeLayer extends LayerBase {
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull
-    final JsonObject json = super.getJsonStub();
+    @Nonnull final JsonObject json = super.getJsonStub();
+    assert outputDims != null;
     json.add("outputDims", JsonUtil.getJson(outputDims));
     return json;
   }
@@ -143,10 +146,14 @@ public class ReshapeLayer extends LayerBase {
     return RefArrays.asList();
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") ReshapeLayer addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  ReshapeLayer addRef() {
     return (ReshapeLayer) super.addRef();
   }
 

@@ -23,11 +23,11 @@ import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.network.DAGNetwork;
 import com.simiacryptus.mindseye.network.DAGNode;
-import com.simiacryptus.ref.lang.RefAware;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
@@ -37,6 +37,7 @@ public class SignReducerLayer extends DAGNetwork {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(SignReducerLayer.class);
+  @Nullable
   private final DAGNode head;
 
   public SignReducerLayer() {
@@ -47,25 +48,19 @@ public class SignReducerLayer extends DAGNetwork {
     NthPowerActivationLayer temp_01_0005 = new NthPowerActivationLayer();
     LinearActivationLayer temp_01_0006 = new LinearActivationLayer();
     DAGNode temp_01_0001 = add(temp_01_0003.setBalanced(false),
-        add(new ProductInputsLayer(), avgInput == null ? null : avgInput.addRef(),
+        add(new ProductInputsLayer(), avgInput.addRef(),
             add(temp_01_0004.setPower(-1),
                 add(temp_01_0005.setPower(0.5),
                     add(new SumInputsLayer(), add(new AvgReducerLayer(), add(new SqActivationLayer(), getInput(0))),
                         add(temp_01_0006.setScale(-1),
-                            add(new SqActivationLayer(), avgInput == null ? null : avgInput.addRef())))))));
-    if (null != temp_01_0006)
-      temp_01_0006.freeRef();
-    if (null != temp_01_0005)
-      temp_01_0005.freeRef();
-    if (null != temp_01_0004)
-      temp_01_0004.freeRef();
-    if (null != temp_01_0003)
-      temp_01_0003.freeRef();
-    head = temp_01_0001 == null ? null : temp_01_0001.addRef();
-    if (null != temp_01_0001)
-      temp_01_0001.freeRef();
-    if (null != avgInput)
-      avgInput.freeRef();
+                            add(new SqActivationLayer(), avgInput.addRef())))))));
+    temp_01_0006.freeRef();
+    temp_01_0005.freeRef();
+    temp_01_0004.freeRef();
+    temp_01_0003.freeRef();
+    head = temp_01_0001.addRef();
+    temp_01_0001.freeRef();
+    avgInput.freeRef();
   }
 
   protected SignReducerLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -81,19 +76,24 @@ public class SignReducerLayer extends DAGNetwork {
     return head == null ? null : head.addRef();
   }
 
+  @Nonnull
   @SuppressWarnings("unused")
   public static Layer fromJson(@Nonnull final JsonObject inner, Map<CharSequence, byte[]> rs) {
     return new SignReducerLayer(inner, rs);
   }
 
-  public static @SuppressWarnings("unused") SignReducerLayer[] addRefs(SignReducerLayer[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  SignReducerLayer[] addRefs(@Nullable SignReducerLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SignReducerLayer::addRef)
         .toArray((x) -> new SignReducerLayer[x]);
   }
 
-  public static @SuppressWarnings("unused") SignReducerLayer[][] addRefs(SignReducerLayer[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  SignReducerLayer[][] addRefs(@Nullable SignReducerLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SignReducerLayer::addRefs)
@@ -106,7 +106,10 @@ public class SignReducerLayer extends DAGNetwork {
     super._free();
   }
 
-  public @Override @SuppressWarnings("unused") SignReducerLayer addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  SignReducerLayer addRef() {
     return (SignReducerLayer) super.addRef();
   }
 }

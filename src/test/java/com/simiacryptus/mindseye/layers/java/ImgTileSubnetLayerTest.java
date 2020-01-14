@@ -20,22 +20,26 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
-import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Random;
 
 public abstract class ImgTileSubnetLayerTest extends LayerTestBase {
 
-  public static @SuppressWarnings("unused") ImgTileSubnetLayerTest[] addRefs(ImgTileSubnetLayerTest[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  ImgTileSubnetLayerTest[] addRefs(@Nullable ImgTileSubnetLayerTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ImgTileSubnetLayerTest::addRef)
         .toArray((x) -> new ImgTileSubnetLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused") ImgTileSubnetLayerTest[][] addRefs(ImgTileSubnetLayerTest[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  ImgTileSubnetLayerTest[][] addRefs(@Nullable ImgTileSubnetLayerTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ImgTileSubnetLayerTest::addRefs)
@@ -45,39 +49,48 @@ public abstract class ImgTileSubnetLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][] { { 6, 6, 1 } };
+    return new int[][]{{6, 6, 1}};
   }
 
   @Nonnull
   @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
     LinearActivationLayer subnetwork = new LinearActivationLayer();
-    ImgTileSubnetLayer temp_51_0001 = new ImgTileSubnetLayer(subnetwork == null ? null : subnetwork.addRef(), 3, 3, 2,
+    ImgTileSubnetLayer temp_51_0001 = new ImgTileSubnetLayer(subnetwork.addRef(), 3, 3, 2,
         2);
-    if (null != subnetwork)
-      subnetwork.freeRef();
+    subnetwork.freeRef();
     return temp_51_0001;
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") ImgTileSubnetLayerTest addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  ImgTileSubnetLayerTest addRef() {
     return (ImgTileSubnetLayerTest) super.addRef();
   }
 
   public static class Basic extends ImgTileSubnetLayerTest {
 
-    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    Basic[] addRefs(@Nullable Basic[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") Basic addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    Basic addRef() {
       return (Basic) super.addRef();
     }
   }

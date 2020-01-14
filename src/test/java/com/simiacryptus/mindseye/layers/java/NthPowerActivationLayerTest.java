@@ -22,8 +22,9 @@ package com.simiacryptus.mindseye.layers.java;
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 import com.simiacryptus.mindseye.test.unit.SingleDerivativeTester;
-import com.simiacryptus.ref.lang.RefAware;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 
 public class NthPowerActivationLayerTest {
@@ -38,7 +39,9 @@ public class NthPowerActivationLayerTest {
       return new SingleDerivativeTester(1e-2, 1e-4);
     }
 
-    public static @SuppressWarnings("unused") InvPowerTest[] addRefs(InvPowerTest[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    InvPowerTest[] addRefs(@Nullable InvPowerTest[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(InvPowerTest::addRef)
@@ -53,13 +56,18 @@ public class NthPowerActivationLayerTest {
       return v;
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") InvPowerTest addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    InvPowerTest addRef() {
       return (InvPowerTest) super.addRef();
     }
 
+    @Nonnull
     @Override
     protected Layer lossLayer() {
       return new MeanSqLossLayer();
@@ -76,7 +84,9 @@ public class NthPowerActivationLayerTest {
       return new SingleDerivativeTester(1e-2, 1e-4);
     }
 
-    public static @SuppressWarnings("unused") InvSqrtPowerTest[] addRefs(InvSqrtPowerTest[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    InvSqrtPowerTest[] addRefs(@Nullable InvSqrtPowerTest[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(InvSqrtPowerTest::addRef)
@@ -91,13 +101,18 @@ public class NthPowerActivationLayerTest {
       return v;
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") InvSqrtPowerTest addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    InvSqrtPowerTest addRef() {
       return (InvSqrtPowerTest) super.addRef();
     }
 
+    @Nonnull
     @Override
     protected Layer lossLayer() {
       return new MeanSqLossLayer();
@@ -109,20 +124,27 @@ public class NthPowerActivationLayerTest {
       super(new NthPowerActivationLayer(Math.PI));
     }
 
-    public static @SuppressWarnings("unused") NthPowerTest[] addRefs(NthPowerTest[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    NthPowerTest[] addRefs(@Nullable NthPowerTest[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(NthPowerTest::addRef)
           .toArray((x) -> new NthPowerTest[x]);
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") NthPowerTest addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    NthPowerTest addRef() {
       return (NthPowerTest) super.addRef();
     }
 
+    @Nonnull
     @Override
     protected Layer lossLayer() {
       return new MeanSqLossLayer();
@@ -146,20 +168,27 @@ public class NthPowerActivationLayerTest {
       super(new NthPowerActivationLayer(2));
     }
 
-    public static @SuppressWarnings("unused") SquarePowerTest[] addRefs(SquarePowerTest[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    SquarePowerTest[] addRefs(@Nullable SquarePowerTest[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(SquarePowerTest::addRef)
           .toArray((x) -> new SquarePowerTest[x]);
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") SquarePowerTest addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    SquarePowerTest addRef() {
       return (SquarePowerTest) super.addRef();
     }
 
+    @Nonnull
     @Override
     protected Layer lossLayer() {
       return new MeanSqLossLayer();
@@ -171,20 +200,27 @@ public class NthPowerActivationLayerTest {
       super(new NthPowerActivationLayer(0));
     }
 
-    public static @SuppressWarnings("unused") ZeroPowerTest[] addRefs(ZeroPowerTest[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    ZeroPowerTest[] addRefs(@Nullable ZeroPowerTest[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(ZeroPowerTest::addRef)
           .toArray((x) -> new ZeroPowerTest[x]);
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") ZeroPowerTest addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    ZeroPowerTest addRef() {
       return (ZeroPowerTest) super.addRef();
     }
 
+    @Nonnull
     @Override
     protected Layer lossLayer() {
       return new MeanSqLossLayer();

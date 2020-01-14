@@ -26,11 +26,11 @@ import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.mindseye.layers.ValueLayer;
 import com.simiacryptus.mindseye.network.DAGNetwork;
 import com.simiacryptus.mindseye.network.DAGNode;
-import com.simiacryptus.ref.lang.RefAware;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
@@ -40,19 +40,19 @@ public class TargetValueLayer extends DAGNetwork {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(TargetValueLayer.class);
+  @Nullable
   private final DAGNode head;
+  @Nullable
   private final DAGNode target;
 
   public TargetValueLayer(final double... values) {
     super(1);
     DAGNode temp_05_0001 = add(new ValueLayer(new Tensor(values)));
-    target = temp_05_0001 == null ? null : temp_05_0001.addRef();
-    if (null != temp_05_0001)
-      temp_05_0001.freeRef();
-    DAGNode temp_05_0002 = add(new MeanSqLossLayer(), getInput(0), target == null ? null : target.addRef());
-    head = temp_05_0002 == null ? null : temp_05_0002.addRef();
-    if (null != temp_05_0002)
-      temp_05_0002.freeRef();
+    target = temp_05_0001.addRef();
+    temp_05_0001.freeRef();
+    DAGNode temp_05_0002 = add(new MeanSqLossLayer(), getInput(0), target.addRef());
+    head = temp_05_0002.addRef();
+    temp_05_0002.freeRef();
   }
 
   protected TargetValueLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -74,26 +74,32 @@ public class TargetValueLayer extends DAGNetwork {
 
   @Nonnull
   public TargetValueLayer setTarget(final double... value) {
+    assert target != null;
     ValueLayer temp_05_0005 = target.<ValueLayer>getLayer();
+    assert temp_05_0005 != null;
     temp_05_0005.setData(new Tensor(value));
-    if (null != temp_05_0005)
-      temp_05_0005.freeRef();
+    temp_05_0005.freeRef();
     return this.addRef();
   }
 
+  @Nonnull
   @SuppressWarnings("unused")
   public static Layer fromJson(@Nonnull final JsonObject inner, Map<CharSequence, byte[]> rs) {
     return new TargetValueLayer(inner, rs);
   }
 
-  public static @SuppressWarnings("unused") TargetValueLayer[] addRefs(TargetValueLayer[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  TargetValueLayer[] addRefs(@Nullable TargetValueLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(TargetValueLayer::addRef)
         .toArray((x) -> new TargetValueLayer[x]);
   }
 
-  public static @SuppressWarnings("unused") TargetValueLayer[][] addRefs(TargetValueLayer[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  TargetValueLayer[][] addRefs(@Nullable TargetValueLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(TargetValueLayer::addRefs)
@@ -103,6 +109,8 @@ public class TargetValueLayer extends DAGNetwork {
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
     final JsonObject json = super.getJson(resources, dataSerializer);
+    assert target != null;
+    assert json != null;
     json.addProperty("target", target.getId().toString());
     return json;
   }
@@ -115,7 +123,10 @@ public class TargetValueLayer extends DAGNetwork {
     super._free();
   }
 
-  public @Override @SuppressWarnings("unused") TargetValueLayer addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  TargetValueLayer addRef() {
     return (TargetValueLayer) super.addRef();
   }
 }

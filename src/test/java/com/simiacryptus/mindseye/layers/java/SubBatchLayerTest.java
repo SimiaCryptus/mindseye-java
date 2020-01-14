@@ -20,7 +20,6 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
-import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -29,6 +28,7 @@ import java.util.Random;
 
 public class SubBatchLayerTest extends LayerTestBase {
 
+  @Nullable
   private final Layer layer = SubBatchLayer.wrap(new SoftmaxLayer());
 
   @Nullable
@@ -37,14 +37,18 @@ public class SubBatchLayerTest extends LayerTestBase {
     return null;
   }
 
-  public static @SuppressWarnings("unused") SubBatchLayerTest[] addRefs(SubBatchLayerTest[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  SubBatchLayerTest[] addRefs(@Nullable SubBatchLayerTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SubBatchLayerTest::addRef)
         .toArray((x) -> new SubBatchLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused") SubBatchLayerTest[][] addRefs(SubBatchLayerTest[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  SubBatchLayerTest[][] addRefs(@Nullable SubBatchLayerTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SubBatchLayerTest::addRefs)
@@ -54,21 +58,26 @@ public class SubBatchLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][] { { 5 } };
+    return new int[][]{{5}};
   }
 
   @Nonnull
   @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
+    assert layer != null;
     return layer.copy();
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
     if (null != layer)
       layer.freeRef();
   }
 
-  public @Override @SuppressWarnings("unused") SubBatchLayerTest addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  SubBatchLayerTest addRef() {
     return (SubBatchLayerTest) super.addRef();
   }
 

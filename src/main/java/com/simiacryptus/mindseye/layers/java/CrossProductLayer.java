@@ -21,7 +21,6 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
@@ -45,6 +44,7 @@ public class CrossProductLayer extends LayerBase {
     super(id);
   }
 
+  @Nonnull
   @SuppressWarnings("unused")
   public static CrossProductLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new CrossProductLayer(json);
@@ -54,14 +54,18 @@ public class CrossProductLayer extends LayerBase {
     return max * (max - 1) / 2 - (max - x) * (max - x - 1) / 2 + y - x - 1;
   }
 
-  public static @SuppressWarnings("unused") CrossProductLayer[] addRefs(CrossProductLayer[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  CrossProductLayer[] addRefs(@Nullable CrossProductLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(CrossProductLayer::addRef)
         .toArray((x) -> new CrossProductLayer[x]);
   }
 
-  public static @SuppressWarnings("unused") CrossProductLayer[][] addRefs(CrossProductLayer[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  CrossProductLayer[][] addRefs(@Nullable CrossProductLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(CrossProductLayer::addRefs)
@@ -80,14 +84,10 @@ public class CrossProductLayer extends LayerBase {
           return new Result(new TensorArray(indata.stream().parallel().map(tensor -> {
             final int inputDim = tensor.length();
             final int outputDim = (inputDim * inputDim - inputDim) / 2;
-            @Nonnull
-            final Tensor result1 = new Tensor(outputDim);
-            @Nullable
-            final double[] inputData = tensor.getData();
-            if (null != tensor)
-              tensor.freeRef();
-            @Nullable
-            final double[] resultData = result1.getData();
+            @Nonnull final Tensor result1 = new Tensor(outputDim);
+            @Nullable final double[] inputData = tensor.getData();
+            tensor.freeRef();
+            @Nullable final double[] resultData = result1.getData();
             RefIntStream.range(0, inputDim).forEach(x -> {
               RefIntStream.range(x + 1, inputDim).forEach(y -> {
                 resultData[CrossProductLayer.index(x, y, inputDim)] = inputData[x] * inputData[y];
@@ -99,29 +99,22 @@ public class CrossProductLayer extends LayerBase {
             }
 
             @Override
-            public void accept(DeltaSet<UUID> buffer, TensorList delta) {
+            public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
               if (in.isAlive()) {
                 assert delta.length() == delta.length();
                 @Nonnull
                 TensorArray tensorArray = new TensorArray(RefIntStream.range(0, delta.length()).parallel()
                     .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) batchIndex -> {
-                      @Nullable
-                      final Tensor deltaTensor = delta.get(batchIndex);
+                      @Nullable final Tensor deltaTensor = delta.get(batchIndex);
                       final int outputDim = deltaTensor.length();
                       final int inputDim = (1 + (int) Math.sqrt(1 + 8 * outputDim)) / 2;
-                      @Nonnull
-                      final Tensor passback = new Tensor(inputDim);
-                      @Nullable
-                      final double[] passbackData = passback.getData();
-                      @Nullable
-                      final double[] tensorData = deltaTensor.getData();
-                      if (null != deltaTensor)
-                        deltaTensor.freeRef();
+                      @Nonnull final Tensor passback = new Tensor(inputDim);
+                      @Nullable final double[] passbackData = passback.getData();
+                      @Nullable final double[] tensorData = deltaTensor.getData();
+                      deltaTensor.freeRef();
                       Tensor inputTensor = indata.get(batchIndex);
-                      @Nullable
-                      final double[] inputData = inputTensor.getData();
-                      if (null != inputTensor)
-                        inputTensor.freeRef();
+                      @Nullable final double[] inputData = inputTensor.getData();
+                      inputTensor.freeRef();
                       RefIntStream.range(0, inputDim).forEach(x -> {
                         RefIntStream.range(x + 1, inputDim).forEach(y -> {
                           passbackData[x] += tensorData[CrossProductLayer.index(x, y, inputDim)] * inputData[y];
@@ -129,17 +122,17 @@ public class CrossProductLayer extends LayerBase {
                         });
                       });
                       return passback;
-                    }, indata == null ? null : indata.addRef(), delta == null ? null : delta.addRef()))
+                    }, indata.addRef(), delta.addRef()))
                     .toArray(i -> new Tensor[i]));
-                in.accumulate(buffer == null ? null : buffer.addRef(), tensorArray == null ? null : tensorArray);
+                in.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
               }
-              if (null != delta)
-                delta.freeRef();
+              delta.freeRef();
               if (null != buffer)
                 buffer.freeRef();
             }
 
-            public @SuppressWarnings("unused") void _free() {
+            public @SuppressWarnings("unused")
+            void _free() {
             }
           }) {
 
@@ -149,8 +142,7 @@ public class CrossProductLayer extends LayerBase {
 
             @Override
             public boolean isAlive() {
-              for (@Nonnull
-              final Result element : inObj)
+              for (@Nonnull final Result element : inObj)
                 if (element.isAlive()) {
                   return true;
                 }
@@ -166,12 +158,10 @@ public class CrossProductLayer extends LayerBase {
           ReferenceCounting.freeRefs(inObj);
         }
       } finally {
-        if (null != indata)
-          indata.freeRef();
+        indata.freeRef();
       }
     } finally {
-      if (null != in)
-        in.freeRef();
+      in.freeRef();
     }
   }
 
@@ -187,10 +177,14 @@ public class CrossProductLayer extends LayerBase {
     return RefArrays.asList();
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") CrossProductLayer addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  CrossProductLayer addRef() {
     return (CrossProductLayer) super.addRef();
   }
 

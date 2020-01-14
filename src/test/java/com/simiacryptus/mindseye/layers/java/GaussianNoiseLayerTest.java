@@ -21,8 +21,9 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
-import com.simiacryptus.ref.lang.RefAware;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 
 public abstract class GaussianNoiseLayerTest extends ActivationLayerTestBase {
@@ -30,41 +31,56 @@ public abstract class GaussianNoiseLayerTest extends ActivationLayerTestBase {
     super(new GaussianNoiseLayer());
   }
 
-  public static @SuppressWarnings("unused") GaussianNoiseLayerTest[] addRefs(GaussianNoiseLayerTest[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  GaussianNoiseLayerTest[] addRefs(@Nullable GaussianNoiseLayerTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(GaussianNoiseLayerTest::addRef)
         .toArray((x) -> new GaussianNoiseLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused") GaussianNoiseLayerTest[][] addRefs(GaussianNoiseLayerTest[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  GaussianNoiseLayerTest[][] addRefs(@Nullable GaussianNoiseLayerTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(GaussianNoiseLayerTest::addRefs)
         .toArray((x) -> new GaussianNoiseLayerTest[x][]);
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") GaussianNoiseLayerTest addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  GaussianNoiseLayerTest addRef() {
     return (GaussianNoiseLayerTest) super.addRef();
   }
 
   public static class Basic extends GaussianNoiseLayerTest {
-    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    Basic[] addRefs(@Nullable Basic[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") Basic addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    Basic addRef() {
       return (Basic) super.addRef();
     }
 
+    @Nonnull
     @Override
     protected Layer lossLayer() {
       return new MeanSqLossLayer();

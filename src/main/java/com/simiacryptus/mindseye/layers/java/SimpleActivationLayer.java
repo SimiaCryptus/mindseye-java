@@ -21,7 +21,6 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
@@ -51,14 +50,18 @@ public abstract class SimpleActivationLayer<T extends SimpleActivationLayer<T>> 
     super(id);
   }
 
-  public static @SuppressWarnings("unused") SimpleActivationLayer[] addRefs(SimpleActivationLayer[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  SimpleActivationLayer[] addRefs(@Nullable SimpleActivationLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SimpleActivationLayer::addRef)
         .toArray((x) -> new SimpleActivationLayer[x]);
   }
 
-  public static @SuppressWarnings("unused") SimpleActivationLayer[][] addRefs(SimpleActivationLayer[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  SimpleActivationLayer[][] addRefs(@Nullable SimpleActivationLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SimpleActivationLayer::addRefs)
@@ -71,80 +74,70 @@ public abstract class SimpleActivationLayer<T extends SimpleActivationLayer<T>> 
     final TensorList indata0 = inObj[0].getData();
     final int itemCnt = indata0.length();
     assert 0 < itemCnt;
-    @Nonnull
-    final Tensor inputGradientA[] = new Tensor[itemCnt];
+    @Nonnull final Tensor inputGradientA[] = new Tensor[itemCnt];
     try {
       try {
         try {
           return new Result(new TensorArray(RefIntStream.range(0, itemCnt).parallel()
               .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-                @Nullable
-                final Tensor input = indata0.get(dataIndex);
-                @Nonnull
-                final Tensor output = new Tensor(indata0.getDimensions());
-                @Nonnull
-                final Tensor inputGradient = new Tensor(input.length());
-                Tensor temp_17_0001 = inputGradient == null ? null : inputGradient.addRef();
+                @Nullable final Tensor input = indata0.get(dataIndex);
+                @Nonnull final Tensor output = new Tensor(indata0.getDimensions());
+                @Nonnull final Tensor inputGradient = new Tensor(input.length());
+                Tensor temp_17_0001 = inputGradient.addRef();
                 if (null != inputGradientA[dataIndex])
                   inputGradientA[dataIndex].freeRef();
-                inputGradientA[dataIndex] = temp_17_0001 == null ? null : temp_17_0001.addRef();
-                if (null != temp_17_0001)
-                  temp_17_0001.freeRef();
-                @Nonnull
-                final double[] results = new double[2];
+                inputGradientA[dataIndex] = temp_17_0001.addRef();
+                temp_17_0001.freeRef();
+                @Nonnull final double[] results = new double[2];
                 for (int i = 0; i < input.length(); i++) {
                   eval(input.getData()[i], results);
                   RefUtil.freeRef(inputGradient.set(i, results[1]));
                   RefUtil.freeRef(output.set(i, results[0]));
                 }
                 inputGradient.freeRef();
-                if (null != input)
-                  input.freeRef();
+                input.freeRef();
                 return output;
-              }, indata0 == null ? null : indata0.addRef(), Tensor.addRefs(inputGradientA)))
+              }, indata0.addRef(), Tensor.addRefs(inputGradientA)))
               .toArray(i -> new Tensor[i])), new Result.Accumulator() {
-                {
-                  Result.addRefs(inObj);
-                  Tensor.addRefs(inputGradientA);
-                }
+            {
+              Result.addRefs(inObj);
+              Tensor.addRefs(inputGradientA);
+            }
 
-                @Override
-                public void accept(DeltaSet<UUID> buffer, TensorList data) {
-                  if (inObj[0].isAlive()) {
-                    @Nonnull
-                    TensorArray tensorArray = new TensorArray(RefIntStream.range(0, itemCnt).parallel()
-                        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-                          @Nonnull
-                          final Tensor passback = new Tensor(data.getDimensions());
-                          @Nullable
-                          final double[] gradientData = inputGradientA[dataIndex].getData();
-                          @Nullable
-                          Tensor tensor = data.get(dataIndex);
-                          RefIntStream.range(0, passback.length()).forEach(RefUtil.wrapInterface(i -> {
-                            final double v = gradientData[i];
-                            if (Double.isFinite(v)) {
-                              RefUtil.freeRef(passback.set(i, tensor.get(i) * v));
-                            }
-                          }, passback == null ? null : passback.addRef(), tensor == null ? null : tensor.addRef()));
-                          if (null != tensor)
-                            tensor.freeRef();
-                          return passback;
-                        }, data == null ? null : data.addRef(), Tensor.addRefs(inputGradientA)))
-                        .toArray(i -> new Tensor[i]));
-                    inObj[0].accumulate(buffer == null ? null : buffer.addRef(),
-                        tensorArray == null ? null : tensorArray);
-                  }
-                  if (null != data)
-                    data.freeRef();
-                  if (null != buffer)
-                    buffer.freeRef();
-                }
+            @Override
+            public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList data) {
+              if (inObj[0].isAlive()) {
+                @Nonnull
+                TensorArray tensorArray = new TensorArray(RefIntStream.range(0, itemCnt).parallel()
+                    .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+                      @Nonnull final Tensor passback = new Tensor(data.getDimensions());
+                      @Nullable final double[] gradientData = inputGradientA[dataIndex].getData();
+                      @Nullable
+                      Tensor tensor = data.get(dataIndex);
+                      RefIntStream.range(0, passback.length()).forEach(RefUtil.wrapInterface(i -> {
+                        final double v = gradientData[i];
+                        if (Double.isFinite(v)) {
+                          RefUtil.freeRef(passback.set(i, tensor.get(i) * v));
+                        }
+                      }, passback.addRef(), tensor.addRef()));
+                      tensor.freeRef();
+                      return passback;
+                    }, data.addRef(), Tensor.addRefs(inputGradientA)))
+                    .toArray(i -> new Tensor[i]));
+                inObj[0].accumulate(buffer == null ? null : buffer.addRef(),
+                    tensorArray);
+              }
+              data.freeRef();
+              if (null != buffer)
+                buffer.freeRef();
+            }
 
-                public @SuppressWarnings("unused") void _free() {
-                  ReferenceCounting.freeRefs(inObj);
-                  ReferenceCounting.freeRefs(inputGradientA);
-                }
-              }) {
+            public @SuppressWarnings("unused")
+            void _free() {
+              ReferenceCounting.freeRefs(inObj);
+              ReferenceCounting.freeRefs(inputGradientA);
+            }
+          }) {
 
             {
               Result.addRefs(inObj);
@@ -166,8 +159,7 @@ public abstract class SimpleActivationLayer<T extends SimpleActivationLayer<T>> 
         ReferenceCounting.freeRefs(inputGradientA);
       }
     } finally {
-      if (null != indata0)
-        indata0.freeRef();
+      indata0.freeRef();
     }
   }
 
@@ -177,10 +169,14 @@ public abstract class SimpleActivationLayer<T extends SimpleActivationLayer<T>> 
     return RefArrays.asList();
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") SimpleActivationLayer<T> addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  SimpleActivationLayer<T> addRef() {
     return (SimpleActivationLayer<T>) super.addRef();
   }
 

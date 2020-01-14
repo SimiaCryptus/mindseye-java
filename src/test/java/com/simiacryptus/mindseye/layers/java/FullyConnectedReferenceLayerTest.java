@@ -20,9 +20,9 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
-import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -39,23 +39,25 @@ public abstract class FullyConnectedReferenceLayerTest extends LayerTestBase {
     FullyConnectedReferenceLayer temp_00_0002 = new FullyConnectedReferenceLayer(getSmallDims(new Random())[0],
         outputDims);
     FullyConnectedReferenceLayer temp_00_0001 = temp_00_0002.set(i -> random());
-    if (null != temp_00_0002)
-      temp_00_0002.freeRef();
-    this.layer = temp_00_0001 == null ? null : temp_00_0001.addRef();
-    if (null != temp_00_0001)
-      temp_00_0001.freeRef();
+    temp_00_0002.freeRef();
+    this.layer = temp_00_0001.addRef();
+    temp_00_0001.freeRef();
   }
 
-  public static @SuppressWarnings("unused") FullyConnectedReferenceLayerTest[] addRefs(
-      FullyConnectedReferenceLayerTest[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  FullyConnectedReferenceLayerTest[] addRefs(
+      @Nullable FullyConnectedReferenceLayerTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(FullyConnectedReferenceLayerTest::addRef)
         .toArray((x) -> new FullyConnectedReferenceLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused") FullyConnectedReferenceLayerTest[][] addRefs(
-      FullyConnectedReferenceLayerTest[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  FullyConnectedReferenceLayerTest[][] addRefs(
+      @Nullable FullyConnectedReferenceLayerTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(FullyConnectedReferenceLayerTest::addRefs)
@@ -65,57 +67,73 @@ public abstract class FullyConnectedReferenceLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][] { inputDims };
+    return new int[][]{inputDims};
   }
 
   @Nonnull
   @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
-    return layer == null ? null : layer.addRef();
+    return layer.addRef();
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
     layer.freeRef();
   }
 
-  public @Override @SuppressWarnings("unused") FullyConnectedReferenceLayerTest addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  FullyConnectedReferenceLayerTest addRef() {
     return (FullyConnectedReferenceLayerTest) super.addRef();
   }
 
   public static class Basic extends FullyConnectedReferenceLayerTest {
     public Basic() {
-      super(new int[] { 2 }, new int[] { 2 });
+      super(new int[]{2}, new int[]{2});
     }
 
-    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    Basic[] addRefs(@Nullable Basic[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") Basic addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    Basic addRef() {
       return (Basic) super.addRef();
     }
   }
 
   public static class Image extends FullyConnectedReferenceLayerTest {
     public Image() {
-      super(new int[] { 3, 3, 3 }, new int[] { 2, 2, 4 });
+      super(new int[]{3, 3, 3}, new int[]{2, 2, 4});
     }
 
-    public static @SuppressWarnings("unused") Image[] addRefs(Image[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    Image[] addRefs(@Nullable Image[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(Image::addRef).toArray((x) -> new Image[x]);
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") Image addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    Image addRef() {
       return (Image) super.addRef();
     }
   }

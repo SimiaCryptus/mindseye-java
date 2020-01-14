@@ -21,9 +21,9 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.DataSerializer;
-import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -37,19 +37,24 @@ public final class SqActivationLayer extends SimpleActivationLayer<SqActivationL
     super(id);
   }
 
+  @Nonnull
   @SuppressWarnings("unused")
-  public static SqActivationLayer fromJson(final JsonObject json, Map<CharSequence, byte[]> rs) {
+  public static SqActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new SqActivationLayer(json);
   }
 
-  public static @SuppressWarnings("unused") SqActivationLayer[] addRefs(SqActivationLayer[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  SqActivationLayer[] addRefs(@Nullable SqActivationLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SqActivationLayer::addRef)
         .toArray((x) -> new SqActivationLayer[x]);
   }
 
-  public static @SuppressWarnings("unused") SqActivationLayer[][] addRefs(SqActivationLayer[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  SqActivationLayer[][] addRefs(@Nullable SqActivationLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SqActivationLayer::addRefs)
@@ -62,10 +67,14 @@ public final class SqActivationLayer extends SimpleActivationLayer<SqActivationL
     return super.getJsonStub();
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") SqActivationLayer addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  SqActivationLayer addRef() {
     return (SqActivationLayer) super.addRef();
   }
 

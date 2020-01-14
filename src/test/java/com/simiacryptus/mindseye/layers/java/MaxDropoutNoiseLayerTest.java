@@ -21,9 +21,9 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
-import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -32,14 +32,18 @@ public abstract class MaxDropoutNoiseLayerTest extends ActivationLayerTestBase {
     super(new MaxDropoutNoiseLayer(2, 2, 1));
   }
 
-  public static @SuppressWarnings("unused") MaxDropoutNoiseLayerTest[] addRefs(MaxDropoutNoiseLayerTest[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  MaxDropoutNoiseLayerTest[] addRefs(@Nullable MaxDropoutNoiseLayerTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(MaxDropoutNoiseLayerTest::addRef)
         .toArray((x) -> new MaxDropoutNoiseLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused") MaxDropoutNoiseLayerTest[][] addRefs(MaxDropoutNoiseLayerTest[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  MaxDropoutNoiseLayerTest[][] addRefs(@Nullable MaxDropoutNoiseLayerTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(MaxDropoutNoiseLayerTest::addRefs)
@@ -49,16 +53,21 @@ public abstract class MaxDropoutNoiseLayerTest extends ActivationLayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][] { { 8, 8, 1 } };
+    return new int[][]{{8, 8, 1}};
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") MaxDropoutNoiseLayerTest addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  MaxDropoutNoiseLayerTest addRef() {
     return (MaxDropoutNoiseLayerTest) super.addRef();
   }
 
+  @Nonnull
   @Override
   protected Layer lossLayer() {
     return new MeanSqLossLayer();
@@ -66,16 +75,22 @@ public abstract class MaxDropoutNoiseLayerTest extends ActivationLayerTestBase {
 
   public static class Basic extends MaxDropoutNoiseLayerTest {
 
-    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    Basic[] addRefs(@Nullable Basic[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") Basic addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    Basic addRef() {
       return (Basic) super.addRef();
     }
   }

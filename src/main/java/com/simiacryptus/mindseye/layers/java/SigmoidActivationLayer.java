@@ -21,9 +21,9 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.DataSerializer;
-import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -54,19 +54,24 @@ public final class SigmoidActivationLayer extends SimpleActivationLayer<SigmoidA
     return this.addRef();
   }
 
+  @Nonnull
   @SuppressWarnings("unused")
   public static SigmoidActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new SigmoidActivationLayer(json);
   }
 
-  public static @SuppressWarnings("unused") SigmoidActivationLayer[] addRefs(SigmoidActivationLayer[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  SigmoidActivationLayer[] addRefs(@Nullable SigmoidActivationLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SigmoidActivationLayer::addRef)
         .toArray((x) -> new SigmoidActivationLayer[x]);
   }
 
-  public static @SuppressWarnings("unused") SigmoidActivationLayer[][] addRefs(SigmoidActivationLayer[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  SigmoidActivationLayer[][] addRefs(@Nullable SigmoidActivationLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SigmoidActivationLayer::addRefs)
@@ -76,16 +81,19 @@ public final class SigmoidActivationLayer extends SimpleActivationLayer<SigmoidA
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull
-    final JsonObject json = super.getJsonStub();
+    @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("balanced", balanced);
     return json;
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") SigmoidActivationLayer addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  SigmoidActivationLayer addRef() {
     return (SigmoidActivationLayer) super.addRef();
   }
 

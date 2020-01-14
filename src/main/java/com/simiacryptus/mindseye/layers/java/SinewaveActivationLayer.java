@@ -21,9 +21,9 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.DataSerializer;
-import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -50,19 +50,24 @@ public final class SinewaveActivationLayer extends SimpleActivationLayer<Sinewav
     return this.addRef();
   }
 
+  @Nonnull
   @SuppressWarnings("unused")
   public static SinewaveActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new SinewaveActivationLayer(json);
   }
 
-  public static @SuppressWarnings("unused") SinewaveActivationLayer[] addRefs(SinewaveActivationLayer[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  SinewaveActivationLayer[] addRefs(@Nullable SinewaveActivationLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SinewaveActivationLayer::addRef)
         .toArray((x) -> new SinewaveActivationLayer[x]);
   }
 
-  public static @SuppressWarnings("unused") SinewaveActivationLayer[][] addRefs(SinewaveActivationLayer[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  SinewaveActivationLayer[][] addRefs(@Nullable SinewaveActivationLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SinewaveActivationLayer::addRefs)
@@ -72,16 +77,19 @@ public final class SinewaveActivationLayer extends SimpleActivationLayer<Sinewav
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull
-    final JsonObject json = super.getJsonStub();
+    @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("balanced", balanced);
     return json;
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") SinewaveActivationLayer addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  SinewaveActivationLayer addRef() {
     return (SinewaveActivationLayer) super.addRef();
   }
 

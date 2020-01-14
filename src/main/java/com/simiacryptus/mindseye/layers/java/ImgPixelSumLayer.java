@@ -21,7 +21,6 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
@@ -31,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
@@ -51,19 +51,24 @@ public class ImgPixelSumLayer extends LayerBase {
     super(json);
   }
 
+  @Nonnull
   @SuppressWarnings("unused")
   public static ImgPixelSumLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ImgPixelSumLayer(json);
   }
 
-  public static @SuppressWarnings("unused") ImgPixelSumLayer[] addRefs(ImgPixelSumLayer[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  ImgPixelSumLayer[] addRefs(@Nullable ImgPixelSumLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ImgPixelSumLayer::addRef)
         .toArray((x) -> new ImgPixelSumLayer[x]);
   }
 
-  public static @SuppressWarnings("unused") ImgPixelSumLayer[][] addRefs(ImgPixelSumLayer[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  ImgPixelSumLayer[][] addRefs(@Nullable ImgPixelSumLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ImgPixelSumLayer::addRefs)
@@ -72,11 +77,10 @@ public class ImgPixelSumLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public Result eval(final Result... inObj) {
+  public Result eval(@Nonnull final Result... inObj) {
     assert 1 == inObj.length;
     Result temp_47_0004 = eval(inObj[0].addRef());
-    if (null != inObj)
-      ReferenceCounting.freeRefs(inObj);
+    ReferenceCounting.freeRefs(inObj);
     return temp_47_0004;
   }
 
@@ -95,8 +99,7 @@ public class ImgPixelSumLayer extends LayerBase {
               return tensor.get(coords[0], coords[1], i);
             }, tensor == null ? null : tensor.addRef())).sum();
           }, tensor == null ? null : tensor.addRef()));
-          if (null != temp_47_0006)
-            temp_47_0006.freeRef();
+          temp_47_0006.freeRef();
           if (null != tensor)
             tensor.freeRef();
           return temp_47_0002;
@@ -106,7 +109,7 @@ public class ImgPixelSumLayer extends LayerBase {
           }
 
           @Override
-          public void accept(DeltaSet<UUID> buffer, TensorList delta) {
+          public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
             if (input.isAlive()) {
               @Nonnull
               TensorArray tensorArray = new TensorArray(delta.stream().map(deltaTensor -> {
@@ -115,22 +118,20 @@ public class ImgPixelSumLayer extends LayerBase {
                 Tensor temp_47_0003 = temp_47_0007.setByCoord(RefUtil.wrapInterface(c -> {
                   int[] coords = c.getCoords();
                   return deltaTensor.get(coords[0], coords[1], 0);
-                }, deltaTensor == null ? null : deltaTensor.addRef()));
-                if (null != temp_47_0007)
-                  temp_47_0007.freeRef();
-                if (null != deltaTensor)
-                  deltaTensor.freeRef();
+                }, deltaTensor.addRef()));
+                temp_47_0007.freeRef();
+                deltaTensor.freeRef();
                 return temp_47_0003;
               }).toArray(i -> new Tensor[i]));
-              input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray == null ? null : tensorArray);
+              input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
             }
-            if (null != delta)
-              delta.freeRef();
+            delta.freeRef();
             if (null != buffer)
               buffer.freeRef();
           }
 
-          public @SuppressWarnings("unused") void _free() {
+          public @SuppressWarnings("unused")
+          void _free() {
             input.freeRef();
           }
         }) {
@@ -152,8 +153,7 @@ public class ImgPixelSumLayer extends LayerBase {
         input.freeRef();
       }
     } finally {
-      if (null != inputData)
-        inputData.freeRef();
+      inputData.freeRef();
     }
   }
 
@@ -169,10 +169,14 @@ public class ImgPixelSumLayer extends LayerBase {
     return RefArrays.asList();
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") ImgPixelSumLayer addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  ImgPixelSumLayer addRef() {
     return (ImgPixelSumLayer) super.addRef();
   }
 }

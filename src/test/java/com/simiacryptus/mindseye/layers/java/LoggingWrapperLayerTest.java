@@ -21,9 +21,9 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.LoggingWrapperLayer;
-import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -33,14 +33,18 @@ public abstract class LoggingWrapperLayerTest extends LayerTestBase {
     validateBatchExecution = false;
   }
 
-  public static @SuppressWarnings("unused") LoggingWrapperLayerTest[] addRefs(LoggingWrapperLayerTest[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  LoggingWrapperLayerTest[] addRefs(@Nullable LoggingWrapperLayerTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(LoggingWrapperLayerTest::addRef)
         .toArray((x) -> new LoggingWrapperLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused") LoggingWrapperLayerTest[][] addRefs(LoggingWrapperLayerTest[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  LoggingWrapperLayerTest[][] addRefs(@Nullable LoggingWrapperLayerTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(LoggingWrapperLayerTest::addRefs)
@@ -50,38 +54,47 @@ public abstract class LoggingWrapperLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][] { { 3 } };
+    return new int[][]{{3}};
   }
 
   @Nonnull
   @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
     LinearActivationLayer inner = new LinearActivationLayer();
-    LoggingWrapperLayer temp_27_0001 = new LoggingWrapperLayer(inner == null ? null : inner.addRef());
-    if (null != inner)
-      inner.freeRef();
+    LoggingWrapperLayer temp_27_0001 = new LoggingWrapperLayer(inner.addRef());
+    inner.freeRef();
     return temp_27_0001;
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") LoggingWrapperLayerTest addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  LoggingWrapperLayerTest addRef() {
     return (LoggingWrapperLayerTest) super.addRef();
   }
 
   public static class Basic extends LoggingWrapperLayerTest {
 
-    public static @SuppressWarnings("unused") Basic[] addRefs(Basic[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    Basic[] addRefs(@Nullable Basic[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") Basic addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    Basic addRef() {
       return (Basic) super.addRef();
     }
   }

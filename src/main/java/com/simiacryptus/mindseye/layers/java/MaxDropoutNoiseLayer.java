@@ -21,7 +21,6 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.*;
@@ -54,7 +53,7 @@ public class MaxDropoutNoiseLayer extends LayerBase {
     this(2, 2);
   }
 
-  public MaxDropoutNoiseLayer(@org.jetbrains.annotations.Nullable final int... dims) {
+  public MaxDropoutNoiseLayer(@Nullable final int... dims) {
     super();
     kernelSize = dims;
   }
@@ -64,19 +63,24 @@ public class MaxDropoutNoiseLayer extends LayerBase {
     kernelSize = JsonUtil.getIntArray(json.getAsJsonArray("kernelSize"));
   }
 
+  @Nonnull
   @SuppressWarnings("unused")
   public static MaxDropoutNoiseLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new MaxDropoutNoiseLayer(json);
   }
 
-  public static @SuppressWarnings("unused") MaxDropoutNoiseLayer[] addRefs(MaxDropoutNoiseLayer[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  MaxDropoutNoiseLayer[] addRefs(@Nullable MaxDropoutNoiseLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(MaxDropoutNoiseLayer::addRef)
         .toArray((x) -> new MaxDropoutNoiseLayer[x]);
   }
 
-  public static @SuppressWarnings("unused") MaxDropoutNoiseLayer[][] addRefs(MaxDropoutNoiseLayer[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  MaxDropoutNoiseLayer[][] addRefs(@Nullable MaxDropoutNoiseLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(MaxDropoutNoiseLayer::addRefs)
@@ -85,90 +89,75 @@ public class MaxDropoutNoiseLayer extends LayerBase {
 
   @Nonnull
   @Override
-  public Result eval(final Result... inObj) {
+  public Result eval(@Nullable final Result... inObj) {
+    assert inObj != null;
     final Result in0 = inObj[0].addRef();
-    if (null != inObj)
-      ReferenceCounting.freeRefs(inObj);
+    ReferenceCounting.freeRefs(inObj);
     final TensorList data0 = in0.getData();
     final int itemCnt = data0.length();
     final Tensor[] mask = RefIntStream.range(0, itemCnt)
         .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-          @Nullable
-          final Tensor input = data0.get(dataIndex);
-          @Nullable
-          final Tensor output = input.map(x -> 0);
+          @Nullable final Tensor input = data0.get(dataIndex);
+          @Nullable final Tensor output = input.map(x -> 0);
           final RefList<RefList<Coordinate>> cells = getCellMap_cached.apply(new IntArray(output.getDimensions()));
           cells.forEach(RefUtil.wrapInterface((Consumer<? super RefList<Coordinate>>) cell -> {
             RefUtil.freeRef(output.set(RefUtil.get(cell.stream()
                 .max(RefComparator.comparingDouble(RefUtil.wrapInterface(
-                    (ToDoubleFunction<? super Coordinate>) c -> input.get(c), input == null ? null : input.addRef())))), 1));
-            if (null != cell)
-              cell.freeRef();
-          }, input == null ? null : input.addRef(), output == null ? null : output.addRef()));
-          if (null != cells)
-            cells.freeRef();
-          if (null != input)
-            input.freeRef();
+                    (ToDoubleFunction<? super Coordinate>) c -> input.get(c), input.addRef())))), 1));
+            cell.freeRef();
+          }, input.addRef(), output.addRef()));
+          cells.freeRef();
+          input.freeRef();
           return output;
-        }, data0 == null ? null : data0.addRef())).toArray(i -> new Tensor[i]);
+        }, data0.addRef())).toArray(i -> new Tensor[i]);
     try {
       try {
         try {
           return new Result(new TensorArray(RefIntStream.range(0, itemCnt)
               .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
                 Tensor inputData = data0.get(dataIndex);
-                @Nullable
-                final double[] input = inputData.getData();
-                @Nullable
-                final double[] maskT = mask[dataIndex].getData();
-                @Nonnull
-                final Tensor output = new Tensor(inputData.getDimensions());
-                if (null != inputData)
-                  inputData.freeRef();
-                @Nullable
-                final double[] outputData = output.getData();
+                @Nullable final double[] input = inputData.getData();
+                @Nullable final double[] maskT = mask[dataIndex].getData();
+                @Nonnull final Tensor output = new Tensor(inputData.getDimensions());
+                inputData.freeRef();
+                @Nullable final double[] outputData = output.getData();
                 for (int i = 0; i < outputData.length; i++) {
                   outputData[i] = input[i] * maskT[i];
                 }
                 return output;
-              }, data0 == null ? null : data0.addRef(), Tensor.addRefs(mask))).toArray(i -> new Tensor[i])),
+              }, data0.addRef(), Tensor.addRefs(mask))).toArray(i -> new Tensor[i])),
               new Result.Accumulator() {
                 {
                 }
 
                 @Override
-                public void accept(DeltaSet<UUID> buffer, TensorList delta) {
+                public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
                   if (in0.isAlive()) {
                     @Nonnull
                     TensorArray tensorArray = new TensorArray(RefIntStream.range(0, delta.length())
                         .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-                          Tensor deltaTensor = delta.get(dataIndex);
-                          @Nullable
-                          final double[] deltaData = deltaTensor.getData();
-                          if (null != deltaTensor)
-                            deltaTensor.freeRef();
-                          @Nonnull
-                          final int[] dims = data0.getDimensions();
-                          @Nullable
-                          final double[] maskData = mask[dataIndex].getData();
-                          @Nonnull
-                          final Tensor passback = new Tensor(dims);
-                          for (int i = 0; i < passback.length(); i++) {
-                            RefUtil.freeRef(passback.set(i, maskData[i] * deltaData[i]));
-                          }
-                          return passback;
-                        }, data0 == null ? null : data0.addRef(), delta == null ? null : delta.addRef(),
+                              Tensor deltaTensor = delta.get(dataIndex);
+                              @Nullable final double[] deltaData = deltaTensor.getData();
+                              deltaTensor.freeRef();
+                              @Nonnull final int[] dims = data0.getDimensions();
+                              @Nullable final double[] maskData = mask[dataIndex].getData();
+                              @Nonnull final Tensor passback = new Tensor(dims);
+                              for (int i = 0; i < passback.length(); i++) {
+                                RefUtil.freeRef(passback.set(i, maskData[i] * deltaData[i]));
+                              }
+                              return passback;
+                            }, data0.addRef(), delta.addRef(),
                             Tensor.addRefs(mask)))
                         .toArray(i -> new Tensor[i]));
-                    in0.accumulate(buffer == null ? null : buffer.addRef(), tensorArray == null ? null : tensorArray);
+                    in0.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
                   }
-                  if (null != delta)
-                    delta.freeRef();
+                  delta.freeRef();
                   if (null != buffer)
                     buffer.freeRef();
                 }
 
-                public @SuppressWarnings("unused") void _free() {
+                public @SuppressWarnings("unused")
+                void _free() {
                 }
               }) {
 
@@ -185,24 +174,21 @@ public class MaxDropoutNoiseLayer extends LayerBase {
 
           };
         } finally {
-          if (null != mask)
-            ReferenceCounting.freeRefs(mask);
+          ReferenceCounting.freeRefs(mask);
         }
       } finally {
-        if (null != data0)
-          data0.freeRef();
+        data0.freeRef();
       }
     } finally {
-      if (null != in0)
-        in0.freeRef();
+      in0.freeRef();
     }
   }
 
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull
-    final JsonObject json = super.getJsonStub();
+    @Nonnull final JsonObject json = super.getJsonStub();
+    assert kernelSize != null;
     json.add("kernelSize", JsonUtil.getJson(kernelSize));
     return json;
   }
@@ -213,13 +199,18 @@ public class MaxDropoutNoiseLayer extends LayerBase {
     return RefArrays.asList();
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") MaxDropoutNoiseLayer addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  MaxDropoutNoiseLayer addRef() {
     return (MaxDropoutNoiseLayer) super.addRef();
   }
 
+  @Nonnull
   private RefList<RefList<Coordinate>> getCellMap(@Nonnull final IntArray dims) {
     Tensor tensor = new Tensor(dims.data);
     RefMap<Integer, RefList<Coordinate>> temp_42_0005 = tensor.coordStream(true)
@@ -227,6 +218,7 @@ public class MaxDropoutNoiseLayer extends LayerBase {
           int cellId = 0;
           int max = 0;
           for (int dim = 0; dim < dims.size(); dim++) {
+            assert kernelSize != null;
             final int pos = c.getCoords()[dim] / kernelSize[dim];
             cellId = cellId * max + pos;
             max = dims.get(dim) / kernelSize[dim];
@@ -234,10 +226,8 @@ public class MaxDropoutNoiseLayer extends LayerBase {
           return cellId;
         }));
     RefArrayList<RefList<Coordinate>> temp_42_0004 = new RefArrayList<>(temp_42_0005.values());
-    if (null != temp_42_0005)
-      temp_42_0005.freeRef();
-    if (null != tensor)
-      tensor.freeRef();
+    temp_42_0005.freeRef();
+    tensor.freeRef();
     return temp_42_0004;
   }
 

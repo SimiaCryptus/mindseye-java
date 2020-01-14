@@ -21,9 +21,9 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.DataSerializer;
-import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -37,19 +37,24 @@ public final class LogActivationLayer extends SimpleActivationLayer<LogActivatio
     super(id);
   }
 
+  @Nonnull
   @SuppressWarnings("unused")
-  public static LogActivationLayer fromJson(final JsonObject json, Map<CharSequence, byte[]> rs) {
+  public static LogActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new LogActivationLayer(json);
   }
 
-  public static @SuppressWarnings("unused") LogActivationLayer[] addRefs(LogActivationLayer[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  LogActivationLayer[] addRefs(@Nullable LogActivationLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(LogActivationLayer::addRef)
         .toArray((x) -> new LogActivationLayer[x]);
   }
 
-  public static @SuppressWarnings("unused") LogActivationLayer[][] addRefs(LogActivationLayer[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  LogActivationLayer[][] addRefs(@Nullable LogActivationLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(LogActivationLayer::addRefs)
@@ -62,10 +67,14 @@ public final class LogActivationLayer extends SimpleActivationLayer<LogActivatio
     return super.getJsonStub();
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") LogActivationLayer addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  LogActivationLayer addRef() {
     return (LogActivationLayer) super.addRef();
   }
 

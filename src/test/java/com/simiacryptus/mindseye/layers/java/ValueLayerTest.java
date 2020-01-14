@@ -22,16 +22,18 @@ package com.simiacryptus.mindseye.layers.java;
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.mindseye.layers.ValueLayer;
-import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Random;
 
 public class ValueLayerTest {
   public static class Normal extends LayerTestBase {
 
-    public static @SuppressWarnings("unused") Normal[] addRefs(Normal[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    Normal[] addRefs(@Nullable Normal[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(Normal::addRef).toArray((x) -> new Normal[x]);
@@ -40,23 +42,26 @@ public class ValueLayerTest {
     @Nonnull
     @Override
     public int[][] getSmallDims(Random random) {
-      return new int[][] {};
+      return new int[][]{};
     }
 
     @Nonnull
     @Override
     public Layer getLayer(final int[][] inputSize, Random random) {
       Tensor tensor = new Tensor(0.1);
-      ValueLayer temp_46_0001 = new ValueLayer(tensor == null ? null : tensor.addRef());
-      if (null != tensor)
-        tensor.freeRef();
+      ValueLayer temp_46_0001 = new ValueLayer(tensor.addRef());
+      tensor.freeRef();
       return temp_46_0001;
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") Normal addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    Normal addRef() {
       return (Normal) super.addRef();
     }
   }
