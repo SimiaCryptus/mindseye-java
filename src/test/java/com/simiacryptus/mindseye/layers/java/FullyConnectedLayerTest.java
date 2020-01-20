@@ -20,6 +20,7 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
+import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -45,24 +46,6 @@ public abstract class FullyConnectedLayerTest extends LayerTestBase {
   @Override
   public Class<? extends Layer> getReferenceLayerClass() {
     return FullyConnectedReferenceLayer.class;
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  FullyConnectedLayerTest[] addRefs(@Nullable FullyConnectedLayerTest[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(FullyConnectedLayerTest::addRef)
-        .toArray((x) -> new FullyConnectedLayerTest[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  FullyConnectedLayerTest[][] addRefs(@Nullable FullyConnectedLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(FullyConnectedLayerTest::addRefs)
-        .toArray((x) -> new FullyConnectedLayerTest[x][]);
   }
 
   @Nonnull
@@ -92,14 +75,6 @@ public abstract class FullyConnectedLayerTest extends LayerTestBase {
   public static class Basic extends FullyConnectedLayerTest {
     public Basic() {
       super(3, 3);
-    }
-
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Basic[] addRefs(@Nullable Basic[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
     }
 
     public @SuppressWarnings("unused")

@@ -20,6 +20,7 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
+import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -27,24 +28,6 @@ import java.util.Arrays;
 import java.util.Random;
 
 public abstract class ImgBandSelectLayerTest extends LayerTestBase {
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  ImgBandSelectLayerTest[] addRefs(@Nullable ImgBandSelectLayerTest[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(ImgBandSelectLayerTest::addRef)
-        .toArray((x) -> new ImgBandSelectLayerTest[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  ImgBandSelectLayerTest[][] addRefs(@Nullable ImgBandSelectLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(ImgBandSelectLayerTest::addRefs)
-        .toArray((x) -> new ImgBandSelectLayerTest[x][]);
-  }
 
   @Nonnull
   @Override
@@ -70,14 +53,6 @@ public abstract class ImgBandSelectLayerTest extends LayerTestBase {
   }
 
   public static class Basic extends ImgBandSelectLayerTest {
-
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Basic[] addRefs(@Nullable Basic[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
-    }
 
     public @SuppressWarnings("unused")
     void _free() {

@@ -20,6 +20,7 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
+import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -27,24 +28,6 @@ import java.util.Arrays;
 import java.util.Random;
 
 public abstract class ImgPixelSoftmaxLayerTest extends LayerTestBase {
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  ImgPixelSoftmaxLayerTest[] addRefs(@Nullable ImgPixelSoftmaxLayerTest[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(ImgPixelSoftmaxLayerTest::addRef)
-        .toArray((x) -> new ImgPixelSoftmaxLayerTest[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  ImgPixelSoftmaxLayerTest[][] addRefs(@Nullable ImgPixelSoftmaxLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(ImgPixelSoftmaxLayerTest::addRefs)
-        .toArray((x) -> new ImgPixelSoftmaxLayerTest[x][]);
-  }
 
   @Nonnull
   @Override
@@ -70,14 +53,6 @@ public abstract class ImgPixelSoftmaxLayerTest extends LayerTestBase {
   }
 
   public static class Basic extends ImgPixelSoftmaxLayerTest {
-
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Basic[] addRefs(@Nullable Basic[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
-    }
 
     public @SuppressWarnings("unused")
     void _free() {

@@ -21,6 +21,7 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.DataSerializer;
+import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -44,34 +45,14 @@ public final class SinewaveActivationLayer extends SimpleActivationLayer<Sinewav
     return balanced;
   }
 
-  @Nonnull
-  public SinewaveActivationLayer setBalanced(final boolean balanced) {
+  public void setBalanced(boolean balanced) {
     this.balanced = balanced;
-    return this.addRef();
   }
 
   @Nonnull
   @SuppressWarnings("unused")
   public static SinewaveActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new SinewaveActivationLayer(json);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  SinewaveActivationLayer[] addRefs(@Nullable SinewaveActivationLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(SinewaveActivationLayer::addRef)
-        .toArray((x) -> new SinewaveActivationLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  SinewaveActivationLayer[][] addRefs(@Nullable SinewaveActivationLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(SinewaveActivationLayer::addRefs)
-        .toArray((x) -> new SinewaveActivationLayer[x][]);
   }
 
   @Nonnull

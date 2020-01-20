@@ -26,7 +26,6 @@ import com.simiacryptus.mindseye.test.unit.ComponentTest;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Random;
 
 public abstract class ReshapeLayerTest extends LayerTestBase {
@@ -37,24 +36,6 @@ public abstract class ReshapeLayerTest extends LayerTestBase {
   protected ReshapeLayerTest(int[] inputDims, int[] outputDims) {
     this.inputDims = inputDims;
     this.outputDims = outputDims;
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  ReshapeLayerTest[] addRefs(@Nullable ReshapeLayerTest[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(ReshapeLayerTest::addRef)
-        .toArray((x) -> new ReshapeLayerTest[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  ReshapeLayerTest[][] addRefs(@Nullable ReshapeLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(ReshapeLayerTest::addRefs)
-        .toArray((x) -> new ReshapeLayerTest[x][]);
   }
 
   @Nonnull
@@ -85,14 +66,6 @@ public abstract class ReshapeLayerTest extends LayerTestBase {
       super(new int[]{6, 6, 1}, new int[]{1, 1, 36});
     }
 
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Basic[] addRefs(@Nullable Basic[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
-    }
-
     public @SuppressWarnings("unused")
     void _free() {
     }
@@ -108,14 +81,6 @@ public abstract class ReshapeLayerTest extends LayerTestBase {
   public static class Basic1 extends ReshapeLayerTest {
     public Basic1() {
       super(new int[]{1, 1, 32}, new int[]{1, 1, 32});
-    }
-
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Basic1[] addRefs(@Nullable Basic1[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Basic1::addRef).toArray((x) -> new Basic1[x]);
     }
 
     public @SuppressWarnings("unused")
@@ -135,14 +100,6 @@ public abstract class ReshapeLayerTest extends LayerTestBase {
       super(256);
     }
 
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Big0[] addRefs(@Nullable Big0[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Big0::addRef).toArray((x) -> new Big0[x]);
-    }
-
     public @SuppressWarnings("unused")
     void _free() {
     }
@@ -153,20 +110,11 @@ public abstract class ReshapeLayerTest extends LayerTestBase {
     Big0 addRef() {
       return (Big0) super.addRef();
     }
-
   }
 
   public static class Big1 extends Big {
     public Big1() {
       super(new int[]{4, 4, 256}, new int[]{1, 1, 2 * 2048});
-    }
-
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Big1[] addRefs(@Nullable Big1[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Big1::addRef).toArray((x) -> new Big1[x]);
     }
 
     public @SuppressWarnings("unused")
@@ -184,14 +132,6 @@ public abstract class ReshapeLayerTest extends LayerTestBase {
   public static class Big2 extends Big {
     public Big2() {
       super(new int[]{1, 1, 2 * 2048}, new int[]{4, 4, 256});
-    }
-
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Big2[] addRefs(@Nullable Big2[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Big2::addRef).toArray((x) -> new Big2[x]);
     }
 
     public @SuppressWarnings("unused")
@@ -221,7 +161,7 @@ public abstract class ReshapeLayerTest extends LayerTestBase {
     public ComponentTest<ToleranceStatistics> getBatchingTester() {
       if (!validateBatchExecution)
         return null;
-      return (new BatchingTester(1e-2, true) {
+      BatchingTester batchingTester = (new BatchingTester(1e-2, true) {
         @Override
         public double getRandom() {
           return random();
@@ -230,7 +170,9 @@ public abstract class ReshapeLayerTest extends LayerTestBase {
         public @SuppressWarnings("unused")
         void _free() {
         }
-      }).setBatchSize(5);
+      });
+      batchingTester.setBatchSize(5);
+      return batchingTester;
     }
 
     @Nullable
@@ -252,14 +194,6 @@ public abstract class ReshapeLayerTest extends LayerTestBase {
     @Override
     public Class<? extends Layer> getReferenceLayerClass() {
       return null;
-    }
-
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Big[] addRefs(@Nullable Big[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Big::addRef).toArray((x) -> new Big[x]);
     }
 
     public @SuppressWarnings("unused")

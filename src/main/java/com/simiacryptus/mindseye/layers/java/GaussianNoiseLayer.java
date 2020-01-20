@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
@@ -54,7 +53,7 @@ public class GaussianNoiseLayer extends LayerBase {
 
   public GaussianNoiseLayer() {
     super();
-    RefUtil.freeRef(setValue(1.0));
+    setValue(1.0);
   }
 
   protected GaussianNoiseLayer(@Nonnull final JsonObject json) {
@@ -66,34 +65,14 @@ public class GaussianNoiseLayer extends LayerBase {
     return value;
   }
 
-  @Nonnull
-  public GaussianNoiseLayer setValue(final double value) {
+  public void setValue(double value) {
     this.value = value;
-    return this.addRef();
   }
 
   @Nonnull
   @SuppressWarnings("unused")
   public static GaussianNoiseLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new GaussianNoiseLayer(json);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  GaussianNoiseLayer[] addRefs(@Nullable GaussianNoiseLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(GaussianNoiseLayer::addRef)
-        .toArray((x) -> new GaussianNoiseLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  GaussianNoiseLayer[][] addRefs(@Nullable GaussianNoiseLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(GaussianNoiseLayer::addRefs)
-        .toArray((x) -> new GaussianNoiseLayer[x][]);
   }
 
   @Nonnull
@@ -117,53 +96,54 @@ public class GaussianNoiseLayer extends LayerBase {
     int[] dimensions = inputData.getDimensions();
     inputData.freeRef();
     try {
-      try {
-        return new Result(new TensorArray(Tensor.addRefs(outputA)), new Result.Accumulator() {
-          {
-          }
+      Result.Accumulator accumulator = new Result.Accumulator() {
+        {
+        }
 
-          @Override
-          public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
-            if (in0.isAlive()) {
-              @Nonnull
-              TensorArray tensorArray = new TensorArray(RefIntStream.range(0, delta.length())
-                  .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-                    Tensor tensor = delta.get(dataIndex);
-                    @Nullable final double[] deltaData = tensor.getData();
-                    tensor.freeRef();
-                    @Nonnull final Tensor passback = new Tensor(dimensions);
-                    for (int i = 0; i < passback.length(); i++) {
-                      RefUtil.freeRef(passback.set(i, deltaData[i]));
-                    }
-                    return passback;
-                  }, delta.addRef())).toArray(i -> new Tensor[i]));
-              in0.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
-            }
-            delta.freeRef();
-            if (null != buffer)
-              buffer.freeRef();
+        @Override
+        public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
+          if (in0.isAlive()) {
+            @Nonnull
+            TensorArray tensorArray = new TensorArray(RefIntStream.range(0, delta.length())
+                .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+                  Tensor tensor = delta.get(dataIndex);
+                  @Nullable final double[] deltaData = tensor.getData();
+                  tensor.freeRef();
+                  @Nonnull final Tensor passback = new Tensor(dimensions);
+                  for (int i = 0; i < passback.length(); i++) {
+                    passback.set(i, deltaData[i]);
+                  }
+                  return passback;
+                }, delta.addRef())).toArray(i -> new Tensor[i]));
+            in0.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
           }
+          delta.freeRef();
+          if (null != buffer)
+            buffer.freeRef();
+        }
 
-          public @SuppressWarnings("unused")
-          void _free() {
-          }
-        }) {
+        public @SuppressWarnings("unused")
+        void _free() {
+        }
+      };
+      return new Result(new TensorArray(RefUtil.addRefs(outputA)), accumulator) {
+        {
+          in0.addRef();
+        }
 
-          {
-          }
+        @Override
+        public boolean isAlive() {
+          return in0.isAlive() || !isFrozen();
+        }
 
-          @Override
-          public boolean isAlive() {
-            return in0.isAlive() || !isFrozen();
-          }
-
-          public void _free() {
-          }
-        };
-      } finally {
-        ReferenceCounting.freeRefs(outputA);
-      }
+        @Override
+        public void _free() {
+          in0.freeRef();
+          super._free();
+        }
+      };
     } finally {
+      ReferenceCounting.freeRefs(outputA);
       in0.freeRef();
     }
   }

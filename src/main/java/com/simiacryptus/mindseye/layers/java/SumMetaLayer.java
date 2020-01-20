@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -64,33 +63,14 @@ public class SumMetaLayer extends LayerBase {
     return minBatches;
   }
 
-  @Nonnull
-  public SumMetaLayer setMinBatches(final int minBatches) {
+  public void setMinBatches(int minBatches) {
     this.minBatches = minBatches;
-    return this.addRef();
   }
 
   @Nonnull
   @SuppressWarnings("unused")
   public static SumMetaLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new SumMetaLayer(json, rs);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  SumMetaLayer[] addRefs(@Nullable SumMetaLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(SumMetaLayer::addRef).toArray((x) -> new SumMetaLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  SumMetaLayer[][] addRefs(@Nullable SumMetaLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(SumMetaLayer::addRefs)
-        .toArray((x) -> new SumMetaLayer[x][]);
   }
 
   @Nullable
@@ -122,7 +102,7 @@ public class SumMetaLayer extends LayerBase {
     }
     inputData.freeRef();
     try {
-      return new Result(new TensorArray(lastResult == null ? null : lastResult.addRef()), new Result.Accumulator() {
+      Result.Accumulator accumulator = new Result.Accumulator() {
         {
         }
 
@@ -131,16 +111,16 @@ public class SumMetaLayer extends LayerBase {
           if (input.isAlive()) {
             @Nullable final Tensor delta = data.get(0);
             @Nonnull final Tensor feedback[] = new Tensor[itemCnt];
-            RefArrays.parallelSetAll(Tensor.addRefs(feedback),
+            RefArrays.parallelSetAll(RefUtil.addRefs(feedback),
                 RefUtil.wrapInterface(i -> new Tensor(delta.getDimensions()), delta.addRef()));
             delta.coordStream(false).forEach(RefUtil.wrapInterface((Consumer<? super Coordinate>) (inputCoord) -> {
               for (int inputItem = 0; inputItem < itemCnt; inputItem++) {
                 feedback[inputItem].add(inputCoord, delta.get(inputCoord));
               }
-            }, Tensor.addRefs(feedback), delta.addRef()));
+            }, RefUtil.addRefs(feedback), delta.addRef()));
             delta.freeRef();
             @Nonnull
-            TensorArray tensorArray = new TensorArray(Tensor.addRefs(feedback));
+            TensorArray tensorArray = new TensorArray(RefUtil.addRefs(feedback));
             ReferenceCounting.freeRefs(feedback);
             input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
           }
@@ -152,19 +132,21 @@ public class SumMetaLayer extends LayerBase {
         public @SuppressWarnings("unused")
         void _free() {
         }
-      }) {
-
+      };
+      return new Result(new TensorArray(lastResult == null ? null : lastResult.addRef()), accumulator) {
         {
+          input.addRef();
         }
-
         @Override
         public boolean isAlive() {
           return input.isAlive();
         }
 
+        @Override
         public void _free() {
+          input.freeRef();
+          super._free();
         }
-
       };
     } finally {
       input.freeRef();

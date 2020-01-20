@@ -21,6 +21,7 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
+import com.simiacryptus.ref.lang.RefIgnore;
 import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
@@ -31,9 +32,9 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.ToDoubleFunction;
 
@@ -64,33 +65,14 @@ public class AvgMetaLayer extends LayerBase {
     return minBatchCount;
   }
 
-  @Nonnull
-  public AvgMetaLayer setMinBatchCount(final int minBatchCount) {
+  public void setMinBatchCount(int minBatchCount) {
     this.minBatchCount = minBatchCount;
-    return this.addRef();
   }
 
   @Nonnull
   @SuppressWarnings("unused")
   public static AvgMetaLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new AvgMetaLayer(json, rs);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  AvgMetaLayer[] addRefs(@Nullable AvgMetaLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(AvgMetaLayer::addRef).toArray((x) -> new AvgMetaLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  AvgMetaLayer[][] addRefs(@Nullable AvgMetaLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(AvgMetaLayer::addRefs)
-        .toArray((x) -> new AvgMetaLayer[x][]);
   }
 
   @Nonnull
@@ -101,85 +83,93 @@ public class AvgMetaLayer extends LayerBase {
     ReferenceCounting.freeRefs(inObj);
     TensorList inputData = input.getData();
     final int itemCnt = inputData.length();
-    @Nullable
-    Tensor thisResult;
-    boolean passback;
-    if (null == lastResult || inputData.length() > minBatchCount) {
-      @Nonnull final ToDoubleFunction<Coordinate> f = RefUtil
-          .wrapInterface((c) -> RefIntStream.range(0, itemCnt).mapToDouble(RefUtil.wrapInterface(dataIndex -> {
-                Tensor tensor = inputData.get(dataIndex);
-                double temp_21_0005 = tensor.get(c);
-                tensor.freeRef();
-                return temp_21_0005;
-              }, inputData.addRef())).sum() / itemCnt,
-              inputData.addRef());
-      Tensor tensor = inputData.get(0);
-      thisResult = tensor.mapCoords(f);
-      tensor.freeRef();
-      passback = true;
-      Tensor temp_21_0002 = thisResult.addRef();
-      if (null != lastResult)
-        lastResult.freeRef();
-      lastResult = temp_21_0002.addRef();
-      temp_21_0002.freeRef();
-    } else {
-      passback = false;
-      thisResult = lastResult == null ? null : lastResult.addRef();
-    }
-    inputData.freeRef();
+    AtomicBoolean passback = new AtomicBoolean(false);
+    @Nullable Tensor thisResult = getTensor(inputData, itemCnt, passback);
     try {
-      try {
-        return new Result(new TensorArray(thisResult == null ? null : thisResult.addRef()), new Result.Accumulator() {
-          {
-          }
+      Result.Accumulator accumulator = new Result.Accumulator() {
 
-          @Override
-          public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList data) {
-            if (passback && input.isAlive()) {
-              @Nullable final Tensor delta = data.get(0);
-              @Nonnull final Tensor feedback[] = new Tensor[itemCnt];
-              RefArrays.parallelSetAll(Tensor.addRefs(feedback),
-                  RefUtil.wrapInterface(i -> new Tensor(delta.getDimensions()), delta.addRef()));
-              thisResult.coordStream(true)
-                  .forEach(RefUtil.wrapInterface((Consumer<? super Coordinate>) (inputCoord) -> {
-                    for (int inputItem = 0; inputItem < itemCnt; inputItem++) {
-                      feedback[inputItem].add(inputCoord, delta.get(inputCoord) / itemCnt);
-                    }
-                  }, delta.addRef(), Tensor.addRefs(feedback)));
-              delta.freeRef();
-              @Nonnull
-              TensorArray tensorArray = new TensorArray(Tensor.addRefs(feedback));
-              ReferenceCounting.freeRefs(feedback);
-              input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
-            }
-            data.freeRef();
-            if (null != buffer)
-              buffer.freeRef();
+        @Override
+        public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList data) {
+          if (passback.get() && input.isAlive()) {
+            @Nullable final Tensor delta = data.get(0);
+            @Nonnull final Tensor feedback[] = new Tensor[itemCnt];
+            RefArrays.parallelSetAll(RefUtil.addRefs(feedback),
+                RefUtil.wrapInterface(i -> new Tensor(delta.getDimensions()), delta.addRef()));
+            thisResult.coordStream(true)
+                .forEach(RefUtil.wrapInterface((Consumer<? super Coordinate>) (inputCoord) -> {
+                  for (int inputItem = 0; inputItem < itemCnt; inputItem++) {
+                    feedback[inputItem].add(inputCoord, delta.get(inputCoord) / itemCnt);
+                  }
+                }, delta.addRef(), RefUtil.addRefs(feedback)));
+            delta.freeRef();
+            @Nonnull
+            TensorArray tensorArray = new TensorArray(RefUtil.addRefs(feedback));
+            ReferenceCounting.freeRefs(feedback);
+            input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
           }
+          data.freeRef();
+          if (null != buffer)
+            buffer.freeRef();
+        }
 
-          public @SuppressWarnings("unused")
-          void _free() {
-          }
-        }) {
+        public @SuppressWarnings("unused")
+        void _free() {
+        }
+      };
+      return new Result(new TensorArray(thisResult == null ? null : thisResult.addRef()), accumulator) {
+        {
+          input.addRef();
+        }
+        @Override
+        public boolean isAlive() {
+          return input.isAlive();
+        }
 
-          {
-          }
+        @Override
+        public void _free() {
+          input.freeRef();
+          super._free();
+        }
+      };
+    } finally {
+      if (null != thisResult)
+        thisResult.freeRef();
+      input.freeRef();
+    }
+  }
 
-          @Override
-          public boolean isAlive() {
-            return input.isAlive();
-          }
-
-          public void _free() {
-          }
-
-        };
-      } finally {
-        if (null != thisResult)
-          thisResult.freeRef();
+  @org.jetbrains.annotations.Nullable
+  public Tensor getTensor(TensorList inputData, int itemCnt, AtomicBoolean passback) {
+    try {
+      if (null == lastResult || inputData.length() > minBatchCount) {
+        @Nonnull final ToDoubleFunction<Coordinate> f = RefUtil
+            .wrapInterface((c) -> RefIntStream.range(0, itemCnt).mapToDouble(RefUtil.wrapInterface(dataIndex -> {
+                  Tensor tensor = inputData.get(dataIndex);
+                  double temp_21_0005 = tensor.get(c);
+                  tensor.freeRef();
+                  return temp_21_0005;
+                }, inputData.addRef())).sum() / itemCnt,
+                inputData.addRef());
+        passback.set(true);
+        clearLastResult();
+        Tensor tensor = inputData.get(0);
+        Tensor thisResult = tensor.mapCoords(f);
+        tensor.freeRef();
+        return thisResult;
+      } else {
+        passback.set(false);
+        return lastResult == null ? null : lastResult.addRef();
       }
     } finally {
-      input.freeRef();
+      inputData.freeRef();
+    }
+  }
+
+  @RefIgnore
+  public void clearLastResult() {
+    if (null != lastResult) {
+      lastResult.freeRef();
+      lastResult = null;
     }
   }
 
@@ -201,9 +191,10 @@ public class AvgMetaLayer extends LayerBase {
   }
 
   public void _free() {
-    if (null != lastResult)
+    if (null != lastResult) {
       lastResult.freeRef();
-    lastResult = null;
+      lastResult = null;
+    }
     super._free();
   }
 

@@ -21,6 +21,7 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.DataSerializer;
+import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -41,24 +42,6 @@ public final class SqActivationLayer extends SimpleActivationLayer<SqActivationL
   @SuppressWarnings("unused")
   public static SqActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new SqActivationLayer(json);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  SqActivationLayer[] addRefs(@Nullable SqActivationLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(SqActivationLayer::addRef)
-        .toArray((x) -> new SqActivationLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  SqActivationLayer[][] addRefs(@Nullable SqActivationLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(SqActivationLayer::addRefs)
-        .toArray((x) -> new SqActivationLayer[x][]);
   }
 
   @Nonnull

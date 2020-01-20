@@ -20,6 +20,7 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
+import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -27,24 +28,6 @@ import java.util.Arrays;
 import java.util.Random;
 
 public abstract class AssertDimensionsLayerTest extends LayerTestBase {
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  AssertDimensionsLayerTest[] addRefs(@Nullable AssertDimensionsLayerTest[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(AssertDimensionsLayerTest::addRef)
-        .toArray((x) -> new AssertDimensionsLayerTest[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  AssertDimensionsLayerTest[][] addRefs(@Nullable AssertDimensionsLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(AssertDimensionsLayerTest::addRefs)
-        .toArray((x) -> new AssertDimensionsLayerTest[x][]);
-  }
 
   @Nonnull
   @Override
@@ -71,14 +54,6 @@ public abstract class AssertDimensionsLayerTest extends LayerTestBase {
 
   public static class Basic extends AssertDimensionsLayerTest {
 
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Basic[] addRefs(@Nullable Basic[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
-    }
-
     public @SuppressWarnings("unused")
     void _free() {
     }
@@ -89,7 +64,6 @@ public abstract class AssertDimensionsLayerTest extends LayerTestBase {
     Basic addRef() {
       return (Basic) super.addRef();
     }
-
   }
 
 }

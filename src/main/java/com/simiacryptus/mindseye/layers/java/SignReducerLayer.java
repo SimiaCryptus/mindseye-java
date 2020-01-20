@@ -28,7 +28,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 
@@ -47,12 +46,16 @@ public class SignReducerLayer extends DAGNetwork {
     NthPowerActivationLayer temp_01_0004 = new NthPowerActivationLayer();
     NthPowerActivationLayer temp_01_0005 = new NthPowerActivationLayer();
     LinearActivationLayer temp_01_0006 = new LinearActivationLayer();
-    DAGNode temp_01_0001 = add(temp_01_0003.setBalanced(false),
+    temp_01_0006.setScale(-1);
+    temp_01_0005.setPower(0.5);
+    temp_01_0004.setPower(-1);
+    temp_01_0003.setBalanced(false);
+    DAGNode temp_01_0001 = add(temp_01_0003.addRef(),
         add(new ProductInputsLayer(), avgInput.addRef(),
-            add(temp_01_0004.setPower(-1),
-                add(temp_01_0005.setPower(0.5),
+            add(temp_01_0004.addRef(),
+                add(temp_01_0005.addRef(),
                     add(new SumInputsLayer(), add(new AvgReducerLayer(), add(new SqActivationLayer(), getInput(0))),
-                        add(temp_01_0006.setScale(-1),
+                        add(temp_01_0006.addRef(),
                             add(new SqActivationLayer(), avgInput.addRef())))))));
     temp_01_0006.freeRef();
     temp_01_0005.freeRef();
@@ -80,24 +83,6 @@ public class SignReducerLayer extends DAGNetwork {
   @SuppressWarnings("unused")
   public static Layer fromJson(@Nonnull final JsonObject inner, Map<CharSequence, byte[]> rs) {
     return new SignReducerLayer(inner, rs);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  SignReducerLayer[] addRefs(@Nullable SignReducerLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(SignReducerLayer::addRef)
-        .toArray((x) -> new SignReducerLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  SignReducerLayer[][] addRefs(@Nullable SignReducerLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(SignReducerLayer::addRefs)
-        .toArray((x) -> new SignReducerLayer[x][]);
   }
 
   public void _free() {

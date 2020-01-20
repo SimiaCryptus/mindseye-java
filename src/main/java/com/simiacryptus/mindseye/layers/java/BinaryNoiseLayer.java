@@ -35,7 +35,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
@@ -98,24 +97,6 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
     return subnet;
   }
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  BinaryNoiseLayer[] addRefs(@Nullable BinaryNoiseLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(BinaryNoiseLayer::addRef)
-        .toArray((x) -> new BinaryNoiseLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  BinaryNoiseLayer[][] addRefs(@Nullable BinaryNoiseLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(BinaryNoiseLayer::addRefs)
-        .toArray((x) -> new BinaryNoiseLayer[x][]);
-  }
-
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     final Result input = inObj[0].addRef();
@@ -143,42 +124,42 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
     assert inputData.length() == data.length() : (inputData.length() + " != " + data.length());
     inputData.freeRef();
     try {
-      try {
-        return new Result(data, new Result.Accumulator() {
-          {
-          }
+      Result.Accumulator accumulator = new Result.Accumulator() {
+        {
+        }
 
-          @Override
-          public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
-            input.accumulate(buffer == null ? null : buffer.addRef(), new TensorArray(delta.stream().map(t -> {
-              Tensor temp_32_0003 = t.map(x -> 0);
-              t.freeRef();
-              return temp_32_0003;
-            }).toArray(i -> new Tensor[i])));
-            delta.freeRef();
-            if (null != buffer)
-              buffer.freeRef();
-          }
+        @Override
+        public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
+          input.accumulate(buffer == null ? null : buffer.addRef(), new TensorArray(delta.stream().map(t -> {
+            Tensor temp_32_0003 = t.map(x -> 0);
+            t.freeRef();
+            return temp_32_0003;
+          }).toArray(i -> new Tensor[i])));
+          delta.freeRef();
+          if (null != buffer)
+            buffer.freeRef();
+        }
 
-          public @SuppressWarnings("unused")
-          void _free() {
-          }
-        }) {
+        public @SuppressWarnings("unused")
+        void _free() {
+        }
+      };
+      return new Result(data, accumulator) {
+        {
+          input.addRef();
+        }
 
-          {
-          }
+        @Override
+        public boolean isAlive() {
+          return input.isAlive();
+        }
 
-          @Override
-          public boolean isAlive() {
-            return input.isAlive();
-          }
-
-          public void _free() {
-          }
-        };
-      } finally {
-        data.freeRef();
-      }
+        @Override
+        public void _free() {
+          input.freeRef();
+          super._free();
+        }
+      };
     } finally {
       input.freeRef();
     }

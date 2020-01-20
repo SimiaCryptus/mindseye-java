@@ -73,24 +73,6 @@ public class RescaledSubnetLayer extends LayerBase {
   }
 
   @Nullable
-  public static @SuppressWarnings("unused")
-  RescaledSubnetLayer[] addRefs(@Nullable RescaledSubnetLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(RescaledSubnetLayer::addRef)
-        .toArray((x) -> new RescaledSubnetLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  RescaledSubnetLayer[][] addRefs(@Nullable RescaledSubnetLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(RescaledSubnetLayer::addRefs)
-        .toArray((x) -> new RescaledSubnetLayer[x][]);
-  }
-
-  @Nullable
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     assert 1 == inObj.length;
@@ -100,7 +82,7 @@ public class RescaledSubnetLayer extends LayerBase {
     assert 3 == inputDims.length;
     if (1 == scale) {
       assert subnetwork != null;
-      Result temp_11_0004 = subnetwork.eval(Result.addRefs(inObj));
+      Result temp_11_0004 = subnetwork.eval(RefUtil.addRefs(inObj));
       ReferenceCounting.freeRefs(inObj);
       return temp_11_0004;
     }
@@ -119,7 +101,7 @@ public class RescaledSubnetLayer extends LayerBase {
         .toArray(i -> new DAGNode[i])));
     condensed.freeRef();
     RefUtil.freeRef(network.add(new ImgReshapeLayer(scale, scale, true)));
-    Result temp_11_0003 = network.eval(Result.addRefs(inObj));
+    Result temp_11_0003 = network.eval(RefUtil.addRefs(inObj));
     ReferenceCounting.freeRefs(inObj);
     network.freeRef();
     return temp_11_0003;

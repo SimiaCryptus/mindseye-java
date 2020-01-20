@@ -20,22 +20,14 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
+import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Random;
 
 public class SignReducerLayerTest {
   public static class Normal extends LayerTestBase {
-
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Normal[] addRefs(@Nullable Normal[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Normal::addRef).toArray((x) -> new Normal[x]);
-    }
 
     @Nonnull
     @Override

@@ -21,6 +21,7 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.DataSerializer;
+import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -52,24 +53,6 @@ public final class GaussianActivationLayer extends SimpleActivationLayer<Gaussia
   @SuppressWarnings("unused")
   public static GaussianActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new GaussianActivationLayer(json);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  GaussianActivationLayer[] addRefs(@Nullable GaussianActivationLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(GaussianActivationLayer::addRef)
-        .toArray((x) -> new GaussianActivationLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  GaussianActivationLayer[][] addRefs(@Nullable GaussianActivationLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(GaussianActivationLayer::addRefs)
-        .toArray((x) -> new GaussianActivationLayer[x][]);
   }
 
   @Nonnull

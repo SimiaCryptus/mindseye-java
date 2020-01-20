@@ -20,6 +20,7 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
+import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -27,24 +28,6 @@ import java.util.Arrays;
 import java.util.Random;
 
 public abstract class SumReducerLayerTest extends LayerTestBase {
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  SumReducerLayerTest[] addRefs(@Nullable SumReducerLayerTest[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(SumReducerLayerTest::addRef)
-        .toArray((x) -> new SumReducerLayerTest[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  SumReducerLayerTest[][] addRefs(@Nullable SumReducerLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(SumReducerLayerTest::addRefs)
-        .toArray((x) -> new SumReducerLayerTest[x][]);
-  }
 
   @Nonnull
   @Override
@@ -76,14 +59,6 @@ public abstract class SumReducerLayerTest extends LayerTestBase {
   }
 
   public static class Basic extends SumReducerLayerTest {
-
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Basic[] addRefs(@Nullable Basic[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
-    }
 
     public @SuppressWarnings("unused")
     void _free() {

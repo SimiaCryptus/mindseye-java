@@ -22,29 +22,9 @@ package com.simiacryptus.mindseye.layers.java;
 import com.simiacryptus.mindseye.lang.Layer;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Random;
 
 public abstract class ImgBandScaleLayerTest extends LayerTestBase {
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  ImgBandScaleLayerTest[] addRefs(@Nullable ImgBandScaleLayerTest[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(ImgBandScaleLayerTest::addRef)
-        .toArray((x) -> new ImgBandScaleLayerTest[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  ImgBandScaleLayerTest[][] addRefs(@Nullable ImgBandScaleLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(ImgBandScaleLayerTest::addRefs)
-        .toArray((x) -> new ImgBandScaleLayerTest[x][]);
-  }
 
   @Nonnull
   @Override
@@ -56,7 +36,8 @@ public abstract class ImgBandScaleLayerTest extends LayerTestBase {
   @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
     ImgBandScaleLayer temp_76_0002 = new ImgBandScaleLayer(0.0, 0.0, 0.0);
-    ImgBandScaleLayer temp_76_0001 = temp_76_0002.addWeights(this::random);
+    temp_76_0002.addWeights(this::random);
+    ImgBandScaleLayer temp_76_0001 = temp_76_0002.addRef();
     temp_76_0002.freeRef();
     return temp_76_0001;
   }
@@ -73,14 +54,6 @@ public abstract class ImgBandScaleLayerTest extends LayerTestBase {
   }
 
   public static class Basic extends ImgBandScaleLayerTest {
-
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Basic[] addRefs(@Nullable Basic[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
-    }
 
     public @SuppressWarnings("unused")
     void _free() {

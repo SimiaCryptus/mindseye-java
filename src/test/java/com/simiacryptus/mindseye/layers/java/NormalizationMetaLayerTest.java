@@ -23,6 +23,7 @@ import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.MetaLayerTestBase;
 import com.simiacryptus.mindseye.test.ToleranceStatistics;
 import com.simiacryptus.mindseye.test.unit.ComponentTest;
+import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -34,25 +35,6 @@ public abstract class NormalizationMetaLayerTest extends MetaLayerTestBase {
   public ComponentTest<ToleranceStatistics> getDerivativeTester() {
     return null;
     //return new BatchDerivativeTester(1e-2, 1e-5, 10);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  NormalizationMetaLayerTest[] addRefs(@Nullable NormalizationMetaLayerTest[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(NormalizationMetaLayerTest::addRef)
-        .toArray((x) -> new NormalizationMetaLayerTest[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  NormalizationMetaLayerTest[][] addRefs(
-      @Nullable NormalizationMetaLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(NormalizationMetaLayerTest::addRefs)
-        .toArray((x) -> new NormalizationMetaLayerTest[x][]);
   }
 
   @Nonnull
@@ -91,14 +73,6 @@ public abstract class NormalizationMetaLayerTest extends MetaLayerTestBase {
   }
 
   public static class Basic extends NormalizationMetaLayerTest {
-
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Basic[] addRefs(@Nullable Basic[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
-    }
 
     public @SuppressWarnings("unused")
     void _free() {

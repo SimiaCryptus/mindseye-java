@@ -56,24 +56,6 @@ public class SumReducerLayer extends LayerBase {
     return new SumReducerLayer(json);
   }
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  SumReducerLayer[] addRefs(@Nullable SumReducerLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(SumReducerLayer::addRef)
-        .toArray((x) -> new SumReducerLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  SumReducerLayer[][] addRefs(@Nullable SumReducerLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(SumReducerLayer::addRefs)
-        .toArray((x) -> new SumReducerLayer[x][]);
-  }
-
   @Nonnull
   @Override
   public Result eval(@Nonnull final Result... inObj) {
@@ -94,10 +76,10 @@ public class SumReducerLayer extends LayerBase {
               }
             }
             return sum;
-          }, Result.addRefs(inObj))).mapToObj(x -> new Tensor(new double[]{x}, new int[]{1}))
+          }, RefUtil.addRefs(inObj))).mapToObj(x -> new Tensor(new double[]{x}, new int[]{1}))
           .toArray(i -> new Tensor[i])), new Result.Accumulator() {
         {
-          Result.addRefs(inObj);
+          RefUtil.addRefs(inObj);
         }
 
         @Override
@@ -112,7 +94,7 @@ public class SumReducerLayer extends LayerBase {
                     assert 1 == tensor.length() : RefArrays.toString(tensor.getDimensions());
                     @Nonnull final Tensor passback = new Tensor(data1.getDimensions());
                     for (int i = 0; i < Tensor.length(data1.getDimensions()); i++) {
-                      passback.set(i, tensor.get(0)).freeRef();
+                      passback.set(i, tensor.get(0));
                     }
                     tensor.freeRef();
                     return passback;
@@ -133,7 +115,7 @@ public class SumReducerLayer extends LayerBase {
       }) {
 
         {
-          Result.addRefs(inObj);
+          RefUtil.addRefs(inObj);
         }
 
         @Override
@@ -147,8 +129,8 @@ public class SumReducerLayer extends LayerBase {
 
         public void _free() {
           ReferenceCounting.freeRefs(inObj);
+          super._free();
         }
-
       };
       temp_62_0003.freeRef();
       return temp_62_0002;

@@ -21,10 +21,10 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.DataSerializer;
+import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Map;
 
 @SuppressWarnings("serial")
@@ -42,23 +42,6 @@ public class EntropyLayer extends SimpleActivationLayer<EntropyLayer> {
   @SuppressWarnings("unused")
   public static EntropyLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new EntropyLayer(json);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  EntropyLayer[] addRefs(@Nullable EntropyLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(EntropyLayer::addRef).toArray((x) -> new EntropyLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  EntropyLayer[][] addRefs(@Nullable EntropyLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(EntropyLayer::addRefs)
-        .toArray((x) -> new EntropyLayer[x][]);
   }
 
   @Nonnull

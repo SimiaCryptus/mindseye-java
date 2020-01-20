@@ -21,6 +21,7 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.MetaLayerTestBase;
+import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -31,24 +32,6 @@ public abstract class StdDevMetaLayerTest extends MetaLayerTestBase {
   public StdDevMetaLayerTest() {
     super();
     //validateDifferentials = false;
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  StdDevMetaLayerTest[] addRefs(@Nullable StdDevMetaLayerTest[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(StdDevMetaLayerTest::addRef)
-        .toArray((x) -> new StdDevMetaLayerTest[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  StdDevMetaLayerTest[][] addRefs(@Nullable StdDevMetaLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(StdDevMetaLayerTest::addRefs)
-        .toArray((x) -> new StdDevMetaLayerTest[x][]);
   }
 
   @Nonnull
@@ -87,14 +70,6 @@ public abstract class StdDevMetaLayerTest extends MetaLayerTestBase {
   }
 
   public static class Basic extends StdDevMetaLayerTest {
-
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Basic[] addRefs(@Nullable Basic[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
-    }
 
     public @SuppressWarnings("unused")
     void _free() {

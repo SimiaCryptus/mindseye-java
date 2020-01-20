@@ -32,7 +32,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.IntFunction;
@@ -50,8 +49,9 @@ public class LinearActivationLayer extends LayerBase {
     Tensor temp_04_0001 = new Tensor(2);
     weights = temp_04_0001.addRef();
     temp_04_0001.freeRef();
-    RefUtil.freeRef(weights.set(0, 1.));
-    RefUtil.freeRef(weights.set(1, 0.));
+    weights.set(0, 1.);
+
+    weights.set(1, 0.);
   }
 
   protected LinearActivationLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> resources) {
@@ -67,13 +67,11 @@ public class LinearActivationLayer extends LayerBase {
     return weights.get(1);
   }
 
-  @Nonnull
-  public LinearActivationLayer setBias(final double bias) {
+  public void setBias(double bias) {
     if (!Double.isFinite(bias))
       throw new IllegalArgumentException();
     assert weights != null;
-    RefUtil.freeRef(weights.set(1, bias));
-    return this.addRef();
+    weights.set(1, bias);
   }
 
   @Nullable
@@ -95,37 +93,17 @@ public class LinearActivationLayer extends LayerBase {
     return weights.get(0);
   }
 
-  @Nonnull
-  public LinearActivationLayer setScale(final double scale) {
+  public void setScale(double scale) {
     if (!Double.isFinite(scale))
       throw new IllegalArgumentException();
     assert weights != null;
-    RefUtil.freeRef(weights.set(0, scale));
-    return this.addRef();
+    weights.set(0, scale);
   }
 
   @Nonnull
   @SuppressWarnings("unused")
   public static LinearActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new LinearActivationLayer(json, rs);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  LinearActivationLayer[] addRefs(@Nullable LinearActivationLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(LinearActivationLayer::addRef)
-        .toArray((x) -> new LinearActivationLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  LinearActivationLayer[][] addRefs(@Nullable LinearActivationLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(LinearActivationLayer::addRefs)
-        .toArray((x) -> new LinearActivationLayer[x][]);
   }
 
   @Nonnull
@@ -141,91 +119,88 @@ public class LinearActivationLayer extends LayerBase {
     final double bias = weights.get(1);
     final LinearActivationLayer linearActivationLayer = LinearActivationLayer.this.addRef();
     try {
-      try {
-        try {
-          return new Result(new TensorArray(RefIntStream.range(0, itemCnt)
-              .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-                Tensor tensor = inData.get(dataIndex);
-                Tensor tensor1 = tensor.map(v -> {
-                  final double r = scale * v + bias;
-                  return Double.isFinite(r) ? r : 0;
-                });
-                tensor.freeRef();
-                return tensor1;
-              }, inData.addRef())).toArray(i -> new Tensor[i])), new Result.Accumulator() {
-            {
-            }
-
-            @Override
-            public void accept(@Nonnull DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
-              if (!LinearActivationLayer.this.isFrozen()) {
-                RefIntStream.range(0, delta.length()).forEach(RefUtil.wrapInterface(dataIndex -> {
-                      @Nullable
-                      Tensor deltaT = delta.get(dataIndex);
-                      @Nullable
-                      Tensor inputT = inData.get(dataIndex);
-                      @Nullable final double[] deltaData = deltaT.getData();
-                      deltaT.freeRef();
-                      @Nullable final double[] inputData = inputT.getData();
-                      inputT.freeRef();
-                      @Nonnull final Tensor weightDelta = new Tensor(weights.getDimensions());
-                      for (int i = 0; i < deltaData.length; i++) {
-                        weightDelta.add(0, deltaData[i] * inputData[inputData.length == 1 ? 0 : i]);
-                        weightDelta.add(1, deltaData[i]);
-                      }
-                      Delta<UUID> temp_04_0006 = buffer.get(linearActivationLayer.getId(), weights.getData());
-                      assert temp_04_0006 != null;
-                      RefUtil.freeRef(temp_04_0006.addInPlace(weightDelta.getData()));
-                      temp_04_0006.freeRef();
-                      weightDelta.freeRef();
-                    }, buffer.addRef(), inData.addRef(),
-                    linearActivationLayer.addRef(),
-                    delta.addRef()));
-              }
-              if (in0.isAlive()) {
-                @Nonnull final TensorList tensorList = new TensorArray(RefIntStream.range(0, delta.length())
-                    .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-                      @Nullable
-                      Tensor tensor = delta.get(dataIndex);
-                      @Nullable final double[] deltaData = tensor.getData();
-                      tensor.freeRef();
-                      @Nonnull final Tensor passback = new Tensor(inData.getDimensions());
-                      for (int i = 0; i < passback.length(); i++) {
-                        RefUtil.freeRef(passback.set(i, deltaData[i] * weights.getData()[0]));
-                      }
-                      return passback;
-                    }, inData.addRef(), delta.addRef()))
-                    .toArray(i -> new Tensor[i]));
-                in0.accumulate(buffer.addRef(), tensorList);
-              }
-              delta.freeRef();
-              buffer.freeRef();
-            }
-
-            public @SuppressWarnings("unused")
-            void _free() {
-            }
-          }) {
-
-            {
-            }
-
-            @Override
-            public boolean isAlive() {
-              return in0.isAlive() || !isFrozen();
-            }
-
-            public void _free() {
-            }
-
-          };
-        } finally {
-          linearActivationLayer.freeRef();
+      Result.Accumulator accumulator = new Result.Accumulator() {
+        {
         }
-      } finally {
-        inData.freeRef();
-      }
+
+        @Override
+        public void accept(@Nonnull DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
+          if (!LinearActivationLayer.this.isFrozen()) {
+            RefIntStream.range(0, delta.length()).forEach(RefUtil.wrapInterface(dataIndex -> {
+                  @Nullable
+                  Tensor deltaT = delta.get(dataIndex);
+                  @Nullable
+                  Tensor inputT = inData.get(dataIndex);
+                  @Nullable final double[] deltaData = deltaT.getData();
+                  deltaT.freeRef();
+                  @Nullable final double[] inputData = inputT.getData();
+                  inputT.freeRef();
+                  @Nonnull final Tensor weightDelta = new Tensor(weights.getDimensions());
+                  for (int i = 0; i < deltaData.length; i++) {
+                    weightDelta.add(0, deltaData[i] * inputData[inputData.length == 1 ? 0 : i]);
+                    weightDelta.add(1, deltaData[i]);
+                  }
+                  Delta<UUID> temp_04_0006 = buffer.get(linearActivationLayer.getId(), weights.getData());
+                  assert temp_04_0006 != null;
+                  temp_04_0006.addInPlace(weightDelta.getData());
+                  temp_04_0006.freeRef();
+                  weightDelta.freeRef();
+                }, buffer.addRef(), inData.addRef(),
+                linearActivationLayer.addRef(),
+                delta.addRef()));
+          }
+          if (in0.isAlive()) {
+            @Nonnull final TensorList tensorList = new TensorArray(RefIntStream.range(0, delta.length())
+                .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+                  @Nullable
+                  Tensor tensor = delta.get(dataIndex);
+                  @Nullable final double[] deltaData = tensor.getData();
+                  tensor.freeRef();
+                  @Nonnull final Tensor passback = new Tensor(inData.getDimensions());
+                  for (int i = 0; i < passback.length(); i++) {
+                    passback.set(i, deltaData[i] * weights.getData()[0]);
+                  }
+                  return passback;
+                }, inData.addRef(), delta.addRef()))
+                .toArray(i -> new Tensor[i]));
+            in0.accumulate(buffer.addRef(), tensorList);
+          }
+          delta.freeRef();
+          buffer.freeRef();
+        }
+
+        public @SuppressWarnings("unused")
+        void _free() {
+        }
+      };
+      TensorArray data = new TensorArray(RefIntStream.range(0, itemCnt)
+          .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+            Tensor tensor = inData.get(dataIndex);
+            Tensor tensor1 = tensor.map(v -> {
+              final double r = scale * v + bias;
+              return Double.isFinite(r) ? r : 0;
+            });
+            tensor.freeRef();
+            return tensor1;
+          }, inData.addRef())).toArray(i -> new Tensor[i]));
+      return new Result(data, accumulator) {
+        {
+          in0.addRef();
+        }
+        @Override
+        public boolean isAlive() {
+          return in0.isAlive() || !isFrozen();
+        }
+
+        @Override
+        public void _free() {
+          in0.freeRef();
+          super._free();
+        }
+      };
     } finally {
+      linearActivationLayer.freeRef();
+      inData.freeRef();
       in0.freeRef();
     }
   }

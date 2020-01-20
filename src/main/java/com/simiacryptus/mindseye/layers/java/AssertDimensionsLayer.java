@@ -23,6 +23,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.simiacryptus.mindseye.lang.*;
+import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
@@ -60,24 +61,6 @@ public class AssertDimensionsLayer extends LayerBase {
     return new AssertDimensionsLayer(json);
   }
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  AssertDimensionsLayer[] addRefs(@Nullable AssertDimensionsLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(AssertDimensionsLayer::addRef)
-        .toArray((x) -> new AssertDimensionsLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  AssertDimensionsLayer[][] addRefs(@Nullable AssertDimensionsLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(AssertDimensionsLayer::addRefs)
-        .toArray((x) -> new AssertDimensionsLayer[x][]);
-  }
-
   @Override
   public Result eval(@Nonnull final Result... array) {
     if (0 == array.length) {
@@ -89,6 +72,7 @@ public class AssertDimensionsLayer extends LayerBase {
     TensorList temp_77_0001 = input.getData();
     if (0 == temp_77_0001.length()) {
       input.freeRef();
+      temp_77_0001.freeRef();
       throw new IllegalArgumentException(getName());
     }
     temp_77_0001.freeRef();

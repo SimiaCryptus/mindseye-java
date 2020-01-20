@@ -28,12 +28,12 @@ import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefList;
 import com.simiacryptus.util.FastRandom;
 import com.simiacryptus.util.Util;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -50,7 +50,6 @@ public class BiasLayer extends LayerBase {
 
   protected BiasLayer() {
     super();
-    Tensor temp_06_0001 = null;
     bias = null;
   }
 
@@ -68,24 +67,20 @@ public class BiasLayer extends LayerBase {
       temp_06_0003.freeRef();
   }
 
-  @Nonnull
-  public BiasLayer setWeights(@Nonnull final IntToDoubleFunction f) {
+  public void setWeights(@Nonnull IntToDoubleFunction f) {
     assert this.bias != null;
     double[] bias = this.bias.getData();
     for (int i = 0; i < bias.length; i++) {
       bias[i] = f.applyAsDouble(i);
     }
-    return this.addRef();
   }
 
-  @Nonnull
-  public BiasLayer setWeightsLog(final double value) {
+  public void setWeightsLog(double value) {
     assert this.bias != null;
     double[] bias = this.bias.getData();
     for (int i = 0; i < bias.length; i++) {
       bias[i] = (FastRandom.INSTANCE.random() - 0.5) * Math.pow(10, value);
     }
-    return this.addRef();
   }
 
   @Nonnull
@@ -94,21 +89,6 @@ public class BiasLayer extends LayerBase {
     return new BiasLayer(json, rs);
   }
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  BiasLayer[] addRefs(@Nullable BiasLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(BiasLayer::addRef).toArray((x) -> new BiasLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  BiasLayer[][] addRefs(@Nullable BiasLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(BiasLayer::addRefs).toArray((x) -> new BiasLayer[x][]);
-  }
 
   public double[] add(@Nonnull final double[] input) {
     final double[] array = RecycleBin.DOUBLES.obtain(input.length);
@@ -126,99 +106,100 @@ public class BiasLayer extends LayerBase {
     return array;
   }
 
-  @Nonnull
-  public BiasLayer addWeights(@Nonnull final DoubleSupplier f) {
+  public void addWeights(@Nonnull DoubleSupplier f) {
     assert this.bias != null;
     double[] bias = this.bias.getData();
     Util.add(f, bias);
-    return this.addRef();
   }
 
   @Nonnull
   @Override
   public Result eval(@Nonnull final Result... inObj) {
-    TensorList input;
+    TensorList input = first(RefUtil.addRefs(inObj));
     final BiasLayer biasLayer = BiasLayer.this.addRef();
-    if (0 == inObj.length) {
-      input = new TensorArray();
-    } else {
-      input = inObj[0].getData();
-    }
     try {
-      try {
-        try {
-          return new Result(new TensorArray(input.stream().parallel().map(r -> {
-            Tensor temp_06_0006 = new Tensor(add(r.getData()), r.getDimensions());
-            r.freeRef();
-            return temp_06_0006;
-          }).toArray(i -> new Tensor[i])), new Result.Accumulator() {
-            {
-              Result.addRefs(inObj);
-              assert bias != null;
-              bias.addRef();
-              biasLayer.addRef();
-            }
-
-            @Override
-            public void accept(@Nonnull DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
-              if (!BiasLayer.this.isFrozen()) {
-                final Delta<UUID> deltaBuffer = buffer.get(biasLayer.getId(), bias == null ? null : bias.addRef());
-                assert bias != null;
-                if (1 == bias.length()) {
-                  delta.stream().parallel().forEach(RefUtil.wrapInterface((Consumer<? super Tensor>) d -> {
-                    @Nullable final double[] array = d.getData();
-                    d.freeRef();
-                    assert deltaBuffer != null;
-                    RefUtil.freeRef(deltaBuffer
-                        .addInPlace(1 == array.length ? array : new double[]{RefArrays.stream(array).sum()}));
-                  }, deltaBuffer == null ? null : deltaBuffer.addRef()));
-                } else {
-                  delta.stream().parallel().forEach(RefUtil.wrapInterface((Consumer<? super Tensor>) d -> {
-                    assert deltaBuffer != null;
-                    RefUtil.freeRef(deltaBuffer.addInPlace(d.getData()));
-                    d.freeRef();
-                  }, deltaBuffer == null ? null : deltaBuffer.addRef()));
-                }
-                if (null != deltaBuffer)
-                  deltaBuffer.freeRef();
-              }
-              if (0 < inObj.length && inObj[0].isAlive()) {
-                inObj[0].accumulate(buffer.addRef(), delta.addRef());
-              }
-              delta.freeRef();
-              buffer.freeRef();
-            }
-
-            public @SuppressWarnings("unused")
-            void _free() {
-              ReferenceCounting.freeRefs(inObj);
-              assert bias != null;
-              bias.freeRef();
-              biasLayer.freeRef();
-            }
-          }) {
-
-            {
-              Result.addRefs(inObj);
-            }
-
-            @Override
-            public boolean isAlive() {
-              return 0 < inObj.length && inObj[0].isAlive() || !isFrozen();
-            }
-
-            public void _free() {
-              ReferenceCounting.freeRefs(inObj);
-            }
-          };
-        } finally {
-          ReferenceCounting.freeRefs(inObj);
+      return new Result(new TensorArray(input.stream().parallel().map(r -> {
+        Tensor temp_06_0006 = new Tensor(add(r.getData()), r.getDimensions());
+        r.freeRef();
+        return temp_06_0006;
+      }).toArray(i -> new Tensor[i])), new Result.Accumulator() {
+        {
+          RefUtil.addRefs(inObj);
+          assert bias != null;
+          bias.addRef();
+          biasLayer.addRef();
         }
-      } finally {
-        biasLayer.freeRef();
+
+        @Override
+        public void accept(@Nonnull DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
+          if (!BiasLayer.this.isFrozen()) {
+            final Delta<UUID> deltaBuffer = buffer.get(biasLayer.getId(), bias == null ? null : bias.addRef());
+            assert bias != null;
+            if (1 == bias.length()) {
+              delta.stream().parallel().forEach(RefUtil.wrapInterface((Consumer<? super Tensor>) d -> {
+                @Nullable final double[] array = d.getData();
+                d.freeRef();
+                assert deltaBuffer != null;
+                final double[] data = 1 == array.length ? array : new double[]{RefArrays.stream(array).sum()};
+                deltaBuffer.addInPlace(data);
+              }, deltaBuffer == null ? null : deltaBuffer.addRef()));
+            } else {
+              delta.stream().parallel().forEach(RefUtil.wrapInterface((Consumer<? super Tensor>) d -> {
+                assert deltaBuffer != null;
+                deltaBuffer.addInPlace(d.getData());
+                d.freeRef();
+              }, deltaBuffer == null ? null : deltaBuffer.addRef()));
+            }
+            if (null != deltaBuffer)
+              deltaBuffer.freeRef();
+          }
+          if (0 < inObj.length && inObj[0].isAlive()) {
+            inObj[0].accumulate(buffer.addRef(), delta.addRef());
+          }
+          delta.freeRef();
+          buffer.freeRef();
+        }
+
+        public @SuppressWarnings("unused")
+        void _free() {
+          ReferenceCounting.freeRefs(inObj);
+          assert bias != null;
+          bias.freeRef();
+          biasLayer.freeRef();
+        }
+      }) {
+
+        {
+          RefUtil.addRefs(inObj);
+        }
+
+        @Override
+        public boolean isAlive() {
+          return 0 < inObj.length && inObj[0].isAlive() || !isFrozen();
+        }
+
+        public void _free() {
+          ReferenceCounting.freeRefs(inObj);
+          super._free();
+        }
+      };
+    } finally {
+      ReferenceCounting.freeRefs(inObj);
+      biasLayer.freeRef();
+      input.freeRef();
+    }
+  }
+
+  @NotNull
+  public TensorList first(@Nonnull Result[] inObj) {
+    try {
+      if (0 == inObj.length) {
+        return new TensorArray();
+      } else {
+        return inObj[0].getData();
       }
     } finally {
-      input.freeRef();
+      RefUtil.freeRefs(inObj);
     }
   }
 
@@ -231,14 +212,12 @@ public class BiasLayer extends LayerBase {
     return json;
   }
 
-  @Nonnull
-  public Layer set(@Nonnull final double[] ds) {
+  public void set(@Nonnull double[] ds) {
     assert this.bias != null;
     double[] bias = this.bias.getData();
     for (int i = 0; i < ds.length; i++) {
       bias[i] = ds[i];
     }
-    return this.addRef();
   }
 
   @Nonnull
@@ -248,8 +227,7 @@ public class BiasLayer extends LayerBase {
     return RefArrays.asList(bias.getData());
   }
 
-  @Nonnull
-  public BiasLayer set(@Nonnull Tensor tensor) {
+  public void set(@Nonnull Tensor tensor) {
     assert this.bias != null;
     double[] bias = this.bias.getData();
     assert bias.length == tensor.length();
@@ -257,7 +235,6 @@ public class BiasLayer extends LayerBase {
       bias[i] = tensor.get(i);
     }
     tensor.freeRef();
-    return this.addRef();
   }
 
   public void _free() {

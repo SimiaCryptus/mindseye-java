@@ -124,24 +124,6 @@ public class UnpoolingLayer extends LayerBase {
     return new UnpoolingLayer(json);
   }
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  UnpoolingLayer[] addRefs(@Nullable UnpoolingLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(UnpoolingLayer::addRef)
-        .toArray((x) -> new UnpoolingLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  UnpoolingLayer[][] addRefs(@Nullable UnpoolingLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(UnpoolingLayer::addRefs)
-        .toArray((x) -> new UnpoolingLayer[x][]);
-  }
-
   @Nonnull
   @Override
   public Result eval(@Nonnull final Result... inObj) {
@@ -151,8 +133,7 @@ public class UnpoolingLayer extends LayerBase {
     final TensorList batch = input.getData();
     @Nonnull final int[] inputDims = batch.getDimensions();
     assert 3 == inputDims.length;
-    Tensor outputDims;
-    outputDims = new Tensor(inputDims[0] * sizeX, inputDims[1] * sizeY, inputDims[2]);
+    Tensor outputDims = new Tensor(inputDims[0] * sizeX, inputDims[1] * sizeY, inputDims[2]);
     TensorArray data = new TensorArray(RefIntStream.range(0, batch.length()).parallel()
         .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
           Tensor inputData = batch.get(dataIndex);
@@ -165,51 +146,50 @@ public class UnpoolingLayer extends LayerBase {
     outputDims.freeRef();
     batch.freeRef();
     try {
-      try {
-        return new Result(data, new Result.Accumulator() {
-          {
-          }
+      Result.Accumulator accumulator = new Result.Accumulator() {
+        {
+        }
 
-          @Override
-          public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList error) {
-            //assert error.stream().flatMapToDouble(x-> Arrays.stream(x.getData())).allMatch(v->Double.isFinite(v));
-            if (input.isAlive()) {
-              @Nonnull
-              TensorArray tensorArray = new TensorArray(RefIntStream.range(0, error.length()).parallel()
-                  .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-                    @Nonnull final Tensor passback = new Tensor(inputDims);
-                    @Nullable final Tensor err = error.get(dataIndex);
-                    Tensor temp_58_0004 = UnpoolingLayer.copyCondense(err.addRef(),
-                        passback);
-                    err.freeRef();
-                    return temp_58_0004;
-                  }, error.addRef())).toArray(i -> new Tensor[i]));
-              input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
-            }
-            error.freeRef();
-            if (null != buffer)
-              buffer.freeRef();
+        @Override
+        public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList error) {
+          //assert error.stream().flatMapToDouble(x-> Arrays.stream(x.getData())).allMatch(v->Double.isFinite(v));
+          if (input.isAlive()) {
+            @Nonnull
+            TensorArray tensorArray = new TensorArray(RefIntStream.range(0, error.length()).parallel()
+                .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+                  @Nonnull final Tensor passback = new Tensor(inputDims);
+                  @Nullable final Tensor err = error.get(dataIndex);
+                  Tensor temp_58_0004 = UnpoolingLayer.copyCondense(err.addRef(),
+                      passback);
+                  err.freeRef();
+                  return temp_58_0004;
+                }, error.addRef())).toArray(i -> new Tensor[i]));
+            input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
           }
+          error.freeRef();
+          if (null != buffer)
+            buffer.freeRef();
+        }
 
-          public @SuppressWarnings("unused")
-          void _free() {
-          }
-        }) {
+        public @SuppressWarnings("unused")
+        void _free() {
+        }
+      };
+      return new Result(data, accumulator) {
+        {
+          input.addRef();
+        }
+        @Override
+        public boolean isAlive() {
+          return input.isAlive() || !isFrozen();
+        }
 
-          {
-          }
-
-          @Override
-          public boolean isAlive() {
-            return input.isAlive() || !isFrozen();
-          }
-
-          public void _free() {
-          }
-        };
-      } finally {
-        data.freeRef();
-      }
+        @Override
+        public void _free() {
+          input.freeRef();
+          super._free();
+        }
+      };
     } finally {
       input.freeRef();
     }

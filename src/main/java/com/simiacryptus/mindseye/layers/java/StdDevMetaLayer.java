@@ -27,8 +27,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Map;
 
 @SuppressWarnings("serial")
@@ -44,24 +42,29 @@ public class StdDevMetaLayer extends PipelineNetwork {
   public StdDevMetaLayer(final int minBatchCount) {
     super(1);
     AvgMetaLayer temp_70_0001 = new AvgMetaLayer();
-    RefUtil.freeRef(add(temp_70_0001.setMinBatchCount(minBatchCount)));
+    temp_70_0001.setMinBatchCount(minBatchCount);
+    RefUtil.freeRef(add(temp_70_0001.addRef()));
     temp_70_0001.freeRef();
     RefUtil.freeRef(add(new AvgReducerLayer()));
     InnerNode square = add(new SqActivationLayer());
     RefUtil.freeRef(add(new SqActivationLayer(), getInput(0), square.addRef()));
     AvgMetaLayer temp_70_0002 = new AvgMetaLayer();
-    RefUtil.freeRef(add(temp_70_0002.setMinBatchCount(minBatchCount)));
+    temp_70_0002.setMinBatchCount(minBatchCount);
+    RefUtil.freeRef(add(temp_70_0002.addRef()));
     temp_70_0002.freeRef();
     RefUtil.freeRef(add(new AvgReducerLayer()));
     LinearActivationLayer temp_70_0003 = new LinearActivationLayer();
-    LinearActivationLayer temp_70_0005 = temp_70_0003.setScale(-1);
+    temp_70_0003.setScale(-1);
+    LinearActivationLayer temp_70_0005 = temp_70_0003.addRef();
+    temp_70_0005.freeze();
     RefUtil.freeRef(
-        add(new SumInputsLayer(), getHead(), add(temp_70_0005.freeze(), square.addRef())));
+        add(new SumInputsLayer(), getHead(), add(temp_70_0005.addRef(), square.addRef())));
     temp_70_0005.freeRef();
     temp_70_0003.freeRef();
     square.freeRef();
     NthPowerActivationLayer temp_70_0004 = new NthPowerActivationLayer();
-    RefUtil.freeRef(add(temp_70_0004.setPower(0.5)));
+    temp_70_0004.setPower(0.5);
+    RefUtil.freeRef(add(temp_70_0004.addRef()));
     temp_70_0004.freeRef();
   }
 
@@ -73,24 +76,6 @@ public class StdDevMetaLayer extends PipelineNetwork {
   @SuppressWarnings("unused")
   public static StdDevMetaLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new StdDevMetaLayer(json, rs);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  StdDevMetaLayer[] addRefs(@Nullable StdDevMetaLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(StdDevMetaLayer::addRef)
-        .toArray((x) -> new StdDevMetaLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  StdDevMetaLayer[][] addRefs(@Nullable StdDevMetaLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(StdDevMetaLayer::addRefs)
-        .toArray((x) -> new StdDevMetaLayer[x][]);
   }
 
   public @SuppressWarnings("unused")

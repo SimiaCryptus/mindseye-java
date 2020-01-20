@@ -29,7 +29,6 @@ import com.simiacryptus.ref.wrappers.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -102,7 +101,7 @@ public class ImgTileSelectLayer extends LayerBase {
       } else {
         value = inputData.get(x, y, z);
       }
-      RefUtil.freeRef(outputData.set(c, value));
+      outputData.set(c, value);
     }, outputData, inputData));
   }
 
@@ -133,13 +132,9 @@ public class ImgTileSelectLayer extends LayerBase {
         Result temp_14_0005 = tileSelectLayer.eval(canvas.addRef());
         assert temp_14_0005 != null;
         TensorList temp_14_0006 = temp_14_0005.getData();
-        Tensor temp_14_0001 = temp_14_0006.get(0);
-        temp_14_0006.freeRef();
         temp_14_0005.freeRef();
-        if (null != tiles[index++])
-          tiles[index++].freeRef();
-        tiles[index++] = temp_14_0001.addRef();
-        temp_14_0001.freeRef();
+        RefUtil.set((tiles), index++, temp_14_0006.get(0));
+        temp_14_0006.freeRef();
         tileSelectLayer.freeRef();
       }
     }
@@ -164,35 +159,12 @@ public class ImgTileSelectLayer extends LayerBase {
       for (int col = 0; col < cols; col++) {
         int positionX = col * strideX + offsetX;
         int positionY = row * strideY + offsetY;
-        ImgTileSelectLayer tileSelectLayer = new ImgTileSelectLayer(width, height, positionX, positionY,
-            offsetX < 0 || offsetY < 0);
-        ImgTileSelectLayer temp_14_0002 = tileSelectLayer.addRef();
-        if (null != tiles[index++])
-          tiles[index++].freeRef();
-        tiles[index++] = temp_14_0002.addRef();
-        temp_14_0002.freeRef();
-        tileSelectLayer.freeRef();
+        RefUtil.set((tiles), index++,
+            new ImgTileSelectLayer(width, height, positionX, positionY,
+                offsetX < 0 || offsetY < 0));
       }
     }
     return tiles;
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  ImgTileSelectLayer[] addRefs(@Nullable ImgTileSelectLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(ImgTileSelectLayer::addRef)
-        .toArray((x) -> new ImgTileSelectLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  ImgTileSelectLayer[][] addRefs(@Nullable ImgTileSelectLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(ImgTileSelectLayer::addRefs)
-        .toArray((x) -> new ImgTileSelectLayer[x][]);
   }
 
   @Nonnull
@@ -206,59 +178,60 @@ public class ImgTileSelectLayer extends LayerBase {
     @Nonnull final int[] dimOut = getViewDimensions(inputDims, new int[]{sizeX, sizeY, inputDims[2]},
         new int[]{positionX, positionY, 0});
     try {
-      try {
-        return new Result(new TensorArray(RefIntStream.range(0, batch.length())
-            .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-              @Nonnull final Tensor outputData = new Tensor(dimOut);
-              Tensor inputData = batch.get(dataIndex);
-              copy(inputData.addRef(), outputData.addRef(),
-                  positionX, positionY, toroidal);
-              inputData.freeRef();
-              return outputData;
-            }, batch.addRef())).toArray(i -> new Tensor[i])), new Result.Accumulator() {
-          {
-          }
+      Result.Accumulator accumulator = new Result.Accumulator() {
+        {
+        }
 
-          @Override
-          public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList error) {
-            if (input.isAlive()) {
-              @Nonnull
-              TensorArray tensorArray = new TensorArray(RefIntStream.range(0, error.length())
-                  .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-                    @Nullable final Tensor err = error.get(dataIndex);
-                    @Nonnull final Tensor passback = new Tensor(inputDims);
-                    copy(err.addRef(), passback.addRef(), -positionX,
-                        -positionY, toroidal);
-                    err.freeRef();
-                    return passback;
-                  }, error.addRef())).toArray(i -> new Tensor[i]));
-              input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
-            }
-            error.freeRef();
-            if (null != buffer)
-              buffer.freeRef();
+        @Override
+        public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList error) {
+          if (input.isAlive()) {
+            @Nonnull
+            TensorArray tensorArray = new TensorArray(RefIntStream.range(0, error.length())
+                .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+                  @Nullable final Tensor err = error.get(dataIndex);
+                  @Nonnull final Tensor passback = new Tensor(inputDims);
+                  copy(err.addRef(), passback.addRef(), -positionX,
+                      -positionY, toroidal);
+                  err.freeRef();
+                  return passback;
+                }, error.addRef())).toArray(i -> new Tensor[i]));
+            input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
           }
+          error.freeRef();
+          if (null != buffer)
+            buffer.freeRef();
+        }
 
-          public @SuppressWarnings("unused")
-          void _free() {
-          }
-        }) {
+        public @SuppressWarnings("unused")
+        void _free() {
+        }
+      };
+      TensorArray data = new TensorArray(RefIntStream.range(0, batch.length())
+          .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+            @Nonnull final Tensor outputData = new Tensor(dimOut);
+            Tensor inputData = batch.get(dataIndex);
+            copy(inputData.addRef(), outputData.addRef(),
+                positionX, positionY, toroidal);
+            inputData.freeRef();
+            return outputData;
+          }, batch.addRef())).toArray(i -> new Tensor[i]));
+      return new Result(data, accumulator) {
+        {
+          input.addRef();
+        }
+        @Override
+        public boolean isAlive() {
+          return input.isAlive() || !isFrozen();
+        }
 
-          {
-          }
-
-          @Override
-          public boolean isAlive() {
-            return input.isAlive() || !isFrozen();
-          }
-
-          public void _free() {
-          }
-        };
-      } finally {
-        batch.freeRef();
-      }
+        @Override
+        public void _free() {
+          input.freeRef();
+          super._free();
+        }
+      };
     } finally {
+      batch.freeRef();
       input.freeRef();
     }
   }

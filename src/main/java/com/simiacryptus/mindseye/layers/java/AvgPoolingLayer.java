@@ -70,24 +70,6 @@ public class AvgPoolingLayer extends LayerBase {
     return new AvgPoolingLayer(json, JsonUtil.getIntArray(json.getAsJsonArray("heapCopy")));
   }
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  AvgPoolingLayer[] addRefs(@Nullable AvgPoolingLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(AvgPoolingLayer::addRef)
-        .toArray((x) -> new AvgPoolingLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  AvgPoolingLayer[][] addRefs(@Nullable AvgPoolingLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(AvgPoolingLayer::addRefs)
-        .toArray((x) -> new AvgPoolingLayer[x][]);
-  }
-
   private static synchronized RefMap<Coordinate, RefList<int[]>> getCoordMap(final int[] kernelDims,
                                                                              final int[] outDims) {
     try {
@@ -132,72 +114,67 @@ public class AvgPoolingLayer extends LayerBase {
         .toArray(i -> new Tensor[i]);
     data.freeRef();
     try {
-      try {
-        try {
-          return new Result(new TensorArray(Tensor.addRefs(outputValues)), new Result.Accumulator() {
-            {
-              Result.addRefs(inObj);
-              coordMap.addRef();
-            }
-
-            @Override
-            public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
-              if (inObj[0].isAlive()) {
-                final Tensor[] passback = RefIntStream.range(0, delta.length())
-                    .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-                      @Nullable
-                      Tensor tensor = delta.get(dataIndex);
-                      @Nonnull final Tensor backSignal = new Tensor(inputDims);
-                      entries.forEach(outputMapping -> {
-                        final double outputValue = tensor.get(outputMapping.getKey());
-                        RefList<int[]> outputMappingValue = outputMapping.getValue();
-                        for (@Nonnull final int[] inputCoord : outputMappingValue) {
-                          backSignal.add(inputCoord, outputValue / kernelSize);
-                        }
-                        outputMappingValue.freeRef();
-                      });
-                      tensor.freeRef();
-                      return backSignal;
-                    }, delta.addRef(), coordMap.addRef()))
-                    .toArray(i -> new Tensor[i]);
-                @Nonnull
-                TensorArray tensorArray = new TensorArray(Tensor.addRefs(passback));
-                ReferenceCounting.freeRefs(passback);
-                inObj[0].accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
-              }
-              delta.freeRef();
-              if (null != buffer)
-                buffer.freeRef();
-            }
-
-            public @SuppressWarnings("unused")
-            void _free() {
-              ReferenceCounting.freeRefs(inObj);
-              RefUtil.freeRef(coordMap);
-              entries.freeRef();
-            }
-          }) {
-
-            {
-              Result.addRefs(inObj);
-            }
-
-            @Override
-            public boolean isAlive() {
-              return inObj[0].isAlive();
-            }
-
-            public void _free() {
-              ReferenceCounting.freeRefs(inObj);
-            }
-          };
-        } finally {
-          ReferenceCounting.freeRefs(inObj);
+      return new Result(new TensorArray(RefUtil.addRefs(outputValues)), new Result.Accumulator() {
+        {
+          RefUtil.addRefs(inObj);
+          coordMap.addRef();
+          entries.addRef();
         }
-      } finally {
-        ReferenceCounting.freeRefs(outputValues);
-      }
+
+        @Override
+        public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
+          if (inObj[0].isAlive()) {
+            final Tensor[] passback = RefIntStream.range(0, delta.length())
+                .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+                  @Nullable
+                  Tensor tensor = delta.get(dataIndex);
+                  @Nonnull final Tensor backSignal = new Tensor(inputDims);
+                  entries.forEach(outputMapping -> {
+                    final double outputValue = tensor.get(outputMapping.getKey());
+                    RefList<int[]> outputMappingValue = outputMapping.getValue();
+                    outputMappingValue.forEach(inputCoord -> backSignal.add(inputCoord, outputValue / kernelSize));
+                    outputMappingValue.freeRef();
+                  });
+                  tensor.freeRef();
+                  return backSignal;
+                }, delta.addRef(), coordMap.addRef()))
+                .toArray(i -> new Tensor[i]);
+            @Nonnull
+            TensorArray tensorArray = new TensorArray(RefUtil.addRefs(passback));
+            ReferenceCounting.freeRefs(passback);
+            inObj[0].accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
+          }
+          delta.freeRef();
+          if (null != buffer)
+            buffer.freeRef();
+        }
+
+        public @SuppressWarnings("unused")
+        void _free() {
+          ReferenceCounting.freeRefs(inObj);
+          RefUtil.freeRef(coordMap);
+          entries.freeRef();
+        }
+      }) {
+
+        {
+          RefUtil.addRefs(inObj);
+        }
+
+        @Override
+        public boolean isAlive() {
+          return inObj[0].isAlive();
+        }
+
+        public void _free() {
+          ReferenceCounting.freeRefs(inObj);
+          super._free();
+        }
+      };
     } finally {
+      entries.freeRef();
+      ReferenceCounting.freeRefs(inObj);
+      ReferenceCounting.freeRefs(outputValues);
       coordMap.freeRef();
     }
   }

@@ -23,32 +23,12 @@ import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.MetaLayerTestBase;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Random;
 
 public abstract class SumMetaLayerTest extends MetaLayerTestBase {
   public SumMetaLayerTest() {
     super();
     validateBatchExecution = false;
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  SumMetaLayerTest[] addRefs(@Nullable SumMetaLayerTest[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(SumMetaLayerTest::addRef)
-        .toArray((x) -> new SumMetaLayerTest[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  SumMetaLayerTest[][] addRefs(@Nullable SumMetaLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(SumMetaLayerTest::addRefs)
-        .toArray((x) -> new SumMetaLayerTest[x][]);
   }
 
   @Nonnull
@@ -61,7 +41,8 @@ public abstract class SumMetaLayerTest extends MetaLayerTestBase {
   @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
     SumMetaLayer temp_73_0002 = new SumMetaLayer();
-    SumMetaLayer temp_73_0001 = temp_73_0002.setMinBatches(0);
+    temp_73_0002.setMinBatches(0);
+    SumMetaLayer temp_73_0001 = temp_73_0002.addRef();
     temp_73_0002.freeRef();
     return temp_73_0001;
   }
@@ -90,14 +71,6 @@ public abstract class SumMetaLayerTest extends MetaLayerTestBase {
   }
 
   public static class Basic extends SumMetaLayerTest {
-
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Basic[] addRefs(@Nullable Basic[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
-    }
 
     public @SuppressWarnings("unused")
     void _free() {

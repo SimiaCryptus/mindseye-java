@@ -158,7 +158,6 @@ public class ImgTileAssemblyLayer extends LayerBase {
       }
       outputData.set(x, y, z, inputValue);
     }, outputData, inputData));
-
   }
 
   @Nonnull
@@ -167,31 +166,13 @@ public class ImgTileAssemblyLayer extends LayerBase {
     return new ImgTileAssemblyLayer(json);
   }
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  ImgTileAssemblyLayer[] addRefs(@Nullable ImgTileAssemblyLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(ImgTileAssemblyLayer::addRef)
-        .toArray((x) -> new ImgTileAssemblyLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  ImgTileAssemblyLayer[][] addRefs(@Nullable ImgTileAssemblyLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(ImgTileAssemblyLayer::addRefs)
-        .toArray((x) -> new ImgTileAssemblyLayer[x][]);
-  }
-
   @Nonnull
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     TensorList temp_63_0002 = inObj[0].getData();
     assert 3 == temp_63_0002.getDimensions().length;
     temp_63_0002.freeRef();
-    int[] outputDims = getOutputDims(Result.addRefs(inObj));
+    int[] outputDims = getOutputDims(RefUtil.addRefs(inObj));
     try {
       TensorList temp_63_0004 = inObj[0].getData();
       Result temp_63_0003 = new Result(new TensorArray(RefIntStream.range(0, temp_63_0004.length()).parallel()
@@ -223,9 +204,9 @@ public class ImgTileAssemblyLayer extends LayerBase {
             }
 
             return outputData;
-          }, Result.addRefs(inObj))).toArray(i -> new Tensor[i])), new Result.Accumulator() {
+          }, RefUtil.addRefs(inObj))).toArray(i -> new Tensor[i])), new Result.Accumulator() {
         {
-          Result.addRefs(inObj);
+          RefUtil.addRefs(inObj);
         }
 
         @Override
@@ -276,7 +257,7 @@ public class ImgTileAssemblyLayer extends LayerBase {
       }) {
 
         {
-          Result.addRefs(inObj);
+          RefUtil.addRefs(inObj);
         }
 
         @Override
@@ -286,6 +267,7 @@ public class ImgTileAssemblyLayer extends LayerBase {
 
         public void _free() {
           ReferenceCounting.freeRefs(inObj);
+          super._free();
         }
       };
       temp_63_0004.freeRef();

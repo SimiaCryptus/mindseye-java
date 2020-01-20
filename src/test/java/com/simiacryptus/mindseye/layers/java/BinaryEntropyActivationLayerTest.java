@@ -20,6 +20,7 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
+import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.RefDoubleStream;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 
@@ -30,26 +31,6 @@ import java.util.Arrays;
 public abstract class BinaryEntropyActivationLayerTest extends ActivationLayerTestBase {
   public BinaryEntropyActivationLayerTest() {
     super(new BinaryEntropyActivationLayer());
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  BinaryEntropyActivationLayerTest[] addRefs(
-      @Nullable BinaryEntropyActivationLayerTest[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(BinaryEntropyActivationLayerTest::addRef)
-        .toArray((x) -> new BinaryEntropyActivationLayerTest[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  BinaryEntropyActivationLayerTest[][] addRefs(
-      @Nullable BinaryEntropyActivationLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(BinaryEntropyActivationLayerTest::addRefs)
-        .toArray((x) -> new BinaryEntropyActivationLayerTest[x][]);
   }
 
   @Override

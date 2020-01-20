@@ -57,24 +57,6 @@ public class MaxImageBandLayer extends LayerBase {
     return new MaxImageBandLayer(json, JsonUtil.getIntArray(json.getAsJsonArray("heapCopy")));
   }
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  MaxImageBandLayer[] addRefs(@Nullable MaxImageBandLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(MaxImageBandLayer::addRef)
-        .toArray((x) -> new MaxImageBandLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  MaxImageBandLayer[][] addRefs(@Nullable MaxImageBandLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(MaxImageBandLayer::addRefs)
-        .toArray((x) -> new MaxImageBandLayer[x][]);
-  }
-
   @Nonnull
   @Override
   public Result eval(@Nonnull final Result... inObj) {
@@ -98,75 +80,74 @@ public class MaxImageBandLayer extends LayerBase {
     }).toArray(i -> new Coordinate[i][]);
 
     try {
-      try {
-        return new Result(new TensorArray(RefIntStream.range(0, inputData.length())
-            .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-              Tensor tensor = inputData.get(dataIndex);
-              final RefDoubleStream doubleStream = RefIntStream.range(0, inputDims[2])
-                  .mapToDouble(RefUtil.wrapInterface((IntToDoubleFunction) band -> {
-                    final int[] maxCoord = maxCoords[dataIndex][band].getCoords();
-                    return tensor.get(maxCoord[0], maxCoord[1], band);
-                  }, tensor.addRef()));
-              tensor.freeRef();
-              Tensor temp_31_0005 = new Tensor(1, 1, inputDims[2]);
-              Tensor temp_31_0004 = temp_31_0005.set(Tensor.getDoubles(doubleStream, inputDims[2]));
-              temp_31_0005.freeRef();
-              return temp_31_0004;
-            }, inputData.addRef())).toArray(i -> new Tensor[i])), new Result.Accumulator() {
-          {
-            Result.addRefs(inObj);
-            inputData.addRef();
-          }
+      return new Result(new TensorArray(RefIntStream.range(0, inputData.length())
+          .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+            Tensor tensor = inputData.get(dataIndex);
+            final RefDoubleStream doubleStream = RefIntStream.range(0, inputDims[2])
+                .mapToDouble(RefUtil.wrapInterface((IntToDoubleFunction) band -> {
+                  final int[] maxCoord = maxCoords[dataIndex][band].getCoords();
+                  return tensor.get(maxCoord[0], maxCoord[1], band);
+                }, tensor.addRef()));
+            tensor.freeRef();
+            Tensor temp_31_0005 = new Tensor(1, 1, inputDims[2]);
+            temp_31_0005.set(Tensor.getDoubles(doubleStream, inputDims[2]));
+            Tensor temp_31_0004 = temp_31_0005.addRef();
+            temp_31_0005.freeRef();
+            return temp_31_0004;
+          }, inputData.addRef())).toArray(i -> new Tensor[i])), new Result.Accumulator() {
+        {
+          RefUtil.addRefs(inObj);
+          inputData.addRef();
+        }
 
-          @Override
-          public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
-            if (inObj[0].isAlive()) {
-              @Nonnull
-              TensorArray tensorArray = new TensorArray(RefIntStream.range(0, delta.length()).parallel()
-                  .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-                    Tensor deltaTensor = delta.get(dataIndex);
-                    @Nonnull final Tensor passback = new Tensor(inputData.getDimensions());
-                    RefIntStream.range(0, inputDims[2]).forEach(RefUtil.wrapInterface(b -> {
-                          final int[] maxCoord = maxCoords[dataIndex][b].getCoords();
-                          passback.set(new int[]{maxCoord[0], maxCoord[1], b}, deltaTensor.get(0, 0, b));
-                        }, passback.addRef(),
-                        deltaTensor.addRef()));
-                    deltaTensor.freeRef();
-                    return passback;
-                  }, delta.addRef(), inputData.addRef()))
-                  .toArray(i -> new Tensor[i]));
-              inObj[0].accumulate(buffer == null ? null : buffer.addRef(),
-                  tensorArray);
-            }
-            delta.freeRef();
-            if (null != buffer)
-              buffer.freeRef();
+        @Override
+        public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
+          if (inObj[0].isAlive()) {
+            @Nonnull
+            TensorArray tensorArray = new TensorArray(RefIntStream.range(0, delta.length()).parallel()
+                .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+                  Tensor deltaTensor = delta.get(dataIndex);
+                  @Nonnull final Tensor passback = new Tensor(inputData.getDimensions());
+                  RefIntStream.range(0, inputDims[2]).forEach(RefUtil.wrapInterface(b -> {
+                        final int[] maxCoord = maxCoords[dataIndex][b].getCoords();
+                        passback.set(new int[]{maxCoord[0], maxCoord[1], b}, deltaTensor.get(0, 0, b));
+                      }, passback.addRef(),
+                      deltaTensor.addRef()));
+                  deltaTensor.freeRef();
+                  return passback;
+                }, delta.addRef(), inputData.addRef()))
+                .toArray(i -> new Tensor[i]));
+            inObj[0].accumulate(buffer == null ? null : buffer.addRef(),
+                tensorArray);
           }
+          delta.freeRef();
+          if (null != buffer)
+            buffer.freeRef();
+        }
 
-          public @SuppressWarnings("unused")
-          void _free() {
-            ReferenceCounting.freeRefs(inObj);
-            inputData.freeRef();
-          }
-        }) {
+        public @SuppressWarnings("unused")
+        void _free() {
+          ReferenceCounting.freeRefs(inObj);
+          inputData.freeRef();
+        }
+      }) {
 
-          {
-            Result.addRefs(inObj);
-          }
+        {
+          RefUtil.addRefs(inObj);
+        }
 
-          @Override
-          public boolean isAlive() {
-            return inObj[0].isAlive();
-          }
+        @Override
+        public boolean isAlive() {
+          return inObj[0].isAlive();
+        }
 
-          public void _free() {
-            ReferenceCounting.freeRefs(inObj);
-          }
-        };
-      } finally {
-        ReferenceCounting.freeRefs(inObj);
-      }
+        public void _free() {
+          ReferenceCounting.freeRefs(inObj);
+          super._free();
+        }
+      };
     } finally {
+      ReferenceCounting.freeRefs(inObj);
       inputData.freeRef();
     }
   }
@@ -229,6 +210,5 @@ public class MaxImageBandLayer extends LayerBase {
       result = prime * result + RefArrays.hashCode(kernelDims);
       return result;
     }
-
   }
 }

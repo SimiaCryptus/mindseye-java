@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.IntFunction;
@@ -50,8 +49,9 @@ public class HyperbolicActivationLayer extends LayerBase {
     Tensor temp_16_0001 = new Tensor(2);
     weights = temp_16_0001.addRef();
     temp_16_0001.freeRef();
-    RefUtil.freeRef(weights.set(0, 1.));
-    RefUtil.freeRef(weights.set(1, 1.));
+    weights.set(0, 1.);
+
+    weights.set(1, 1.);
   }
 
   protected HyperbolicActivationLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> resources) {
@@ -73,36 +73,16 @@ public class HyperbolicActivationLayer extends LayerBase {
     return 1 / weights.get(0);
   }
 
-  @Nonnull
-  public HyperbolicActivationLayer setScale(final double scale) {
+  public void setScale(double scale) {
     assert weights != null;
-    RefUtil.freeRef(weights.set(0, 1 / scale));
-    RefUtil.freeRef(weights.set(1, 1 / scale));
-    return this.addRef();
+    weights.set(0, 1 / scale);
+    weights.set(1, 1 / scale);
   }
 
   @Nonnull
   @SuppressWarnings("unused")
   public static HyperbolicActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new HyperbolicActivationLayer(json, rs);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  HyperbolicActivationLayer[] addRefs(@Nullable HyperbolicActivationLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(HyperbolicActivationLayer::addRef)
-        .toArray((x) -> new HyperbolicActivationLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  HyperbolicActivationLayer[][] addRefs(@Nullable HyperbolicActivationLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(HyperbolicActivationLayer::addRefs)
-        .toArray((x) -> new HyperbolicActivationLayer[x][]);
   }
 
   @Nonnull
@@ -113,121 +93,117 @@ public class HyperbolicActivationLayer extends LayerBase {
     final int itemCnt = indata.length();
     final HyperbolicActivationLayer hyperbolicActivationLayer = HyperbolicActivationLayer.this.addRef();
     try {
-      try {
-        try {
-          return new Result(new TensorArray(RefIntStream.range(0, itemCnt)
-              .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-                @Nullable final Tensor input = indata.get(dataIndex);
-                Tensor temp_16_0005 = input.map(v -> {
-                  final int sign = v < 0 ? negativeMode : 1;
-                  assert weights != null;
-                  final double a = Math.max(0, weights.get(v < 0 ? 1 : 0));
-                  return sign * (Math.sqrt(Math.pow(a * v, 2) + 1) - a) / a;
-                });
-                input.freeRef();
-                return temp_16_0005;
-              }, indata.addRef())).toArray(i -> new Tensor[i])), new Result.Accumulator() {
-            {
-              Result.addRefs(inObj);
-              hyperbolicActivationLayer.addRef();
-              indata.addRef();
+      TensorArray data = new TensorArray(RefIntStream.range(0, itemCnt)
+          .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+            @Nullable final Tensor input = indata.get(dataIndex);
+            Tensor temp_16_0005 = input.map(v -> {
+              final int sign = v < 0 ? negativeMode : 1;
               assert weights != null;
-              weights.addRef();
-            }
-
-            @Override
-            public void accept(@Nonnull DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
-              if (!HyperbolicActivationLayer.this.isFrozen()) {
-                RefIntStream.range(0, delta.length()).forEach(RefUtil.wrapInterface(dataIndex -> {
-                      @Nullable
-                      Tensor deltaI = delta.get(dataIndex);
-                      @Nullable
-                      Tensor inputI = indata.get(dataIndex);
-                      @Nullable final double[] deltaData = deltaI.getData();
-                      deltaI.freeRef();
-                      @Nullable final double[] inputData = inputI.getData();
-                      inputI.freeRef();
-                      assert weights != null;
-                      @Nonnull final Tensor weightDelta = new Tensor(weights.getDimensions());
-                      for (int i = 0; i < deltaData.length; i++) {
-                        final double d = deltaData[i];
-                        final double x = inputData[i];
-                        final int sign = x < 0 ? negativeMode : 1;
-                        final double a = Math.max(0, weights.getData()[x < 0 ? 1 : 0]);
-                        weightDelta.add(x < 0 ? 1 : 0, -sign * d / (a * a * Math.sqrt(1 + Math.pow(a * x, 2))));
-                      }
-                      Delta<UUID> temp_16_0007 = buffer.get(hyperbolicActivationLayer.getId(), weights.getData());
-                      assert temp_16_0007 != null;
-                      RefUtil.freeRef(temp_16_0007.addInPlace(weightDelta.getData()));
-                      temp_16_0007.freeRef();
-                      weightDelta.freeRef();
-                    }, delta.addRef(),
-                    hyperbolicActivationLayer.addRef(),
-                    buffer.addRef(), indata.addRef()));
-              }
-              if (inObj[0].isAlive()) {
-                @Nonnull
-                TensorArray tensorArray = new TensorArray(RefIntStream.range(0, delta.length())
-                    .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-                      @Nullable
-                      Tensor inputTensor = indata.get(dataIndex);
-                      Tensor deltaTensor = delta.get(dataIndex);
-                      @Nullable final double[] deltaData = deltaTensor.getData();
-                      deltaTensor.freeRef();
-                      @Nonnull final int[] dims = indata.getDimensions();
-                      @Nonnull final Tensor passback = new Tensor(dims);
-                      for (int i = 0; i < passback.length(); i++) {
-                        final double x = inputTensor.getData()[i];
-                        final double d = deltaData[i];
-                        final int sign = x < 0 ? negativeMode : 1;
-                        assert weights != null;
-                        final double a = Math.max(0, weights.getData()[x < 0 ? 1 : 0]);
-                        RefUtil.freeRef(passback.set(i, sign * d * a * x / Math.sqrt(1 + a * x * a * x)));
-                      }
-                      inputTensor.freeRef();
-                      return passback;
-                    }, delta.addRef(), indata.addRef()))
-                    .toArray(i -> new Tensor[i]));
-                inObj[0].accumulate(buffer.addRef(),
-                    tensorArray);
-              }
-              delta.freeRef();
-              buffer.freeRef();
-            }
-
-            public @SuppressWarnings("unused")
-            void _free() {
-              ReferenceCounting.freeRefs(inObj);
-              hyperbolicActivationLayer.freeRef();
-              indata.freeRef();
-              assert weights != null;
-              weights.freeRef();
-            }
-          }) {
-
-            {
-              Result.addRefs(inObj);
-            }
-
-            @Override
-            public boolean isAlive() {
-              return inObj[0].isAlive() || !isFrozen();
-            }
-
-            public void _free() {
-              ReferenceCounting.freeRefs(inObj);
-            }
-          };
-        } finally {
-          ReferenceCounting.freeRefs(inObj);
+              final double a = Math.max(0, weights.get(v < 0 ? 1 : 0));
+              return sign * (Math.sqrt(Math.pow(a * v, 2) + 1) - a) / a;
+            });
+            input.freeRef();
+            return temp_16_0005;
+          }, indata.addRef())).toArray(i -> new Tensor[i]));
+      Result.Accumulator accumulator = new Result.Accumulator() {
+        {
+          RefUtil.addRefs(inObj);
+          hyperbolicActivationLayer.addRef();
+          indata.addRef();
+          assert weights != null;
+          weights.addRef();
         }
-      } finally {
-        hyperbolicActivationLayer.freeRef();
-      }
+
+        @Override
+        public void accept(@Nonnull DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
+          if (!HyperbolicActivationLayer.this.isFrozen()) {
+            RefIntStream.range(0, delta.length()).forEach(RefUtil.wrapInterface(dataIndex -> {
+                  @Nullable
+                  Tensor deltaI = delta.get(dataIndex);
+                  @Nullable
+                  Tensor inputI = indata.get(dataIndex);
+                  @Nullable final double[] deltaData = deltaI.getData();
+                  deltaI.freeRef();
+                  @Nullable final double[] inputData = inputI.getData();
+                  inputI.freeRef();
+                  assert weights != null;
+                  @Nonnull final Tensor weightDelta = new Tensor(weights.getDimensions());
+                  for (int i = 0; i < deltaData.length; i++) {
+                    final double d = deltaData[i];
+                    final double x = inputData[i];
+                    final int sign = x < 0 ? negativeMode : 1;
+                    final double a = Math.max(0, weights.getData()[x < 0 ? 1 : 0]);
+                    weightDelta.add(x < 0 ? 1 : 0, -sign * d / (a * a * Math.sqrt(1 + Math.pow(a * x, 2))));
+                  }
+                  Delta<UUID> temp_16_0007 = buffer.get(hyperbolicActivationLayer.getId(), weights.getData());
+                  assert temp_16_0007 != null;
+                  temp_16_0007.addInPlace(weightDelta.getData());
+                  temp_16_0007.freeRef();
+                  weightDelta.freeRef();
+                }, delta.addRef(),
+                hyperbolicActivationLayer.addRef(),
+                buffer.addRef(), indata.addRef()));
+          }
+          if (inObj[0].isAlive()) {
+            @Nonnull
+            TensorArray tensorArray = new TensorArray(RefIntStream.range(0, delta.length())
+                .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+                  @Nullable
+                  Tensor inputTensor = indata.get(dataIndex);
+                  Tensor deltaTensor = delta.get(dataIndex);
+                  @Nullable final double[] deltaData = deltaTensor.getData();
+                  deltaTensor.freeRef();
+                  @Nonnull final int[] dims = indata.getDimensions();
+                  @Nonnull final Tensor passback = new Tensor(dims);
+                  for (int i = 0; i < passback.length(); i++) {
+                    final double x = inputTensor.getData()[i];
+                    final double d = deltaData[i];
+                    final int sign = x < 0 ? negativeMode : 1;
+                    assert weights != null;
+                    final double a = Math.max(0, weights.getData()[x < 0 ? 1 : 0]);
+                    passback.set(i, sign * d * a * x / Math.sqrt(1 + a * x * a * x));
+                  }
+                  inputTensor.freeRef();
+                  return passback;
+                }, delta.addRef(), indata.addRef()))
+                .toArray(i -> new Tensor[i]));
+            inObj[0].accumulate(buffer.addRef(),
+                tensorArray);
+          }
+          delta.freeRef();
+          buffer.freeRef();
+        }
+
+        public @SuppressWarnings("unused")
+        void _free() {
+          ReferenceCounting.freeRefs(inObj);
+          hyperbolicActivationLayer.freeRef();
+          indata.freeRef();
+          assert weights != null;
+          weights.freeRef();
+        }
+      };
+      return new Result(data, accumulator) {
+
+        {
+          RefUtil.addRefs(inObj);
+        }
+
+        @Override
+        public boolean isAlive() {
+          return inObj[0].isAlive() || !isFrozen();
+        }
+
+        public void _free() {
+          ReferenceCounting.freeRefs(inObj);
+          super._free();
+        }
+      };
     } finally {
+      ReferenceCounting.freeRefs(inObj);
+      hyperbolicActivationLayer.freeRef();
       indata.freeRef();
     }
-
   }
 
   @Nonnull
@@ -241,21 +217,18 @@ public class HyperbolicActivationLayer extends LayerBase {
   }
 
   @Nonnull
-  public HyperbolicActivationLayer setModeAsymetric() {
+  public void setModeAsymetric() {
     negativeMode = 0;
-    return this.addRef();
   }
 
   @Nonnull
-  public HyperbolicActivationLayer setModeEven() {
+  public void setModeEven() {
     negativeMode = 1;
-    return this.addRef();
   }
 
   @Nonnull
-  public HyperbolicActivationLayer setModeOdd() {
+  public void setModeOdd() {
     negativeMode = -1;
-    return this.addRef();
   }
 
   @Nonnull

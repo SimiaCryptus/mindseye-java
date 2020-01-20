@@ -26,6 +26,7 @@ import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrayList;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefList;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -120,24 +121,6 @@ public class ImgReshapeLayer extends LayerBase {
     return new ImgReshapeLayer(json);
   }
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  ImgReshapeLayer[] addRefs(@Nullable ImgReshapeLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(ImgReshapeLayer::addRef)
-        .toArray((x) -> new ImgReshapeLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  ImgReshapeLayer[][] addRefs(@Nullable ImgReshapeLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(ImgReshapeLayer::addRefs)
-        .toArray((x) -> new ImgReshapeLayer[x][]);
-  }
-
   @Nonnull
   @Override
   public Result eval(@Nonnull final Result... inObj) {
@@ -151,14 +134,7 @@ public class ImgReshapeLayer extends LayerBase {
     assert expand || 0 == inputDims[1] % kernelSizeY : (inputDims[1] + " % " + kernelSizeY);
     assert !expand || 0 == inputDims[2] % (kernelSizeX * kernelSizeY);
     //assert input.getData().stream().flatMapToDouble(x-> Arrays.stream(x.getData())).allMatch(v->Double.isFinite(v));
-    Tensor outputDims;
-    if (expand) {
-      outputDims = new Tensor(inputDims[0] * kernelSizeX, inputDims[1] * kernelSizeY,
-          inputDims[2] / (kernelSizeX * kernelSizeY));
-    } else {
-      outputDims = new Tensor(inputDims[0] / kernelSizeX, inputDims[1] / kernelSizeY,
-          inputDims[2] * kernelSizeX * kernelSizeY);
-    }
+    Tensor outputDims = getOutputDims(inputDims);
     TensorArray data = new TensorArray(RefIntStream.range(0, batch.length()).parallel()
         .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
           Tensor inputData = batch.get(dataIndex);
@@ -167,61 +143,69 @@ public class ImgReshapeLayer extends LayerBase {
               : ImgReshapeLayer.copyCondense(inputData.addRef(), outputDims.copy());
           inputData.freeRef();
           return temp_43_0002;
-        }, outputDims.addRef(), batch.addRef()))
+        }, outputDims, batch.addRef()))
         .toArray(i -> new Tensor[i]));
-    outputDims.freeRef();
     batch.freeRef();
     try {
-      try {
-        return new Result(data, new Result.Accumulator() {
-          {
-          }
+      Result.Accumulator accumulator = new Result.Accumulator() {
 
-          @Override
-          public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList error) {
-            //assert error.stream().flatMapToDouble(x-> Arrays.stream(x.getData())).allMatch(v->Double.isFinite(v));
-            if (input.isAlive()) {
-              @Nonnull
-              TensorArray tensorArray = new TensorArray(RefIntStream.range(0, error.length()).parallel()
-                  .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-                    @Nonnull final Tensor passback = new Tensor(inputDims);
-                    @Nullable final Tensor err = error.get(dataIndex);
-                    Tensor temp_43_0004 = expand
-                        ? ImgReshapeLayer.copyCondense(err.addRef(),
-                        passback)
-                        : ImgReshapeLayer.copyExpand(err.addRef(),
-                        passback.addRef());
-                    err.freeRef();
-                    return temp_43_0004;
-                  }, error.addRef())).toArray(i -> new Tensor[i]));
-              input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
-            }
-            error.freeRef();
-            if (null != buffer)
-              buffer.freeRef();
+        @Override
+        public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList error) {
+          //assert error.stream().flatMapToDouble(x-> Arrays.stream(x.getData())).allMatch(v->Double.isFinite(v));
+          if (input.isAlive()) {
+            @Nonnull
+            TensorArray tensorArray = new TensorArray(RefIntStream.range(0, error.length()).parallel()
+                .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+                  @Nonnull final Tensor passback = new Tensor(inputDims);
+                  @Nullable final Tensor err = error.get(dataIndex);
+                  Tensor temp_43_0004 = expand
+                      ? ImgReshapeLayer.copyCondense(err.addRef(),
+                      passback)
+                      : ImgReshapeLayer.copyExpand(err.addRef(),
+                      passback.addRef());
+                  err.freeRef();
+                  return temp_43_0004;
+                }, error.addRef())).toArray(i -> new Tensor[i]));
+            input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
           }
+          error.freeRef();
+          if (null != buffer)
+            buffer.freeRef();
+        }
 
-          public @SuppressWarnings("unused")
-          void _free() {
-          }
-        }) {
+        public @SuppressWarnings("unused")
+        void _free() {
+        }
+      };
+      return new Result(data, accumulator) {
+        {
+          input.addRef();
+        }
 
-          {
-          }
+        @Override
+        public boolean isAlive() {
+          return input.isAlive() || !isFrozen();
+        }
 
-          @Override
-          public boolean isAlive() {
-            return input.isAlive() || !isFrozen();
-          }
-
-          public void _free() {
-          }
-        };
-      } finally {
-        data.freeRef();
-      }
+        @Override
+        public void _free() {
+          input.freeRef();
+          super._free();
+        }
+      };
     } finally {
       input.freeRef();
+    }
+  }
+
+  @NotNull
+  public Tensor getOutputDims(int[] inputDims) {
+    if (expand) {
+      return new Tensor(inputDims[0] * kernelSizeX, inputDims[1] * kernelSizeY,
+          inputDims[2] / (kernelSizeX * kernelSizeY));
+    } else {
+      return new Tensor(inputDims[0] / kernelSizeX, inputDims[1] / kernelSizeY,
+          inputDims[2] * kernelSizeX * kernelSizeY);
     }
   }
 

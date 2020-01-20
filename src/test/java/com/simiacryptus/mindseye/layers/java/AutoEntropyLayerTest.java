@@ -21,6 +21,7 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.MetaLayerTestBase;
+import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -32,24 +33,6 @@ public abstract class AutoEntropyLayerTest extends MetaLayerTestBase {
   public AutoEntropyLayerTest() {
     super();
     //validateDifferentials = false;
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  AutoEntropyLayerTest[] addRefs(@Nullable AutoEntropyLayerTest[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(AutoEntropyLayerTest::addRef)
-        .toArray((x) -> new AutoEntropyLayerTest[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  AutoEntropyLayerTest[][] addRefs(@Nullable AutoEntropyLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(AutoEntropyLayerTest::addRefs)
-        .toArray((x) -> new AutoEntropyLayerTest[x][]);
   }
 
   @Nonnull
@@ -82,13 +65,6 @@ public abstract class AutoEntropyLayerTest extends MetaLayerTestBase {
   }
 
   public static class Basic extends AutoEntropyLayerTest {
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Basic[] addRefs(@Nullable Basic[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
-    }
 
     public @SuppressWarnings("unused")
     void _free() {

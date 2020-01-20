@@ -20,6 +20,7 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
+import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -27,24 +28,6 @@ import java.util.Arrays;
 import java.util.Random;
 
 public abstract class AvgPoolingLayerTest extends LayerTestBase {
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  AvgPoolingLayerTest[] addRefs(@Nullable AvgPoolingLayerTest[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(AvgPoolingLayerTest::addRef)
-        .toArray((x) -> new AvgPoolingLayerTest[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  AvgPoolingLayerTest[][] addRefs(@Nullable AvgPoolingLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(AvgPoolingLayerTest::addRefs)
-        .toArray((x) -> new AvgPoolingLayerTest[x][]);
-  }
 
   @Nonnull
   @Override
@@ -77,14 +60,6 @@ public abstract class AvgPoolingLayerTest extends LayerTestBase {
 
   public static class Basic extends AvgPoolingLayerTest {
 
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Basic[] addRefs(@Nullable Basic[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
-    }
-
     public @SuppressWarnings("unused")
     void _free() {
     }
@@ -95,7 +70,6 @@ public abstract class AvgPoolingLayerTest extends LayerTestBase {
     Basic addRef() {
       return (Basic) super.addRef();
     }
-
   }
 
 }

@@ -22,8 +22,6 @@ package com.simiacryptus.mindseye.layers.java;
 import com.simiacryptus.mindseye.lang.Layer;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Random;
 
 public abstract class FullyConnectedReferenceLayerTest extends LayerTestBase {
@@ -38,30 +36,11 @@ public abstract class FullyConnectedReferenceLayerTest extends LayerTestBase {
     this.inputDims = inputDims;
     FullyConnectedReferenceLayer temp_00_0002 = new FullyConnectedReferenceLayer(getSmallDims(new Random())[0],
         outputDims);
-    FullyConnectedReferenceLayer temp_00_0001 = temp_00_0002.set(i -> random());
+    temp_00_0002.set(i -> random());
+    FullyConnectedReferenceLayer temp_00_0001 = temp_00_0002.addRef();
     temp_00_0002.freeRef();
     this.layer = temp_00_0001.addRef();
     temp_00_0001.freeRef();
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  FullyConnectedReferenceLayerTest[] addRefs(
-      @Nullable FullyConnectedReferenceLayerTest[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(FullyConnectedReferenceLayerTest::addRef)
-        .toArray((x) -> new FullyConnectedReferenceLayerTest[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  FullyConnectedReferenceLayerTest[][] addRefs(
-      @Nullable FullyConnectedReferenceLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(FullyConnectedReferenceLayerTest::addRefs)
-        .toArray((x) -> new FullyConnectedReferenceLayerTest[x][]);
   }
 
   @Nonnull
@@ -93,14 +72,6 @@ public abstract class FullyConnectedReferenceLayerTest extends LayerTestBase {
       super(new int[]{2}, new int[]{2});
     }
 
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Basic[] addRefs(@Nullable Basic[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
-    }
-
     public @SuppressWarnings("unused")
     void _free() {
     }
@@ -116,14 +87,6 @@ public abstract class FullyConnectedReferenceLayerTest extends LayerTestBase {
   public static class Image extends FullyConnectedReferenceLayerTest {
     public Image() {
       super(new int[]{3, 3, 3}, new int[]{2, 2, 4});
-    }
-
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Image[] addRefs(@Nullable Image[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Image::addRef).toArray((x) -> new Image[x]);
     }
 
     public @SuppressWarnings("unused")

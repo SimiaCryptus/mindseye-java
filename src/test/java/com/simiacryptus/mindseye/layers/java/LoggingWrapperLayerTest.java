@@ -21,6 +21,7 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.LoggingWrapperLayer;
+import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -31,24 +32,6 @@ public abstract class LoggingWrapperLayerTest extends LayerTestBase {
 
   public LoggingWrapperLayerTest() {
     validateBatchExecution = false;
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  LoggingWrapperLayerTest[] addRefs(@Nullable LoggingWrapperLayerTest[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(LoggingWrapperLayerTest::addRef)
-        .toArray((x) -> new LoggingWrapperLayerTest[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  LoggingWrapperLayerTest[][] addRefs(@Nullable LoggingWrapperLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(LoggingWrapperLayerTest::addRefs)
-        .toArray((x) -> new LoggingWrapperLayerTest[x][]);
   }
 
   @Nonnull
@@ -78,14 +61,6 @@ public abstract class LoggingWrapperLayerTest extends LayerTestBase {
   }
 
   public static class Basic extends LoggingWrapperLayerTest {
-
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Basic[] addRefs(@Nullable Basic[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
-    }
 
     public @SuppressWarnings("unused")
     void _free() {

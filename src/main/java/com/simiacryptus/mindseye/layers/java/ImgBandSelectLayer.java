@@ -62,24 +62,6 @@ public class ImgBandSelectLayer extends LayerBase {
     return new ImgBandSelectLayer(json);
   }
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  ImgBandSelectLayer[] addRefs(@Nullable ImgBandSelectLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(ImgBandSelectLayer::addRef)
-        .toArray((x) -> new ImgBandSelectLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  ImgBandSelectLayer[][] addRefs(@Nullable ImgBandSelectLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(ImgBandSelectLayer::addRefs)
-        .toArray((x) -> new ImgBandSelectLayer[x][]);
-  }
-
   @Nonnull
   @Override
   public Result eval(@Nonnull final Result... inObj) {
@@ -103,53 +85,51 @@ public class ImgBandSelectLayer extends LayerBase {
         .toArray(i -> new Tensor[i]));
     batch.freeRef();
     try {
-      try {
-        return new Result(wrap, new Result.Accumulator() {
-          {
-          }
+      Result.Accumulator accumulator = new Result.Accumulator() {
+        {
+        }
 
-          @Override
-          public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList error) {
-            if (input.isAlive()) {
-              @Nonnull
-              TensorArray tensorArray = new TensorArray(RefIntStream.range(0, error.length()).parallel()
-                  .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-                    @Nonnull final Tensor passback = new Tensor(inputDims);
-                    @Nullable final Tensor err = error.get(dataIndex);
-                    err.coordStream(false).forEach(RefUtil.wrapInterface((Consumer<? super Coordinate>) c -> {
-                      int[] coords = c.getCoords();
-                      passback.set(coords[0], coords[1], bands[coords[2]], err.get(c));
-                    }, passback.addRef(), err.addRef()));
-                    err.freeRef();
-                    return passback;
-                  }, error.addRef())).toArray(i -> new Tensor[i]));
-              input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
-            }
-            error.freeRef();
-            if (null != buffer)
-              buffer.freeRef();
+        @Override
+        public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList error) {
+          if (input.isAlive()) {
+            @Nonnull
+            TensorArray tensorArray = new TensorArray(RefIntStream.range(0, error.length()).parallel()
+                .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+                  @Nonnull final Tensor passback = new Tensor(inputDims);
+                  @Nullable final Tensor err = error.get(dataIndex);
+                  err.coordStream(false).forEach(RefUtil.wrapInterface((Consumer<? super Coordinate>) c -> {
+                    int[] coords = c.getCoords();
+                    passback.set(coords[0], coords[1], bands[coords[2]], err.get(c));
+                  }, passback.addRef(), err.addRef()));
+                  err.freeRef();
+                  return passback;
+                }, error.addRef())).toArray(i -> new Tensor[i]));
+            input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
           }
+          error.freeRef();
+          if (null != buffer)
+            buffer.freeRef();
+        }
 
-          public @SuppressWarnings("unused")
-          void _free() {
-          }
-        }) {
+        public @SuppressWarnings("unused")
+        void _free() {
+        }
+      };
+      return new Result(wrap, accumulator) {
+        {
+          input.addRef();
+        }
+        @Override
+        public boolean isAlive() {
+          return input.isAlive() || !isFrozen();
+        }
 
-          {
-          }
-
-          @Override
-          public boolean isAlive() {
-            return input.isAlive() || !isFrozen();
-          }
-
-          public void _free() {
-
-          }
-        };
-      } finally {
-        wrap.freeRef();
-      }
+        @Override
+        public void _free() {
+          input.freeRef();
+          super._free();
+        }
+      };
     } finally {
       input.freeRef();
     }

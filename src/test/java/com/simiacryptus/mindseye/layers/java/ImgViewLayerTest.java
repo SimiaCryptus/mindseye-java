@@ -22,32 +22,12 @@ package com.simiacryptus.mindseye.layers.java;
 import com.simiacryptus.mindseye.lang.Layer;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Random;
 
 public abstract class ImgViewLayerTest extends LayerTestBase {
 
   public ImgViewLayerTest() {
     validateBatchExecution = false;
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  ImgViewLayerTest[] addRefs(@Nullable ImgViewLayerTest[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(ImgViewLayerTest::addRef)
-        .toArray((x) -> new ImgViewLayerTest[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  ImgViewLayerTest[][] addRefs(@Nullable ImgViewLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(ImgViewLayerTest::addRefs)
-        .toArray((x) -> new ImgViewLayerTest[x][]);
   }
 
   @Nonnull
@@ -69,14 +49,6 @@ public abstract class ImgViewLayerTest extends LayerTestBase {
 
   public static class Basic extends ImgViewLayerTest {
 
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Basic[] addRefs(@Nullable Basic[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
-    }
-
     @Nonnull
     @Override
     public Layer getLayer(final int[][] inputSize, Random random) {
@@ -97,19 +69,12 @@ public abstract class ImgViewLayerTest extends LayerTestBase {
 
   public static class Rotated extends ImgViewLayerTest {
 
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Rotated[] addRefs(@Nullable Rotated[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Rotated::addRef).toArray((x) -> new Rotated[x]);
-    }
-
     @Nonnull
     @Override
     public Layer getLayer(final int[][] inputSize, Random random) {
       ImgViewLayer temp_72_0002 = new ImgViewLayer(3, 2, 2, 3);
-      ImgViewLayer temp_72_0001 = temp_72_0002.setRotationRadians(Math.PI / 2);
+      temp_72_0002.setRotationRadians(Math.PI / 2);
+      ImgViewLayer temp_72_0001 = temp_72_0002.addRef();
       temp_72_0002.freeRef();
       return temp_72_0001;
     }
@@ -128,21 +93,14 @@ public abstract class ImgViewLayerTest extends LayerTestBase {
 
   public static class RotatedChannels extends ImgViewLayerTest {
 
-    @Nullable
-    public static @SuppressWarnings("unused")
-    RotatedChannels[] addRefs(@Nullable RotatedChannels[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(RotatedChannels::addRef)
-          .toArray((x) -> new RotatedChannels[x]);
-    }
-
     @Nonnull
     @Override
     public Layer getLayer(final int[][] inputSize, Random random) {
       ImgViewLayer temp_72_0004 = new ImgViewLayer(3, 2, 2, 3);
-      ImgViewLayer temp_72_0005 = temp_72_0004.setRotationRadians(Math.PI / 2);
-      ImgViewLayer temp_72_0003 = temp_72_0005.setChannelSelector(2, -1);
+      temp_72_0004.setRotationRadians(Math.PI / 2);
+      ImgViewLayer temp_72_0005 = temp_72_0004.addRef();
+      temp_72_0005.setChannelSelector(new int[]{2, -1});
+      ImgViewLayer temp_72_0003 = temp_72_0005.addRef();
       temp_72_0005.freeRef();
       temp_72_0004.freeRef();
       return temp_72_0003;

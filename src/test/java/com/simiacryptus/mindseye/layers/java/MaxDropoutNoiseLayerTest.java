@@ -21,6 +21,7 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
+import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -30,24 +31,6 @@ import java.util.Random;
 public abstract class MaxDropoutNoiseLayerTest extends ActivationLayerTestBase {
   public MaxDropoutNoiseLayerTest() {
     super(new MaxDropoutNoiseLayer(2, 2, 1));
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  MaxDropoutNoiseLayerTest[] addRefs(@Nullable MaxDropoutNoiseLayerTest[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(MaxDropoutNoiseLayerTest::addRef)
-        .toArray((x) -> new MaxDropoutNoiseLayerTest[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  MaxDropoutNoiseLayerTest[][] addRefs(@Nullable MaxDropoutNoiseLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(MaxDropoutNoiseLayerTest::addRefs)
-        .toArray((x) -> new MaxDropoutNoiseLayerTest[x][]);
   }
 
   @Nonnull
@@ -74,14 +57,6 @@ public abstract class MaxDropoutNoiseLayerTest extends ActivationLayerTestBase {
   }
 
   public static class Basic extends MaxDropoutNoiseLayerTest {
-
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Basic[] addRefs(@Nullable Basic[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
-    }
 
     public @SuppressWarnings("unused")
     void _free() {

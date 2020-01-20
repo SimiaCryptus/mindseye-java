@@ -56,24 +56,6 @@ public class BiasMetaLayer extends LayerBase {
   }
 
   @Nullable
-  public static @SuppressWarnings("unused")
-  BiasMetaLayer[] addRefs(@Nullable BiasMetaLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(BiasMetaLayer::addRef)
-        .toArray((x) -> new BiasMetaLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  BiasMetaLayer[][] addRefs(@Nullable BiasMetaLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(BiasMetaLayer::addRefs)
-        .toArray((x) -> new BiasMetaLayer[x][]);
-  }
-
-  @Nullable
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     final Result in0 = inObj[0].addRef();
@@ -98,70 +80,65 @@ public class BiasMetaLayer extends LayerBase {
     data0.freeRef();
     Tensor tensor0 = tensors[0].addRef();
     try {
-      try {
-        try {
-          try {
-            return new Result(new TensorArray(Tensor.addRefs(tensors)), new Result.Accumulator() {
-              {
-              }
-
-              @Override
-              public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList data) {
-                if (in1.isAlive()) {
-                  @Nonnull
-                  TensorArray tensorArray = new TensorArray(RefIntStream.range(0, data.length())
-                      .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) i -> {
-                        if (i == 0)
-                          return tensor0.mapCoords(RefUtil.wrapInterface((c) -> {
-                            return RefIntStream.range(0, itemCnt).mapToDouble(RefUtil.wrapInterface(j -> {
-                              Tensor tensor = data.get(j);
-                              double temp_48_0006 = tensor.get(c);
-                              tensor.freeRef();
-                              return temp_48_0006;
-                            }, data.addRef())).sum();
-                          }, data.addRef()));
-                        else {
-                          return tensor0.mapCoords(v -> 0);
-                        }
-                      }, data.addRef(), tensor0.addRef()))
-                      .toArray(i -> new Tensor[i]));
-                  in1.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
-                }
-                if (in0.isAlive()) {
-                  in0.accumulate(buffer == null ? null : buffer.addRef(), data.addRef());
-                }
-                data.freeRef();
-                if (null != buffer)
-                  buffer.freeRef();
-              }
-
-              public @SuppressWarnings("unused")
-              void _free() {
-              }
-            }) {
-
-              {
-              }
-
-              @Override
-              public boolean isAlive() {
-                return in0.isAlive() || in1.isAlive();
-              }
-
-              public void _free() {
-              }
-
-            };
-          } finally {
-            tensor0.freeRef();
-          }
-        } finally {
-          ReferenceCounting.freeRefs(tensors);
+      Result.Accumulator accumulator = new Result.Accumulator() {
+        {
         }
-      } finally {
-        in1.freeRef();
-      }
+
+        @Override
+        public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList data) {
+          if (in1.isAlive()) {
+            @Nonnull
+            TensorArray tensorArray = new TensorArray(RefIntStream.range(0, data.length())
+                .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) i -> {
+                  if (i == 0)
+                    return tensor0.mapCoords(RefUtil.wrapInterface((c) -> {
+                      return RefIntStream.range(0, itemCnt).mapToDouble(RefUtil.wrapInterface(j -> {
+                        Tensor tensor = data.get(j);
+                        double temp_48_0006 = tensor.get(c);
+                        tensor.freeRef();
+                        return temp_48_0006;
+                      }, data.addRef())).sum();
+                    }, data.addRef()));
+                  else {
+                    return tensor0.mapCoords(v -> 0);
+                  }
+                }, data.addRef(), tensor0.addRef()))
+                .toArray(i -> new Tensor[i]));
+            in1.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
+          }
+          if (in0.isAlive()) {
+            in0.accumulate(buffer == null ? null : buffer.addRef(), data.addRef());
+          }
+          data.freeRef();
+          if (null != buffer)
+            buffer.freeRef();
+        }
+
+        public @SuppressWarnings("unused")
+        void _free() {
+        }
+      };
+      return new Result(new TensorArray(RefUtil.addRefs(tensors)), accumulator) {
+        {
+          in0.addRef();
+          in1.addRef();
+        }
+        @Override
+        public boolean isAlive() {
+          return in0.isAlive() || in1.isAlive();
+        }
+
+        @Override
+        public void _free() {
+          in0.freeRef();
+          in1.freeRef();
+          super._free();
+        }
+      };
     } finally {
+      tensor0.freeRef();
+      ReferenceCounting.freeRefs(tensors);
+      in1.freeRef();
       in0.freeRef();
     }
   }

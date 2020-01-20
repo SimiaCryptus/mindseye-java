@@ -20,6 +20,7 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
+import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -29,24 +30,6 @@ import java.util.Random;
 public abstract class BiasMetaLayerTest extends LayerTestBase {
   public BiasMetaLayerTest() {
     validateBatchExecution = false;
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  BiasMetaLayerTest[] addRefs(@Nullable BiasMetaLayerTest[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(BiasMetaLayerTest::addRef)
-        .toArray((x) -> new BiasMetaLayerTest[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  BiasMetaLayerTest[][] addRefs(@Nullable BiasMetaLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(BiasMetaLayerTest::addRefs)
-        .toArray((x) -> new BiasMetaLayerTest[x][]);
   }
 
   @Nonnull
@@ -73,14 +56,6 @@ public abstract class BiasMetaLayerTest extends LayerTestBase {
   }
 
   public static class Basic extends BiasMetaLayerTest {
-
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Basic[] addRefs(@Nullable Basic[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
-    }
 
     public @SuppressWarnings("unused")
     void _free() {

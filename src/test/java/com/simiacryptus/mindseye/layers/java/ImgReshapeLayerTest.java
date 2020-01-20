@@ -20,6 +20,7 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
+import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -35,15 +36,6 @@ public abstract class ImgReshapeLayerTest extends LayerTestBase {
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ImgReshapeLayerTest::addRef)
         .toArray((x) -> new ImgReshapeLayerTest[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  ImgReshapeLayerTest[][] addRefs(@Nullable ImgReshapeLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(ImgReshapeLayerTest::addRefs)
-        .toArray((x) -> new ImgReshapeLayerTest[x][]);
   }
 
   @Nonnull
@@ -70,14 +62,6 @@ public abstract class ImgReshapeLayerTest extends LayerTestBase {
   }
 
   public static class Basic extends ImgReshapeLayerTest {
-
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Basic[] addRefs(@Nullable Basic[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
-    }
 
     public @SuppressWarnings("unused")
     void _free() {

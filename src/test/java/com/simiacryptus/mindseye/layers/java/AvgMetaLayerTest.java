@@ -23,28 +23,9 @@ import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.MetaLayerTestBase;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Random;
 
 public abstract class AvgMetaLayerTest extends MetaLayerTestBase {
-  @Nullable
-  public static @SuppressWarnings("unused")
-  AvgMetaLayerTest[] addRefs(@Nullable AvgMetaLayerTest[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(AvgMetaLayerTest::addRef)
-        .toArray((x) -> new AvgMetaLayerTest[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  AvgMetaLayerTest[][] addRefs(@Nullable AvgMetaLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(AvgMetaLayerTest::addRefs)
-        .toArray((x) -> new AvgMetaLayerTest[x][]);
-  }
 
   @Nonnull
   @Override
@@ -56,7 +37,8 @@ public abstract class AvgMetaLayerTest extends MetaLayerTestBase {
   @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
     AvgMetaLayer temp_66_0002 = new AvgMetaLayer();
-    AvgMetaLayer temp_66_0001 = temp_66_0002.setMinBatchCount(0);
+    temp_66_0002.setMinBatchCount(0);
+    AvgMetaLayer temp_66_0001 = temp_66_0002.addRef();
     temp_66_0002.freeRef();
     return temp_66_0001;
   }
@@ -85,14 +67,6 @@ public abstract class AvgMetaLayerTest extends MetaLayerTestBase {
   }
 
   public static class Basic extends AvgMetaLayerTest {
-
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Basic[] addRefs(@Nullable Basic[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
-    }
 
     public @SuppressWarnings("unused")
     void _free() {

@@ -21,6 +21,7 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.DataSerializer;
+import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -41,26 +42,6 @@ public final class BinaryEntropyActivationLayer extends SimpleActivationLayer<Bi
   @SuppressWarnings("unused")
   public static BinaryEntropyActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new BinaryEntropyActivationLayer(json);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  BinaryEntropyActivationLayer[] addRefs(
-      @Nullable BinaryEntropyActivationLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(BinaryEntropyActivationLayer::addRef)
-        .toArray((x) -> new BinaryEntropyActivationLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  BinaryEntropyActivationLayer[][] addRefs(
-      @Nullable BinaryEntropyActivationLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(BinaryEntropyActivationLayer::addRefs)
-        .toArray((x) -> new BinaryEntropyActivationLayer[x][]);
   }
 
   @Nonnull

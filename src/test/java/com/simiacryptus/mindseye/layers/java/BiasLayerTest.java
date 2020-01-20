@@ -22,8 +22,6 @@ package com.simiacryptus.mindseye.layers.java;
 import com.simiacryptus.mindseye.lang.Layer;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Random;
 
 public abstract class BiasLayerTest extends LayerTestBase {
@@ -32,24 +30,6 @@ public abstract class BiasLayerTest extends LayerTestBase {
 
   public BiasLayerTest(int dimension) {
     this.dimension = dimension;
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  BiasLayerTest[] addRefs(@Nullable BiasLayerTest[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(BiasLayerTest::addRef)
-        .toArray((x) -> new BiasLayerTest[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  BiasLayerTest[][] addRefs(@Nullable BiasLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(BiasLayerTest::addRefs)
-        .toArray((x) -> new BiasLayerTest[x][]);
   }
 
   @Nonnull
@@ -62,7 +42,8 @@ public abstract class BiasLayerTest extends LayerTestBase {
   @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
     BiasLayer temp_75_0002 = new BiasLayer(dimension);
-    BiasLayer temp_75_0001 = temp_75_0002.addWeights(this::random);
+    temp_75_0002.addWeights(this::random);
+    BiasLayer temp_75_0001 = temp_75_0002.addRef();
     temp_75_0002.freeRef();
     return temp_75_0001;
   }
@@ -83,14 +64,6 @@ public abstract class BiasLayerTest extends LayerTestBase {
       super(5);
     }
 
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Basic[] addRefs(@Nullable Basic[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
-    }
-
     public @SuppressWarnings("unused")
     void _free() {
     }
@@ -109,19 +82,12 @@ public abstract class BiasLayerTest extends LayerTestBase {
       super(5);
     }
 
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Reducing[] addRefs(@Nullable Reducing[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Reducing::addRef).toArray((x) -> new Reducing[x]);
-    }
-
     @Nonnull
     @Override
     public Layer getLayer(final int[][] inputSize, Random random) {
       BiasLayer temp_75_0004 = new BiasLayer(1);
-      BiasLayer temp_75_0003 = temp_75_0004.addWeights(this::random);
+      temp_75_0004.addWeights(this::random);
+      BiasLayer temp_75_0003 = temp_75_0004.addRef();
       temp_75_0004.freeRef();
       return temp_75_0003;
     }
@@ -136,7 +102,6 @@ public abstract class BiasLayerTest extends LayerTestBase {
     Reducing addRef() {
       return (Reducing) super.addRef();
     }
-
   }
 
 }

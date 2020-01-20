@@ -20,6 +20,7 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
+import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -27,24 +28,6 @@ import java.util.Arrays;
 import java.util.Random;
 
 public abstract class L1NormalizationLayerTest extends LayerTestBase {
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  L1NormalizationLayerTest[] addRefs(@Nullable L1NormalizationLayerTest[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(L1NormalizationLayerTest::addRef)
-        .toArray((x) -> new L1NormalizationLayerTest[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  L1NormalizationLayerTest[][] addRefs(@Nullable L1NormalizationLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(L1NormalizationLayerTest::addRefs)
-        .toArray((x) -> new L1NormalizationLayerTest[x][]);
-  }
 
   @Nonnull
   @Override
@@ -75,14 +58,6 @@ public abstract class L1NormalizationLayerTest extends LayerTestBase {
   }
 
   public static class Basic extends L1NormalizationLayerTest {
-
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Basic[] addRefs(@Nullable Basic[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
-    }
 
     public @SuppressWarnings("unused")
     void _free() {

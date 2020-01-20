@@ -22,6 +22,7 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.WrapperLayer;
+import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.RefList;
 
 import javax.annotation.Nonnull;
@@ -49,24 +50,6 @@ public class VariableLayer extends WrapperLayer {
   @SuppressWarnings("unused")
   public static VariableLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new VariableLayer(json, rs);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  VariableLayer[] addRefs(@Nullable VariableLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(VariableLayer::addRef)
-        .toArray((x) -> new VariableLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  VariableLayer[][] addRefs(@Nullable VariableLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(VariableLayer::addRefs)
-        .toArray((x) -> new VariableLayer[x][]);
   }
 
   public @SuppressWarnings("unused")

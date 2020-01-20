@@ -69,24 +69,6 @@ public class MaxPoolingLayer extends LayerBase {
     return new MaxPoolingLayer(json, JsonUtil.getIntArray(json.getAsJsonArray("heapCopy")));
   }
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  MaxPoolingLayer[] addRefs(@Nullable MaxPoolingLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(MaxPoolingLayer::addRef)
-        .toArray((x) -> new MaxPoolingLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  MaxPoolingLayer[][] addRefs(@Nullable MaxPoolingLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(MaxPoolingLayer::addRefs)
-        .toArray((x) -> new MaxPoolingLayer[x][]);
-  }
-
   private static RefList<Tuple2<Integer, int[]>> calcRegions(@Nonnull final MaxPoolingLayer.CalcRegionsParameter p) {
     @Nonnull final Tensor input = new Tensor(p.inputDims);
     final int[] newDims = RefIntStream.range(0, p.inputDims.length).map(i -> {
@@ -140,7 +122,7 @@ public class MaxPoolingLayer extends LayerBase {
       return new Tensor(newDims);
     }).toArray(i -> new Tensor[i]);
     temp_53_0007.freeRef();
-    RefArrays.stream(Tensor.addRefs(outputA)).mapToInt(x -> {
+    RefArrays.stream(RefUtil.addRefs(outputA)).mapToInt(x -> {
       int temp_53_0004 = x.length();
       x.freeRef();
       return temp_53_0004;
@@ -170,65 +152,65 @@ public class MaxPoolingLayer extends LayerBase {
           }
         }
         gradientMap[from] = toMax;
-        RefUtil.freeRef(output.set(from, input.get(toMax)));
+        output.set(from, input.get(toMax));
       }, output.addRef(), input.addRef()));
       output.freeRef();
       input.freeRef();
       gradientMapA[dataIndex] = gradientMap;
-    }, in.addRef(), Tensor.addRefs(outputA), regions == null ? null : regions.addRef()));
+    }, in.addRef(), RefUtil.addRefs(outputA), regions == null ? null : regions.addRef()));
     temp_53_0009.freeRef();
     if (null != regions)
       regions.freeRef();
     try {
-      try {
-        return new Result(new TensorArray(Tensor.addRefs(outputA)), new Result.Accumulator() {
-          {
-          }
+      Result.Accumulator accumulator = new Result.Accumulator() {
+        {
+        }
 
-          @Override
-          public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList data) {
-            if (in.isAlive()) {
-              TensorList temp_53_0011 = in.getData();
-              @Nonnull
-              TensorArray tensorArray = new TensorArray(RefIntStream.range(0, temp_53_0011.length()).parallel()
-                  .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-                    @Nonnull final Tensor backSignal = new Tensor(inputDims);
-                    final int[] ints = gradientMapA[dataIndex];
-                    @Nullable final Tensor datum = data.get(dataIndex);
-                    for (int i = 0; i < datum.length(); i++) {
-                      backSignal.add(ints[i], datum.get(i));
-                    }
-                    datum.freeRef();
-                    return backSignal;
-                  }, data.addRef())).toArray(i -> new Tensor[i]));
-              temp_53_0011.freeRef();
-              in.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
-            }
-            data.freeRef();
-            if (null != buffer)
-              buffer.freeRef();
+        @Override
+        public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList data) {
+          if (in.isAlive()) {
+            TensorList temp_53_0011 = in.getData();
+            @Nonnull
+            TensorArray tensorArray = new TensorArray(RefIntStream.range(0, temp_53_0011.length()).parallel()
+                .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+                  @Nonnull final Tensor backSignal = new Tensor(inputDims);
+                  final int[] ints = gradientMapA[dataIndex];
+                  @Nullable final Tensor datum = data.get(dataIndex);
+                  for (int i = 0; i < datum.length(); i++) {
+                    backSignal.add(ints[i], datum.get(i));
+                  }
+                  datum.freeRef();
+                  return backSignal;
+                }, data.addRef())).toArray(i -> new Tensor[i]));
+            temp_53_0011.freeRef();
+            in.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
           }
+          data.freeRef();
+          if (null != buffer)
+            buffer.freeRef();
+        }
 
-          public @SuppressWarnings("unused")
-          void _free() {
-          }
-        }) {
+        public @SuppressWarnings("unused")
+        void _free() {
+        }
+      };
+      return new Result(new TensorArray(RefUtil.addRefs(outputA)), accumulator) {
+        {
+          in.addRef();
+        }
+        @Override
+        public boolean isAlive() {
+          return in.isAlive();
+        }
 
-          {
-          }
-
-          @Override
-          public boolean isAlive() {
-            return in.isAlive();
-          }
-
-          public void _free() {
-          }
-        };
-      } finally {
-        ReferenceCounting.freeRefs(outputA);
-      }
+        @Override
+        public void _free() {
+          in.freeRef();
+          super._free();
+        }
+      };
     } finally {
+      ReferenceCounting.freeRefs(outputA);
       in.freeRef();
     }
   }
@@ -293,6 +275,5 @@ public class MaxPoolingLayer extends LayerBase {
       result = prime * result + RefArrays.hashCode(kernelDims);
       return result;
     }
-
   }
 }

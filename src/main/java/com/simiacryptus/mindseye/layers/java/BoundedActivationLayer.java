@@ -21,6 +21,7 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.DataSerializer;
+import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -45,20 +46,16 @@ public class BoundedActivationLayer extends SimpleActivationLayer<BoundedActivat
     return maxValue;
   }
 
-  @Nonnull
-  public BoundedActivationLayer setMaxValue(final double maxValue) {
+  public void setMaxValue(double maxValue) {
     this.maxValue = maxValue;
-    return this.addRef();
   }
 
   public double getMinValue() {
     return minValue;
   }
 
-  @Nonnull
-  public BoundedActivationLayer setMinValue(double minValue) {
+  public void setMinValue(double minValue) {
     this.minValue = minValue;
-    return this.addRef();
   }
 
   @Nonnull
@@ -67,24 +64,6 @@ public class BoundedActivationLayer extends SimpleActivationLayer<BoundedActivat
     @Nonnull final BoundedActivationLayer obj = new BoundedActivationLayer(json);
     obj.maxValue = json.get("maxValue").getAsDouble();
     return obj;
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  BoundedActivationLayer[] addRefs(@Nullable BoundedActivationLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(BoundedActivationLayer::addRef)
-        .toArray((x) -> new BoundedActivationLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  BoundedActivationLayer[][] addRefs(@Nullable BoundedActivationLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(BoundedActivationLayer::addRefs)
-        .toArray((x) -> new BoundedActivationLayer[x][]);
   }
 
   @Nonnull

@@ -30,7 +30,6 @@ import com.simiacryptus.ref.wrappers.RefList;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.IntFunction;
@@ -66,24 +65,6 @@ public class SubBatchLayer extends WrapperLayer {
   }
 
   @Nullable
-  public static @SuppressWarnings("unused")
-  SubBatchLayer[] addRefs(@Nullable SubBatchLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(SubBatchLayer::addRef)
-        .toArray((x) -> new SubBatchLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  SubBatchLayer[][] addRefs(@Nullable SubBatchLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(SubBatchLayer::addRefs)
-        .toArray((x) -> new SubBatchLayer[x][]);
-  }
-
-  @Nullable
   @Override
   public Result eval(@Nonnull final Result... inputs) {
     Layer inner = getInner();
@@ -96,42 +77,42 @@ public class SubBatchLayer extends WrapperLayer {
           Tensor[] tensors = new Tensor[data.length()];
           data.freeRef();
           return tensors;
-        }, Result.addRefs(inputs))).toArray(x -> new Tensor[x][]);
+        }, RefUtil.addRefs(inputs))).toArray(x -> new Tensor[x][]);
     Result[] batchResults = RefIntStream.range(0, batches)
         .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Result>) batchIndex -> {
           assert inner != null;
           return inner.eval(RefIntStream.range(0, inputs.length)
               .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Result>) inputIndex -> {
+                Tensor[] tensors = RefUtil.addRefs(passbackBuffer[inputIndex]);
+                Result.Accumulator accumulator = new Result.Accumulator() {
+                  {
+                    RefUtil.addRefs(tensors);
+                  }
+
+                  @Override
+                  public void accept(@Nullable DeltaSet<UUID> deltaBuffer, @Nonnull TensorList deltaSignal) {
+                    if (null != deltaBuffer)
+                      deltaBuffer.freeRef();
+                    RefUtil.set((tensors), batchIndex, deltaSignal.get(0));
+                    deltaSignal.freeRef();
+                  }
+
+                  public @SuppressWarnings("unused")
+                  void _free() {
+                    RefUtil.freeRef(tensors);
+                  }
+                };
+                RefUtil.freeRef(tensors);
                 TensorList temp_10_0010 = inputs[inputIndex].getData();
-                Result temp_10_0009 = new Result(new TensorArray(temp_10_0010.get(batchIndex)),
-                    new Result.Accumulator() {
-                      {
-                      }
-
-                      @Override
-                      public void accept(@Nullable DeltaSet<UUID> deltaBuffer, @Nonnull TensorList deltaSignal) {
-                        if (null != deltaBuffer)
-                          deltaBuffer.freeRef();
-                        Tensor temp_10_0001 = deltaSignal.get(0);
-                        if (null != passbackBuffer[inputIndex][batchIndex])
-                          passbackBuffer[inputIndex][batchIndex].freeRef();
-                        passbackBuffer[inputIndex][batchIndex] = temp_10_0001.addRef();
-                        temp_10_0001.freeRef();
-                        deltaSignal.freeRef();
-                      }
-
-                      public @SuppressWarnings("unused")
-                      void _free() {
-                      }
-                    });
+                Result temp_10_0009 = new Result(new TensorArray(temp_10_0010.get(batchIndex)), accumulator);
                 temp_10_0010.freeRef();
                 return temp_10_0009;
-              }, Tensor.addRefs(passbackBuffer), Result.addRefs(inputs))).<Result>toArray(x -> new Result[x]));
-        }, Tensor.addRefs(passbackBuffer), Result.addRefs(inputs), inner == null ? null : inner.addRef()))
+              }, RefUtil.addRefs(passbackBuffer), RefUtil.addRefs(inputs))).<Result>toArray(x -> new Result[x]));
+        }, RefUtil.addRefs(passbackBuffer), RefUtil.addRefs(inputs), inner == null ? null : inner.addRef()))
         .toArray(i -> new Result[i]);
     if (null != inner)
       inner.freeRef();
-    TensorArray resultData = new TensorArray(RefArrays.stream(Result.addRefs(batchResults)).map(x -> {
+    TensorArray resultData = new TensorArray(RefArrays.stream(RefUtil.addRefs(batchResults)).map(x -> {
       TensorList temp_10_0011 = x.getData();
       Tensor temp_10_0004 = temp_10_0011.get(0);
       temp_10_0011.freeRef();
@@ -139,65 +120,51 @@ public class SubBatchLayer extends WrapperLayer {
       return temp_10_0004;
     }).toArray(i -> new Tensor[i]));
     try {
-      try {
-        try {
-          try {
-            return new Result(resultData, new Result.Accumulator() {
-              {
-                Result.addRefs(inputs);
-                Result.addRefs(batchResults);
-              }
-
-              @Override
-              public void accept(@Nullable DeltaSet<UUID> deltaBuffer, @Nonnull TensorList deltaSignal) {
-                RefIntStream.range(0, deltaSignal.length()).forEach(RefUtil.wrapInterface(batchIndex -> {
-                      TensorArray tensorArray = new TensorArray(deltaSignal.get(batchIndex));
-                      Result.Accumulator temp_10_0012 = batchResults[batchIndex].getAccumulator();
-                      assert temp_10_0012 != null;
-                      temp_10_0012.accept(deltaBuffer == null ? null : deltaBuffer.addRef(),
-                          tensorArray.addRef());
-                      temp_10_0012.freeRef();
-                      tensorArray.freeRef();
-                    }, deltaSignal.addRef(), Result.addRefs(batchResults),
-                    deltaBuffer == null ? null : deltaBuffer.addRef()));
-                deltaSignal.freeRef();
-                synchronized (passbackBuffer) {
-                  RefIntStream.range(0, inputs.length).forEach(RefUtil.wrapInterface(inputIndex -> {
-                        TensorArray tensorArray = new TensorArray(Tensor.addRefs(passbackBuffer[inputIndex]));
-                        Result.Accumulator temp_10_0013 = inputs[inputIndex].getAccumulator();
-                        assert temp_10_0013 != null;
-                        temp_10_0013.accept(deltaBuffer == null ? null : deltaBuffer.addRef(),
-                            tensorArray.addRef());
-                        temp_10_0013.freeRef();
-                        tensorArray.freeRef();
-                      }, Tensor.addRefs(passbackBuffer), Result.addRefs(inputs),
-                      deltaBuffer == null ? null : deltaBuffer.addRef()));
-                }
-                if (null != deltaBuffer)
-                  deltaBuffer.freeRef();
-              }
-
-              public @SuppressWarnings("unused")
-              void _free() {
-                ReferenceCounting.freeRefs(inputs);
-                RefUtil.freeRefs(passbackBuffer);
-                ReferenceCounting.freeRefs(batchResults);
-              }
-            }) {
-              public void _free() {
-                super._free();
-              }
-            };
-          } finally {
-            ReferenceCounting.freeRefs(inputs);
-          }
-        } finally {
-          resultData.freeRef();
+      return new Result(resultData, new Result.Accumulator() {
+        {
+          RefUtil.addRefs(inputs);
+          RefUtil.addRefs(batchResults);
         }
-      } finally {
-        ReferenceCounting.freeRefs(batchResults);
-      }
+
+        @Override
+        public void accept(@Nullable DeltaSet<UUID> deltaBuffer, @Nonnull TensorList deltaSignal) {
+          RefIntStream.range(0, deltaSignal.length()).forEach(RefUtil.wrapInterface(batchIndex -> {
+                TensorArray tensorArray = new TensorArray(deltaSignal.get(batchIndex));
+                Result.Accumulator temp_10_0012 = batchResults[batchIndex].getAccumulator();
+                assert temp_10_0012 != null;
+                temp_10_0012.accept(deltaBuffer == null ? null : deltaBuffer.addRef(),
+                    tensorArray.addRef());
+                temp_10_0012.freeRef();
+                tensorArray.freeRef();
+              }, deltaSignal.addRef(), RefUtil.addRefs(batchResults),
+              deltaBuffer == null ? null : deltaBuffer.addRef()));
+          deltaSignal.freeRef();
+          synchronized (passbackBuffer) {
+            RefIntStream.range(0, inputs.length).forEach(RefUtil.wrapInterface(inputIndex -> {
+                  TensorArray tensorArray = new TensorArray(RefUtil.addRefs(passbackBuffer[inputIndex]));
+                  Result.Accumulator temp_10_0013 = inputs[inputIndex].getAccumulator();
+                  assert temp_10_0013 != null;
+                  temp_10_0013.accept(deltaBuffer == null ? null : deltaBuffer.addRef(),
+                      tensorArray.addRef());
+                  temp_10_0013.freeRef();
+                  tensorArray.freeRef();
+                }, RefUtil.addRefs(passbackBuffer), RefUtil.addRefs(inputs),
+                deltaBuffer == null ? null : deltaBuffer.addRef()));
+          }
+          if (null != deltaBuffer)
+            deltaBuffer.freeRef();
+        }
+
+        public @SuppressWarnings("unused")
+        void _free() {
+          ReferenceCounting.freeRefs(inputs);
+          RefUtil.freeRefs(passbackBuffer);
+          ReferenceCounting.freeRefs(batchResults);
+        }
+      });
     } finally {
+      ReferenceCounting.freeRefs(inputs);
+      ReferenceCounting.freeRefs(batchResults);
       ReferenceCounting.freeRefs(passbackBuffer);
     }
   }

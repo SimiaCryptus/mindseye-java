@@ -20,6 +20,7 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
+import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -35,24 +36,6 @@ public class SubBatchLayerTest extends LayerTestBase {
   @Override
   public Class<? extends Layer> getReferenceLayerClass() {
     return null;
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  SubBatchLayerTest[] addRefs(@Nullable SubBatchLayerTest[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(SubBatchLayerTest::addRef)
-        .toArray((x) -> new SubBatchLayerTest[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  SubBatchLayerTest[][] addRefs(@Nullable SubBatchLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(SubBatchLayerTest::addRefs)
-        .toArray((x) -> new SubBatchLayerTest[x][]);
   }
 
   @Nonnull

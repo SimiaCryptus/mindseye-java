@@ -51,24 +51,6 @@ public class ProductInputsLayer extends LayerBase {
     return new ProductInputsLayer(json);
   }
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  ProductInputsLayer[] addRefs(@Nullable ProductInputsLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(ProductInputsLayer::addRef)
-        .toArray((x) -> new ProductInputsLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  ProductInputsLayer[][] addRefs(@Nullable ProductInputsLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(ProductInputsLayer::addRefs)
-        .toArray((x) -> new ProductInputsLayer[x][]);
-  }
-
   @Nonnull
   @Override
   public Result eval(@Nonnull final Result... inObj) {
@@ -93,7 +75,7 @@ public class ProductInputsLayer extends LayerBase {
       }
     }
     try {
-      return new Result(RefUtil.get(RefArrays.stream(Result.addRefs(inObj)).parallel().map(x -> {
+      return new Result(RefUtil.get(RefArrays.stream(RefUtil.addRefs(inObj)).parallel().map(x -> {
         TensorList temp_57_0001 = x.getData();
         x.freeRef();
         return temp_57_0001;
@@ -113,7 +95,7 @@ public class ProductInputsLayer extends LayerBase {
         return temp_57_0002;
       })), new Result.Accumulator() {
         {
-          Result.addRefs(inObj);
+          RefUtil.addRefs(inObj);
         }
 
         @Override
@@ -121,7 +103,7 @@ public class ProductInputsLayer extends LayerBase {
           for (@Nonnull final Result input : inObj) {
             if (input.isAlive()) {
               @Nonnull
-              TensorList passback = RefUtil.get(RefArrays.stream(Result.addRefs(inObj)).parallel()
+              TensorList passback = RefUtil.get(RefArrays.stream(RefUtil.addRefs(inObj)).parallel()
                   .map(RefUtil.wrapInterface((Function<Result, TensorList>) x -> {
                     TensorList temp_57_0004 = x == input ? delta.addRef() : x.getData();
                     x.freeRef();
@@ -143,20 +125,24 @@ public class ProductInputsLayer extends LayerBase {
                   }));
               final TensorList inputData = input.getData();
               if (1 == inputData.length() && 1 < passback.length()) {
-                passback = new TensorArray(RefUtil.get(passback.stream().reduce((a, b) -> {
+                TensorArray passback1 = new TensorArray(RefUtil.get(passback.stream().reduce((a, b) -> {
                   Tensor temp_57_0007 = a.addAndFree(b == null ? null : b.addRef());
                   if (null != b)
                     b.freeRef();
                   a.freeRef();
                   return temp_57_0007;
                 })));
+                passback.freeRef();
+                passback = passback1;
               }
               if (1 == Tensor.length(inputData.getDimensions()) && 1 < Tensor.length(passback.getDimensions())) {
-                passback = new TensorArray(passback.stream().map((a) -> {
+                TensorArray passback1 = new TensorArray(passback.stream().map((a) -> {
                   Tensor temp_57_0008 = new Tensor(a.sum());
                   a.freeRef();
                   return temp_57_0008;
                 }).toArray(i -> new Tensor[i]));
+                passback.freeRef();
+                passback = passback1;
               }
               inputData.freeRef();
               input.accumulate(buffer == null ? null : buffer.addRef(), passback);
@@ -174,7 +160,7 @@ public class ProductInputsLayer extends LayerBase {
       }) {
 
         {
-          Result.addRefs(inObj);
+          RefUtil.addRefs(inObj);
         }
 
         @Override
@@ -188,8 +174,8 @@ public class ProductInputsLayer extends LayerBase {
 
         public void _free() {
           ReferenceCounting.freeRefs(inObj);
+          super._free();
         }
-
       };
     } finally {
       ReferenceCounting.freeRefs(inObj);

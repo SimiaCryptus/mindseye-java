@@ -26,6 +26,7 @@ import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.mindseye.layers.ValueLayer;
 import com.simiacryptus.mindseye.network.DAGNetwork;
 import com.simiacryptus.mindseye.network.DAGNode;
+import com.simiacryptus.ref.lang.RefUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,38 +73,18 @@ public class TargetValueLayer extends DAGNetwork {
     return head == null ? null : head.addRef();
   }
 
-  @Nonnull
-  public TargetValueLayer setTarget(final double... value) {
+  public void setTarget(double[] value) {
     assert target != null;
     ValueLayer temp_05_0005 = target.<ValueLayer>getLayer();
     assert temp_05_0005 != null;
     temp_05_0005.setData(new Tensor(value));
     temp_05_0005.freeRef();
-    return this.addRef();
   }
 
   @Nonnull
   @SuppressWarnings("unused")
   public static Layer fromJson(@Nonnull final JsonObject inner, Map<CharSequence, byte[]> rs) {
     return new TargetValueLayer(inner, rs);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  TargetValueLayer[] addRefs(@Nullable TargetValueLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(TargetValueLayer::addRef)
-        .toArray((x) -> new TargetValueLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  TargetValueLayer[][] addRefs(@Nullable TargetValueLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(TargetValueLayer::addRefs)
-        .toArray((x) -> new TargetValueLayer[x][]);
   }
 
   @Override

@@ -30,7 +30,6 @@ import com.simiacryptus.ref.wrappers.RefList;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -83,7 +82,7 @@ public class ImgCropLayer extends LayerBase {
       } else {
         value = inputData.get(x, y, z);
       }
-      RefUtil.freeRef(outputData.set(c, value));
+      outputData.set(c, value);
     }, outputData, inputData));
   }
 
@@ -91,23 +90,6 @@ public class ImgCropLayer extends LayerBase {
   @SuppressWarnings("unused")
   public static ImgCropLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ImgCropLayer(json);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  ImgCropLayer[] addRefs(@Nullable ImgCropLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(ImgCropLayer::addRef).toArray((x) -> new ImgCropLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  ImgCropLayer[][] addRefs(@Nullable ImgCropLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(ImgCropLayer::addRefs)
-        .toArray((x) -> new ImgCropLayer[x][]);
   }
 
   @Nonnull
@@ -119,58 +101,59 @@ public class ImgCropLayer extends LayerBase {
     @Nonnull final int[] inputDims = batch.getDimensions();
     assert 3 == inputDims.length;
     try {
-      try {
-        return new Result(new TensorArray(RefIntStream.range(0, batch.length()).parallel()
-            .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-              @Nonnull final Tensor outputData = new Tensor(sizeX, sizeY, inputDims[2]);
-              Tensor inputData = batch.get(dataIndex);
-              ImgCropLayer.copy(inputData.addRef(),
-                  outputData.addRef());
-              inputData.freeRef();
-              return outputData;
-            }, batch.addRef())).toArray(i -> new Tensor[i])), new Result.Accumulator() {
-          {
-          }
+      Result.Accumulator accumulator = new Result.Accumulator() {
+        {
+        }
 
-          @Override
-          public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList error) {
-            if (input.isAlive()) {
-              @Nonnull
-              TensorArray tensorArray = new TensorArray(RefIntStream.range(0, error.length()).parallel()
-                  .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-                    @Nullable final Tensor err = error.get(dataIndex);
-                    @Nonnull final Tensor passback = new Tensor(inputDims);
-                    copy(err.addRef(), passback.addRef());
-                    err.freeRef();
-                    return passback;
-                  }, error.addRef())).toArray(i -> new Tensor[i]));
-              input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
-            }
-            error.freeRef();
-            if (null != buffer)
-              buffer.freeRef();
+        @Override
+        public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList error) {
+          if (input.isAlive()) {
+            @Nonnull
+            TensorArray tensorArray = new TensorArray(RefIntStream.range(0, error.length()).parallel()
+                .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+                  @Nullable final Tensor err = error.get(dataIndex);
+                  @Nonnull final Tensor passback = new Tensor(inputDims);
+                  copy(err.addRef(), passback.addRef());
+                  err.freeRef();
+                  return passback;
+                }, error.addRef())).toArray(i -> new Tensor[i]));
+            input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
           }
+          error.freeRef();
+          if (null != buffer)
+            buffer.freeRef();
+        }
 
-          public @SuppressWarnings("unused")
-          void _free() {
-          }
-        }) {
+        public @SuppressWarnings("unused")
+        void _free() {
+        }
+      };
+      TensorArray data = new TensorArray(RefIntStream.range(0, batch.length()).parallel()
+          .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+            @Nonnull final Tensor outputData = new Tensor(sizeX, sizeY, inputDims[2]);
+            Tensor inputData = batch.get(dataIndex);
+            ImgCropLayer.copy(inputData.addRef(),
+                outputData.addRef());
+            inputData.freeRef();
+            return outputData;
+          }, batch.addRef())).toArray(i -> new Tensor[i]));
+      return new Result(data, accumulator) {
+        {
+          input.addRef();
+        }
+        @Override
+        public boolean isAlive() {
+          return input.isAlive() || !isFrozen();
+        }
 
-          {
-          }
-
-          @Override
-          public boolean isAlive() {
-            return input.isAlive() || !isFrozen();
-          }
-
-          public void _free() {
-          }
-        };
-      } finally {
-        batch.freeRef();
-      }
+        @Override
+        public void _free() {
+          input.freeRef();
+          super._free();
+        }
+      };
     } finally {
+      batch.freeRef();
       input.freeRef();
     }
   }

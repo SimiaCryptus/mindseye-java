@@ -20,6 +20,7 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
+import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -27,24 +28,6 @@ import java.util.Arrays;
 import java.util.Random;
 
 public abstract class VariableLayerTest extends LayerTestBase {
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  VariableLayerTest[] addRefs(@Nullable VariableLayerTest[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(VariableLayerTest::addRef)
-        .toArray((x) -> new VariableLayerTest[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  VariableLayerTest[][] addRefs(@Nullable VariableLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(VariableLayerTest::addRefs)
-        .toArray((x) -> new VariableLayerTest[x][]);
-  }
 
   @Nonnull
   @Override
@@ -74,13 +57,6 @@ public abstract class VariableLayerTest extends LayerTestBase {
 
   public static class Basic extends VariableLayerTest {
 
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Basic[] addRefs(@Nullable Basic[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
-    }
 
     public @SuppressWarnings("unused")
     void _free() {

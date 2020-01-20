@@ -33,7 +33,6 @@ import org.apache.commons.math3.util.FastMath;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -67,10 +66,14 @@ public class ImgViewLayer extends LayerBase {
 
   public ImgViewLayer(final int sizeX, final int sizeY, final int offsetX, final int offsetY, final boolean wrap) {
     super();
-    ImgViewLayer temp_33_0004 = setSizeX(sizeX);
-    ImgViewLayer temp_33_0005 = temp_33_0004.setSizeY(sizeY);
-    ImgViewLayer temp_33_0006 = temp_33_0005.setOffsetX(offsetX);
-    ImgViewLayer temp_33_0007 = temp_33_0006.setOffsetY(offsetY);
+    setSizeX(sizeX);
+    ImgViewLayer temp_33_0004 = this.addRef();
+    temp_33_0004.setSizeY(sizeY);
+    ImgViewLayer temp_33_0005 = temp_33_0004.addRef();
+    temp_33_0005.setOffsetX(offsetX);
+    ImgViewLayer temp_33_0006 = temp_33_0005.addRef();
+    temp_33_0006.setOffsetY(offsetY);
+    ImgViewLayer temp_33_0007 = temp_33_0006.addRef();
     temp_33_0007.setWrap(wrap);
     temp_33_0007.freeRef();
     temp_33_0006.freeRef();
@@ -80,17 +83,18 @@ public class ImgViewLayer extends LayerBase {
 
   protected ImgViewLayer(@Nonnull final JsonObject json) {
     super(json);
-    RefUtil.freeRef(setSizeX(json.getAsJsonPrimitive("sizeX").getAsInt()));
-    RefUtil.freeRef(setSizeY(json.getAsJsonPrimitive("sizeY").getAsInt()));
-    RefUtil.freeRef(setOffsetX(json.getAsJsonPrimitive("offsetX").getAsInt()));
-    RefUtil.freeRef(setOffsetY(json.getAsJsonPrimitive("offsetY").getAsInt()));
+    setSizeX(json.getAsJsonPrimitive("sizeX").getAsInt());
+    setSizeY(json.getAsJsonPrimitive("sizeY").getAsInt());
+    setOffsetX(json.getAsJsonPrimitive("offsetX").getAsInt());
+    setOffsetY(json.getAsJsonPrimitive("offsetY").getAsInt());
     setNegativeBias(json.getAsJsonPrimitive("negativeBias").getAsDouble());
-    RefUtil.freeRef(setRotationCenterX(json.getAsJsonPrimitive("rotationCenterX").getAsInt()));
-    RefUtil.freeRef(setRotationCenterY(json.getAsJsonPrimitive("rotationCenterY").getAsInt()));
-    RefUtil.freeRef(setRotationRadians(json.getAsJsonPrimitive("rotationRadians").getAsDouble()));
+    setRotationCenterX(json.getAsJsonPrimitive("rotationCenterX").getAsInt());
+    setRotationCenterY(json.getAsJsonPrimitive("rotationCenterY").getAsInt());
+    setRotationRadians(json.getAsJsonPrimitive("rotationRadians").getAsDouble());
     JsonArray _channelPermutationFilter = json.getAsJsonArray("channelPermutationFilter");
     if (null != _channelPermutationFilter) {
-      RefUtil.freeRef(setChannelSelector(new int[_channelPermutationFilter.size()]));
+      int[] channelSelector1 = new int[_channelPermutationFilter.size()];
+      setChannelSelector(channelSelector1);
       for (int i = 0; i < getChannelSelector().length; i++) {
         getChannelSelector()[i] = _channelPermutationFilter.get(i).getAsInt();
       }
@@ -104,10 +108,8 @@ public class ImgViewLayer extends LayerBase {
     return channelSelector;
   }
 
-  @Nonnull
-  public ImgViewLayer setChannelSelector(int... channelSelector) {
+  public void setChannelSelector(int[] channelSelector) {
     this.channelSelector = channelSelector;
-    return this.addRef();
   }
 
   public double getNegativeBias() {
@@ -122,70 +124,56 @@ public class ImgViewLayer extends LayerBase {
     return offsetX;
   }
 
-  @Nonnull
-  public ImgViewLayer setOffsetX(int offsetX) {
+  public void setOffsetX(int offsetX) {
     this.offsetX = offsetX;
-    return this.addRef();
   }
 
   public int getOffsetY() {
     return offsetY;
   }
 
-  @Nonnull
-  public ImgViewLayer setOffsetY(int offsetY) {
+  public void setOffsetY(int offsetY) {
     this.offsetY = offsetY;
-    return this.addRef();
   }
 
   public int getRotationCenterX() {
     return rotationCenterX;
   }
 
-  @Nonnull
-  public ImgViewLayer setRotationCenterX(int rotationCenterX) {
+  public void setRotationCenterX(int rotationCenterX) {
     this.rotationCenterX = rotationCenterX;
-    return this.addRef();
   }
 
   public int getRotationCenterY() {
     return rotationCenterY;
   }
 
-  @Nonnull
-  public ImgViewLayer setRotationCenterY(int rotationCenterY) {
+  public void setRotationCenterY(int rotationCenterY) {
     this.rotationCenterY = rotationCenterY;
-    return this.addRef();
   }
 
   public double getRotationRadians() {
     return rotationRadians;
   }
 
-  @Nonnull
-  public ImgViewLayer setRotationRadians(double rotationRadians) {
+  public void setRotationRadians(double rotationRadians) {
     this.rotationRadians = rotationRadians;
-    return this.addRef();
   }
 
   public int getSizeX() {
     return sizeX;
   }
 
-  @Nonnull
-  public ImgViewLayer setSizeX(int sizeX) {
+  public void setSizeX(int sizeX) {
     this.sizeX = sizeX;
-    return this.addRef();
   }
 
   public int getSizeY() {
     return sizeY;
   }
 
-  @Nonnull
-  public ImgViewLayer setSizeY(int sizeY) {
+  public void setSizeY(int sizeY) {
     this.sizeY = sizeY;
-    return this.addRef();
   }
 
   public boolean isWrap() {
@@ -200,23 +188,6 @@ public class ImgViewLayer extends LayerBase {
   @SuppressWarnings("unused")
   public static ImgViewLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ImgViewLayer(json);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  ImgViewLayer[] addRefs(@Nullable ImgViewLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(ImgViewLayer::addRef).toArray((x) -> new ImgViewLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  ImgViewLayer[][] addRefs(@Nullable ImgViewLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(ImgViewLayer::addRefs)
-        .toArray((x) -> new ImgViewLayer[x][]);
   }
 
   private static void set(@Nonnull Tensor tensor, int width, int height, int x, int y, int channel, boolean wrap,
@@ -287,58 +258,59 @@ public class ImgViewLayer extends LayerBase {
     if (null != channelSelector)
       dimOut[2] = channelSelector.length;
     try {
-      try {
-        return new Result(new TensorArray(RefIntStream.range(0, batch.length())
-            .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-              @Nonnull final Tensor outputData = new Tensor(dimOut);
-              Tensor inputData = batch.get(dataIndex);
-              fwd(inputData.addRef(), outputData.addRef());
-              inputData.freeRef();
-              return outputData;
-            }, batch.addRef())).toArray(i -> new Tensor[i])), new Result.Accumulator() {
-          {
-          }
+      Result.Accumulator accumulator = new Result.Accumulator() {
+        {
+        }
 
-          @Override
-          public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList error) {
-            if (input.isAlive()) {
-              @Nonnull
-              TensorArray tensorArray = new TensorArray(RefIntStream.range(0, error.length())
-                  .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-                    @Nullable final Tensor err = error.get(dataIndex);
-                    @Nonnull final Tensor passback = new Tensor(inputDims);
-                    ImgViewLayer.this.bck(err.addRef(),
-                        passback.addRef());
-                    err.freeRef();
-                    return passback;
-                  }, error.addRef())).toArray(i -> new Tensor[i]));
-              input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
-            }
-            error.freeRef();
-            if (null != buffer)
-              buffer.freeRef();
+        @Override
+        public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList error) {
+          if (input.isAlive()) {
+            @Nonnull
+            TensorArray tensorArray = new TensorArray(RefIntStream.range(0, error.length())
+                .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+                  @Nullable final Tensor err = error.get(dataIndex);
+                  @Nonnull final Tensor passback = new Tensor(inputDims);
+                  ImgViewLayer.this.bck(err.addRef(),
+                      passback.addRef());
+                  err.freeRef();
+                  return passback;
+                }, error.addRef())).toArray(i -> new Tensor[i]));
+            input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
           }
+          error.freeRef();
+          if (null != buffer)
+            buffer.freeRef();
+        }
 
-          public @SuppressWarnings("unused")
-          void _free() {
-          }
-        }) {
+        public @SuppressWarnings("unused")
+        void _free() {
+        }
+      };
+      TensorArray data = new TensorArray(RefIntStream.range(0, batch.length())
+          .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+            @Nonnull final Tensor outputData = new Tensor(dimOut);
+            Tensor inputData = batch.get(dataIndex);
+            fwd(inputData.addRef(), outputData.addRef());
+            inputData.freeRef();
+            return outputData;
+          }, batch.addRef())).toArray(i -> new Tensor[i]));
+      return new Result(data, accumulator) {
+        {
+          input.addRef();
+        }
+        @Override
+        public boolean isAlive() {
+          return input.isAlive() || !isFrozen();
+        }
 
-          {
-          }
-
-          @Override
-          public boolean isAlive() {
-            return input.isAlive() || !isFrozen();
-          }
-
-          public void _free() {
-          }
-        };
-      } finally {
-        batch.freeRef();
-      }
+        @Override
+        public void _free() {
+          input.freeRef();
+          super._free();
+        }
+      };
     } finally {
+      batch.freeRef();
       input.freeRef();
     }
   }
@@ -410,11 +382,11 @@ public class ImgViewLayer extends LayerBase {
       else
         channel = coords[2] + 1;
       if (0 < channel) {
-        RefUtil.freeRef(outputData.set(c,
-            get(inputData.addRef(), inputDims[0], inputDims[1], x, y, channel - 1, wrap)));
+        outputData.set(c, get(inputData.addRef(), inputDims[0], inputDims[1], x, y, channel - 1, wrap));
       } else {
-        RefUtil.freeRef(outputData.set(c, getNegativeBias() - get(inputData.addRef(),
-            inputDims[0], inputDims[1], x, y, -channel - 1, wrap)));
+        final double value = getNegativeBias() - get(inputData.addRef(),
+            inputDims[0], inputDims[1], x, y, -channel - 1, wrap);
+        outputData.set(c, value);
       }
     }, inputData, outputData));
   }

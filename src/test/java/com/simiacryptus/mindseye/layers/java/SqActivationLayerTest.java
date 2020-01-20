@@ -21,6 +21,7 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
+import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -29,24 +30,6 @@ import java.util.Arrays;
 public abstract class SqActivationLayerTest extends ActivationLayerTestBase {
   public SqActivationLayerTest() {
     super(new SqActivationLayer());
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  SqActivationLayerTest[] addRefs(@Nullable SqActivationLayerTest[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(SqActivationLayerTest::addRef)
-        .toArray((x) -> new SqActivationLayerTest[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  SqActivationLayerTest[][] addRefs(@Nullable SqActivationLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(SqActivationLayerTest::addRefs)
-        .toArray((x) -> new SqActivationLayerTest[x][]);
   }
 
   public @SuppressWarnings("unused")
@@ -67,14 +50,6 @@ public abstract class SqActivationLayerTest extends ActivationLayerTestBase {
   }
 
   public static class Basic extends SqActivationLayerTest {
-
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Basic[] addRefs(@Nullable Basic[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
-    }
 
     public @SuppressWarnings("unused")
     void _free() {

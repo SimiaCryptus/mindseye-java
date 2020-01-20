@@ -33,7 +33,6 @@ import com.simiacryptus.util.data.ScalarStatistics;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -76,36 +75,17 @@ public final class MonitoringSynapse extends LayerBase implements MonitoredItem 
     return obj;
   }
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  MonitoringSynapse[] addRefs(@Nullable MonitoringSynapse[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(MonitoringSynapse::addRef)
-        .toArray((x) -> new MonitoringSynapse[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  MonitoringSynapse[][] addRefs(@Nullable MonitoringSynapse[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(MonitoringSynapse::addRefs)
-        .toArray((x) -> new MonitoringSynapse[x][]);
-  }
-
   @Nonnull
   public MonitoringSynapse addTo(@Nonnull final MonitoredObject obj) {
-    MonitoringSynapse temp_37_0003 = addTo(obj, getName());
+    addTo(obj, getName());
+    MonitoringSynapse temp_37_0003 = this.addRef();
     return temp_37_0003;
   }
 
-  @Nonnull
-  public MonitoringSynapse addTo(@Nonnull final MonitoredObject obj, final String name) {
-    RefUtil.freeRef(setName(name));
-    RefUtil.freeRef(obj.addObj(getName(), this.addRef()));
-    obj.freeRef();
-    return this.addRef();
+  public void addTo(@Nonnull MonitoredObject obj, String name) {
+    setName(name);
+    obj.addObj(getName(), this.addRef());
+    RefUtil.freeRef(obj);
   }
 
   @Nonnull
@@ -125,44 +105,43 @@ public final class MonitoringSynapse extends LayerBase implements MonitoredItem 
       t.freeRef();
     });
     try {
-      try {
-        return new Result(inputdata, new Result.Accumulator() {
-          {
-          }
+      Result.Accumulator accumulator = new Result.Accumulator() {
+        {
+        }
 
-          @Override
-          public void accept(@Nullable DeltaSet<UUID> buffer, @Nullable TensorList data) {
-            backpropStatistics.clear();
-            input.accumulate(buffer == null ? null : buffer.addRef(), data == null ? null : data.addRef());
-            if (null != buffer)
-              buffer.freeRef();
-            assert data != null;
-            data.stream().parallel().forEach(t -> {
-              backpropStatistics.add(t.getData());
-              t.freeRef();
-            });
-            data.freeRef();
-          }
+        @Override
+        public void accept(@Nullable DeltaSet<UUID> buffer, @Nullable TensorList data) {
+          backpropStatistics.clear();
+          input.accumulate(buffer == null ? null : buffer.addRef(), data == null ? null : data.addRef());
+          if (null != buffer)
+            buffer.freeRef();
+          assert data != null;
+          data.stream().parallel().forEach(t -> {
+            backpropStatistics.add(t.getData());
+            t.freeRef();
+          });
+          data.freeRef();
+        }
 
-          public @SuppressWarnings("unused")
-          void _free() {
-          }
-        }) {
+        public @SuppressWarnings("unused")
+        void _free() {
+        }
+      };
+      return new Result(inputdata, accumulator) {
+        {
+          input.addRef();
+        }
+        @Override
+        public boolean isAlive() {
+          return input.isAlive();
+        }
 
-          {
-          }
-
-          @Override
-          public boolean isAlive() {
-            return input.isAlive();
-          }
-
-          public void _free() {
-          }
-        };
-      } finally {
-        inputdata.freeRef();
-      }
+        @Override
+        public void _free() {
+          input.freeRef();
+          super._free();
+        }
+      };
     } finally {
       input.freeRef();
     }

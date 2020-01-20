@@ -24,8 +24,6 @@ import com.simiacryptus.mindseye.test.unit.ComponentTest;
 import com.simiacryptus.mindseye.test.unit.TrainingTester;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Random;
 
 public abstract class ProductInputsLayerTest extends LayerTestBase {
@@ -43,27 +41,10 @@ public abstract class ProductInputsLayerTest extends LayerTestBase {
         return ProductInputsLayerTest.this.lossLayer();
       }
     };
-    TrainingTester temp_67_0001 = temp_67_0002.setRandomizationMode(TrainingTester.RandomizationMode.Random);
+    temp_67_0002.setRandomizationMode(TrainingTester.RandomizationMode.Random);
+    TrainingTester temp_67_0001 = temp_67_0002.addRef();
     temp_67_0002.freeRef();
     return temp_67_0001;
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  ProductInputsLayerTest[] addRefs(@Nullable ProductInputsLayerTest[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(ProductInputsLayerTest::addRef)
-        .toArray((x) -> new ProductInputsLayerTest[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  ProductInputsLayerTest[][] addRefs(@Nullable ProductInputsLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(ProductInputsLayerTest::addRefs)
-        .toArray((x) -> new ProductInputsLayerTest[x][]);
   }
 
   @Nonnull
@@ -84,13 +65,6 @@ public abstract class ProductInputsLayerTest extends LayerTestBase {
   }
 
   public static class N1Test extends ProductInputsLayerTest {
-    @Nullable
-    public static @SuppressWarnings("unused")
-    N1Test[] addRefs(@Nullable N1Test[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(N1Test::addRef).toArray((x) -> new N1Test[x]);
-    }
 
     @Nonnull
     @Override
@@ -112,14 +86,6 @@ public abstract class ProductInputsLayerTest extends LayerTestBase {
 
   public static class NNNTest extends ProductInputsLayerTest {
 
-    @Nullable
-    public static @SuppressWarnings("unused")
-    NNNTest[] addRefs(@Nullable NNNTest[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(NNNTest::addRef).toArray((x) -> new NNNTest[x]);
-    }
-
     @Nonnull
     @Override
     public int[][] getSmallDims(Random random) {
@@ -139,14 +105,6 @@ public abstract class ProductInputsLayerTest extends LayerTestBase {
   }
 
   public static class NNTest extends ProductInputsLayerTest {
-
-    @Nullable
-    public static @SuppressWarnings("unused")
-    NNTest[] addRefs(@Nullable NNTest[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(NNTest::addRef).toArray((x) -> new NNTest[x]);
-    }
 
     @Nonnull
     @Override

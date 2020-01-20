@@ -21,6 +21,7 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
+import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
@@ -52,24 +53,6 @@ public class CrossDifferenceLayer extends LayerBase {
     return max * (max - 1) / 2 - (max - x) * (max - x - 1) / 2 + y - x - 1;
   }
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  CrossDifferenceLayer[] addRefs(@Nullable CrossDifferenceLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(CrossDifferenceLayer::addRef)
-        .toArray((x) -> new CrossDifferenceLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  CrossDifferenceLayer[][] addRefs(@Nullable CrossDifferenceLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(CrossDifferenceLayer::addRefs)
-        .toArray((x) -> new CrossDifferenceLayer[x][]);
-  }
-
   @Nonnull
   @Override
   public Result eval(@Nonnull final Result... inObj) {
@@ -91,7 +74,7 @@ public class CrossDifferenceLayer extends LayerBase {
         return result1;
       }).toArray(i -> new Tensor[i])), new Result.Accumulator() {
         {
-          Result.addRefs(inObj);
+          RefUtil.addRefs(inObj);
         }
 
         @Override
@@ -129,7 +112,7 @@ public class CrossDifferenceLayer extends LayerBase {
       }) {
 
         {
-          Result.addRefs(inObj);
+          RefUtil.addRefs(inObj);
         }
 
         @Override
@@ -143,8 +126,8 @@ public class CrossDifferenceLayer extends LayerBase {
 
         public void _free() {
           ReferenceCounting.freeRefs(inObj);
+          super._free();
         }
-
       };
       temp_65_0003.freeRef();
       return temp_65_0002;

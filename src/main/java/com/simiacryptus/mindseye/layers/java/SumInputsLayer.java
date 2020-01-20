@@ -53,35 +53,17 @@ public class SumInputsLayer extends LayerBase {
   }
 
   public static PipelineNetwork combine(@Nullable PipelineNetwork... networks) {
-    PipelineNetwork temp_55_0005 = PipelineNetwork.combine(new SumInputsLayer(), PipelineNetwork.addRefs(networks));
+    PipelineNetwork temp_55_0005 = PipelineNetwork.combine(new SumInputsLayer(), RefUtil.addRefs(networks));
     if (null != networks)
       ReferenceCounting.freeRefs(networks);
     return temp_55_0005;
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  SumInputsLayer[] addRefs(@Nullable SumInputsLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(SumInputsLayer::addRef)
-        .toArray((x) -> new SumInputsLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  SumInputsLayer[][] addRefs(@Nullable SumInputsLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(SumInputsLayer::addRefs)
-        .toArray((x) -> new SumInputsLayer[x][]);
   }
 
   @Nonnull
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     try {
-      return new Result(RefUtil.get(RefArrays.stream(Result.addRefs(inObj)).parallel().map(x -> {
+      return new Result(RefUtil.get(RefArrays.stream(RefUtil.addRefs(inObj)).parallel().map(x -> {
         TensorList temp_55_0001 = x.getData();
         x.freeRef();
         return temp_55_0001;
@@ -92,11 +74,13 @@ public class SumInputsLayer extends LayerBase {
               @Nullable final Tensor left = l.get(1 == l.length() ? 0 : i);
               @Nullable final Tensor right = r.get(1 == r.length() ? 0 : i);
               @Nullable
-              Tensor tensor;
+              Tensor tensor = null;
               if (right.length() == 1) {
+                RefUtil.freeRef(tensor);
                 tensor = left.mapParallel(RefUtil.wrapInterface((DoubleUnaryOperator) v -> v + right.get(0),
                     right.addRef()));
               } else {
+                RefUtil.freeRef(tensor);
                 tensor = left.reduceParallel(right.addRef(), (v1, v2) -> v1 + v2);
               }
               right.freeRef();
@@ -108,7 +92,7 @@ public class SumInputsLayer extends LayerBase {
         return temp_55_0002;
       })), new Result.Accumulator() {
         {
-          Result.addRefs(inObj);
+          RefUtil.addRefs(inObj);
         }
 
         @Override
@@ -120,13 +104,15 @@ public class SumInputsLayer extends LayerBase {
               TensorList temp_55_0007 = input.getData();
               assert projectedDelta != null;
               if (1 < projectedDelta.length() && temp_55_0007.length() == 1) {
-                projectedDelta = new TensorArray(RefUtil.get(projectedDelta.stream().parallel().reduce((a, b) -> {
+                TensorArray projectedDelta1 = new TensorArray(RefUtil.get(projectedDelta.stream().parallel().reduce((a, b) -> {
                   Tensor temp_55_0003 = a.addAndFree(b == null ? null : b.addRef());
                   if (null != b)
                     b.freeRef();
                   a.freeRef();
                   return temp_55_0003;
                 })));
+                projectedDelta.freeRef();
+                projectedDelta = projectedDelta1;
               }
               temp_55_0007.freeRef();
               TensorList temp_55_0008 = input.getData();
@@ -138,6 +124,7 @@ public class SumInputsLayer extends LayerBase {
                   t.freeRef();
                   return temp_55_0004;
                 }).toArray(i -> new Tensor[i]));
+                projectedDelta.freeRef();
                 projectedDelta = new_projectedDelta;
               }
               temp_55_0008.freeRef();
@@ -157,7 +144,7 @@ public class SumInputsLayer extends LayerBase {
       }) {
 
         {
-          Result.addRefs(inObj);
+          RefUtil.addRefs(inObj);
         }
 
         @Override
@@ -171,8 +158,8 @@ public class SumInputsLayer extends LayerBase {
 
         public void _free() {
           ReferenceCounting.freeRefs(inObj);
+          super._free();
         }
-
       };
     } finally {
       ReferenceCounting.freeRefs(inObj);

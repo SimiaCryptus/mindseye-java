@@ -21,6 +21,7 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
+import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefList;
@@ -30,7 +31,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 
@@ -60,75 +60,52 @@ public class ReshapeLayer extends LayerBase {
   }
 
   @Nullable
-  public static @SuppressWarnings("unused")
-  ReshapeLayer[] addRefs(@Nullable ReshapeLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(ReshapeLayer::addRef).toArray((x) -> new ReshapeLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  ReshapeLayer[][] addRefs(@Nullable ReshapeLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(ReshapeLayer::addRefs)
-        .toArray((x) -> new ReshapeLayer[x][]);
-  }
-
-  @Nullable
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     assert 1 == inObj.length;
     TensorList data = inObj[0].getData();
     @Nonnull
     int[] inputDims = data.getDimensions();
-    ReshapedTensorList reshapedTensorList = new ReshapedTensorList(data.addRef(), outputDims);
-    data.freeRef();
     try {
-      try {
-        return new Result(reshapedTensorList, new Result.Accumulator() {
-          {
-            Result.addRefs(inObj);
-          }
+      return new Result(new ReshapedTensorList(data, outputDims), new Result.Accumulator() {
+        {
+          RefUtil.addRefs(inObj);
+        }
 
-          @Override
-          public void accept(@Nullable DeltaSet<UUID> buffer, @Nullable TensorList delta) {
-            @Nonnull
-            ReshapedTensorList tensorList = new ReshapedTensorList(delta == null ? null : delta.addRef(), inputDims);
-            if (null != delta)
-              delta.freeRef();
-            inObj[0].accumulate(buffer == null ? null : buffer.addRef(), tensorList);
-            if (null != buffer)
-              buffer.freeRef();
-          }
+        @Override
+        public void accept(@Nullable DeltaSet<UUID> buffer, @Nullable TensorList delta) {
+          @Nonnull
+          ReshapedTensorList tensorList = new ReshapedTensorList(delta == null ? null : delta.addRef(), inputDims);
+          if (null != delta)
+            delta.freeRef();
+          inObj[0].accumulate(buffer == null ? null : buffer.addRef(), tensorList);
+          if (null != buffer)
+            buffer.freeRef();
+        }
 
-          public @SuppressWarnings("unused")
-          void _free() {
-            ReferenceCounting.freeRefs(inObj);
-          }
-        }) {
+        public @SuppressWarnings("unused")
+        void _free() {
+          ReferenceCounting.freeRefs(inObj);
+        }
+      }) {
 
-          {
-            Result.addRefs(inObj);
-          }
+        {
+          RefUtil.addRefs(inObj);
+        }
 
-          @Override
-          public boolean isAlive() {
-            return inObj[0].isAlive();
-          }
+        @Override
+        public boolean isAlive() {
+          return inObj[0].isAlive();
+        }
 
-          public void _free() {
-            ReferenceCounting.freeRefs(inObj);
-          }
-        };
-      } finally {
-        ReferenceCounting.freeRefs(inObj);
-      }
+        public void _free() {
+          ReferenceCounting.freeRefs(inObj);
+          super._free();
+        }
+      };
     } finally {
-      reshapedTensorList.freeRef();
+      ReferenceCounting.freeRefs(inObj);
     }
-
   }
 
   @Nonnull

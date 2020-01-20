@@ -24,6 +24,7 @@ import com.simiacryptus.mindseye.lang.DataSerializer;
 import com.simiacryptus.mindseye.lang.LayerBase;
 import com.simiacryptus.mindseye.lang.Result;
 import com.simiacryptus.mindseye.lang.TensorList;
+import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrayList;
 import com.simiacryptus.ref.wrappers.RefList;
@@ -57,24 +58,6 @@ public class ImgZeroPaddingLayer extends LayerBase {
     return new ImgZeroPaddingLayer(json);
   }
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  ImgZeroPaddingLayer[] addRefs(@Nullable ImgZeroPaddingLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(ImgZeroPaddingLayer::addRef)
-        .toArray((x) -> new ImgZeroPaddingLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  ImgZeroPaddingLayer[][] addRefs(@Nullable ImgZeroPaddingLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(ImgZeroPaddingLayer::addRefs)
-        .toArray((x) -> new ImgZeroPaddingLayer[x][]);
-  }
-
   @Nonnull
   @Override
   public Result eval(@Nonnull final Result... inObj) {
@@ -84,7 +67,7 @@ public class ImgZeroPaddingLayer extends LayerBase {
     int[] dimensions = temp_25_0002.getDimensions();
     temp_25_0002.freeRef();
     ImgCropLayer imgCropLayer = new ImgCropLayer(dimensions[0] + 2 * this.sizeX, dimensions[1] + 2 * this.sizeY);
-    Result temp_25_0001 = imgCropLayer.eval(Result.addRefs(inObj));
+    Result temp_25_0001 = imgCropLayer.eval(RefUtil.addRefs(inObj));
     ReferenceCounting.freeRefs(inObj);
     imgCropLayer.freeRef();
     return temp_25_0001;

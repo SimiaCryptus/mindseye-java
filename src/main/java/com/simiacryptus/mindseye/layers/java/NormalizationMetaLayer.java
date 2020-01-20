@@ -26,8 +26,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Map;
 
 @SuppressWarnings("serial")
@@ -42,7 +40,8 @@ public class NormalizationMetaLayer extends PipelineNetwork {
     RefUtil.freeRef(add(new AvgReducerLayer()));
     RefUtil.freeRef(add(new AvgMetaLayer()));
     NthPowerActivationLayer temp_74_0001 = new NthPowerActivationLayer();
-    RefUtil.freeRef(add(temp_74_0001.setPower(-0.5)));
+    temp_74_0001.setPower(-0.5);
+    RefUtil.freeRef(add(temp_74_0001.addRef()));
     temp_74_0001.freeRef();
     RefUtil.freeRef(add(new ProductInputsLayer(), getHead(), getInput(0)));
   }
@@ -55,24 +54,6 @@ public class NormalizationMetaLayer extends PipelineNetwork {
   @SuppressWarnings("unused")
   public static NormalizationMetaLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new NormalizationMetaLayer(json, rs);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  NormalizationMetaLayer[] addRefs(@Nullable NormalizationMetaLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(NormalizationMetaLayer::addRef)
-        .toArray((x) -> new NormalizationMetaLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  NormalizationMetaLayer[][] addRefs(@Nullable NormalizationMetaLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(NormalizationMetaLayer::addRefs)
-        .toArray((x) -> new NormalizationMetaLayer[x][]);
   }
 
   public @SuppressWarnings("unused")

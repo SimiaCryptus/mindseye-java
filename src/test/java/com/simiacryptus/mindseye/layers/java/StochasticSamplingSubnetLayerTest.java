@@ -30,26 +30,6 @@ import java.util.Random;
 
 public abstract class StochasticSamplingSubnetLayerTest extends LayerTestBase {
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  StochasticSamplingSubnetLayerTest[] addRefs(
-      @Nullable StochasticSamplingSubnetLayerTest[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(StochasticSamplingSubnetLayerTest::addRef)
-        .toArray((x) -> new StochasticSamplingSubnetLayerTest[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  StochasticSamplingSubnetLayerTest[][] addRefs(
-      @Nullable StochasticSamplingSubnetLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(StochasticSamplingSubnetLayerTest::addRefs)
-        .toArray((x) -> new StochasticSamplingSubnetLayerTest[x][]);
-  }
-
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
@@ -81,14 +61,6 @@ public abstract class StochasticSamplingSubnetLayerTest extends LayerTestBase {
   }
 
   public static class Basic extends StochasticSamplingSubnetLayerTest {
-
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Basic[] addRefs(@Nullable Basic[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
-    }
 
     public @SuppressWarnings("unused")
     void _free() {

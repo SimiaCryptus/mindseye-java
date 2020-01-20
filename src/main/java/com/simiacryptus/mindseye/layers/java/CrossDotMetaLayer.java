@@ -21,6 +21,7 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
+import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefList;
@@ -53,24 +54,6 @@ public class CrossDotMetaLayer extends LayerBase {
   }
 
   @Nullable
-  public static @SuppressWarnings("unused")
-  CrossDotMetaLayer[] addRefs(@Nullable CrossDotMetaLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(CrossDotMetaLayer::addRef)
-        .toArray((x) -> new CrossDotMetaLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  CrossDotMetaLayer[][] addRefs(@Nullable CrossDotMetaLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(CrossDotMetaLayer::addRefs)
-        .toArray((x) -> new CrossDotMetaLayer[x][]);
-  }
-
-  @Nullable
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     final Result input = inObj[0].addRef();
@@ -95,69 +78,65 @@ public class CrossDotMetaLayer extends LayerBase {
       }
     }
     try {
-      try {
-        try {
-          return new Result(new TensorArray(results.addRef()), new Result.Accumulator() {
-            {
-            }
-
-            @Override
-            public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
-              if (input.isAlive()) {
-                @Nullable final Tensor deltaTensor = delta.get(0);
-                @Nonnull final Tensor feedback[] = new Tensor[itemCnt];
-                RefArrays.parallelSetAll(Tensor.addRefs(feedback), i -> new Tensor(dim));
-
-                for (int i = 0; i < dim; i++) {
-                  for (int j = 0; j < dim; j++) {
-                    if (i == j) {
-                      continue;
-                    }
-                    final double v = deltaTensor.get(i, j);
-                    for (int k = 0; k < itemCnt; k++) {
-                      Tensor tensor = indata.get(k);
-                      @Nullable final double[] kk = tensor.getData();
-                      tensor.freeRef();
-                      feedback[k].add(i, v * kk[j]);
-                      feedback[k].add(j, v * kk[i]);
-                    }
-                  }
-                }
-                deltaTensor.freeRef();
-                @Nonnull
-                TensorArray tensorArray = new TensorArray(Tensor.addRefs(feedback));
-                ReferenceCounting.freeRefs(feedback);
-                input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
-              }
-              delta.freeRef();
-              if (null != buffer)
-                buffer.freeRef();
-            }
-
-            public @SuppressWarnings("unused")
-            void _free() {
-            }
-          }) {
-
-            {
-            }
-
-            @Override
-            public boolean isAlive() {
-              return input.isAlive();
-            }
-
-            public void _free() {
-            }
-
-          };
-        } finally {
-          results.freeRef();
+      Result.Accumulator accumulator = new Result.Accumulator() {
+        {
         }
-      } finally {
-        indata.freeRef();
-      }
+
+        @Override
+        public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
+          if (input.isAlive()) {
+            @Nullable final Tensor deltaTensor = delta.get(0);
+            @Nonnull final Tensor feedback[] = new Tensor[itemCnt];
+            RefArrays.parallelSetAll(RefUtil.addRefs(feedback), i -> new Tensor(dim));
+
+            for (int i = 0; i < dim; i++) {
+              for (int j = 0; j < dim; j++) {
+                if (i == j) {
+                  continue;
+                }
+                final double v = deltaTensor.get(i, j);
+                for (int k = 0; k < itemCnt; k++) {
+                  Tensor tensor = indata.get(k);
+                  @Nullable final double[] kk = tensor.getData();
+                  tensor.freeRef();
+                  feedback[k].add(i, v * kk[j]);
+                  feedback[k].add(j, v * kk[i]);
+                }
+              }
+            }
+            deltaTensor.freeRef();
+            @Nonnull
+            TensorArray tensorArray = new TensorArray(RefUtil.addRefs(feedback));
+            ReferenceCounting.freeRefs(feedback);
+            input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
+          }
+          delta.freeRef();
+          if (null != buffer)
+            buffer.freeRef();
+        }
+
+        public @SuppressWarnings("unused")
+        void _free() {
+        }
+      };
+      return new Result(new TensorArray(results.addRef()), accumulator) {
+        {
+          input.addRef();
+        }
+        @Override
+        public boolean isAlive() {
+          return input.isAlive();
+        }
+
+        @Override
+        public void _free() {
+          input.freeRef();
+          super._free();
+        }
+      };
     } finally {
+      results.freeRef();
+      indata.freeRef();
       input.freeRef();
     }
   }

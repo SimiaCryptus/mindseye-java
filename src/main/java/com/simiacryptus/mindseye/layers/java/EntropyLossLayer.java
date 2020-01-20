@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.IntFunction;
@@ -55,24 +54,6 @@ public class EntropyLossLayer extends LayerBase {
     return new EntropyLossLayer(json);
   }
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  EntropyLossLayer[] addRefs(@Nullable EntropyLossLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(EntropyLossLayer::addRef)
-        .toArray((x) -> new EntropyLossLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  EntropyLossLayer[][] addRefs(@Nullable EntropyLossLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(EntropyLossLayer::addRefs)
-        .toArray((x) -> new EntropyLossLayer[x][]);
-  }
-
   @Nonnull
   @Override
   public Result eval(@Nonnull final Result... inObj) {
@@ -81,128 +62,118 @@ public class EntropyLossLayer extends LayerBase {
     @Nonnull final Tensor gradient[] = new Tensor[indata.length()];
     final double max_prob = 1.;
     try {
-      try {
-        try {
-          return new Result(new TensorArray(RefIntStream.range(0, indata.length())
-              .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-                @Nullable final Tensor l = indata.get(dataIndex);
-                TensorList temp_03_0006 = inObj[1].getData();
-                @Nullable final Tensor r = temp_03_0006.get(dataIndex);
-                temp_03_0006.freeRef();
-                if (l.length() != r.length()) {
-                  IllegalArgumentException temp_03_0004 = new IllegalArgumentException(
-                      l.length() + " != " + r.length());
-                  l.freeRef();
-                  r.freeRef();
-                  throw temp_03_0004;
-                }
-                @Nonnull final Tensor gradientTensor = new Tensor(l.getDimensions());
-                @Nullable final double[] gradientData = gradientTensor.getData();
-                double total = 0;
-                @Nullable final double[] ld = l.getData();
-                @Nullable final double[] rd = r.getData();
-                r.freeRef();
-                for (int i = 0; i < l.length(); i++) {
-                  final double lv = Math.max(Math.min(ld[i], max_prob), zero_tol);
-                  final double rv = rd[i];
-                  if (rv > 0) {
-                    gradientData[i] = -rv / lv;
-                    total += -rv * Math.log(lv);
-                  } else {
-                    gradientData[i] = 0;
-                  }
-                }
-                l.freeRef();
-                assert total >= 0;
-                Tensor temp_03_0001 = gradientTensor.addRef();
-                if (null != gradient[dataIndex])
-                  gradient[dataIndex].freeRef();
-                gradient[dataIndex] = temp_03_0001.addRef();
-                temp_03_0001.freeRef();
-                gradientTensor.freeRef();
-                return new Tensor(new double[]{total}, 1);
-              }, indata.addRef(), Result.addRefs(inObj), Tensor.addRefs(gradient)))
-              .toArray(i -> new Tensor[i])), new Result.Accumulator() {
-            {
-              Result.addRefs(inObj);
-              indata.addRef();
-              Tensor.addRefs(gradient);
+      return new Result(new TensorArray(RefIntStream.range(0, indata.length())
+          .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+            @Nullable final Tensor l = indata.get(dataIndex);
+            TensorList temp_03_0006 = inObj[1].getData();
+            @Nullable final Tensor r = temp_03_0006.get(dataIndex);
+            temp_03_0006.freeRef();
+            if (l.length() != r.length()) {
+              IllegalArgumentException temp_03_0004 = new IllegalArgumentException(
+                  l.length() + " != " + r.length());
+              l.freeRef();
+              r.freeRef();
+              throw temp_03_0004;
             }
-
-            @Override
-            public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
-              if (inObj[1].isAlive()) {
-                @Nonnull
-                TensorArray tensorArray = new TensorArray(RefIntStream.range(0, delta.length())
-                    .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-                          Tensor deltaTensor = delta.get(dataIndex);
-                          @Nullable final Tensor inputTensor = indata.get(dataIndex);
-                          @Nonnull final Tensor passback = new Tensor(gradient[dataIndex].getDimensions());
-                          for (int i = 0; i < passback.length(); i++) {
-                            final double lv = Math.max(Math.min(inputTensor.get(i), max_prob), zero_tol);
-                            RefUtil.freeRef(passback.set(i, -deltaTensor.get(0) * Math.log(lv)));
-                          }
-                          inputTensor.freeRef();
-                          deltaTensor.freeRef();
-                          return passback;
-                        }, indata.addRef(), Tensor.addRefs(gradient),
-                        delta.addRef()))
-                    .toArray(i -> new Tensor[i]));
-                inObj[1].accumulate(buffer == null ? null : buffer.addRef(),
-                    tensorArray);
+            @Nonnull final Tensor gradientTensor = new Tensor(l.getDimensions());
+            @Nullable final double[] gradientData = gradientTensor.getData();
+            double total = 0;
+            @Nullable final double[] ld = l.getData();
+            @Nullable final double[] rd = r.getData();
+            r.freeRef();
+            for (int i = 0; i < l.length(); i++) {
+              final double lv = Math.max(Math.min(ld[i], max_prob), zero_tol);
+              final double rv = rd[i];
+              if (rv > 0) {
+                gradientData[i] = -rv / lv;
+                total += -rv * Math.log(lv);
+              } else {
+                gradientData[i] = 0;
               }
-              if (inObj[0].isAlive()) {
-                @Nonnull
-                TensorArray tensorArray = new TensorArray(RefIntStream.range(0, delta.length())
-                    .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-                      Tensor tensor = delta.get(dataIndex);
+            }
+            l.freeRef();
+            assert total >= 0;
+            RefUtil.set((gradient), dataIndex, gradientTensor);
+            return new Tensor(new double[]{total}, 1);
+          }, indata.addRef(), RefUtil.addRefs(inObj), RefUtil.addRefs(gradient)))
+          .toArray(i -> new Tensor[i])), new Result.Accumulator() {
+        {
+          RefUtil.addRefs(inObj);
+          indata.addRef();
+          RefUtil.addRefs(gradient);
+        }
+
+        @Override
+        public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
+          if (inObj[1].isAlive()) {
+            @Nonnull
+            TensorArray tensorArray = new TensorArray(RefIntStream.range(0, delta.length())
+                .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+                      Tensor deltaTensor = delta.get(dataIndex);
+                      @Nullable final Tensor inputTensor = indata.get(dataIndex);
                       @Nonnull final Tensor passback = new Tensor(gradient[dataIndex].getDimensions());
                       for (int i = 0; i < passback.length(); i++) {
-                        RefUtil.freeRef(passback.set(i, tensor.get(0) * gradient[dataIndex].get(i)));
+                        final double lv = Math.max(Math.min(inputTensor.get(i), max_prob), zero_tol);
+                        final double value = -deltaTensor.get(0) * Math.log(lv);
+                        passback.set(i, value);
                       }
-                      tensor.freeRef();
+                      inputTensor.freeRef();
+                      deltaTensor.freeRef();
                       return passback;
-                    }, delta.addRef(), Tensor.addRefs(gradient)))
-                    .toArray(i -> new Tensor[i]));
-                inObj[0].accumulate(buffer == null ? null : buffer.addRef(),
-                    tensorArray);
-              }
-              delta.freeRef();
-              if (null != buffer)
-                buffer.freeRef();
-            }
-
-            public @SuppressWarnings("unused")
-            void _free() {
-              ReferenceCounting.freeRefs(inObj);
-              indata.freeRef();
-              ReferenceCounting.freeRefs(gradient);
-            }
-          }) {
-
-            {
-              Result.addRefs(inObj);
-            }
-
-            @Override
-            public boolean isAlive() {
-              if (inObj[0].isAlive()) return true;
-              inObj[0].isAlive();
-              return false;
-            }
-
-            public void _free() {
-              ReferenceCounting.freeRefs(inObj);
-            }
-
-          };
-        } finally {
-          ReferenceCounting.freeRefs(inObj);
+                    }, indata.addRef(), RefUtil.addRefs(gradient),
+                    delta.addRef()))
+                .toArray(i -> new Tensor[i]));
+            inObj[1].accumulate(buffer == null ? null : buffer.addRef(),
+                tensorArray);
+          }
+          if (inObj[0].isAlive()) {
+            @Nonnull
+            TensorArray tensorArray = new TensorArray(RefIntStream.range(0, delta.length())
+                .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+                  Tensor tensor = delta.get(dataIndex);
+                  @Nonnull final Tensor passback = new Tensor(gradient[dataIndex].getDimensions());
+                  for (int i = 0; i < passback.length(); i++) {
+                    passback.set(i, tensor.get(0) * gradient[dataIndex].get(i));
+                  }
+                  tensor.freeRef();
+                  return passback;
+                }, delta.addRef(), RefUtil.addRefs(gradient)))
+                .toArray(i -> new Tensor[i]));
+            inObj[0].accumulate(buffer == null ? null : buffer.addRef(),
+                tensorArray);
+          }
+          delta.freeRef();
+          if (null != buffer)
+            buffer.freeRef();
         }
-      } finally {
-        ReferenceCounting.freeRefs(gradient);
-      }
+
+        public @SuppressWarnings("unused")
+        void _free() {
+          ReferenceCounting.freeRefs(inObj);
+          indata.freeRef();
+          ReferenceCounting.freeRefs(gradient);
+        }
+      }) {
+
+        {
+          RefUtil.addRefs(inObj);
+        }
+
+        @Override
+        public boolean isAlive() {
+          if (inObj[0].isAlive()) return true;
+          inObj[0].isAlive();
+          return false;
+        }
+
+        public void _free() {
+          ReferenceCounting.freeRefs(inObj);
+          super._free();
+        }
+      };
     } finally {
+      ReferenceCounting.freeRefs(inObj);
+      ReferenceCounting.freeRefs(gradient);
       indata.freeRef();
     }
   }

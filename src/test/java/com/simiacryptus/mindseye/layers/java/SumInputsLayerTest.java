@@ -26,19 +26,10 @@ import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Random;
 
 public class SumInputsLayerTest {
   public static class N1Test extends LayerTestBase {
-
-    @Nullable
-    public static @SuppressWarnings("unused")
-    N1Test[] addRefs(@Nullable N1Test[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(N1Test::addRef).toArray((x) -> new N1Test[x]);
-    }
 
     @Nonnull
     @Override
@@ -68,18 +59,9 @@ public class SumInputsLayerTest {
     N1Test addRef() {
       return (N1Test) super.addRef();
     }
-
   }
 
   public static class NNTest extends LayerTestBase {
-
-    @Nullable
-    public static @SuppressWarnings("unused")
-    NNTest[] addRefs(@Nullable NNTest[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(NNTest::addRef).toArray((x) -> new NNTest[x]);
-    }
 
     @Nonnull
     @Override
@@ -109,7 +91,6 @@ public class SumInputsLayerTest {
     NNTest addRef() {
       return (NNTest) super.addRef();
     }
-
   }
 
   public static class OnePlusOne extends LayerTestBase {
@@ -127,14 +108,6 @@ public class SumInputsLayerTest {
     @Override
     protected Class<?> getTargetClass() {
       return SumInputsLayer.class;
-    }
-
-    @Nullable
-    public static @SuppressWarnings("unused")
-    OnePlusOne[] addRefs(@Nullable OnePlusOne[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(OnePlusOne::addRef).toArray((x) -> new OnePlusOne[x]);
     }
 
     @Nonnull
@@ -171,6 +144,5 @@ public class SumInputsLayerTest {
     OnePlusOne addRef() {
       return (OnePlusOne) super.addRef();
     }
-
   }
 }

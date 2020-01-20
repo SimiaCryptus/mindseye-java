@@ -20,6 +20,7 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
+import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -30,24 +31,6 @@ public abstract class CrossDotMetaLayerTest extends LayerTestBase {
 
   public CrossDotMetaLayerTest() {
     validateBatchExecution = false;
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  CrossDotMetaLayerTest[] addRefs(@Nullable CrossDotMetaLayerTest[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(CrossDotMetaLayerTest::addRef)
-        .toArray((x) -> new CrossDotMetaLayerTest[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  CrossDotMetaLayerTest[][] addRefs(@Nullable CrossDotMetaLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(CrossDotMetaLayerTest::addRefs)
-        .toArray((x) -> new CrossDotMetaLayerTest[x][]);
   }
 
   @Nonnull
@@ -74,14 +57,6 @@ public abstract class CrossDotMetaLayerTest extends LayerTestBase {
   }
 
   public static class Basic extends CrossDotMetaLayerTest {
-
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Basic[] addRefs(@Nullable Basic[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
-    }
 
     public @SuppressWarnings("unused")
     void _free() {

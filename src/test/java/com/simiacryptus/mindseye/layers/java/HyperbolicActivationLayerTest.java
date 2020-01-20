@@ -29,7 +29,6 @@ import com.simiacryptus.ref.wrappers.RefHashMap;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 
 public abstract class HyperbolicActivationLayerTest extends ActivationLayerTestBase {
   public HyperbolicActivationLayerTest() {
@@ -58,29 +57,10 @@ public abstract class HyperbolicActivationLayerTest extends ActivationLayerTestB
         return HyperbolicActivationLayerTest.this.lossLayer();
       }
     };
-    TrainingTester temp_69_0001 = temp_69_0002.setRandomizationMode(TrainingTester.RandomizationMode.Random);
+    temp_69_0002.setRandomizationMode(TrainingTester.RandomizationMode.Random);
+    TrainingTester temp_69_0001 = temp_69_0002.addRef();
     temp_69_0002.freeRef();
     return temp_69_0001;
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  HyperbolicActivationLayerTest[] addRefs(
-      @Nullable HyperbolicActivationLayerTest[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(HyperbolicActivationLayerTest::addRef)
-        .toArray((x) -> new HyperbolicActivationLayerTest[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  HyperbolicActivationLayerTest[][] addRefs(
-      @Nullable HyperbolicActivationLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(HyperbolicActivationLayerTest::addRefs)
-        .toArray((x) -> new HyperbolicActivationLayerTest[x][]);
   }
 
   public @SuppressWarnings("unused")
@@ -95,13 +75,6 @@ public abstract class HyperbolicActivationLayerTest extends ActivationLayerTestB
   }
 
   public static class Basic extends HyperbolicActivationLayerTest {
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Basic[] addRefs(@Nullable Basic[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
-    }
 
     public @SuppressWarnings("unused")
     void _free() {

@@ -24,6 +24,7 @@ import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 import com.simiacryptus.mindseye.test.ToleranceStatistics;
 import com.simiacryptus.mindseye.test.unit.ComponentTest;
 import com.simiacryptus.mindseye.test.unit.SingleDerivativeTester;
+import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -41,24 +42,6 @@ public abstract class EntropyLayerTest extends ActivationLayerTestBase {
     return new SingleDerivativeTester(1e-2, 1e-5);
   }
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  EntropyLayerTest[] addRefs(@Nullable EntropyLayerTest[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(EntropyLayerTest::addRef)
-        .toArray((x) -> new EntropyLayerTest[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  EntropyLayerTest[][] addRefs(@Nullable EntropyLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(EntropyLayerTest::addRefs)
-        .toArray((x) -> new EntropyLayerTest[x][]);
-  }
-
   public @SuppressWarnings("unused")
   void _free() {
   }
@@ -71,13 +54,6 @@ public abstract class EntropyLayerTest extends ActivationLayerTestBase {
   }
 
   public static class Basic extends EntropyLayerTest {
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Basic[] addRefs(@Nullable Basic[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Basic::addRef).toArray((x) -> new Basic[x]);
-    }
 
     public @SuppressWarnings("unused")
     void _free() {

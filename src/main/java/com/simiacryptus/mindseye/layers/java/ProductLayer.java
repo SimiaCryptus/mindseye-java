@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.IntFunction;
@@ -55,34 +54,17 @@ public class ProductLayer extends LayerBase {
     return new ProductLayer(json);
   }
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  ProductLayer[] addRefs(@Nullable ProductLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(ProductLayer::addRef).toArray((x) -> new ProductLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  ProductLayer[][] addRefs(@Nullable ProductLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(ProductLayer::addRefs)
-        .toArray((x) -> new ProductLayer[x][]);
-  }
-
   @Nonnull
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     final Result in0 = inObj[0].addRef();
-    assert RefArrays.stream(Result.addRefs(inObj)).mapToInt(x -> {
+    assert RefArrays.stream(RefUtil.addRefs(inObj)).mapToInt(x -> {
       TensorList temp_49_0005 = x.getData();
       int temp_49_0001 = temp_49_0005.length();
       temp_49_0005.freeRef();
       x.freeRef();
       return temp_49_0001;
-    }).distinct().count() == 1 : RefArrays.toString(RefArrays.stream(Result.addRefs(inObj)).mapToInt(x -> {
+    }).distinct().count() == 1 : RefArrays.toString(RefArrays.stream(RefUtil.addRefs(inObj)).mapToInt(x -> {
       TensorList temp_49_0006 = x.getData();
       int temp_49_0002 = temp_49_0006.length();
       temp_49_0006.freeRef();
@@ -108,73 +90,71 @@ public class ProductLayer extends LayerBase {
           }
           sum_A[dataIndex] = sum;
           return new Tensor(new double[]{sum}, 1);
-        }, Result.addRefs(inObj))).toArray(i -> new Tensor[i]);
+        }, RefUtil.addRefs(inObj))).toArray(i -> new Tensor[i]);
     temp_49_0008.freeRef();
     in0.freeRef();
     try {
-      try {
-        return new Result(new TensorArray(Tensor.addRefs(outputA)), new Result.Accumulator() {
-          {
-            Result.addRefs(inObj);
-          }
+      return new Result(new TensorArray(RefUtil.addRefs(outputA)), new Result.Accumulator() {
+        {
+          RefUtil.addRefs(inObj);
+        }
 
-          @Override
-          public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
-            for (@Nonnull final Result input : inObj) {
-              if (input.isAlive()) {
-                TensorList data = input.getData();
-                input.accumulate(buffer == null ? null : buffer.addRef(),
-                    new TensorArray(RefIntStream.range(0, delta.length())
-                        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-                          Tensor dataTensor = delta.get(dataIndex);
-                          Tensor lTensor = data.get(dataIndex);
-                          @Nonnull final Tensor passback = new Tensor(lTensor.getDimensions());
-                          for (int i = 0; i < lTensor.length(); i++) {
-                            double d = lTensor.getData()[i];
-                            double deltaV = dataTensor.get(0);
-                            RefUtil.freeRef(passback.set(i, d == 0 ? 0 : (deltaV * sum_A[dataIndex] / d)));
-                          }
-                          lTensor.freeRef();
-                          dataTensor.freeRef();
-                          return passback;
-                        }, data.addRef(), delta.addRef()))
-                        .toArray(i -> new Tensor[i])));
-                data.freeRef();
-              }
+        @Override
+        public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
+          for (@Nonnull final Result input : inObj) {
+            if (input.isAlive()) {
+              TensorList data = input.getData();
+              input.accumulate(buffer == null ? null : buffer.addRef(),
+                  new TensorArray(RefIntStream.range(0, delta.length())
+                      .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+                        Tensor dataTensor = delta.get(dataIndex);
+                        Tensor lTensor = data.get(dataIndex);
+                        @Nonnull final Tensor passback = new Tensor(lTensor.getDimensions());
+                        for (int i = 0; i < lTensor.length(); i++) {
+                          double d = lTensor.getData()[i];
+                          double deltaV = dataTensor.get(0);
+                          final double value = d == 0 ? 0 : (deltaV * sum_A[dataIndex] / d);
+                          passback.set(i, value);
+                        }
+                        lTensor.freeRef();
+                        dataTensor.freeRef();
+                        return passback;
+                      }, data.addRef(), delta.addRef()))
+                      .toArray(i -> new Tensor[i])));
+              data.freeRef();
             }
-            delta.freeRef();
-            if (null != buffer)
-              buffer.freeRef();
           }
+          delta.freeRef();
+          if (null != buffer)
+            buffer.freeRef();
+        }
 
-          public @SuppressWarnings("unused")
-          void _free() {
-            ReferenceCounting.freeRefs(inObj);
-          }
-        }) {
+        public @SuppressWarnings("unused")
+        void _free() {
+          ReferenceCounting.freeRefs(inObj);
+        }
+      }) {
 
-          {
-            Result.addRefs(inObj);
-          }
+        {
+          RefUtil.addRefs(inObj);
+        }
 
-          @Override
-          public boolean isAlive() {
-            for (@Nonnull final Result element : inObj)
-              if (element.isAlive()) {
-                return true;
-              }
-            return false;
-          }
+        @Override
+        public boolean isAlive() {
+          for (@Nonnull final Result element : inObj)
+            if (element.isAlive()) {
+              return true;
+            }
+          return false;
+        }
 
-          public void _free() {
-            ReferenceCounting.freeRefs(inObj);
-          }
-
-        };
-      } finally {
-        ReferenceCounting.freeRefs(inObj);
-      }
+        public void _free() {
+          ReferenceCounting.freeRefs(inObj);
+          super._free();
+        }
+      };
     } finally {
+      ReferenceCounting.freeRefs(inObj);
       ReferenceCounting.freeRefs(outputA);
     }
   }

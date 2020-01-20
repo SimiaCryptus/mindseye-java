@@ -56,24 +56,6 @@ public class AvgReducerLayer extends LayerBase {
     return new AvgReducerLayer(json);
   }
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  AvgReducerLayer[] addRefs(@Nullable AvgReducerLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(AvgReducerLayer::addRef)
-        .toArray((x) -> new AvgReducerLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  AvgReducerLayer[][] addRefs(@Nullable AvgReducerLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(AvgReducerLayer::addRefs)
-        .toArray((x) -> new AvgReducerLayer[x][]);
-  }
-
   @Nonnull
   @Override
   public Result eval(@Nonnull final Result... inObj) {
@@ -93,10 +75,10 @@ public class AvgReducerLayer extends LayerBase {
               }
             }
             return sum;
-          }, Result.addRefs(inObj))).mapToObj(x -> new Tensor(new double[]{x}, new int[]{1}))
+          }, RefUtil.addRefs(inObj))).mapToObj(x -> new Tensor(new double[]{x}, new int[]{1}))
           .toArray(i -> new Tensor[i])), new Result.Accumulator() {
         {
-          Result.addRefs(inObj);
+          RefUtil.addRefs(inObj);
         }
 
         @Override
@@ -112,12 +94,11 @@ public class AvgReducerLayer extends LayerBase {
                     @Nonnull final Tensor passback = new Tensor(inData.getDimensions());
                     final int dim = passback.length();
                     for (int i = 0; i < dim; i++) {
-                      passback.set(i, deltaV / dim).freeRef();
+                      passback.set(i, deltaV / dim);
                     }
                     return passback;
-                  }, delta.addRef(), inData.addRef()))
+                  }, delta.addRef(), inData))
                   .toArray(i -> new Tensor[i]));
-              inData.freeRef();
               in_l.accumulate(buffer == null ? null : buffer.addRef(), tensorList);
             }
           }
@@ -133,7 +114,7 @@ public class AvgReducerLayer extends LayerBase {
       }) {
 
         {
-          Result.addRefs(inObj);
+          RefUtil.addRefs(inObj);
         }
 
         @Override
@@ -147,8 +128,8 @@ public class AvgReducerLayer extends LayerBase {
 
         public void _free() {
           ReferenceCounting.freeRefs(inObj);
+          super._free();
         }
-
       };
       temp_64_0003.freeRef();
       return temp_64_0002;
