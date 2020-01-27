@@ -22,7 +22,6 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RefUtil;
-import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefList;
@@ -127,7 +126,7 @@ public class FullyConnectedReferenceLayer extends LayerBase {
   public Result eval(@Nullable final Result... inObj) {
     assert inObj != null;
     final Result inputResult = inObj[0].addRef();
-    ReferenceCounting.freeRefs(inObj);
+    RefUtil.freeRefs(inObj);
     final TensorList indata = inputResult.getData();
     @Nonnull
     int[] inputDimensions = indata.getDimensions();
@@ -138,6 +137,10 @@ public class FullyConnectedReferenceLayer extends LayerBase {
     try {
       Result.Accumulator accumulator = new Result.Accumulator() {
         {
+          fullyConnectedReferenceLayer.addRef();
+          inputResult.addRef();
+          weights.addRef();
+          indata.addRef();
         }
 
         @Override
@@ -164,13 +167,9 @@ public class FullyConnectedReferenceLayer extends LayerBase {
                     delta.addRef()))
                 .toArray(i -> new Tensor[i]);
             Tensor tensor = RefUtil.get(RefArrays.stream(RefUtil.addRefs(array)).reduce((a, b) -> {
-              Tensor temp_02_0007 = a.addAndFree(b == null ? null : b.addRef());
-              if (null != b)
-                b.freeRef();
-              a.freeRef();
-              return temp_02_0007;
+              return Tensor.add(a,b);
             }));
-            ReferenceCounting.freeRefs(array);
+            RefUtil.freeRefs(array);
             assert weights != null;
             Delta<UUID> temp_02_0010 = buffer.get(fullyConnectedReferenceLayer.getId(), weights.getData());
             assert temp_02_0010 != null;
@@ -202,6 +201,11 @@ public class FullyConnectedReferenceLayer extends LayerBase {
 
         public @SuppressWarnings("unused")
         void _free() {
+          super._free();
+          fullyConnectedReferenceLayer.freeRef();
+          inputResult.freeRef();
+          weights.freeRef();
+          indata.freeRef();
         }
       };
       TensorArray data = new TensorArray(RefIntStream.range(0, indata.length())
@@ -225,6 +229,7 @@ public class FullyConnectedReferenceLayer extends LayerBase {
         {
           inputResult.addRef();
         }
+
         @Override
         public boolean isAlive() {
           return inputResult.isAlive() || !isFrozen();

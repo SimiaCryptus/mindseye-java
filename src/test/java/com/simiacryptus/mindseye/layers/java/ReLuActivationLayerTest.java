@@ -33,8 +33,7 @@ public abstract class ReLuActivationLayerTest extends ActivationLayerTestBase {
   }
 
   public @SuppressWarnings("unused")
-  void _free() {
-  }
+  void _free() { super._free(); }
 
   @Nonnull
   public @Override
@@ -52,8 +51,7 @@ public abstract class ReLuActivationLayerTest extends ActivationLayerTestBase {
   public static class Basic extends ReLuActivationLayerTest {
 
     public @SuppressWarnings("unused")
-    void _free() {
-    }
+    void _free() { super._free(); }
 
     @Nonnull
     public @Override

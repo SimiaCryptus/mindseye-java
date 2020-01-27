@@ -23,7 +23,6 @@ import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RecycleBin;
 import com.simiacryptus.ref.lang.RefUtil;
-import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefList;
@@ -97,7 +96,7 @@ public class ImgBandScaleLayer extends LayerBase {
   public Result eval(@Nullable final Result... inObj) {
     assert inObj != null;
     Result temp_50_0008 = eval(inObj[0].addRef());
-    ReferenceCounting.freeRefs(inObj);
+    RefUtil.freeRefs(inObj);
     return temp_50_0008;
   }
 
@@ -179,7 +178,7 @@ public class ImgBandScaleLayer extends LayerBase {
             }).toArray(i -> new Tensor[i]);
             @Nonnull
             TensorArray tensorArray = new TensorArray(RefUtil.addRefs(tensors));
-            ReferenceCounting.freeRefs(tensors);
+            RefUtil.freeRefs(tensors);
             input.accumulate(buffer.addRef(), tensorArray);
           }
           delta.freeRef();
@@ -188,6 +187,7 @@ public class ImgBandScaleLayer extends LayerBase {
 
         public @SuppressWarnings("unused")
         void _free() {
+          super._free();
           input.freeRef();
           imgBandScaleLayer.freeRef();
           inData.freeRef();
@@ -211,7 +211,7 @@ public class ImgBandScaleLayer extends LayerBase {
     } finally {
       input.freeRef();
       imgBandScaleLayer.freeRef();
-      ReferenceCounting.freeRefs(data);
+      RefUtil.freeRefs(data);
       inData.freeRef();
     }
   }
@@ -242,6 +242,7 @@ public class ImgBandScaleLayer extends LayerBase {
 
   public @SuppressWarnings("unused")
   void _free() {
+    super._free();
   }
 
   @Nonnull

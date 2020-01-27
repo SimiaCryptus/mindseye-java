@@ -22,7 +22,6 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RefUtil;
-import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefDoubleStream;
 import com.simiacryptus.ref.wrappers.RefIntStream;
@@ -33,7 +32,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.IntFunction;
@@ -62,11 +60,13 @@ public class L1NormalizationLayer extends LayerBase {
   @Override
   public Result eval(@Nonnull final Result... input) {
     final Result in = input[0].addRef();
-    ReferenceCounting.freeRefs(input);
+    RefUtil.freeRefs(input);
     final TensorList inData = in.getData();
     try {
       Result.Accumulator accumulator = new Result.Accumulator() {
         {
+          in.addRef();
+          inData.addRef();
         }
 
         @Override
@@ -99,7 +99,7 @@ public class L1NormalizationLayer extends LayerBase {
             }).allMatch(v -> Double.isFinite(v));
             @Nonnull
             TensorArray tensorArray = new TensorArray(RefUtil.addRefs(passbackArray));
-            ReferenceCounting.freeRefs(passbackArray);
+            RefUtil.freeRefs(passbackArray);
             in.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
           }
           outDelta.freeRef();
@@ -109,6 +109,9 @@ public class L1NormalizationLayer extends LayerBase {
 
         public @SuppressWarnings("unused")
         void _free() {
+          super._free();
+          in.freeRef();
+          inData.freeRef();
         }
       };
       TensorArray data = new TensorArray(RefIntStream.range(0, inData.length())
@@ -158,6 +161,7 @@ public class L1NormalizationLayer extends LayerBase {
 
   public @SuppressWarnings("unused")
   void _free() {
+    super._free();
   }
 
   @Nonnull

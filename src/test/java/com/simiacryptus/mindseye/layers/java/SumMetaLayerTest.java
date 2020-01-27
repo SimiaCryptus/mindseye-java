@@ -55,6 +55,7 @@ public abstract class SumMetaLayerTest extends MetaLayerTestBase {
 
   public @SuppressWarnings("unused")
   void _free() {
+    super._free();
   }
 
   @Nonnull
@@ -74,6 +75,7 @@ public abstract class SumMetaLayerTest extends MetaLayerTestBase {
 
     public @SuppressWarnings("unused")
     void _free() {
+      super._free();
     }
 
     @Nonnull

@@ -22,7 +22,6 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RefUtil;
-import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefList;
 import com.simiacryptus.ref.wrappers.RefSystem;
@@ -93,7 +92,7 @@ public final class MonitoringSynapse extends LayerBase implements MonitoredItem 
   public Result eval(@Nonnull final Result... inObj) {
     assert 1 == inObj.length;
     final Result input = inObj[0].addRef();
-    ReferenceCounting.freeRefs(inObj);
+    RefUtil.freeRefs(inObj);
     final TensorList inputdata = input.getData();
     RefSystem.nanoTime();
     RefSystem.nanoTime();
@@ -107,6 +106,7 @@ public final class MonitoringSynapse extends LayerBase implements MonitoredItem 
     try {
       Result.Accumulator accumulator = new Result.Accumulator() {
         {
+          input.addRef();
         }
 
         @Override
@@ -125,6 +125,8 @@ public final class MonitoringSynapse extends LayerBase implements MonitoredItem 
 
         public @SuppressWarnings("unused")
         void _free() {
+          super._free();
+          input.freeRef();
         }
       };
       return new Result(inputdata, accumulator) {
@@ -164,6 +166,7 @@ public final class MonitoringSynapse extends LayerBase implements MonitoredItem 
 
   public @SuppressWarnings("unused")
   void _free() {
+    super._free();
   }
 
   @Nonnull

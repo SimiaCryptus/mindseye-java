@@ -22,7 +22,7 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RefUtil;
-import com.simiacryptus.ref.lang.ReferenceCounting;
+import com.simiacryptus.ref.wrappers.RefArrayList;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefList;
@@ -57,12 +57,13 @@ public class EntropyLossLayer extends LayerBase {
   @Nonnull
   @Override
   public Result eval(@Nonnull final Result... inObj) {
+
     final double zero_tol = 1e-12;
     TensorList indata = inObj[0].getData();
-    @Nonnull final Tensor gradient[] = new Tensor[indata.length()];
+    @Nonnull final RefArrayList<Tensor> gradient = new RefArrayList<>();
     final double max_prob = 1.;
     try {
-      return new Result(new TensorArray(RefIntStream.range(0, indata.length())
+      TensorArray data = new TensorArray(RefIntStream.range(0, indata.length())
           .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
             @Nullable final Tensor l = indata.get(dataIndex);
             TensorList temp_03_0006 = inObj[1].getData();
@@ -93,14 +94,16 @@ public class EntropyLossLayer extends LayerBase {
             }
             l.freeRef();
             assert total >= 0;
-            RefUtil.set((gradient), dataIndex, gradientTensor);
+            gradient.add(dataIndex, gradientTensor);
+            //RefUtil.set(gradient, dataIndex, gradientTensor);
             return new Tensor(new double[]{total}, 1);
-          }, indata.addRef(), RefUtil.addRefs(inObj), RefUtil.addRefs(gradient)))
-          .toArray(i -> new Tensor[i])), new Result.Accumulator() {
+          }, indata.addRef(), RefUtil.addRefs(inObj), RefUtil.addRef(gradient)))
+          .toArray(i -> new Tensor[i]));
+      Result.Accumulator accumulator = new Result.Accumulator() {
         {
           RefUtil.addRefs(inObj);
           indata.addRef();
-          RefUtil.addRefs(gradient);
+          RefUtil.addRef(gradient);
         }
 
         @Override
@@ -111,7 +114,9 @@ public class EntropyLossLayer extends LayerBase {
                 .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
                       Tensor deltaTensor = delta.get(dataIndex);
                       @Nullable final Tensor inputTensor = indata.get(dataIndex);
-                      @Nonnull final Tensor passback = new Tensor(gradient[dataIndex].getDimensions());
+                      Tensor tensor = gradient.get(dataIndex);
+                      @Nonnull final Tensor passback = new Tensor(tensor.getDimensions());
+                      tensor.freeRef();
                       for (int i = 0; i < passback.length(); i++) {
                         final double lv = Math.max(Math.min(inputTensor.get(i), max_prob), zero_tol);
                         final double value = -deltaTensor.get(0) * Math.log(lv);
@@ -120,7 +125,7 @@ public class EntropyLossLayer extends LayerBase {
                       inputTensor.freeRef();
                       deltaTensor.freeRef();
                       return passback;
-                    }, indata.addRef(), RefUtil.addRefs(gradient),
+                    }, indata.addRef(), RefUtil.addRef(gradient),
                     delta.addRef()))
                 .toArray(i -> new Tensor[i]));
             inObj[1].accumulate(buffer == null ? null : buffer.addRef(),
@@ -131,13 +136,15 @@ public class EntropyLossLayer extends LayerBase {
             TensorArray tensorArray = new TensorArray(RefIntStream.range(0, delta.length())
                 .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
                   Tensor tensor = delta.get(dataIndex);
-                  @Nonnull final Tensor passback = new Tensor(gradient[dataIndex].getDimensions());
+                  Tensor tensor1 = gradient.get(dataIndex);
+                  @Nonnull final Tensor passback = new Tensor(tensor1.getDimensions());
                   for (int i = 0; i < passback.length(); i++) {
-                    passback.set(i, tensor.get(0) * gradient[dataIndex].get(i));
+                    passback.set(i, tensor.get(0) * tensor1.get(i));
                   }
+                  tensor1.freeRef();
                   tensor.freeRef();
                   return passback;
-                }, delta.addRef(), RefUtil.addRefs(gradient)))
+                }, delta.addRef(), RefUtil.addRef(gradient)))
                 .toArray(i -> new Tensor[i]));
             inObj[0].accumulate(buffer == null ? null : buffer.addRef(),
                 tensorArray);
@@ -149,11 +156,13 @@ public class EntropyLossLayer extends LayerBase {
 
         public @SuppressWarnings("unused")
         void _free() {
-          ReferenceCounting.freeRefs(inObj);
+          super._free();
+          RefUtil.freeRefs(inObj);
           indata.freeRef();
-          ReferenceCounting.freeRefs(gradient);
+          RefUtil.freeRef(gradient);
         }
-      }) {
+      };
+      return new Result(data, accumulator) {
 
         {
           RefUtil.addRefs(inObj);
@@ -167,13 +176,13 @@ public class EntropyLossLayer extends LayerBase {
         }
 
         public void _free() {
-          ReferenceCounting.freeRefs(inObj);
+          RefUtil.freeRefs(inObj);
           super._free();
         }
       };
     } finally {
-      ReferenceCounting.freeRefs(inObj);
-      ReferenceCounting.freeRefs(gradient);
+      RefUtil.freeRefs(inObj);
+      RefUtil.freeRef(gradient);
       indata.freeRef();
     }
   }
@@ -192,6 +201,7 @@ public class EntropyLossLayer extends LayerBase {
 
   public @SuppressWarnings("unused")
   void _free() {
+    super._free();
   }
 
   @Nonnull

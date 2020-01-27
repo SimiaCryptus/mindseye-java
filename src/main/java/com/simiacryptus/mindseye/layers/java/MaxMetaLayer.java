@@ -22,7 +22,6 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RefUtil;
-import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefComparator;
 import com.simiacryptus.ref.wrappers.RefIntStream;
@@ -61,7 +60,7 @@ public class MaxMetaLayer extends LayerBase {
   public Result eval(@Nullable final Result... inObj) {
     assert inObj != null;
     final Result input = inObj[0].addRef();
-    ReferenceCounting.freeRefs(inObj);
+    RefUtil.freeRefs(inObj);
     TensorList temp_40_0005 = input.getData();
     final int itemCnt = temp_40_0005.length();
     temp_40_0005.freeRef();
@@ -85,6 +84,8 @@ public class MaxMetaLayer extends LayerBase {
     try {
       Result.Accumulator accumulator = new Result.Accumulator() {
         {
+          input.addRef();
+          input0Tensor.addRef();
         }
 
         @Override
@@ -101,7 +102,7 @@ public class MaxMetaLayer extends LayerBase {
             delta.freeRef();
             @Nonnull
             TensorArray tensorArray = new TensorArray(RefUtil.addRefs(feedback));
-            ReferenceCounting.freeRefs(feedback);
+            RefUtil.freeRefs(feedback);
             input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
           }
           data.freeRef();
@@ -111,6 +112,9 @@ public class MaxMetaLayer extends LayerBase {
 
         public @SuppressWarnings("unused")
         void _free() {
+          super._free();
+          input.freeRef();
+          input0Tensor.freeRef();
         }
       };
       TensorArray data = new TensorArray(input0Tensor.mapIndex(RefUtil.wrapInterface((v, c) -> {
@@ -156,6 +160,7 @@ public class MaxMetaLayer extends LayerBase {
 
   public @SuppressWarnings("unused")
   void _free() {
+    super._free();
   }
 
   @Nonnull

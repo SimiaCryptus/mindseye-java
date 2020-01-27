@@ -30,7 +30,6 @@ import com.simiacryptus.mindseye.network.DAGNetwork;
 import com.simiacryptus.mindseye.network.DAGNode;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
 import com.simiacryptus.ref.lang.RefUtil;
-import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -105,7 +104,7 @@ public class StochasticSamplingSubnetLayer extends LayerBase implements Stochast
     temp_22_0007.freeRef();
     Result temp_22_0003 = gateNetwork.eval(RefUtil.addRefs(samples));
     gateNetwork.freeRef();
-    ReferenceCounting.freeRefs(samples);
+    RefUtil.freeRefs(samples);
     return temp_22_0003;
   }
 
@@ -114,7 +113,7 @@ public class StochasticSamplingSubnetLayer extends LayerBase implements Stochast
     if (0 == seed) {
       assert subnetwork != null;
       Result temp_22_0006 = subnetwork.eval(RefUtil.addRefs(inObj));
-      ReferenceCounting.freeRefs(inObj);
+      RefUtil.freeRefs(inObj);
       return temp_22_0006;
     }
     Result[] counting = RefArrays.stream(RefUtil.addRefs(inObj)).map(r -> {
@@ -123,14 +122,14 @@ public class StochasticSamplingSubnetLayer extends LayerBase implements Stochast
         r.freeRef();
       return temp_22_0004;
     }).toArray(i -> new Result[i]);
-    ReferenceCounting.freeRefs(inObj);
+    RefUtil.freeRefs(inObj);
     Result temp_22_0005 = average(
         RefArrays.stream(getSeeds()).mapToObj(RefUtil.wrapInterface((LongFunction<? extends Result>) seed1 -> {
           shuffleSubnet(seed1);
           assert subnetwork != null;
           return subnetwork.eval(RefUtil.addRefs(counting));
         }, RefUtil.addRefs(counting))).toArray(i -> new Result[i]));
-    ReferenceCounting.freeRefs(counting);
+    RefUtil.freeRefs(counting);
     return temp_22_0005;
   }
 

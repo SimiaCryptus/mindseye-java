@@ -22,7 +22,6 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RefUtil;
-import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefList;
@@ -53,7 +52,7 @@ public abstract class SimpleActivationLayer<T extends SimpleActivationLayer<T>> 
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     final Result inObj0 = inObj[0].addRef();
-    ReferenceCounting.freeRefs(inObj);
+    RefUtil.freeRefs(inObj);
     final TensorList indata0 = inObj0.getData();
     final int itemCnt = indata0.length();
     assert 0 < itemCnt;
@@ -114,7 +113,8 @@ public abstract class SimpleActivationLayer<T extends SimpleActivationLayer<T>> 
 
         public @SuppressWarnings("unused")
         void _free() {
-          ReferenceCounting.freeRefs(inputGradientA);
+          super._free();
+          RefUtil.freeRefs(inputGradientA);
           inObj0.freeRef();
         }
       };
@@ -130,7 +130,7 @@ public abstract class SimpleActivationLayer<T extends SimpleActivationLayer<T>> 
         }
       };
     } finally {
-      ReferenceCounting.freeRefs(inputGradientA);
+      RefUtil.freeRefs(inputGradientA);
       indata0.freeRef();
       inObj0.freeRef();
     }
@@ -143,8 +143,7 @@ public abstract class SimpleActivationLayer<T extends SimpleActivationLayer<T>> 
   }
 
   public @SuppressWarnings("unused")
-  void _free() {
-  }
+  void _free() { super._free(); }
 
   @Nonnull
   public @Override

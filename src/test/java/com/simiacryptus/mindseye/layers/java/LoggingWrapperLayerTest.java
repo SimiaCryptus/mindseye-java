@@ -50,8 +50,7 @@ public abstract class LoggingWrapperLayerTest extends LayerTestBase {
   }
 
   public @SuppressWarnings("unused")
-  void _free() {
-  }
+  void _free() { super._free(); }
 
   @Nonnull
   public @Override
@@ -63,8 +62,7 @@ public abstract class LoggingWrapperLayerTest extends LayerTestBase {
   public static class Basic extends LoggingWrapperLayerTest {
 
     public @SuppressWarnings("unused")
-    void _free() {
-    }
+    void _free() { super._free(); }
 
     @Nonnull
     public @Override

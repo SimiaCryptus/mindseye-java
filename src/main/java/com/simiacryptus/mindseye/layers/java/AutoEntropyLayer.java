@@ -57,6 +57,7 @@ public class AutoEntropyLayer extends PipelineNetwork {
 
   public @SuppressWarnings("unused")
   void _free() {
+    super._free();
   }
 
   @Nonnull

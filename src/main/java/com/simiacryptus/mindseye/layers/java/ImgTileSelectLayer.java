@@ -24,7 +24,6 @@ import com.google.gson.JsonPrimitive;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.ref.lang.RefUtil;
-import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.*;
 
 import javax.annotation.Nonnull;
@@ -171,7 +170,7 @@ public class ImgTileSelectLayer extends LayerBase {
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     final Result input = inObj[0].addRef();
-    ReferenceCounting.freeRefs(inObj);
+    RefUtil.freeRefs(inObj);
     final TensorList batch = input.getData();
     @Nonnull final int[] inputDims = batch.getDimensions();
     assert 3 == inputDims.length;
@@ -180,6 +179,7 @@ public class ImgTileSelectLayer extends LayerBase {
     try {
       Result.Accumulator accumulator = new Result.Accumulator() {
         {
+          input.addRef();
         }
 
         @Override
@@ -204,6 +204,8 @@ public class ImgTileSelectLayer extends LayerBase {
 
         public @SuppressWarnings("unused")
         void _free() {
+          super._free();
+          input.freeRef();
         }
       };
       TensorArray data = new TensorArray(RefIntStream.range(0, batch.length())
@@ -264,6 +266,7 @@ public class ImgTileSelectLayer extends LayerBase {
 
   public @SuppressWarnings("unused")
   void _free() {
+    super._free();
   }
 
   @Nonnull

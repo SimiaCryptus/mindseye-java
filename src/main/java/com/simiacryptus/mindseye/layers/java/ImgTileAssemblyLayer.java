@@ -23,7 +23,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RefUtil;
-import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrayList;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
@@ -31,7 +30,6 @@ import com.simiacryptus.ref.wrappers.RefList;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -252,7 +250,8 @@ public class ImgTileAssemblyLayer extends LayerBase {
 
         public @SuppressWarnings("unused")
         void _free() {
-          ReferenceCounting.freeRefs(inObj);
+          super._free();
+          RefUtil.freeRefs(inObj);
         }
       }) {
 
@@ -266,14 +265,14 @@ public class ImgTileAssemblyLayer extends LayerBase {
         }
 
         public void _free() {
-          ReferenceCounting.freeRefs(inObj);
+          RefUtil.freeRefs(inObj);
           super._free();
         }
       };
       temp_63_0004.freeRef();
       return temp_63_0003;
     } finally {
-      ReferenceCounting.freeRefs(inObj);
+      RefUtil.freeRefs(inObj);
     }
   }
 
@@ -297,8 +296,7 @@ public class ImgTileAssemblyLayer extends LayerBase {
   }
 
   public @SuppressWarnings("unused")
-  void _free() {
-  }
+  void _free() { super._free(); }
 
   @Nonnull
   public @Override
@@ -337,7 +335,7 @@ public class ImgTileAssemblyLayer extends LayerBase {
       totalHeight += rowHeight - getPaddingY();
       totalWidth = Math.max(totalWidth, positionX);
     }
-    ReferenceCounting.freeRefs(inObj);
+    RefUtil.freeRefs(inObj);
     return new int[]{totalWidth + getPaddingX(), totalHeight + getPaddingY(), bands};
   }
 }

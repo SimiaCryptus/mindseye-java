@@ -69,6 +69,7 @@ public final class SigmoidActivationLayer extends SimpleActivationLayer<SigmoidA
 
   public @SuppressWarnings("unused")
   void _free() {
+    super._free();
   }
 
   @Nonnull

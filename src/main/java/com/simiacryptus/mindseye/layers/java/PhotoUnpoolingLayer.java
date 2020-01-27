@@ -22,12 +22,10 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RefUtil;
-import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.IntFunction;
@@ -147,7 +145,7 @@ public class PhotoUnpoolingLayer extends LayerBase {
     TensorList temp_34_0006 = inObj[1].getData();
     Tensor outputDims = new Tensor(temp_34_0006.getDimensions());
     temp_34_0006.freeRef();
-    ReferenceCounting.freeRefs(inObj);
+    RefUtil.freeRefs(inObj);
     TensorArray data = new TensorArray(RefIntStream.range(0, batch.length()).parallel()
         .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
               Tensor inputData = batch.get(dataIndex);
@@ -165,6 +163,8 @@ public class PhotoUnpoolingLayer extends LayerBase {
     try {
       Result.Accumulator accumulator = new Result.Accumulator() {
         {
+          input.addRef();
+          referencebatch.addRef();
         }
 
         @Override
@@ -193,6 +193,9 @@ public class PhotoUnpoolingLayer extends LayerBase {
 
         public @SuppressWarnings("unused")
         void _free() {
+          input.freeRef();
+          referencebatch.freeRef();
+          super._free();
         }
       };
       return new Result(data, accumulator) {
@@ -229,8 +232,7 @@ public class PhotoUnpoolingLayer extends LayerBase {
   }
 
   public @SuppressWarnings("unused")
-  void _free() {
-  }
+  void _free() { super._free(); }
 
   @Nonnull
   public @Override

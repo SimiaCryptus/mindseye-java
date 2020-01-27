@@ -25,14 +25,12 @@ import com.simiacryptus.mindseye.network.DAGNode;
 import com.simiacryptus.mindseye.network.InnerNode;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
 import com.simiacryptus.ref.lang.RefUtil;
-import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrayList;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefList;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.function.IntFunction;
 
@@ -83,7 +81,7 @@ public class RescaledSubnetLayer extends LayerBase {
     if (1 == scale) {
       assert subnetwork != null;
       Result temp_11_0004 = subnetwork.eval(RefUtil.addRefs(inObj));
-      ReferenceCounting.freeRefs(inObj);
+      RefUtil.freeRefs(inObj);
       return temp_11_0004;
     }
 
@@ -102,7 +100,7 @@ public class RescaledSubnetLayer extends LayerBase {
     condensed.freeRef();
     RefUtil.freeRef(network.add(new ImgReshapeLayer(scale, scale, true)));
     Result temp_11_0003 = network.eval(RefUtil.addRefs(inObj));
-    ReferenceCounting.freeRefs(inObj);
+    RefUtil.freeRefs(inObj);
     network.freeRef();
     return temp_11_0003;
   }

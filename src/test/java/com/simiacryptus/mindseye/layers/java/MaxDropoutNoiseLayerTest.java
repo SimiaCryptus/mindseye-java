@@ -41,6 +41,7 @@ public abstract class MaxDropoutNoiseLayerTest extends ActivationLayerTestBase {
 
   public @SuppressWarnings("unused")
   void _free() {
+    super._free();
   }
 
   @Nonnull
@@ -60,6 +61,7 @@ public abstract class MaxDropoutNoiseLayerTest extends ActivationLayerTestBase {
 
     public @SuppressWarnings("unused")
     void _free() {
+      super._free();
     }
 
     @Nonnull

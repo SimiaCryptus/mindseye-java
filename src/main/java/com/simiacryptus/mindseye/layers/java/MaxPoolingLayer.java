@@ -23,7 +23,6 @@ import com.google.gson.JsonObject;
 import com.simiacryptus.lang.Tuple2;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RefUtil;
-import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefCollectors;
 import com.simiacryptus.ref.wrappers.RefIntStream;
@@ -35,7 +34,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.*;
@@ -104,7 +102,7 @@ public class MaxPoolingLayer extends LayerBase {
   public Result eval(@Nonnull final Result... inObj) {
 
     final Result in = inObj[0].addRef();
-    ReferenceCounting.freeRefs(inObj);
+    RefUtil.freeRefs(inObj);
     TensorList temp_53_0005 = in.getData();
     temp_53_0005.length();
 
@@ -164,6 +162,7 @@ public class MaxPoolingLayer extends LayerBase {
     try {
       Result.Accumulator accumulator = new Result.Accumulator() {
         {
+          in.addRef();
         }
 
         @Override
@@ -192,12 +191,15 @@ public class MaxPoolingLayer extends LayerBase {
 
         public @SuppressWarnings("unused")
         void _free() {
+          super._free();
+          in.freeRef();
         }
       };
       return new Result(new TensorArray(RefUtil.addRefs(outputA)), accumulator) {
         {
           in.addRef();
         }
+
         @Override
         public boolean isAlive() {
           return in.isAlive();
@@ -210,7 +212,7 @@ public class MaxPoolingLayer extends LayerBase {
         }
       };
     } finally {
-      ReferenceCounting.freeRefs(outputA);
+      RefUtil.freeRefs(outputA);
       in.freeRef();
     }
   }
@@ -231,6 +233,7 @@ public class MaxPoolingLayer extends LayerBase {
 
   public @SuppressWarnings("unused")
   void _free() {
+    super._free();
   }
 
   @Nonnull

@@ -24,14 +24,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RefUtil;
-import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefList;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Map;
 
 @SuppressWarnings("serial")
@@ -64,11 +61,11 @@ public class AssertDimensionsLayer extends LayerBase {
   @Override
   public Result eval(@Nonnull final Result... array) {
     if (0 == array.length) {
-      ReferenceCounting.freeRefs(array);
+      RefUtil.freeRefs(array);
       throw new IllegalArgumentException(getName());
     }
     Result input = array[0].addRef();
-    ReferenceCounting.freeRefs(array);
+    RefUtil.freeRefs(array);
     TensorList temp_77_0001 = input.getData();
     if (0 == temp_77_0001.length()) {
       input.freeRef();
@@ -107,6 +104,7 @@ public class AssertDimensionsLayer extends LayerBase {
 
   public @SuppressWarnings("unused")
   void _free() {
+    super._free();
   }
 
   @Nonnull

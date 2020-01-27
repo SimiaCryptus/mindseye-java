@@ -66,6 +66,7 @@ public final class GaussianActivationLayer extends SimpleActivationLayer<Gaussia
 
   public @SuppressWarnings("unused")
   void _free() {
+    super._free();
   }
 
   @Nonnull

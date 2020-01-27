@@ -23,7 +23,6 @@ import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RefIgnore;
 import com.simiacryptus.ref.lang.RefUtil;
-import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefList;
@@ -35,7 +34,6 @@ import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Consumer;
 import java.util.function.ToDoubleFunction;
 
 @SuppressWarnings("serial")
@@ -80,13 +78,17 @@ public class AvgMetaLayer extends LayerBase {
   public Result eval(@Nullable final Result... inObj) {
     assert inObj != null;
     final Result input = inObj[0].addRef();
-    ReferenceCounting.freeRefs(inObj);
+    RefUtil.freeRefs(inObj);
     TensorList inputData = input.getData();
     final int itemCnt = inputData.length();
     AtomicBoolean passback = new AtomicBoolean(false);
     @Nullable Tensor thisResult = getTensor(inputData, itemCnt, passback);
     try {
       Result.Accumulator accumulator = new Result.Accumulator() {
+        {
+          input.addRef();
+          thisResult.addRef();
+        }
 
         @Override
         public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList data) {
@@ -96,15 +98,13 @@ public class AvgMetaLayer extends LayerBase {
             RefArrays.parallelSetAll(RefUtil.addRefs(feedback),
                 RefUtil.wrapInterface(i -> new Tensor(delta.getDimensions()), delta.addRef()));
             thisResult.coordStream(true)
-                .forEach(RefUtil.wrapInterface((Consumer<? super Coordinate>) (inputCoord) -> {
+                .forEach(RefUtil.wrapInterface(inputCoord -> {
                   for (int inputItem = 0; inputItem < itemCnt; inputItem++) {
                     feedback[inputItem].add(inputCoord, delta.get(inputCoord) / itemCnt);
                   }
-                }, delta.addRef(), RefUtil.addRefs(feedback)));
-            delta.freeRef();
+                }, delta, RefUtil.addRefs(feedback)));
             @Nonnull
-            TensorArray tensorArray = new TensorArray(RefUtil.addRefs(feedback));
-            ReferenceCounting.freeRefs(feedback);
+            TensorArray tensorArray = new TensorArray(feedback);
             input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
           }
           data.freeRef();
@@ -114,6 +114,9 @@ public class AvgMetaLayer extends LayerBase {
 
         public @SuppressWarnings("unused")
         void _free() {
+          super._free();
+          thisResult.freeRef();
+          input.freeRef();
         }
       };
       return new Result(new TensorArray(thisResult == null ? null : thisResult.addRef()), accumulator) {

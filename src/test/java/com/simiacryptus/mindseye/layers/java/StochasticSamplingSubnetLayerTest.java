@@ -51,6 +51,7 @@ public abstract class StochasticSamplingSubnetLayerTest extends LayerTestBase {
 
   public @SuppressWarnings("unused")
   void _free() {
+    super._free();
   }
 
   @Nonnull
@@ -64,6 +65,7 @@ public abstract class StochasticSamplingSubnetLayerTest extends LayerTestBase {
 
     public @SuppressWarnings("unused")
     void _free() {
+      super._free();
     }
 
     @Nonnull

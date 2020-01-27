@@ -42,8 +42,7 @@ public abstract class CrossProductLayerTest extends LayerTestBase {
   }
 
   public @SuppressWarnings("unused")
-  void _free() {
-  }
+  void _free() { super._free(); }
 
   @Nonnull
   public @Override
@@ -55,8 +54,7 @@ public abstract class CrossProductLayerTest extends LayerTestBase {
   public static class Basic extends CrossProductLayerTest {
 
     public @SuppressWarnings("unused")
-    void _free() {
-    }
+    void _free() { super._free(); }
 
     @Nonnull
     public @Override

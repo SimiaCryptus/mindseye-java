@@ -46,8 +46,7 @@ public abstract class ImgTileSubnetLayerTest extends LayerTestBase {
   }
 
   public @SuppressWarnings("unused")
-  void _free() {
-  }
+  void _free() { super._free(); }
 
   @Nonnull
   public @Override
@@ -59,8 +58,7 @@ public abstract class ImgTileSubnetLayerTest extends LayerTestBase {
   public static class Basic extends ImgTileSubnetLayerTest {
 
     public @SuppressWarnings("unused")
-    void _free() {
-    }
+    void _free() { super._free(); }
 
     @Nonnull
     public @Override

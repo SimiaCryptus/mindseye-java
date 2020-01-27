@@ -22,7 +22,6 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RefUtil;
-import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.*;
 import com.simiacryptus.util.JsonUtil;
 import com.simiacryptus.util.Util;
@@ -32,7 +31,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -74,7 +72,7 @@ public class MaxDropoutNoiseLayer extends LayerBase {
   public Result eval(@Nullable final Result... inObj) {
     assert inObj != null;
     final Result in0 = inObj[0].addRef();
-    ReferenceCounting.freeRefs(inObj);
+    RefUtil.freeRefs(inObj);
     final TensorList data0 = in0.getData();
     final int itemCnt = data0.length();
     final Tensor[] mask = RefIntStream.range(0, itemCnt)
@@ -95,6 +93,9 @@ public class MaxDropoutNoiseLayer extends LayerBase {
     try {
       Result.Accumulator accumulator = new Result.Accumulator() {
         {
+          RefUtil.addRefs(mask);
+          data0.addRef();
+          in0.addRef();
         }
 
         @Override
@@ -125,6 +126,10 @@ public class MaxDropoutNoiseLayer extends LayerBase {
 
         public @SuppressWarnings("unused")
         void _free() {
+          super._free();
+          RefUtil.freeRefs(mask);
+          data0.freeRef();
+          in0.freeRef();
         }
       };
       TensorArray data = new TensorArray(RefIntStream.range(0, itemCnt)
@@ -156,7 +161,7 @@ public class MaxDropoutNoiseLayer extends LayerBase {
         }
       };
     } finally {
-      ReferenceCounting.freeRefs(mask);
+      RefUtil.freeRefs(mask);
       data0.freeRef();
       in0.freeRef();
     }
@@ -178,8 +183,7 @@ public class MaxDropoutNoiseLayer extends LayerBase {
   }
 
   public @SuppressWarnings("unused")
-  void _free() {
-  }
+  void _free() { super._free(); }
 
   @Nonnull
   public @Override

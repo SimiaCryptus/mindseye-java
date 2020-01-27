@@ -51,8 +51,7 @@ public abstract class ImgReshapeLayerTest extends LayerTestBase {
   }
 
   public @SuppressWarnings("unused")
-  void _free() {
-  }
+  void _free() { super._free(); }
 
   @Nonnull
   public @Override
@@ -64,8 +63,7 @@ public abstract class ImgReshapeLayerTest extends LayerTestBase {
   public static class Basic extends ImgReshapeLayerTest {
 
     public @SuppressWarnings("unused")
-    void _free() {
-    }
+    void _free() { super._free(); }
 
     @Nonnull
     public @Override

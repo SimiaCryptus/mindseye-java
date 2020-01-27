@@ -22,7 +22,6 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RefUtil;
-import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +55,7 @@ public class MeanSqLossLayer extends LayerBase {
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     if (2 != inObj.length) {
-      ReferenceCounting.freeRefs(inObj);
+      RefUtil.freeRefs(inObj);
       throw new IllegalArgumentException();
     }
     TensorList temp_20_0011 = inObj[0].getData();
@@ -66,13 +65,13 @@ public class MeanSqLossLayer extends LayerBase {
     final int rightLength = temp_20_0012.length();
     temp_20_0012.freeRef();
     if (leftLength != rightLength && leftLength != 1 && rightLength != 1) {
-      ReferenceCounting.freeRefs(inObj);
+      RefUtil.freeRefs(inObj);
       throw new IllegalArgumentException(leftLength + " != " + rightLength);
     }
     @Nonnull final Tensor diffs[] = new Tensor[leftLength];
     try {
-      return new Result(new TensorArray(RefIntStream.range(0, leftLength)
-          .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+      TensorArray data = new TensorArray(RefIntStream.range(0, leftLength)
+          .mapToObj(RefUtil.wrapInterface((IntFunction<Tensor>) dataIndex -> {
             TensorList temp_20_0013 = inObj[0].getData();
             @Nullable final Tensor a = temp_20_0013.get(1 == leftLength ? 0 : dataIndex);
             temp_20_0013.freeRef();
@@ -92,7 +91,9 @@ public class MeanSqLossLayer extends LayerBase {
             Tensor temp_20_0004 = new Tensor(new double[]{r.sumSq() / r.length()}, 1);
             RefUtil.set((diffs), dataIndex, r);
             return temp_20_0004;
-          }, RefUtil.addRefs(diffs), RefUtil.addRefs(inObj))).toArray(i -> new Tensor[i])), new Result.Accumulator() {
+          }, RefUtil.addRefs(diffs), RefUtil.addRefs(inObj))
+          ).toArray(i -> new Tensor[i]));
+      Result.Accumulator accumulator = new Result.Accumulator() {
         {
           RefUtil.addRefs(inObj);
           RefUtil.addRefs(diffs);
@@ -115,11 +116,7 @@ public class MeanSqLossLayer extends LayerBase {
             temp_20_0015.freeRef();
             if (1 == leftLength) {
               tensorStream = RefStream.of(RefUtil.get(tensorStream.reduce((a, b) -> {
-                Tensor temp_20_0006 = a.addAndFree(b == null ? null : b.addRef());
-                if (null != b)
-                  b.freeRef();
-                a.freeRef();
-                return temp_20_0006;
+                return Tensor.add(a, b);
               })));
             }
             @Nonnull final TensorList array = new TensorArray(tensorStream.toArray(i -> new Tensor[i]));
@@ -138,11 +135,7 @@ public class MeanSqLossLayer extends LayerBase {
             temp_20_0016.freeRef();
             if (1 == rightLength) {
               tensorStream = RefStream.of(RefUtil.get(tensorStream.reduce((a, b) -> {
-                Tensor temp_20_0008 = a.addAndFree(b == null ? null : b.addRef());
-                if (null != b)
-                  b.freeRef();
-                a.freeRef();
-                return temp_20_0008;
+                return Tensor.add(a,b);
               })));
             }
             @Nonnull final TensorList array = new TensorArray(tensorStream.map(x -> {
@@ -159,10 +152,12 @@ public class MeanSqLossLayer extends LayerBase {
 
         public @SuppressWarnings("unused")
         void _free() {
-          ReferenceCounting.freeRefs(inObj);
+          super._free();
+          RefUtil.freeRefs(inObj);
           RefUtil.freeRefs(diffs);
         }
-      }) {
+      };
+      return new Result(data, accumulator) {
 
         {
           RefUtil.addRefs(inObj);
@@ -174,13 +169,13 @@ public class MeanSqLossLayer extends LayerBase {
         }
 
         public void _free() {
-          ReferenceCounting.freeRefs(inObj);
+          RefUtil.freeRefs(inObj);
           super._free();
         }
       };
     } finally {
-      ReferenceCounting.freeRefs(inObj);
-      ReferenceCounting.freeRefs(diffs);
+      RefUtil.freeRefs(inObj);
+      RefUtil.freeRefs(diffs);
     }
   }
 
@@ -198,6 +193,7 @@ public class MeanSqLossLayer extends LayerBase {
 
   public @SuppressWarnings("unused")
   void _free() {
+    super._free();
   }
 
   @Nonnull
@@ -206,4 +202,6 @@ public class MeanSqLossLayer extends LayerBase {
   MeanSqLossLayer addRef() {
     return (MeanSqLossLayer) super.addRef();
   }
+
+
 }

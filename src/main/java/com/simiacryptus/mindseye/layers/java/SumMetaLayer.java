@@ -22,7 +22,6 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RefUtil;
-import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefList;
@@ -77,11 +76,11 @@ public class SumMetaLayer extends LayerBase {
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     if (1 != inObj.length) {
-      ReferenceCounting.freeRefs(inObj);
+      RefUtil.freeRefs(inObj);
       throw new IllegalArgumentException();
     }
     final Result input = inObj[0].addRef();
-    ReferenceCounting.freeRefs(inObj);
+    RefUtil.freeRefs(inObj);
     TensorList inputData = input.getData();
     final int itemCnt = inputData.length();
     if (null == lastResult || minBatches < itemCnt) {
@@ -104,6 +103,7 @@ public class SumMetaLayer extends LayerBase {
     try {
       Result.Accumulator accumulator = new Result.Accumulator() {
         {
+          input.addRef();
         }
 
         @Override
@@ -121,7 +121,7 @@ public class SumMetaLayer extends LayerBase {
             delta.freeRef();
             @Nonnull
             TensorArray tensorArray = new TensorArray(RefUtil.addRefs(feedback));
-            ReferenceCounting.freeRefs(feedback);
+            RefUtil.freeRefs(feedback);
             input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
           }
           data.freeRef();
@@ -131,6 +131,8 @@ public class SumMetaLayer extends LayerBase {
 
         public @SuppressWarnings("unused")
         void _free() {
+          super._free();
+          input.freeRef();
         }
       };
       return new Result(new TensorArray(lastResult == null ? null : lastResult.addRef()), accumulator) {

@@ -23,7 +23,6 @@ import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RecycleBin;
 import com.simiacryptus.ref.lang.RefUtil;
-import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefList;
 import com.simiacryptus.ref.wrappers.RefString;
@@ -120,7 +119,7 @@ public class ImgBandBiasLayer extends LayerBase {
   public Result eval(@Nullable final Result... inObj) {
     assert inObj != null;
     Result temp_24_0005 = eval(inObj[0].addRef());
-    ReferenceCounting.freeRefs(inObj);
+    RefUtil.freeRefs(inObj);
     return temp_24_0005;
   }
 
@@ -185,6 +184,7 @@ public class ImgBandBiasLayer extends LayerBase {
 
         public @SuppressWarnings("unused")
         void _free() {
+          super._free();
           input.freeRef();
           imgBandBiasLayer.freeRef();
         }
@@ -243,6 +243,7 @@ public class ImgBandBiasLayer extends LayerBase {
 
   public @SuppressWarnings("unused")
   void _free() {
+    super._free();
   }
 
   @Nonnull

@@ -52,6 +52,7 @@ public final class BinaryEntropyActivationLayer extends SimpleActivationLayer<Bi
 
   public @SuppressWarnings("unused")
   void _free() {
+    super._free();
   }
 
   @Nonnull

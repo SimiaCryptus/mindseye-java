@@ -23,7 +23,6 @@ import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.mindseye.layers.StochasticComponent;
 import com.simiacryptus.ref.lang.RefUtil;
-import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefList;
@@ -78,7 +77,7 @@ public class DropoutNoiseLayer extends LayerBase implements StochasticComponent 
   public Result eval(@Nullable final Result... inObj) {
     assert inObj != null;
     final Result inputResult = inObj[0].addRef();
-    ReferenceCounting.freeRefs(inObj);
+    RefUtil.freeRefs(inObj);
     final TensorList inputData = inputResult.getData();
     final int itemCnt = inputData.length();
     final Tensor[] mask = RefIntStream.range(0, itemCnt)
@@ -96,6 +95,8 @@ public class DropoutNoiseLayer extends LayerBase implements StochasticComponent 
     try {
       Result.Accumulator accumulator = new Result.Accumulator() {
         {
+          RefUtil.addRefs(mask);
+          inputResult.addRef();
         }
 
         @Override
@@ -124,6 +125,9 @@ public class DropoutNoiseLayer extends LayerBase implements StochasticComponent 
 
         public @SuppressWarnings("unused")
         void _free() {
+          super._free();
+          RefUtil.freeRefs(mask);
+          inputResult.freeRef();
         }
       };
       TensorArray data = new TensorArray(RefIntStream.range(0, itemCnt)
@@ -156,7 +160,7 @@ public class DropoutNoiseLayer extends LayerBase implements StochasticComponent 
         }
       };
     } finally {
-      ReferenceCounting.freeRefs(mask);
+      RefUtil.freeRefs(mask);
       inputData.freeRef();
       inputResult.freeRef();
     }
@@ -190,6 +194,7 @@ public class DropoutNoiseLayer extends LayerBase implements StochasticComponent 
 
   public @SuppressWarnings("unused")
   void _free() {
+    super._free();
   }
 
   @Nonnull

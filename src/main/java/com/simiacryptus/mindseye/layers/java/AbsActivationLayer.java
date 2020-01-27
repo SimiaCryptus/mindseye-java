@@ -51,8 +51,7 @@ public final class AbsActivationLayer extends SimpleActivationLayer<AbsActivatio
   }
 
   public @SuppressWarnings("unused")
-  void _free() {
-  }
+  void _free() { super._free(); }
 
   @Nonnull
   public @Override

@@ -22,7 +22,6 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RefUtil;
-import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefList;
@@ -31,7 +30,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
@@ -61,7 +59,7 @@ public class ScaleMetaLayer extends LayerBase {
   public Result eval(@Nonnull final Result... inObj) {
     final Result in0 = inObj[0].addRef();
     final Result in1 = inObj[1].addRef();
-    ReferenceCounting.freeRefs(inObj);
+    RefUtil.freeRefs(inObj);
     final TensorList data0 = in0.getData();
     final TensorList data1 = in1.getData();
     final int itemCnt = data0.length();
@@ -80,6 +78,10 @@ public class ScaleMetaLayer extends LayerBase {
     try {
       Result.Accumulator accumulator = new Result.Accumulator() {
         {
+          data10.addRef();
+          tensor0.addRef();
+          in0.addRef();
+          in1.addRef();
         }
 
         @Override
@@ -123,6 +125,11 @@ public class ScaleMetaLayer extends LayerBase {
 
         public @SuppressWarnings("unused")
         void _free() {
+          super._free();
+          data10.freeRef();
+          tensor0.freeRef();
+          in0.freeRef();
+          in1.freeRef();
         }
       };
       return new Result(new TensorArray(RefUtil.addRefs(tensors)), accumulator) {
@@ -130,6 +137,7 @@ public class ScaleMetaLayer extends LayerBase {
           in0.addRef();
           in1.addRef();
         }
+
         @Override
         public boolean isAlive() {
           return in0.isAlive() || in1.isAlive();
@@ -144,7 +152,7 @@ public class ScaleMetaLayer extends LayerBase {
       };
     } finally {
       tensor0.freeRef();
-      ReferenceCounting.freeRefs(tensors);
+      RefUtil.freeRefs(tensors);
       data10.freeRef();
       in1.freeRef();
       in0.freeRef();
@@ -165,6 +173,7 @@ public class ScaleMetaLayer extends LayerBase {
 
   public @SuppressWarnings("unused")
   void _free() {
+    super._free();
   }
 
   @Nonnull

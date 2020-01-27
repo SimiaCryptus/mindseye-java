@@ -50,8 +50,7 @@ public abstract class AvgMetaLayerTest extends MetaLayerTestBase {
   }
 
   public @SuppressWarnings("unused")
-  void _free() {
-  }
+  void _free() { super._free(); }
 
   @Nonnull
   public @Override
@@ -69,8 +68,7 @@ public abstract class AvgMetaLayerTest extends MetaLayerTestBase {
   public static class Basic extends AvgMetaLayerTest {
 
     public @SuppressWarnings("unused")
-    void _free() {
-    }
+    void _free() { super._free(); }
 
     @Nonnull
     public @Override

@@ -33,8 +33,7 @@ public abstract class SinewaveActivationLayerTest extends ActivationLayerTestBas
   }
 
   public @SuppressWarnings("unused")
-  void _free() {
-  }
+  void _free() { super._free(); }
 
   @Nonnull
   public @Override
@@ -52,8 +51,7 @@ public abstract class SinewaveActivationLayerTest extends ActivationLayerTestBas
   public static class Basic extends SinewaveActivationLayerTest {
 
     public @SuppressWarnings("unused")
-    void _free() {
-    }
+    void _free() { super._free(); }
 
     @Nonnull
     public @Override

@@ -34,6 +34,7 @@ public abstract class LinearActivationLayerTest extends ActivationLayerTestBase 
 
   public @SuppressWarnings("unused")
   void _free() {
+    super._free();
   }
 
   @Nonnull
@@ -47,6 +48,7 @@ public abstract class LinearActivationLayerTest extends ActivationLayerTestBase 
 
     public @SuppressWarnings("unused")
     void _free() {
+      super._free();
     }
 
     @Nonnull

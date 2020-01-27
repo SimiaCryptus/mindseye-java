@@ -22,7 +22,6 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RefUtil;
-import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefList;
 import org.slf4j.Logger;
@@ -30,7 +29,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 
@@ -57,7 +55,7 @@ public class CrossDotMetaLayer extends LayerBase {
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     final Result input = inObj[0].addRef();
-    ReferenceCounting.freeRefs(inObj);
+    RefUtil.freeRefs(inObj);
     final TensorList indata = input.getData();
     final int itemCnt = indata.length();
     final int dim = Tensor.length(indata.getDimensions());
@@ -80,6 +78,8 @@ public class CrossDotMetaLayer extends LayerBase {
     try {
       Result.Accumulator accumulator = new Result.Accumulator() {
         {
+          indata.addRef();
+          input.addRef();
         }
 
         @Override
@@ -107,7 +107,7 @@ public class CrossDotMetaLayer extends LayerBase {
             deltaTensor.freeRef();
             @Nonnull
             TensorArray tensorArray = new TensorArray(RefUtil.addRefs(feedback));
-            ReferenceCounting.freeRefs(feedback);
+            RefUtil.freeRefs(feedback);
             input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
           }
           delta.freeRef();
@@ -117,6 +117,9 @@ public class CrossDotMetaLayer extends LayerBase {
 
         public @SuppressWarnings("unused")
         void _free() {
+          super._free();
+          indata.freeRef();
+          input.freeRef();
         }
       };
       return new Result(new TensorArray(results.addRef()), accumulator) {
@@ -155,6 +158,7 @@ public class CrossDotMetaLayer extends LayerBase {
 
   public @SuppressWarnings("unused")
   void _free() {
+    super._free();
   }
 
   @Nonnull

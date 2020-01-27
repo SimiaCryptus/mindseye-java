@@ -22,7 +22,6 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RefUtil;
-import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefList;
@@ -67,16 +66,18 @@ public class StaticScalarLossLayer extends LayerBase {
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     if (1 != inObj.length) {
-      ReferenceCounting.freeRefs(inObj);
+      RefUtil.freeRefs(inObj);
       throw new IllegalArgumentException();
     }
     //if (inObj[0].getData().length() != 1) throw new IllegalArgumentException();
     final Result in0 = inObj[0].addRef();
-    ReferenceCounting.freeRefs(inObj);
+    RefUtil.freeRefs(inObj);
     TensorList indata = in0.getData();
     try {
       Result.Accumulator accumulator = new Result.Accumulator() {
         {
+          indata.addRef();
+          in0.addRef();
         }
 
         @Override
@@ -103,6 +104,9 @@ public class StaticScalarLossLayer extends LayerBase {
 
         public @SuppressWarnings("unused")
         void _free() {
+          super._free();
+          indata.freeRef();
+          in0.freeRef();
         }
       };
       TensorArray data = new TensorArray(RefIntStream.range(0, indata.length()).parallel()
@@ -148,6 +152,7 @@ public class StaticScalarLossLayer extends LayerBase {
 
   public @SuppressWarnings("unused")
   void _free() {
+    super._free();
   }
 
   @Nonnull

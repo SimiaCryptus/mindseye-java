@@ -43,6 +43,7 @@ public class SignReducerLayerTest {
 
     public @SuppressWarnings("unused")
     void _free() {
+      super._free();
     }
 
     @Nonnull

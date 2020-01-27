@@ -23,7 +23,6 @@ import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RecycleBin;
 import com.simiacryptus.ref.lang.RefUtil;
-import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefList;
@@ -244,11 +243,7 @@ public class FullyConnectedLayer extends LayerBase {
                       }, indata.addRef(), delta.addRef()));
                 }, indata.addRef(), delta.addRef()))
                 .reduce((a, b) -> {
-                  Tensor temp_15_0007 = a.addAndFree(b == null ? null : b.addRef());
-                  if (null != b)
-                    b.freeRef();
-                  a.freeRef();
-                  return temp_15_0007;
+                  return Tensor.add(a,b);
                 });
             RefUtil.freeRef(
                 RefUtil.map(temp_15_0018, RefUtil.wrapInterface((Function<Tensor, Delta<UUID>>) data -> {
@@ -281,7 +276,8 @@ public class FullyConnectedLayer extends LayerBase {
 
         public @SuppressWarnings("unused")
         void _free() {
-          ReferenceCounting.freeRefs(inObj);
+          super._free();
+          RefUtil.freeRefs(inObj);
           fullyConnectedLayer.freeRef();
           indata.freeRef();
         }
@@ -301,12 +297,12 @@ public class FullyConnectedLayer extends LayerBase {
         }
 
         public void _free() {
-          ReferenceCounting.freeRefs(inObj);
+          RefUtil.freeRefs(inObj);
           super._free();
         }
       };
     } finally {
-      ReferenceCounting.freeRefs(inObj);
+      RefUtil.freeRefs(inObj);
       fullyConnectedLayer.freeRef();
       indata.freeRef();
     }

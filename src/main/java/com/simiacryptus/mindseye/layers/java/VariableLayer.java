@@ -54,6 +54,7 @@ public class VariableLayer extends WrapperLayer {
 
   public @SuppressWarnings("unused")
   void _free() {
+    super._free();
   }
 
   @Nonnull

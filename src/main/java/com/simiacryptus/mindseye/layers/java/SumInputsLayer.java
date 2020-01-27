@@ -23,14 +23,12 @@ import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
 import com.simiacryptus.ref.lang.RefUtil;
-import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefList;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.DoubleUnaryOperator;
@@ -55,7 +53,7 @@ public class SumInputsLayer extends LayerBase {
   public static PipelineNetwork combine(@Nullable PipelineNetwork... networks) {
     PipelineNetwork temp_55_0005 = PipelineNetwork.combine(new SumInputsLayer(), RefUtil.addRefs(networks));
     if (null != networks)
-      ReferenceCounting.freeRefs(networks);
+      RefUtil.freeRefs(networks);
     return temp_55_0005;
   }
 
@@ -105,11 +103,7 @@ public class SumInputsLayer extends LayerBase {
               assert projectedDelta != null;
               if (1 < projectedDelta.length() && temp_55_0007.length() == 1) {
                 TensorArray projectedDelta1 = new TensorArray(RefUtil.get(projectedDelta.stream().parallel().reduce((a, b) -> {
-                  Tensor temp_55_0003 = a.addAndFree(b == null ? null : b.addRef());
-                  if (null != b)
-                    b.freeRef();
-                  a.freeRef();
-                  return temp_55_0003;
+                  return Tensor.add(a,b);
                 })));
                 projectedDelta.freeRef();
                 projectedDelta = projectedDelta1;
@@ -139,7 +133,8 @@ public class SumInputsLayer extends LayerBase {
 
         public @SuppressWarnings("unused")
         void _free() {
-          ReferenceCounting.freeRefs(inObj);
+          super._free();
+          RefUtil.freeRefs(inObj);
         }
       }) {
 
@@ -157,12 +152,12 @@ public class SumInputsLayer extends LayerBase {
         }
 
         public void _free() {
-          ReferenceCounting.freeRefs(inObj);
+          RefUtil.freeRefs(inObj);
           super._free();
         }
       };
     } finally {
-      ReferenceCounting.freeRefs(inObj);
+      RefUtil.freeRefs(inObj);
     }
   }
 
@@ -180,6 +175,7 @@ public class SumInputsLayer extends LayerBase {
 
   public @SuppressWarnings("unused")
   void _free() {
+    super._free();
   }
 
   @Nonnull

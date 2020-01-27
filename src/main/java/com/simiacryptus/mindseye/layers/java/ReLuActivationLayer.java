@@ -22,7 +22,6 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RefUtil;
-import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefList;
@@ -93,13 +92,17 @@ public class ReLuActivationLayer extends LayerBase {
   public Result eval(@Nullable final Result... inObj) {
     assert inObj != null;
     final Result input = inObj[0].addRef();
-    ReferenceCounting.freeRefs(inObj);
+    RefUtil.freeRefs(inObj);
     final TensorList indata = input.getData();
     final int itemCnt = indata.length();
     final ReLuActivationLayer reLuActivationLayer = ReLuActivationLayer.this.addRef();
     try {
       Result.Accumulator accumulator = new Result.Accumulator() {
         {
+          reLuActivationLayer.addRef();
+          indata.addRef();
+          weights.addRef();
+          input.addRef();
         }
 
         @Override
@@ -160,6 +163,11 @@ public class ReLuActivationLayer extends LayerBase {
 
         public @SuppressWarnings("unused")
         void _free() {
+          super._free();
+          reLuActivationLayer.freeRef();
+          indata.freeRef();
+          weights.freeRef();
+          input.freeRef();
         }
       };
       TensorArray data = new TensorArray(RefIntStream.range(0, itemCnt).parallel()

@@ -56,8 +56,7 @@ public abstract class LayerTestBase extends StandardLayerTests {
   }
 
   public @SuppressWarnings("unused")
-  void _free() {
-  }
+  void _free() { super._free(); }
 
   public @Override
   @SuppressWarnings("unused")

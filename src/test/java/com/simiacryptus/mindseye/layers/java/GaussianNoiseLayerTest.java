@@ -33,8 +33,7 @@ public abstract class GaussianNoiseLayerTest extends ActivationLayerTestBase {
   }
 
   public @SuppressWarnings("unused")
-  void _free() {
-  }
+  void _free() { super._free(); }
 
   @Nonnull
   public @Override
@@ -46,8 +45,7 @@ public abstract class GaussianNoiseLayerTest extends ActivationLayerTestBase {
   public static class Basic extends GaussianNoiseLayerTest {
 
     public @SuppressWarnings("unused")
-    void _free() {
-    }
+    void _free() { super._free(); }
 
     @Nonnull
     public @Override

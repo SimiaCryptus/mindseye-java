@@ -52,6 +52,7 @@ public final class LogActivationLayer extends SimpleActivationLayer<LogActivatio
 
   public @SuppressWarnings("unused")
   void _free() {
+    super._free();
   }
 
   @Nonnull

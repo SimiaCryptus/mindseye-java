@@ -48,6 +48,7 @@ public abstract class L1NormalizationLayerTest extends LayerTestBase {
 
   public @SuppressWarnings("unused")
   void _free() {
+    super._free();
   }
 
   @Nonnull
@@ -61,6 +62,7 @@ public abstract class L1NormalizationLayerTest extends LayerTestBase {
 
     public @SuppressWarnings("unused")
     void _free() {
+      super._free();
     }
 
     @Nonnull

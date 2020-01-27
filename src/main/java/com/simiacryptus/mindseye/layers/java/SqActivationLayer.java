@@ -52,6 +52,7 @@ public final class SqActivationLayer extends SimpleActivationLayer<SqActivationL
 
   public @SuppressWarnings("unused")
   void _free() {
+    super._free();
   }
 
   @Nonnull

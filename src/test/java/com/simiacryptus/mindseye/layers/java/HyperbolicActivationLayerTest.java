@@ -50,6 +50,7 @@ public abstract class HyperbolicActivationLayerTest extends ActivationLayerTestB
 
       public @SuppressWarnings("unused")
       void _free() {
+        super._free();
       }
 
       @Override
@@ -65,6 +66,7 @@ public abstract class HyperbolicActivationLayerTest extends ActivationLayerTestB
 
   public @SuppressWarnings("unused")
   void _free() {
+    super._free();
   }
 
   @Nonnull
@@ -78,6 +80,7 @@ public abstract class HyperbolicActivationLayerTest extends ActivationLayerTestB
 
     public @SuppressWarnings("unused")
     void _free() {
+      super._free();
     }
 
     @Nonnull

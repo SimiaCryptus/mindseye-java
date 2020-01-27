@@ -58,6 +58,7 @@ public class NthPowerActivationLayerTest {
 
     public @SuppressWarnings("unused")
     void _free() {
+      super._free();
     }
 
     @Nonnull
@@ -103,6 +104,7 @@ public class NthPowerActivationLayerTest {
 
     public @SuppressWarnings("unused")
     void _free() {
+      super._free();
     }
 
     @Nonnull
@@ -135,6 +137,7 @@ public class NthPowerActivationLayerTest {
 
     public @SuppressWarnings("unused")
     void _free() {
+      super._free();
     }
 
     @Nonnull
@@ -179,6 +182,7 @@ public class NthPowerActivationLayerTest {
 
     public @SuppressWarnings("unused")
     void _free() {
+      super._free();
     }
 
     @Nonnull
@@ -211,6 +215,7 @@ public class NthPowerActivationLayerTest {
 
     public @SuppressWarnings("unused")
     void _free() {
+      super._free();
     }
 
     @Nonnull

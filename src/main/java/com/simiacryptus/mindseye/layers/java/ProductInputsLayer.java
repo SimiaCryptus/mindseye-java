@@ -22,14 +22,12 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RefUtil;
-import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefList;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
@@ -70,7 +68,7 @@ public class ProductInputsLayer extends LayerBase {
                 + RefArrays.toString(temp_57_0014.getDimensions()));
         temp_57_0014.freeRef();
         temp_57_0013.freeRef();
-        ReferenceCounting.freeRefs(inObj);
+        RefUtil.freeRefs(inObj);
         throw temp_57_0010;
       }
     }
@@ -126,11 +124,7 @@ public class ProductInputsLayer extends LayerBase {
               final TensorList inputData = input.getData();
               if (1 == inputData.length() && 1 < passback.length()) {
                 TensorArray passback1 = new TensorArray(RefUtil.get(passback.stream().reduce((a, b) -> {
-                  Tensor temp_57_0007 = a.addAndFree(b == null ? null : b.addRef());
-                  if (null != b)
-                    b.freeRef();
-                  a.freeRef();
-                  return temp_57_0007;
+                  return Tensor.add(a,b);
                 })));
                 passback.freeRef();
                 passback = passback1;
@@ -155,7 +149,8 @@ public class ProductInputsLayer extends LayerBase {
 
         public @SuppressWarnings("unused")
         void _free() {
-          ReferenceCounting.freeRefs(inObj);
+          super._free();
+          RefUtil.freeRefs(inObj);
         }
       }) {
 
@@ -173,12 +168,12 @@ public class ProductInputsLayer extends LayerBase {
         }
 
         public void _free() {
-          ReferenceCounting.freeRefs(inObj);
+          RefUtil.freeRefs(inObj);
           super._free();
         }
       };
     } finally {
-      ReferenceCounting.freeRefs(inObj);
+      RefUtil.freeRefs(inObj);
     }
   }
 
@@ -195,8 +190,7 @@ public class ProductInputsLayer extends LayerBase {
   }
 
   public @SuppressWarnings("unused")
-  void _free() {
-  }
+  void _free() { super._free(); }
 
   @Nonnull
   public @Override

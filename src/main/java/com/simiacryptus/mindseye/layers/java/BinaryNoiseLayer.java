@@ -25,7 +25,6 @@ import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.mindseye.layers.StochasticComponent;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
 import com.simiacryptus.ref.lang.RefUtil;
-import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrayList;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefList;
@@ -100,7 +99,7 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     final Result input = inObj[0].addRef();
-    ReferenceCounting.freeRefs(inObj);
+    RefUtil.freeRefs(inObj);
     TensorList inputData = input.getData();
     @Nonnull final int[] dimensions = inputData.getDimensions();
     final int length = inputData.length();
@@ -126,6 +125,7 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
     try {
       Result.Accumulator accumulator = new Result.Accumulator() {
         {
+          input.addRef();
         }
 
         @Override
@@ -142,6 +142,8 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
 
         public @SuppressWarnings("unused")
         void _free() {
+          super._free();
+          input.freeRef();
         }
       };
       return new Result(data, accumulator) {

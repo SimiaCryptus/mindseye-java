@@ -42,8 +42,7 @@ public abstract class UnpoolingLayerTest extends LayerTestBase {
   }
 
   public @SuppressWarnings("unused")
-  void _free() {
-  }
+  void _free() { super._free(); }
 
   @Nonnull
   public @Override
@@ -55,8 +54,7 @@ public abstract class UnpoolingLayerTest extends LayerTestBase {
   public static class Basic extends UnpoolingLayerTest {
 
     public @SuppressWarnings("unused")
-    void _free() {
-    }
+    void _free() { super._free(); }
 
     @Nonnull
     public @Override

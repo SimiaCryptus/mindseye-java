@@ -23,7 +23,6 @@ import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.mindseye.layers.WrapperLayer;
 import com.simiacryptus.ref.lang.RefUtil;
-import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefList;
@@ -58,10 +57,7 @@ public class SubBatchLayer extends WrapperLayer {
 
   @Nonnull
   public static <T extends Layer> SubBatchLayer wrap(@Nullable T layer) {
-    SubBatchLayer temp_10_0006 = new SubBatchLayer(RefUtil.addRef(RefUtil.addRef(layer)));
-    if (null != layer)
-      layer.freeRef();
-    return temp_10_0006;
+    return new SubBatchLayer(layer);
   }
 
   @Nullable
@@ -99,6 +95,7 @@ public class SubBatchLayer extends WrapperLayer {
 
                   public @SuppressWarnings("unused")
                   void _free() {
+                    super._free();
                     RefUtil.freeRef(tensors);
                   }
                 };
@@ -157,20 +154,22 @@ public class SubBatchLayer extends WrapperLayer {
 
         public @SuppressWarnings("unused")
         void _free() {
-          ReferenceCounting.freeRefs(inputs);
+          super._free();
+          RefUtil.freeRefs(inputs);
           RefUtil.freeRefs(passbackBuffer);
-          ReferenceCounting.freeRefs(batchResults);
+          RefUtil.freeRefs(batchResults);
         }
       });
     } finally {
-      ReferenceCounting.freeRefs(inputs);
-      ReferenceCounting.freeRefs(batchResults);
-      ReferenceCounting.freeRefs(passbackBuffer);
+      RefUtil.freeRefs(inputs);
+      RefUtil.freeRefs(batchResults);
+      RefUtil.freeRefs(passbackBuffer);
     }
   }
 
   public @SuppressWarnings("unused")
   void _free() {
+    super._free();
   }
 
   @Nonnull

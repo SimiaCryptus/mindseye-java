@@ -23,7 +23,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RefUtil;
-import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrayList;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefList;
@@ -137,7 +136,7 @@ public class TensorConcatLayer extends LayerBase {
             }
             tensor.freeRef();
             splitBatches.add(RefUtil.addRefs(outputTensors2));
-            ReferenceCounting.freeRefs(outputTensors2);
+            RefUtil.freeRefs(outputTensors2);
           }
 
           data.freeRef();
@@ -150,7 +149,7 @@ public class TensorConcatLayer extends LayerBase {
               Tensor[] tensors = splitBatches.get(b);
               assert tensors != null;
               RefUtil.set((splitData[i]), b, tensors[i].addRef());
-              ReferenceCounting.freeRefs(tensors);
+              RefUtil.freeRefs(tensors);
             }
           }
 
@@ -159,7 +158,7 @@ public class TensorConcatLayer extends LayerBase {
             TensorArray wrap = new TensorArray(RefUtil.addRefs(splitData[i]));
             inObj[i].accumulate(buffer == null ? null : buffer.addRef(), wrap.addRef());
             if (0 < wrap.currentRefCount()) {
-              ReferenceCounting.freeRefs(splitData);
+              RefUtil.freeRefs(splitData);
               RuntimeException temp_09_0007 = new RuntimeException(
                   inObj[i].getClass() + " leak: " + wrap.currentRefCount());
               wrap.freeRef();
@@ -171,12 +170,13 @@ public class TensorConcatLayer extends LayerBase {
           }
           if (null != buffer)
             buffer.freeRef();
-          ReferenceCounting.freeRefs(splitData);
+          RefUtil.freeRefs(splitData);
         }
 
         public @SuppressWarnings("unused")
         void _free() {
-          ReferenceCounting.freeRefs(inObj);
+          super._free();
+          RefUtil.freeRefs(inObj);
         }
       }) {
 
@@ -194,12 +194,12 @@ public class TensorConcatLayer extends LayerBase {
         }
 
         public void _free() {
-          ReferenceCounting.freeRefs(inObj);
+          RefUtil.freeRefs(inObj);
           super._free();
         }
       };
     } finally {
-      ReferenceCounting.freeRefs(inObj);
+      RefUtil.freeRefs(inObj);
       outputTensors.freeRef();
     }
   }
@@ -220,8 +220,7 @@ public class TensorConcatLayer extends LayerBase {
   }
 
   public @SuppressWarnings("unused")
-  void _free() {
-  }
+  void _free() { super._free(); }
 
   @Nonnull
   public @Override

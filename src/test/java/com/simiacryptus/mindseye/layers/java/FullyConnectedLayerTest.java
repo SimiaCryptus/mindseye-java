@@ -62,6 +62,7 @@ public abstract class FullyConnectedLayerTest extends LayerTestBase {
 
   public @SuppressWarnings("unused")
   void _free() {
+    super._free();
     fullyConnectedLayer.freeRef();
   }
 
@@ -79,6 +80,7 @@ public abstract class FullyConnectedLayerTest extends LayerTestBase {
 
     public @SuppressWarnings("unused")
     void _free() {
+      super._free();
     }
 
     @Nonnull

@@ -22,7 +22,6 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RefUtil;
-import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefDoubleStream;
 import com.simiacryptus.ref.wrappers.RefIntStream;
@@ -132,7 +131,7 @@ public class SoftmaxLayer extends LayerBase {
             }).allMatch(v -> Double.isFinite(v));
             @Nonnull
             TensorArray tensorArray = new TensorArray(RefUtil.addRefs(passbackA));
-            ReferenceCounting.freeRefs(passbackA);
+            RefUtil.freeRefs(passbackA);
             inObj[0].accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
           }
           data.freeRef();
@@ -142,8 +141,9 @@ public class SoftmaxLayer extends LayerBase {
 
         public @SuppressWarnings("unused")
         void _free() {
-          ReferenceCounting.freeRefs(inObj);
-          ReferenceCounting.freeRefs(expA);
+          super._free();
+          RefUtil.freeRefs(inObj);
+          RefUtil.freeRefs(expA);
         }
       }) {
 
@@ -157,14 +157,14 @@ public class SoftmaxLayer extends LayerBase {
         }
 
         public void _free() {
-          ReferenceCounting.freeRefs(inObj);
+          RefUtil.freeRefs(inObj);
           super._free();
         }
       };
     } finally {
-      ReferenceCounting.freeRefs(inObj);
-      ReferenceCounting.freeRefs(outputA);
-      ReferenceCounting.freeRefs(expA);
+      RefUtil.freeRefs(inObj);
+      RefUtil.freeRefs(outputA);
+      RefUtil.freeRefs(expA);
     }
   }
 
@@ -182,6 +182,7 @@ public class SoftmaxLayer extends LayerBase {
 
   public @SuppressWarnings("unused")
   void _free() {
+    super._free();
   }
 
   @Nonnull
