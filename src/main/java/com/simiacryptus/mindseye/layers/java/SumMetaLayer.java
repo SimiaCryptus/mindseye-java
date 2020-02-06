@@ -76,16 +76,16 @@ public class SumMetaLayer extends LayerBase {
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     if (1 != inObj.length) {
-      RefUtil.freeRefs(inObj);
+      RefUtil.freeRef(inObj);
       throw new IllegalArgumentException();
     }
     final Result input = inObj[0].addRef();
-    RefUtil.freeRefs(inObj);
+    RefUtil.freeRef(inObj);
     TensorList inputData = input.getData();
     final int itemCnt = inputData.length();
     if (null == lastResult || minBatches < itemCnt) {
       @Nonnull final ToDoubleFunction<Coordinate> f = RefUtil
-          .wrapInterface((c) -> RefIntStream.range(0, itemCnt).mapToDouble(RefUtil.wrapInterface(dataIndex -> {
+          .wrapInterface(c -> RefIntStream.range(0, itemCnt).mapToDouble(RefUtil.wrapInterface(dataIndex -> {
             Tensor tensor = inputData.get(dataIndex);
             double temp_13_0004 = tensor.get(c);
             tensor.freeRef();
@@ -113,7 +113,7 @@ public class SumMetaLayer extends LayerBase {
             @Nonnull final Tensor feedback[] = new Tensor[itemCnt];
             RefArrays.parallelSetAll(RefUtil.addRefs(feedback),
                 RefUtil.wrapInterface(i -> new Tensor(delta.getDimensions()), delta.addRef()));
-            delta.coordStream(false).forEach(RefUtil.wrapInterface((Consumer<? super Coordinate>) (inputCoord) -> {
+            delta.coordStream(false).forEach(RefUtil.wrapInterface((Consumer<? super Coordinate>) inputCoord -> {
               for (int inputItem = 0; inputItem < itemCnt; inputItem++) {
                 feedback[inputItem].add(inputCoord, delta.get(inputCoord));
               }
@@ -121,7 +121,7 @@ public class SumMetaLayer extends LayerBase {
             delta.freeRef();
             @Nonnull
             TensorArray tensorArray = new TensorArray(RefUtil.addRefs(feedback));
-            RefUtil.freeRefs(feedback);
+            RefUtil.freeRef(feedback);
             input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
           }
           data.freeRef();

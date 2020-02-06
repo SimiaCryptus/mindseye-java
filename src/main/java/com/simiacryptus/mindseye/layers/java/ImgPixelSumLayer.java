@@ -60,7 +60,7 @@ public class ImgPixelSumLayer extends LayerBase {
   public Result eval(@Nonnull final Result... inObj) {
     assert 1 == inObj.length;
     Result temp_47_0004 = eval(inObj[0].addRef());
-    RefUtil.freeRefs(inObj);
+    RefUtil.freeRef(inObj);
     return temp_47_0004;
   }
 
@@ -84,7 +84,7 @@ public class ImgPixelSumLayer extends LayerBase {
         if (null != tensor)
           tensor.freeRef();
         return temp_47_0002;
-      }).toArray(i -> new Tensor[i])), new Result.Accumulator() {
+      }).toArray(Tensor[]::new)), new Result.Accumulator() {
         {
           input.addRef();
         }
@@ -104,7 +104,7 @@ public class ImgPixelSumLayer extends LayerBase {
               temp_47_0007.freeRef();
               deltaTensor.freeRef();
               return temp_47_0003;
-            }).toArray(i -> new Tensor[i]));
+            }).toArray(Tensor[]::new));
             input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
           }
           delta.freeRef();

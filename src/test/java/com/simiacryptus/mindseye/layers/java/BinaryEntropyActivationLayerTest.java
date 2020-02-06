@@ -44,16 +44,6 @@ public abstract class BinaryEntropyActivationLayerTest extends ActivationLayerTe
     return RefIntStream.range(50, 450).mapToDouble(x -> x * 1.0 / 500.0);
   }
 
-  public @SuppressWarnings("unused")
-  void _free() { super._free(); }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  BinaryEntropyActivationLayerTest addRef() {
-    return (BinaryEntropyActivationLayerTest) super.addRef();
-  }
-
   //  /**
   //   * Basic Test
   //   */

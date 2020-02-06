@@ -124,12 +124,12 @@ public class ImgReshapeLayer extends LayerBase {
   public Result eval(@Nonnull final Result... inObj) {
     //assert Arrays.stream(inObj).flatMapToDouble(input-> input.getData().stream().flatMapToDouble(x-> Arrays.stream(x.getData()))).allMatch(v->Double.isFinite(v));
     final Result input = inObj[0].addRef();
-    RefUtil.freeRefs(inObj);
+    RefUtil.freeRef(inObj);
     final TensorList batch = input.getData();
     @Nonnull final int[] inputDims = batch.getDimensions();
     assert 3 == inputDims.length;
-    assert expand || 0 == inputDims[0] % kernelSizeX : (inputDims[0] + " % " + kernelSizeX);
-    assert expand || 0 == inputDims[1] % kernelSizeY : (inputDims[1] + " % " + kernelSizeY);
+    assert expand || 0 == inputDims[0] % kernelSizeX : inputDims[0] + " % " + kernelSizeX;
+    assert expand || 0 == inputDims[1] % kernelSizeY : inputDims[1] + " % " + kernelSizeY;
     assert !expand || 0 == inputDims[2] % (kernelSizeX * kernelSizeY);
     //assert input.getData().stream().flatMapToDouble(x-> Arrays.stream(x.getData())).allMatch(v->Double.isFinite(v));
     Tensor outputDims = getOutputDims(inputDims);
@@ -142,7 +142,7 @@ public class ImgReshapeLayer extends LayerBase {
           inputData.freeRef();
           return temp_43_0002;
         }, outputDims, batch.addRef()))
-        .toArray(i -> new Tensor[i]));
+        .toArray(Tensor[]::new));
     batch.freeRef();
     try {
       Result.Accumulator accumulator = new Result.Accumulator() {
@@ -166,7 +166,7 @@ public class ImgReshapeLayer extends LayerBase {
                       passback.addRef());
                   err.freeRef();
                   return temp_43_0004;
-                }, error.addRef())).toArray(i -> new Tensor[i]));
+                }, error.addRef())).toArray(Tensor[]::new));
             input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
           }
           error.freeRef();

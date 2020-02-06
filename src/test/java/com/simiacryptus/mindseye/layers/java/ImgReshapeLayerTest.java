@@ -29,15 +29,6 @@ import java.util.Random;
 
 public abstract class ImgReshapeLayerTest extends LayerTestBase {
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  ImgReshapeLayerTest[] addRefs(@Nullable ImgReshapeLayerTest[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(ImgReshapeLayerTest::addRef)
-        .toArray((x) -> new ImgReshapeLayerTest[x]);
-  }
-
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
@@ -50,27 +41,8 @@ public abstract class ImgReshapeLayerTest extends LayerTestBase {
     return new ImgReshapeLayer(2, 2, false);
   }
 
-  public @SuppressWarnings("unused")
-  void _free() { super._free(); }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  ImgReshapeLayerTest addRef() {
-    return (ImgReshapeLayerTest) super.addRef();
-  }
-
   public static class Basic extends ImgReshapeLayerTest {
 
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

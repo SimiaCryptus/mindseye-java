@@ -45,27 +45,8 @@ public abstract class BinaryNoiseLayerTest extends LayerTestBase {
     return new StochasticSamplingSubnetLayer(BinaryNoiseLayer.maskLayer(0.5), 3);
   }
 
-  public @SuppressWarnings("unused")
-  void _free() { super._free(); }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  BinaryNoiseLayerTest addRef() {
-    return (BinaryNoiseLayerTest) super.addRef();
-  }
-
   public static class Basic extends BinaryNoiseLayerTest {
 
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

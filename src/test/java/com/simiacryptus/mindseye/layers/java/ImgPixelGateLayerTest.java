@@ -41,27 +41,8 @@ public abstract class ImgPixelGateLayerTest extends LayerTestBase {
     return new ImgPixelGateLayer();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() { super._free(); }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  ImgPixelGateLayerTest addRef() {
-    return (ImgPixelGateLayerTest) super.addRef();
-  }
-
   public static class Basic extends ImgPixelGateLayerTest {
 
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

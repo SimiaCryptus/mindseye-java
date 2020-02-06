@@ -45,27 +45,8 @@ public abstract class ScaleMetaLayerTest extends LayerTestBase {
     return new ScaleMetaLayer();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() { super._free(); }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  ScaleMetaLayerTest addRef() {
-    return (ScaleMetaLayerTest) super.addRef();
-  }
-
   public static class Basic extends ScaleMetaLayerTest {
 
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

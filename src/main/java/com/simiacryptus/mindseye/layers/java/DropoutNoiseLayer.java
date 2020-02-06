@@ -77,7 +77,7 @@ public class DropoutNoiseLayer extends LayerBase implements StochasticComponent 
   public Result eval(@Nullable final Result... inObj) {
     assert inObj != null;
     final Result inputResult = inObj[0].addRef();
-    RefUtil.freeRefs(inObj);
+    RefUtil.freeRef(inObj);
     final TensorList inputData = inputResult.getData();
     final int itemCnt = inputData.length();
     final Tensor[] mask = RefIntStream.range(0, itemCnt)
@@ -87,11 +87,11 @@ public class DropoutNoiseLayer extends LayerBase implements StochasticComponent 
           Tensor temp_36_0003 = input.map(x -> {
             if (seed == -1)
               return 1;
-            return random.nextDouble() < getValue() ? 0 : (1.0 / getValue());
+            return random.nextDouble() < getValue() ? 0 : 1.0 / getValue();
           });
           input.freeRef();
           return temp_36_0003;
-        }, inputData.addRef())).toArray(i -> new Tensor[i]);
+        }, inputData.addRef())).toArray(Tensor[]::new);
     try {
       Result.Accumulator accumulator = new Result.Accumulator() {
         {
@@ -114,7 +114,7 @@ public class DropoutNoiseLayer extends LayerBase implements StochasticComponent 
                     passback.set(i, maskData[i] * deltaData[i]);
                   }
                   return passback;
-                }, RefUtil.addRefs(mask), delta.addRef())).toArray(i -> new Tensor[i]));
+                }, RefUtil.addRefs(mask), delta.addRef())).toArray(Tensor[]::new));
             inputResult.accumulate(buffer == null ? null : buffer.addRef(),
                 tensorArray);
           }
@@ -126,7 +126,7 @@ public class DropoutNoiseLayer extends LayerBase implements StochasticComponent 
         public @SuppressWarnings("unused")
         void _free() {
           super._free();
-          RefUtil.freeRefs(mask);
+          RefUtil.freeRef(mask);
           inputResult.freeRef();
         }
       };
@@ -142,7 +142,7 @@ public class DropoutNoiseLayer extends LayerBase implements StochasticComponent 
               outputData[i] = input[i] * maskT[i];
             }
             return output;
-          }, RefUtil.addRefs(mask), inputData.addRef())).toArray(i -> new Tensor[i]));
+          }, RefUtil.addRefs(mask), inputData.addRef())).toArray(Tensor[]::new));
       return new Result(data, accumulator) {
         {
           inputResult.addRef();
@@ -160,7 +160,7 @@ public class DropoutNoiseLayer extends LayerBase implements StochasticComponent 
         }
       };
     } finally {
-      RefUtil.freeRefs(mask);
+      RefUtil.freeRef(mask);
       inputData.freeRef();
       inputResult.freeRef();
     }

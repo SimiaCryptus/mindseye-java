@@ -41,27 +41,8 @@ public abstract class CrossDifferenceLayerTest extends LayerTestBase {
     return new CrossDifferenceLayer();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() { super._free(); }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  CrossDifferenceLayerTest addRef() {
-    return (CrossDifferenceLayerTest) super.addRef();
-  }
-
   public static class Basic extends CrossDifferenceLayerTest {
 
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

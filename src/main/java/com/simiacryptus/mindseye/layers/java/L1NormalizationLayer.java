@@ -60,7 +60,7 @@ public class L1NormalizationLayer extends LayerBase {
   @Override
   public Result eval(@Nonnull final Result... input) {
     final Result in = input[0].addRef();
-    RefUtil.freeRefs(input);
+    RefUtil.freeRef(input);
     final TensorList inData = in.getData();
     try {
       Result.Accumulator accumulator = new Result.Accumulator() {
@@ -91,15 +91,15 @@ public class L1NormalizationLayer extends LayerBase {
                   }
                   return passback;
                 }, inData.addRef(), outDelta.addRef()))
-                .toArray(i -> new Tensor[i]);
+                .toArray(Tensor[]::new);
             assert RefArrays.stream(RefUtil.addRefs(passbackArray)).flatMapToDouble(x -> {
               RefDoubleStream temp_26_0004 = RefArrays.stream(x.getData());
               x.freeRef();
               return temp_26_0004;
-            }).allMatch(v -> Double.isFinite(v));
+            }).allMatch(Double::isFinite);
             @Nonnull
             TensorArray tensorArray = new TensorArray(RefUtil.addRefs(passbackArray));
-            RefUtil.freeRefs(passbackArray);
+            RefUtil.freeRef(passbackArray);
             in.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
           }
           outDelta.freeRef();
@@ -125,7 +125,7 @@ public class L1NormalizationLayer extends LayerBase {
               value.freeRef();
               return temp_26_0003;
             }
-          }, inData.addRef())).toArray(i -> new Tensor[i]));
+          }, inData.addRef())).toArray(Tensor[]::new));
       return new Result(data, accumulator) {
         {
           in.addRef();

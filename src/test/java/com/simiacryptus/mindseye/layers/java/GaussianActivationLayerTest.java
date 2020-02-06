@@ -32,31 +32,7 @@ public abstract class GaussianActivationLayerTest extends ActivationLayerTestBas
     super(new GaussianActivationLayer(0, 1));
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-    super._free();
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  GaussianActivationLayerTest addRef() {
-    return (GaussianActivationLayerTest) super.addRef();
-  }
-
   public static class Basic extends GaussianActivationLayerTest {
-
-    public @SuppressWarnings("unused")
-    void _free() {
-      super._free();
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
 
     @Nonnull
     @Override

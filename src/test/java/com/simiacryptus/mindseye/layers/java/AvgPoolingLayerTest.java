@@ -47,31 +47,8 @@ public abstract class AvgPoolingLayerTest extends LayerTestBase {
     return new int[][]{{200, 200, 3}};
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-    super._free();
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  AvgPoolingLayerTest addRef() {
-    return (AvgPoolingLayerTest) super.addRef();
-  }
-
   public static class Basic extends AvgPoolingLayerTest {
 
-    public @SuppressWarnings("unused")
-    void _free() {
-      super._free();
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

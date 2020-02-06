@@ -49,15 +49,6 @@ public class SumInputsLayerTest {
       return new int[][]{{100}, {1}};
     }
 
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    N1Test addRef() {
-      return (N1Test) super.addRef();
-    }
   }
 
   public static class NNTest extends LayerTestBase {
@@ -80,15 +71,6 @@ public class SumInputsLayerTest {
       return new int[][]{{100}, {100}};
     }
 
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    NNTest addRef() {
-      return (NNTest) super.addRef();
-    }
   }
 
   public static class OnePlusOne extends LayerTestBase {
@@ -132,14 +114,5 @@ public class SumInputsLayerTest {
       return getSmallDims(random);
     }
 
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    OnePlusOne addRef() {
-      return (OnePlusOne) super.addRef();
-    }
   }
 }

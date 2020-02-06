@@ -36,18 +36,6 @@ public abstract class ImgViewLayerTest extends LayerTestBase {
     return new int[][]{{8, 8, 2}};
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-    super._free();
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  ImgViewLayerTest addRef() {
-    return (ImgViewLayerTest) super.addRef();
-  }
-
   public static class Basic extends ImgViewLayerTest {
 
     @Nonnull
@@ -56,17 +44,6 @@ public abstract class ImgViewLayerTest extends LayerTestBase {
       return new ImgViewLayer(3, 2, 2, 3);
     }
 
-    public @SuppressWarnings("unused")
-    void _free() {
-      super._free();
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
   public static class Rotated extends ImgViewLayerTest {
@@ -81,17 +58,6 @@ public abstract class ImgViewLayerTest extends LayerTestBase {
       return temp_72_0001;
     }
 
-    public @SuppressWarnings("unused")
-    void _free() {
-      super._free();
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Rotated addRef() {
-      return (Rotated) super.addRef();
-    }
   }
 
   public static class RotatedChannels extends ImgViewLayerTest {
@@ -109,17 +75,6 @@ public abstract class ImgViewLayerTest extends LayerTestBase {
       return temp_72_0003;
     }
 
-    public @SuppressWarnings("unused")
-    void _free() {
-      super._free();
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    RotatedChannels addRef() {
-      return (RotatedChannels) super.addRef();
-    }
   }
 
 }

@@ -39,33 +39,12 @@ public class NthPowerActivationLayerTest {
       return new SingleDerivativeTester(1e-2, 1e-4);
     }
 
-    @Nullable
-    public static @SuppressWarnings("unused")
-    InvPowerTest[] addRefs(@Nullable InvPowerTest[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(InvPowerTest::addRef)
-          .toArray((x) -> new InvPowerTest[x]);
-    }
-
     @Override
     public double random() {
       final double v = super.random();
       if (Math.abs(v) < 0.2)
         return random();
       return v;
-    }
-
-    public @SuppressWarnings("unused")
-    void _free() {
-      super._free();
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    InvPowerTest addRef() {
-      return (InvPowerTest) super.addRef();
     }
 
     @Nonnull
@@ -85,33 +64,12 @@ public class NthPowerActivationLayerTest {
       return new SingleDerivativeTester(1e-2, 1e-4);
     }
 
-    @Nullable
-    public static @SuppressWarnings("unused")
-    InvSqrtPowerTest[] addRefs(@Nullable InvSqrtPowerTest[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(InvSqrtPowerTest::addRef)
-          .toArray((x) -> new InvSqrtPowerTest[x]);
-    }
-
     @Override
     public double random() {
       final double v = super.random();
       if (Math.abs(v) < 0.2)
         return random();
       return v;
-    }
-
-    public @SuppressWarnings("unused")
-    void _free() {
-      super._free();
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    InvSqrtPowerTest addRef() {
-      return (InvSqrtPowerTest) super.addRef();
     }
 
     @Nonnull
@@ -124,27 +82,6 @@ public class NthPowerActivationLayerTest {
   public static class NthPowerTest extends ActivationLayerTestBase {
     public NthPowerTest() {
       super(new NthPowerActivationLayer(Math.PI));
-    }
-
-    @Nullable
-    public static @SuppressWarnings("unused")
-    NthPowerTest[] addRefs(@Nullable NthPowerTest[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(NthPowerTest::addRef)
-          .toArray((x) -> new NthPowerTest[x]);
-    }
-
-    public @SuppressWarnings("unused")
-    void _free() {
-      super._free();
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    NthPowerTest addRef() {
-      return (NthPowerTest) super.addRef();
     }
 
     @Nonnull
@@ -171,27 +108,6 @@ public class NthPowerActivationLayerTest {
       super(new NthPowerActivationLayer(2));
     }
 
-    @Nullable
-    public static @SuppressWarnings("unused")
-    SquarePowerTest[] addRefs(@Nullable SquarePowerTest[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(SquarePowerTest::addRef)
-          .toArray((x) -> new SquarePowerTest[x]);
-    }
-
-    public @SuppressWarnings("unused")
-    void _free() {
-      super._free();
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    SquarePowerTest addRef() {
-      return (SquarePowerTest) super.addRef();
-    }
-
     @Nonnull
     @Override
     protected Layer lossLayer() {
@@ -202,27 +118,6 @@ public class NthPowerActivationLayerTest {
   public static class ZeroPowerTest extends ActivationLayerTestBase {
     public ZeroPowerTest() {
       super(new NthPowerActivationLayer(0));
-    }
-
-    @Nullable
-    public static @SuppressWarnings("unused")
-    ZeroPowerTest[] addRefs(@Nullable ZeroPowerTest[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(ZeroPowerTest::addRef)
-          .toArray((x) -> new ZeroPowerTest[x]);
-    }
-
-    public @SuppressWarnings("unused")
-    void _free() {
-      super._free();
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    ZeroPowerTest addRef() {
-      return (ZeroPowerTest) super.addRef();
     }
 
     @Nonnull

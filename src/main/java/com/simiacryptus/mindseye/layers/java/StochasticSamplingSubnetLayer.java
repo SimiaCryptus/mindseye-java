@@ -92,19 +92,15 @@ public class StochasticSamplingSubnetLayer extends LayerBase implements Stochast
     PipelineNetwork gateNetwork = new PipelineNetwork(samples.length);
     RefUtil.freeRef(gateNetwork.add(new SumInputsLayer(),
         RefIntStream.range(0, samples.length)
-            .mapToObj(RefUtil.wrapInterface((IntFunction<? extends DAGNode>) i -> gateNetwork.getInput(i),
+            .mapToObj(RefUtil.wrapInterface((IntFunction<? extends DAGNode>) gateNetwork::getInput,
                 gateNetwork.addRef()))
-            .toArray(i -> new DAGNode[i])));
+            .toArray(DAGNode[]::new)));
     LinearActivationLayer temp_22_0007 = new LinearActivationLayer();
     temp_22_0007.setScale(1.0 / samples.length);
-    LinearActivationLayer temp_22_0009 = temp_22_0007.addRef();
-    temp_22_0009.freeze();
-    RefUtil.freeRef(gateNetwork.add(temp_22_0009.addRef()));
-    temp_22_0009.freeRef();
-    temp_22_0007.freeRef();
-    Result temp_22_0003 = gateNetwork.eval(RefUtil.addRefs(samples));
+    temp_22_0007.freeze();
+    RefUtil.freeRef(gateNetwork.add(temp_22_0007));
+    Result temp_22_0003 = gateNetwork.eval(samples);
     gateNetwork.freeRef();
-    RefUtil.freeRefs(samples);
     return temp_22_0003;
   }
 
@@ -112,25 +108,17 @@ public class StochasticSamplingSubnetLayer extends LayerBase implements Stochast
   public Result eval(@Nonnull final Result... inObj) {
     if (0 == seed) {
       assert subnetwork != null;
-      Result temp_22_0006 = subnetwork.eval(RefUtil.addRefs(inObj));
-      RefUtil.freeRefs(inObj);
-      return temp_22_0006;
+      return subnetwork.eval(inObj);
     }
-    Result[] counting = RefArrays.stream(RefUtil.addRefs(inObj)).map(r -> {
-      CountingResult temp_22_0004 = new CountingResult(r == null ? null : r.addRef(), samples);
-      if (null != r)
-        r.freeRef();
-      return temp_22_0004;
-    }).toArray(i -> new Result[i]);
-    RefUtil.freeRefs(inObj);
-    Result temp_22_0005 = average(
+    Result[] counting = RefArrays.stream(inObj).map(r -> {
+      return new CountingResult(r, samples);
+    }).toArray(Result[]::new);
+    return average(
         RefArrays.stream(getSeeds()).mapToObj(RefUtil.wrapInterface((LongFunction<? extends Result>) seed1 -> {
           shuffleSubnet(seed1);
           assert subnetwork != null;
           return subnetwork.eval(RefUtil.addRefs(counting));
-        }, RefUtil.addRefs(counting))).toArray(i -> new Result[i]));
-    RefUtil.freeRefs(counting);
-    return temp_22_0005;
+        }, counting)).toArray(Result[]::new));
   }
 
   public void shuffleSubnet(long seed) {

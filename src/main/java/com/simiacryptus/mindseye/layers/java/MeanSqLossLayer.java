@@ -55,7 +55,7 @@ public class MeanSqLossLayer extends LayerBase {
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     if (2 != inObj.length) {
-      RefUtil.freeRefs(inObj);
+      RefUtil.freeRef(inObj);
       throw new IllegalArgumentException();
     }
     TensorList temp_20_0011 = inObj[0].getData();
@@ -65,7 +65,7 @@ public class MeanSqLossLayer extends LayerBase {
     final int rightLength = temp_20_0012.length();
     temp_20_0012.freeRef();
     if (leftLength != rightLength && leftLength != 1 && rightLength != 1) {
-      RefUtil.freeRefs(inObj);
+      RefUtil.freeRef(inObj);
       throw new IllegalArgumentException(leftLength + " != " + rightLength);
     }
     @Nonnull final Tensor diffs[] = new Tensor[leftLength];
@@ -89,10 +89,10 @@ public class MeanSqLossLayer extends LayerBase {
             b.freeRef();
             a.freeRef();
             Tensor temp_20_0004 = new Tensor(new double[]{r.sumSq() / r.length()}, 1);
-            RefUtil.set((diffs), dataIndex, r);
+            RefUtil.set(diffs, dataIndex, r);
             return temp_20_0004;
           }, RefUtil.addRefs(diffs), RefUtil.addRefs(inObj))
-          ).toArray(i -> new Tensor[i]));
+          ).toArray(Tensor[]::new));
       Result.Accumulator accumulator = new Result.Accumulator() {
         {
           RefUtil.addRefs(inObj);
@@ -119,7 +119,7 @@ public class MeanSqLossLayer extends LayerBase {
                 return Tensor.add(a, b);
               })));
             }
-            @Nonnull final TensorList array = new TensorArray(tensorStream.toArray(i -> new Tensor[i]));
+            @Nonnull final TensorList array = new TensorArray(tensorStream.toArray(Tensor[]::new));
             inObj[0].accumulate(buffer == null ? null : buffer.addRef(), array);
           }
           if (inObj[1].isAlive()) {
@@ -142,7 +142,7 @@ public class MeanSqLossLayer extends LayerBase {
               Tensor temp_20_0009 = x.scale(-1);
               x.freeRef();
               return temp_20_0009;
-            }).toArray(i -> new Tensor[i]));
+            }).toArray(Tensor[]::new));
             inObj[1].accumulate(buffer == null ? null : buffer.addRef(), array);
           }
           data.freeRef();
@@ -153,8 +153,8 @@ public class MeanSqLossLayer extends LayerBase {
         public @SuppressWarnings("unused")
         void _free() {
           super._free();
-          RefUtil.freeRefs(inObj);
-          RefUtil.freeRefs(diffs);
+          RefUtil.freeRef(inObj);
+          RefUtil.freeRef(diffs);
         }
       };
       return new Result(data, accumulator) {
@@ -169,13 +169,13 @@ public class MeanSqLossLayer extends LayerBase {
         }
 
         public void _free() {
-          RefUtil.freeRefs(inObj);
+          RefUtil.freeRef(inObj);
           super._free();
         }
       };
     } finally {
-      RefUtil.freeRefs(inObj);
-      RefUtil.freeRefs(diffs);
+      RefUtil.freeRef(inObj);
+      RefUtil.freeRef(diffs);
     }
   }
 

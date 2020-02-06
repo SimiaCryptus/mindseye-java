@@ -70,15 +70,6 @@ public class ImgConcatLayer extends LayerBase {
   }
 
   @Nullable
-  public static @SuppressWarnings("unused")
-  ImgConcatLayer[] addRefs(@Nullable ImgConcatLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(ImgConcatLayer::addRef)
-        .toArray((x) -> new ImgConcatLayer[x]);
-  }
-
-  @Nullable
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     assert RefArrays.stream(RefUtil.addRefs(inObj)).allMatch(x -> {
@@ -167,25 +158,25 @@ public class ImgConcatLayer extends LayerBase {
               RefSystem.arraycopy(tensorData, pos, dest.getData(), 0,
                   Math.min(dest.length(), tensorData.length - pos));
               pos += dest.length();
-              RefUtil.set((outputTensors2), i, dest.addRef());
+              RefUtil.set(outputTensors2, i, dest.addRef());
               dest.freeRef();
             }
             tensor.freeRef();
             splitBatches.add(RefUtil.addRefs(outputTensors2));
-            RefUtil.freeRefs(outputTensors2);
+            RefUtil.freeRef(outputTensors2);
           }
 
           data.freeRef();
           @Nonnull final Tensor[][] splitData = new Tensor[inObj.length][];
           for (int i = 0; i < splitData.length; i++) {
-            RefUtil.set((splitData), i, new Tensor[numBatches]);
+            RefUtil.set(splitData, i, new Tensor[numBatches]);
           }
           for (int i = 0; i < inObj.length; i++) {
             for (int b = 0; b < numBatches; b++) {
               Tensor[] tensors = splitBatches.get(b);
               assert tensors != null;
-              RefUtil.set((splitData[i]), b, tensors[i].addRef());
-              RefUtil.freeRefs(tensors);
+              RefUtil.set(splitData[i], b, tensors[i].addRef());
+              RefUtil.freeRef(tensors);
             }
           }
 
@@ -197,13 +188,13 @@ public class ImgConcatLayer extends LayerBase {
           }
           if (null != buffer)
             buffer.freeRef();
-          RefUtil.freeRefs(splitData);
+          RefUtil.freeRef(splitData);
         }
 
         public @SuppressWarnings("unused")
         void _free() {
           super._free();
-          RefUtil.freeRefs(inObj);
+          RefUtil.freeRef(inObj);
         }
       }) {
 
@@ -221,12 +212,12 @@ public class ImgConcatLayer extends LayerBase {
         }
 
         public void _free() {
-          RefUtil.freeRefs(inObj);
+          RefUtil.freeRef(inObj);
           super._free();
         }
       };
     } finally {
-      RefUtil.freeRefs(inObj);
+      RefUtil.freeRef(inObj);
       outputTensors.freeRef();
     }
   }

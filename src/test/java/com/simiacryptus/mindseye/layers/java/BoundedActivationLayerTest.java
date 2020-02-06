@@ -32,18 +32,6 @@ public abstract class BoundedActivationLayerTest extends ActivationLayerTestBase
     super(new BoundedActivationLayer());
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-    super._free();
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  BoundedActivationLayerTest addRef() {
-    return (BoundedActivationLayerTest) super.addRef();
-  }
-
   @Nonnull
   @Override
   protected Layer lossLayer() {
@@ -52,17 +40,6 @@ public abstract class BoundedActivationLayerTest extends ActivationLayerTestBase
 
   public static class Basic extends BoundedActivationLayerTest {
 
-    public @SuppressWarnings("unused")
-    void _free() {
-      super._free();
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

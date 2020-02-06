@@ -70,7 +70,7 @@ public class CrossDifferenceLayer extends LayerBase {
           });
         });
         return result1;
-      }).toArray(i -> new Tensor[i])), new Result.Accumulator() {
+      }).toArray(Tensor[]::new)), new Result.Accumulator() {
         {
           RefUtil.addRefs(inObj);
         }
@@ -94,7 +94,7 @@ public class CrossDifferenceLayer extends LayerBase {
                 });
               });
               return passback;
-            }).toArray(i -> new Tensor[i]));
+            }).toArray(Tensor[]::new));
             input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
           }
           data.freeRef();
@@ -106,7 +106,7 @@ public class CrossDifferenceLayer extends LayerBase {
         public @SuppressWarnings("unused")
         void _free() {
           super._free();
-          RefUtil.freeRefs(inObj);
+          RefUtil.freeRef(inObj);
         }
       }) {
 
@@ -124,14 +124,14 @@ public class CrossDifferenceLayer extends LayerBase {
         }
 
         public void _free() {
-          RefUtil.freeRefs(inObj);
+          RefUtil.freeRef(inObj);
           super._free();
         }
       };
       temp_65_0003.freeRef();
       return temp_65_0002;
     } finally {
-      RefUtil.freeRefs(inObj);
+      RefUtil.freeRef(inObj);
     }
   }
 

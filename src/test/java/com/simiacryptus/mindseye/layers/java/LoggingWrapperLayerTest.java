@@ -43,33 +43,11 @@ public abstract class LoggingWrapperLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
-    LinearActivationLayer inner = new LinearActivationLayer();
-    LoggingWrapperLayer temp_27_0001 = new LoggingWrapperLayer(inner.addRef());
-    inner.freeRef();
-    return temp_27_0001;
-  }
-
-  public @SuppressWarnings("unused")
-  void _free() { super._free(); }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  LoggingWrapperLayerTest addRef() {
-    return (LoggingWrapperLayerTest) super.addRef();
+    return new LoggingWrapperLayer(new LinearActivationLayer());
   }
 
   public static class Basic extends LoggingWrapperLayerTest {
 
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

@@ -41,31 +41,8 @@ public abstract class MaxPoolingLayerTest extends LayerTestBase {
     return new MaxPoolingLayer(2, 2, 1);
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-    super._free();
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  MaxPoolingLayerTest addRef() {
-    return (MaxPoolingLayerTest) super.addRef();
-  }
-
   public static class Basic extends MaxPoolingLayerTest {
 
-    public @SuppressWarnings("unused")
-    void _free() {
-      super._free();
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

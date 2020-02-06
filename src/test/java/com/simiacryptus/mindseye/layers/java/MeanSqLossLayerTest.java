@@ -41,27 +41,8 @@ public abstract class MeanSqLossLayerTest extends LayerTestBase {
     return new MeanSqLossLayer();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() { super._free(); }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  MeanSqLossLayerTest addRef() {
-    return (MeanSqLossLayerTest) super.addRef();
-  }
-
   public static class Basic extends MeanSqLossLayerTest {
 
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

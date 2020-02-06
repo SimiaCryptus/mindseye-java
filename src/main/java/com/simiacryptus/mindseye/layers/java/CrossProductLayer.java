@@ -73,7 +73,7 @@ public class CrossProductLayer extends LayerBase {
             });
           });
           return result1;
-        }).toArray(i -> new Tensor[i])), new Result.Accumulator() {
+        }).toArray(Tensor[]::new)), new Result.Accumulator() {
           {
             in.addRef();
             indata.addRef();
@@ -104,7 +104,7 @@ public class CrossProductLayer extends LayerBase {
                     });
                     return passback;
                   }, indata.addRef(), delta.addRef()))
-                  .toArray(i -> new Tensor[i]));
+                  .toArray(Tensor[]::new));
               in.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
             }
             delta.freeRef();
@@ -134,12 +134,12 @@ public class CrossProductLayer extends LayerBase {
           }
 
           public void _free() {
-            RefUtil.freeRefs(inObj);
+            RefUtil.freeRef(inObj);
             super._free();
           }
         };
       } finally {
-        RefUtil.freeRefs(inObj);
+        RefUtil.freeRef(inObj);
         indata.freeRef();
       }
     } finally {

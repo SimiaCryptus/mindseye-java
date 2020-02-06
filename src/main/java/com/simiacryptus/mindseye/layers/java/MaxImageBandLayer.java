@@ -69,13 +69,13 @@ public class MaxImageBandLayer extends LayerBase {
           .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Coordinate>) band -> {
             return RefUtil.get(data.coordStream(true).filter(e -> e.getCoords()[2] == band)
                 .max(RefComparator
-                    .comparing(RefUtil.wrapInterface((Function<? super Coordinate, ? extends Double>) c -> data.get(c),
+                    .comparingDouble(RefUtil.wrapInterface(data::get,
                         data.addRef()))));
-          }, data == null ? null : data.addRef())).toArray(i -> new Coordinate[i]);
+          }, data == null ? null : data.addRef())).toArray(Coordinate[]::new);
       if (null != data)
         data.freeRef();
       return temp_31_0002;
-    }).toArray(i -> new Coordinate[i][]);
+    }).toArray(Coordinate[][]::new);
 
     try {
       return new Result(new TensorArray(RefIntStream.range(0, inputData.length())
@@ -92,7 +92,7 @@ public class MaxImageBandLayer extends LayerBase {
             Tensor temp_31_0004 = temp_31_0005.addRef();
             temp_31_0005.freeRef();
             return temp_31_0004;
-          }, inputData.addRef())).toArray(i -> new Tensor[i])), new Result.Accumulator() {
+          }, inputData.addRef())).toArray(Tensor[]::new)), new Result.Accumulator() {
         {
           RefUtil.addRefs(inObj);
           inputData.addRef();
@@ -114,7 +114,7 @@ public class MaxImageBandLayer extends LayerBase {
                   deltaTensor.freeRef();
                   return passback;
                 }, delta.addRef(), inputData.addRef()))
-                .toArray(i -> new Tensor[i]));
+                .toArray(Tensor[]::new));
             inObj[0].accumulate(buffer == null ? null : buffer.addRef(),
                 tensorArray);
           }
@@ -126,7 +126,7 @@ public class MaxImageBandLayer extends LayerBase {
         public @SuppressWarnings("unused")
         void _free() {
           super._free();
-          RefUtil.freeRefs(inObj);
+          RefUtil.freeRef(inObj);
           inputData.freeRef();
         }
       }) {
@@ -141,12 +141,12 @@ public class MaxImageBandLayer extends LayerBase {
         }
 
         public void _free() {
-          RefUtil.freeRefs(inObj);
+          RefUtil.freeRef(inObj);
           super._free();
         }
       };
     } finally {
-      RefUtil.freeRefs(inObj);
+      RefUtil.freeRef(inObj);
       inputData.freeRef();
     }
   }

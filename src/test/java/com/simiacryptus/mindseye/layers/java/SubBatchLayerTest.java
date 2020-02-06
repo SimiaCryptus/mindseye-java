@@ -20,7 +20,10 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
+import com.simiacryptus.ref.lang.MustCall;
+import com.simiacryptus.ref.lang.RefIgnore;
 import com.simiacryptus.ref.lang.RefUtil;
+import org.junit.After;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -30,6 +33,7 @@ import java.util.Random;
 public class SubBatchLayerTest extends LayerTestBase {
 
   @Nullable
+  @RefIgnore
   private final Layer layer = SubBatchLayer.wrap(new SoftmaxLayer());
 
   @Nullable
@@ -51,18 +55,12 @@ public class SubBatchLayerTest extends LayerTestBase {
     return layer.copy();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-    super._free();
+  @After
+  @MustCall
+  public void cleanup() {
+    super.cleanup();
     if (null != layer)
       layer.freeRef();
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  SubBatchLayerTest addRef() {
-    return (SubBatchLayerTest) super.addRef();
   }
 
 }

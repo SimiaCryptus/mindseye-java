@@ -58,7 +58,7 @@ public class BiasMetaLayer extends LayerBase {
   public Result eval(@Nonnull final Result... inObj) {
     final Result in0 = inObj[0].addRef();
     final Result in1 = inObj[1].addRef();
-    RefUtil.freeRefs(inObj);
+    RefUtil.freeRef(inObj);
     TensorList data0 = in0.getData();
     final int itemCnt = data0.length();
     final TensorList data1 = in1.getData();
@@ -73,7 +73,7 @@ public class BiasMetaLayer extends LayerBase {
           tensor.freeRef();
           return temp_48_0003;
         }, tensor1.addRef(), data0.addRef()))
-        .toArray(i -> new Tensor[i]);
+        .toArray(Tensor[]::new);
     tensor1.freeRef();
     data0.freeRef();
     Tensor tensor0 = tensors[0].addRef();
@@ -92,7 +92,7 @@ public class BiasMetaLayer extends LayerBase {
             TensorArray tensorArray = new TensorArray(RefIntStream.range(0, data.length())
                 .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) i -> {
                   if (i == 0)
-                    return tensor0.mapCoords(RefUtil.wrapInterface((c) -> {
+                    return tensor0.mapCoords(RefUtil.wrapInterface(c -> {
                       return RefIntStream.range(0, itemCnt).mapToDouble(RefUtil.wrapInterface(j -> {
                         Tensor tensor = data.get(j);
                         double temp_48_0006 = tensor.get(c);
@@ -104,7 +104,7 @@ public class BiasMetaLayer extends LayerBase {
                     return tensor0.mapCoords(v -> 0);
                   }
                 }, data.addRef(), tensor0.addRef()))
-                .toArray(i -> new Tensor[i]));
+                .toArray(Tensor[]::new));
             in1.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
           }
           if (in0.isAlive()) {
@@ -142,7 +142,7 @@ public class BiasMetaLayer extends LayerBase {
       };
     } finally {
       tensor0.freeRef();
-      RefUtil.freeRefs(tensors);
+      RefUtil.freeRef(tensors);
       in1.freeRef();
       in0.freeRef();
     }

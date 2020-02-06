@@ -41,31 +41,8 @@ public abstract class SoftmaxLayerTest extends LayerTestBase {
     return new SoftmaxLayer();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-    super._free();
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  SoftmaxLayerTest addRef() {
-    return (SoftmaxLayerTest) super.addRef();
-  }
-
   public static class Basic extends SoftmaxLayerTest {
 
-    public @SuppressWarnings("unused")
-    void _free() {
-      super._free();
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

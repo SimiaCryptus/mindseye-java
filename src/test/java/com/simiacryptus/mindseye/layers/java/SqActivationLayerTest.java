@@ -32,16 +32,6 @@ public abstract class SqActivationLayerTest extends ActivationLayerTestBase {
     super(new SqActivationLayer());
   }
 
-  public @SuppressWarnings("unused")
-  void _free() { super._free(); }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  SqActivationLayerTest addRef() {
-    return (SqActivationLayerTest) super.addRef();
-  }
-
   @Nonnull
   @Override
   protected Layer lossLayer() {
@@ -50,15 +40,6 @@ public abstract class SqActivationLayerTest extends ActivationLayerTestBase {
 
   public static class Basic extends SqActivationLayerTest {
 
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

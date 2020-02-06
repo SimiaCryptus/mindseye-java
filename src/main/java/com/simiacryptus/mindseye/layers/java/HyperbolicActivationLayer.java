@@ -103,7 +103,7 @@ public class HyperbolicActivationLayer extends LayerBase {
             });
             input.freeRef();
             return temp_16_0005;
-          }, indata.addRef())).toArray(i -> new Tensor[i]));
+          }, indata.addRef())).toArray(Tensor[]::new));
       Result.Accumulator accumulator = new Result.Accumulator() {
         {
           RefUtil.addRefs(inObj);
@@ -165,7 +165,7 @@ public class HyperbolicActivationLayer extends LayerBase {
                   inputTensor.freeRef();
                   return passback;
                 }, delta.addRef(), indata.addRef()))
-                .toArray(i -> new Tensor[i]));
+                .toArray(Tensor[]::new));
             inObj[0].accumulate(buffer.addRef(),
                 tensorArray);
           }
@@ -176,7 +176,7 @@ public class HyperbolicActivationLayer extends LayerBase {
         public @SuppressWarnings("unused")
         void _free() {
           super._free();
-          RefUtil.freeRefs(inObj);
+          RefUtil.freeRef(inObj);
           hyperbolicActivationLayer.freeRef();
           indata.freeRef();
           assert weights != null;
@@ -195,12 +195,12 @@ public class HyperbolicActivationLayer extends LayerBase {
         }
 
         public void _free() {
-          RefUtil.freeRefs(inObj);
+          RefUtil.freeRef(inObj);
           super._free();
         }
       };
     } finally {
-      RefUtil.freeRefs(inObj);
+      RefUtil.freeRef(inObj);
       hyperbolicActivationLayer.freeRef();
       indata.freeRef();
     }

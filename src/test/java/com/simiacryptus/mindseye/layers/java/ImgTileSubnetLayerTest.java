@@ -45,27 +45,8 @@ public abstract class ImgTileSubnetLayerTest extends LayerTestBase {
     return temp_51_0001;
   }
 
-  public @SuppressWarnings("unused")
-  void _free() { super._free(); }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  ImgTileSubnetLayerTest addRef() {
-    return (ImgTileSubnetLayerTest) super.addRef();
-  }
-
   public static class Basic extends ImgTileSubnetLayerTest {
 
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

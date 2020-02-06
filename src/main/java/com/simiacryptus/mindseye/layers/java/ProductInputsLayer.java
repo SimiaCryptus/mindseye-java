@@ -68,7 +68,7 @@ public class ProductInputsLayer extends LayerBase {
                 + RefArrays.toString(temp_57_0014.getDimensions()));
         temp_57_0014.freeRef();
         temp_57_0013.freeRef();
-        RefUtil.freeRefs(inObj);
+        RefUtil.freeRef(inObj);
         throw temp_57_0010;
       }
     }
@@ -78,19 +78,13 @@ public class ProductInputsLayer extends LayerBase {
         x.freeRef();
         return temp_57_0001;
       }).reduce((l, r) -> {
-        TensorArray temp_57_0002 = new TensorArray(RefIntStream.range(0, Math.max(l.length(), r.length())).parallel()
-            .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) i1 -> {
-              @Nullable final Tensor left = l.get(1 == l.length() ? 0 : i1);
-              @Nullable final Tensor right = r.get(1 == r.length() ? 0 : i1);
-              Tensor temp_57_0003 = Tensor.product(left.addRef(),
-                  right.addRef());
-              right.freeRef();
-              left.freeRef();
-              return temp_57_0003;
-            }, l.addRef(), r.addRef())).toArray(i -> new Tensor[i]));
-        r.freeRef();
-        l.freeRef();
-        return temp_57_0002;
+        return new TensorArray(
+            RefIntStream.range(0, Math.max(l.length(), r.length())).parallel()
+                .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) i1 -> {
+                  return Tensor.product(
+                      l.get(1 == l.length() ? 0 : i1),
+                      r.get(1 == r.length() ? 0 : i1));
+                }, l, r)).toArray(Tensor[]::new));
       })), new Result.Accumulator() {
         {
           RefUtil.addRefs(inObj);
@@ -116,7 +110,7 @@ public class ProductInputsLayer extends LayerBase {
                           right.freeRef();
                           left.freeRef();
                           return temp_57_0006;
-                        }, l.addRef(), r.addRef())).toArray(j -> new Tensor[j]));
+                        }, l.addRef(), r.addRef())).toArray(Tensor[]::new));
                     r.freeRef();
                     l.freeRef();
                     return temp_57_0005;
@@ -124,17 +118,17 @@ public class ProductInputsLayer extends LayerBase {
               final TensorList inputData = input.getData();
               if (1 == inputData.length() && 1 < passback.length()) {
                 TensorArray passback1 = new TensorArray(RefUtil.get(passback.stream().reduce((a, b) -> {
-                  return Tensor.add(a,b);
+                  return Tensor.add(a, b);
                 })));
                 passback.freeRef();
                 passback = passback1;
               }
               if (1 == Tensor.length(inputData.getDimensions()) && 1 < Tensor.length(passback.getDimensions())) {
-                TensorArray passback1 = new TensorArray(passback.stream().map((a) -> {
+                TensorArray passback1 = new TensorArray(passback.stream().map(a -> {
                   Tensor temp_57_0008 = new Tensor(a.sum());
                   a.freeRef();
                   return temp_57_0008;
-                }).toArray(i -> new Tensor[i]));
+                }).toArray(Tensor[]::new));
                 passback.freeRef();
                 passback = passback1;
               }
@@ -150,7 +144,7 @@ public class ProductInputsLayer extends LayerBase {
         public @SuppressWarnings("unused")
         void _free() {
           super._free();
-          RefUtil.freeRefs(inObj);
+          RefUtil.freeRef(inObj);
         }
       }) {
 
@@ -168,12 +162,12 @@ public class ProductInputsLayer extends LayerBase {
         }
 
         public void _free() {
-          RefUtil.freeRefs(inObj);
+          RefUtil.freeRef(inObj);
           super._free();
         }
       };
     } finally {
-      RefUtil.freeRefs(inObj);
+      RefUtil.freeRef(inObj);
     }
   }
 
@@ -190,7 +184,9 @@ public class ProductInputsLayer extends LayerBase {
   }
 
   public @SuppressWarnings("unused")
-  void _free() { super._free(); }
+  void _free() {
+    super._free();
+  }
 
   @Nonnull
   public @Override

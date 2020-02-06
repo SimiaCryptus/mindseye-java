@@ -39,18 +39,6 @@ public abstract class MaxDropoutNoiseLayerTest extends ActivationLayerTestBase {
     return new int[][]{{8, 8, 1}};
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-    super._free();
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  MaxDropoutNoiseLayerTest addRef() {
-    return (MaxDropoutNoiseLayerTest) super.addRef();
-  }
-
   @Nonnull
   @Override
   protected Layer lossLayer() {
@@ -59,17 +47,6 @@ public abstract class MaxDropoutNoiseLayerTest extends ActivationLayerTestBase {
 
   public static class Basic extends MaxDropoutNoiseLayerTest {
 
-    public @SuppressWarnings("unused")
-    void _free() {
-      super._free();
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

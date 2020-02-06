@@ -42,27 +42,7 @@ public abstract class EntropyLayerTest extends ActivationLayerTestBase {
     return new SingleDerivativeTester(1e-2, 1e-5);
   }
 
-  public @SuppressWarnings("unused")
-  void _free() { super._free(); }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  EntropyLayerTest addRef() {
-    return (EntropyLayerTest) super.addRef();
-  }
-
   public static class Basic extends EntropyLayerTest {
-
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
 
     @Nonnull
     @Override

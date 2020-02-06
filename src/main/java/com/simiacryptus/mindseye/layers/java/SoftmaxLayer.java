@@ -72,7 +72,7 @@ public class SoftmaxLayer extends LayerBase {
           assert 1 < input.length() : "input.length() = " + input.length();
 
           final DoubleSummaryStatistics summaryStatistics = RefDoubleStream.of(input.getData())
-              .filter(x -> Double.isFinite(x)).summaryStatistics();
+              .filter(Double::isFinite).summaryStatistics();
           final double max = summaryStatistics.getMax();
           //final double min = summaryStatistics.getMin();
           @Nullable final Tensor exp = input.map(x -> {
@@ -87,14 +87,14 @@ public class SoftmaxLayer extends LayerBase {
           assert Double.isFinite(sum);
           sumA[dataIndex] = sum;
           Tensor temp_08_0003 = exp.map(x -> x / sum);
-          RefUtil.set((expA), dataIndex, exp);
+          RefUtil.set(expA, dataIndex, exp);
           return temp_08_0003;
-        }, RefUtil.addRefs(expA), RefUtil.addRefs(inObj))).toArray(i -> new Tensor[i]);
+        }, RefUtil.addRefs(expA), RefUtil.addRefs(inObj))).toArray(Tensor[]::new);
     assert RefArrays.stream(RefUtil.addRefs(outputA)).flatMapToDouble(x -> {
       RefDoubleStream temp_08_0005 = RefArrays.stream(x.getData());
       x.freeRef();
       return temp_08_0005;
-    }).allMatch(v -> Double.isFinite(v));
+    }).allMatch(Double::isFinite);
     try {
       return new Result(new TensorArray(RefUtil.addRefs(outputA)), new Result.Accumulator() {
         {
@@ -123,15 +123,15 @@ public class SoftmaxLayer extends LayerBase {
                     passback.set(i, value);
                   }
                   return passback;
-                }, RefUtil.addRefs(expA), data.addRef())).toArray(i -> new Tensor[i]);
+                }, RefUtil.addRefs(expA), data.addRef())).toArray(Tensor[]::new);
             assert RefArrays.stream(RefUtil.addRefs(passbackA)).flatMapToDouble(x -> {
               RefDoubleStream temp_08_0006 = RefArrays.stream(x.getData());
               x.freeRef();
               return temp_08_0006;
-            }).allMatch(v -> Double.isFinite(v));
+            }).allMatch(Double::isFinite);
             @Nonnull
             TensorArray tensorArray = new TensorArray(RefUtil.addRefs(passbackA));
-            RefUtil.freeRefs(passbackA);
+            RefUtil.freeRef(passbackA);
             inObj[0].accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
           }
           data.freeRef();
@@ -142,8 +142,8 @@ public class SoftmaxLayer extends LayerBase {
         public @SuppressWarnings("unused")
         void _free() {
           super._free();
-          RefUtil.freeRefs(inObj);
-          RefUtil.freeRefs(expA);
+          RefUtil.freeRef(inObj);
+          RefUtil.freeRef(expA);
         }
       }) {
 
@@ -157,14 +157,14 @@ public class SoftmaxLayer extends LayerBase {
         }
 
         public void _free() {
-          RefUtil.freeRefs(inObj);
+          RefUtil.freeRef(inObj);
           super._free();
         }
       };
     } finally {
-      RefUtil.freeRefs(inObj);
-      RefUtil.freeRefs(outputA);
-      RefUtil.freeRefs(expA);
+      RefUtil.freeRef(inObj);
+      RefUtil.freeRef(outputA);
+      RefUtil.freeRef(expA);
     }
   }
 

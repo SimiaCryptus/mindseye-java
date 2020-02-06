@@ -121,7 +121,7 @@ public class BiasLayer extends LayerBase {
         Tensor temp_06_0006 = new Tensor(add(r.getData()), r.getDimensions());
         r.freeRef();
         return temp_06_0006;
-      }).toArray(i -> new Tensor[i])), new Result.Accumulator() {
+      }).toArray(Tensor[]::new)), new Result.Accumulator() {
         {
           RefUtil.addRefs(inObj);
           assert bias != null;
@@ -141,16 +141,14 @@ public class BiasLayer extends LayerBase {
                 assert deltaBuffer != null;
                 final double[] data = 1 == array.length ? array : new double[]{RefArrays.stream(array).sum()};
                 deltaBuffer.addInPlace(data);
-              }, deltaBuffer == null ? null : deltaBuffer.addRef()));
+              }, deltaBuffer));
             } else {
               delta.stream().parallel().forEach(RefUtil.wrapInterface((Consumer<? super Tensor>) d -> {
                 assert deltaBuffer != null;
                 deltaBuffer.addInPlace(d.getData());
                 d.freeRef();
-              }, deltaBuffer == null ? null : deltaBuffer.addRef()));
+              }, deltaBuffer));
             }
-            if (null != deltaBuffer)
-              deltaBuffer.freeRef();
           }
           if (0 < inObj.length && inObj[0].isAlive()) {
             inObj[0].accumulate(buffer.addRef(), delta.addRef());
@@ -162,7 +160,7 @@ public class BiasLayer extends LayerBase {
         public @SuppressWarnings("unused")
         void _free() {
           super._free();
-          RefUtil.freeRefs(inObj);
+          RefUtil.freeRef(inObj);
           assert bias != null;
           bias.freeRef();
           biasLayer.freeRef();
@@ -179,12 +177,12 @@ public class BiasLayer extends LayerBase {
         }
 
         public void _free() {
-          RefUtil.freeRefs(inObj);
+          RefUtil.freeRef(inObj);
           super._free();
         }
       };
     } finally {
-      RefUtil.freeRefs(inObj);
+      RefUtil.freeRef(inObj);
       biasLayer.freeRef();
       input.freeRef();
     }
@@ -199,7 +197,7 @@ public class BiasLayer extends LayerBase {
         return inObj[0].getData();
       }
     } finally {
-      RefUtil.freeRefs(inObj);
+      RefUtil.freeRef(inObj);
     }
   }
 

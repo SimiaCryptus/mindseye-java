@@ -210,7 +210,7 @@ public class FullyConnectedLayer extends LayerBase {
               new DoubleMatrix(output.length(), 1, output.getData()));
           input.freeRef();
           return output;
-        }, indata.addRef())).toArray(i -> new Tensor[i]));
+        }, indata.addRef())).toArray(Tensor[]::new));
     RecycleBin.DOUBLES.recycle(matrixObj.data, matrixObj.data.length);
     try {
       return new Result(tensorArray, new Result.Accumulator() {
@@ -267,7 +267,7 @@ public class FullyConnectedLayer extends LayerBase {
                       return passback;
                     }, fullyConnectedLayer.addRef(),
                     indata.addRef(), delta.addRef()))
-                .toArray(i -> new Tensor[i]));
+                .toArray(Tensor[]::new));
             inObj[0].accumulate(buffer.addRef(), tensorList);
           }
           delta.freeRef();
@@ -277,7 +277,7 @@ public class FullyConnectedLayer extends LayerBase {
         public @SuppressWarnings("unused")
         void _free() {
           super._free();
-          RefUtil.freeRefs(inObj);
+          RefUtil.freeRef(inObj);
           fullyConnectedLayer.freeRef();
           indata.freeRef();
         }
@@ -297,12 +297,12 @@ public class FullyConnectedLayer extends LayerBase {
         }
 
         public void _free() {
-          RefUtil.freeRefs(inObj);
+          RefUtil.freeRef(inObj);
           super._free();
         }
       };
     } finally {
-      RefUtil.freeRefs(inObj);
+      RefUtil.freeRef(inObj);
       fullyConnectedLayer.freeRef();
       indata.freeRef();
     }

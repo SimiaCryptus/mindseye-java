@@ -50,30 +50,11 @@ public abstract class ReshapeLayerTest extends LayerTestBase {
     return new ReshapeLayer(outputDims);
   }
 
-  public @SuppressWarnings("unused")
-  void _free() { super._free(); }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  ReshapeLayerTest addRef() {
-    return (ReshapeLayerTest) super.addRef();
-  }
-
   public static class Basic extends ReshapeLayerTest {
     public Basic() {
       super(new int[]{6, 6, 1}, new int[]{1, 1, 36});
     }
 
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
   public static class Basic1 extends ReshapeLayerTest {
@@ -81,15 +62,6 @@ public abstract class ReshapeLayerTest extends LayerTestBase {
       super(new int[]{1, 1, 32}, new int[]{1, 1, 32});
     }
 
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic1 addRef() {
-      return (Basic1) super.addRef();
-    }
   }
 
   public static class Big0 extends Big {
@@ -97,30 +69,11 @@ public abstract class ReshapeLayerTest extends LayerTestBase {
       super(256);
     }
 
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Big0 addRef() {
-      return (Big0) super.addRef();
-    }
   }
 
   public static class Big1 extends Big {
     public Big1() {
       super(new int[]{4, 4, 256}, new int[]{1, 1, 2 * 2048});
-    }
-
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Big1 addRef() {
-      return (Big1) super.addRef();
     }
   }
 
@@ -129,15 +82,6 @@ public abstract class ReshapeLayerTest extends LayerTestBase {
       super(new int[]{1, 1, 2 * 2048}, new int[]{4, 4, 256});
     }
 
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Big2 addRef() {
-      return (Big2) super.addRef();
-    }
   }
 
   public abstract static class Big extends ReshapeLayerTest {
@@ -155,7 +99,7 @@ public abstract class ReshapeLayerTest extends LayerTestBase {
     public ComponentTest<ToleranceStatistics> getBatchingTester() {
       if (!validateBatchExecution)
         return null;
-      BatchingTester batchingTester = (new BatchingTester(1e-2, true) {
+      BatchingTester batchingTester = new BatchingTester(1e-2, true) {
         @Override
         public double getRandom() {
           return random();
@@ -163,7 +107,7 @@ public abstract class ReshapeLayerTest extends LayerTestBase {
 
         public @SuppressWarnings("unused")
         void _free() { super._free(); }
-      });
+      };
       batchingTester.setBatchSize(5);
       return batchingTester;
     }
@@ -189,14 +133,5 @@ public abstract class ReshapeLayerTest extends LayerTestBase {
       return null;
     }
 
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Big addRef() {
-      return (Big) super.addRef();
-    }
   }
 }

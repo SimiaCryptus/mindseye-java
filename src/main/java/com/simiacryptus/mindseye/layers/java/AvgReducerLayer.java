@@ -74,7 +74,7 @@ public class AvgReducerLayer extends LayerBase {
             }
             return sum;
           }, RefUtil.addRefs(inObj))).mapToObj(x -> new Tensor(new double[]{x}, new int[]{1}))
-          .toArray(i -> new Tensor[i])), new Result.Accumulator() {
+          .toArray(Tensor[]::new)), new Result.Accumulator() {
         {
           RefUtil.addRefs(inObj);
         }
@@ -96,7 +96,7 @@ public class AvgReducerLayer extends LayerBase {
                     }
                     return passback;
                   }, delta.addRef(), inData))
-                  .toArray(i -> new Tensor[i]));
+                  .toArray(Tensor[]::new));
               in_l.accumulate(buffer == null ? null : buffer.addRef(), tensorList);
             }
           }
@@ -108,7 +108,7 @@ public class AvgReducerLayer extends LayerBase {
         public @SuppressWarnings("unused")
         void _free() {
           super._free();
-          RefUtil.freeRefs(inObj);
+          RefUtil.freeRef(inObj);
         }
       }) {
 
@@ -126,14 +126,14 @@ public class AvgReducerLayer extends LayerBase {
         }
 
         public void _free() {
-          RefUtil.freeRefs(inObj);
+          RefUtil.freeRef(inObj);
           super._free();
         }
       };
       temp_64_0003.freeRef();
       return temp_64_0002;
     } finally {
-      RefUtil.freeRefs(inObj);
+      RefUtil.freeRef(inObj);
     }
   }
 

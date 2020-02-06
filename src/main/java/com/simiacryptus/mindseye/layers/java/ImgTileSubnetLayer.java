@@ -86,10 +86,10 @@ public class ImgTileSubnetLayer extends WrapperLayer {
       assert temp_12_0006 != null;
       Result temp_12_0005 = temp_12_0006.eval(RefUtil.addRefs(inObj));
       temp_12_0006.freeRef();
-      RefUtil.freeRefs(inObj);
+      RefUtil.freeRef(inObj);
       return temp_12_0005;
     }
-    RefUtil.freeRefs(inObj);
+    RefUtil.freeRef(inObj);
     Result[] results = new Result[rows * cols];
     TensorList[] passback = new TensorList[rows * cols];
     int index = 0;
@@ -112,7 +112,7 @@ public class ImgTileSubnetLayer extends WrapperLayer {
 
           @Override
           public void accept(@Nullable DeltaSet<UUID> ctx, @Nullable TensorList delta) {
-            RefUtil.set((passback), finalIndex, delta);
+            RefUtil.set(passback, finalIndex, delta);
             if (passbacks.incrementAndGet() == rows * cols) {
               passbacks.set(0);
               ImgTileAssemblyLayer imgTileAssemblyLayer = new ImgTileAssemblyLayer(cols, rows);
@@ -134,7 +134,7 @@ public class ImgTileSubnetLayer extends WrapperLayer {
                 if (null != t)
                   t.freeRef();
                 return temp_12_0004;
-              }).<Result>toArray(i -> new Result[i]));
+              }).<Result>toArray(Result[]::new));
               TensorList reassembled = temp_12_0007.getData();
               temp_12_0007.freeRef();
               imgTileAssemblyLayer.freeRef();
@@ -149,25 +149,25 @@ public class ImgTileSubnetLayer extends WrapperLayer {
           void _free() {
             super._free();
             input.freeRef();
-            RefUtil.freeRefs(passback);
+            RefUtil.freeRef(passback);
           }
         }));
         tileSelectLayer.freeRef();
         Layer temp_12_0008 = getInner();
         assert temp_12_0008 != null;
-        RefUtil.set((results), index, temp_12_0008.eval(selectedTile.addRef()));
+        RefUtil.set(results, index, temp_12_0008.eval(selectedTile.addRef()));
         temp_12_0008.freeRef();
         selectedTile.freeRef();
         index = index + 1;
       }
     }
-    RefUtil.freeRefs(passback);
+    RefUtil.freeRef(passback);
     inputData.freeRef();
     input.freeRef();
     ImgTileAssemblyLayer imgTileAssemblyLayer = new ImgTileAssemblyLayer(cols, rows);
     Result temp_12_0003 = imgTileAssemblyLayer.eval(RefUtil.addRefs(results));
     imgTileAssemblyLayer.freeRef();
-    RefUtil.freeRefs(results);
+    RefUtil.freeRef(results);
     return temp_12_0003;
   }
 

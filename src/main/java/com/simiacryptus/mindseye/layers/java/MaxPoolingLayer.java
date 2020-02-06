@@ -102,7 +102,7 @@ public class MaxPoolingLayer extends LayerBase {
   public Result eval(@Nonnull final Result... inObj) {
 
     final Result in = inObj[0].addRef();
-    RefUtil.freeRefs(inObj);
+    RefUtil.freeRef(inObj);
     TensorList temp_53_0005 = in.getData();
     temp_53_0005.length();
 
@@ -118,7 +118,7 @@ public class MaxPoolingLayer extends LayerBase {
         return (int) Math.ceil(inputDims[i] * 1.0 / kernelDims[i]);
       }).toArray();
       return new Tensor(newDims);
-    }).toArray(i -> new Tensor[i]);
+    }).toArray(Tensor[]::new);
     temp_53_0007.freeRef();
     RefArrays.stream(RefUtil.addRefs(outputA)).mapToInt(x -> {
       int temp_53_0004 = x.length();
@@ -134,7 +134,7 @@ public class MaxPoolingLayer extends LayerBase {
       @Nullable final Tensor input = temp_53_0010.get(dataIndex);
       temp_53_0010.freeRef();
       final Tensor output = outputA[dataIndex].addRef();
-      @Nonnull final IntToDoubleFunction keyExtractor = RefUtil.wrapInterface(inputCoords -> input.get(inputCoords),
+      @Nonnull final IntToDoubleFunction keyExtractor = RefUtil.wrapInterface(input::get,
           input.addRef());
       @Nonnull final int[] gradientMap = new int[input.length()];
       regions.parallelStream().forEach(RefUtil.wrapInterface((Consumer<? super Tuple2<Integer, int[]>>) tuple -> {
@@ -180,7 +180,7 @@ public class MaxPoolingLayer extends LayerBase {
                   }
                   datum.freeRef();
                   return backSignal;
-                }, data.addRef())).toArray(i -> new Tensor[i]));
+                }, data.addRef())).toArray(Tensor[]::new));
             temp_53_0011.freeRef();
             in.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
           }
@@ -212,7 +212,7 @@ public class MaxPoolingLayer extends LayerBase {
         }
       };
     } finally {
-      RefUtil.freeRefs(outputA);
+      RefUtil.freeRef(outputA);
       in.freeRef();
     }
   }

@@ -49,31 +49,8 @@ public abstract class StochasticSamplingSubnetLayerTest extends LayerTestBase {
     return temp_38_0001;
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-    super._free();
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  StochasticSamplingSubnetLayerTest addRef() {
-    return (StochasticSamplingSubnetLayerTest) super.addRef();
-  }
-
   public static class Basic extends StochasticSamplingSubnetLayerTest {
 
-    public @SuppressWarnings("unused")
-    void _free() {
-      super._free();
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

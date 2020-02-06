@@ -41,27 +41,8 @@ public abstract class CrossProductLayerTest extends LayerTestBase {
     return new CrossProductLayer();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() { super._free(); }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  CrossProductLayerTest addRef() {
-    return (CrossProductLayerTest) super.addRef();
-  }
-
   public static class Basic extends CrossProductLayerTest {
 
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

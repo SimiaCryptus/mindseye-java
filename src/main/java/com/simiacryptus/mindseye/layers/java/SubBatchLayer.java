@@ -73,7 +73,7 @@ public class SubBatchLayer extends WrapperLayer {
           Tensor[] tensors = new Tensor[data.length()];
           data.freeRef();
           return tensors;
-        }, RefUtil.addRefs(inputs))).toArray(x -> new Tensor[x][]);
+        }, RefUtil.addRefs(inputs))).toArray(Tensor[][]::new);
     Result[] batchResults = RefIntStream.range(0, batches)
         .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Result>) batchIndex -> {
           assert inner != null;
@@ -89,7 +89,7 @@ public class SubBatchLayer extends WrapperLayer {
                   public void accept(@Nullable DeltaSet<UUID> deltaBuffer, @Nonnull TensorList deltaSignal) {
                     if (null != deltaBuffer)
                       deltaBuffer.freeRef();
-                    RefUtil.set((tensors), batchIndex, deltaSignal.get(0));
+                    RefUtil.set(tensors, batchIndex, deltaSignal.get(0));
                     deltaSignal.freeRef();
                   }
 
@@ -104,9 +104,9 @@ public class SubBatchLayer extends WrapperLayer {
                 Result temp_10_0009 = new Result(new TensorArray(temp_10_0010.get(batchIndex)), accumulator);
                 temp_10_0010.freeRef();
                 return temp_10_0009;
-              }, RefUtil.addRefs(passbackBuffer), RefUtil.addRefs(inputs))).<Result>toArray(x -> new Result[x]));
+              }, RefUtil.addRefs(passbackBuffer), RefUtil.addRefs(inputs))).<Result>toArray(Result[]::new));
         }, RefUtil.addRefs(passbackBuffer), RefUtil.addRefs(inputs), inner == null ? null : inner.addRef()))
-        .toArray(i -> new Result[i]);
+        .toArray(Result[]::new);
     if (null != inner)
       inner.freeRef();
     TensorArray resultData = new TensorArray(RefArrays.stream(RefUtil.addRefs(batchResults)).map(x -> {
@@ -115,7 +115,7 @@ public class SubBatchLayer extends WrapperLayer {
       temp_10_0011.freeRef();
       x.freeRef();
       return temp_10_0004;
-    }).toArray(i -> new Tensor[i]));
+    }).toArray(Tensor[]::new));
     try {
       return new Result(resultData, new Result.Accumulator() {
         {
@@ -155,15 +155,15 @@ public class SubBatchLayer extends WrapperLayer {
         public @SuppressWarnings("unused")
         void _free() {
           super._free();
-          RefUtil.freeRefs(inputs);
-          RefUtil.freeRefs(passbackBuffer);
-          RefUtil.freeRefs(batchResults);
+          RefUtil.freeRef(inputs);
+          RefUtil.freeRef(passbackBuffer);
+          RefUtil.freeRef(batchResults);
         }
       });
     } finally {
-      RefUtil.freeRefs(inputs);
-      RefUtil.freeRefs(batchResults);
-      RefUtil.freeRefs(passbackBuffer);
+      RefUtil.freeRef(inputs);
+      RefUtil.freeRef(batchResults);
+      RefUtil.freeRef(passbackBuffer);
     }
   }
 

@@ -44,31 +44,8 @@ public abstract class RescaledSubnetLayerTest extends LayerTestBase {
     return temp_60_0001;
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-    super._free();
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  RescaledSubnetLayerTest addRef() {
-    return (RescaledSubnetLayerTest) super.addRef();
-  }
-
   public static class Basic extends RescaledSubnetLayerTest {
 
-    public @SuppressWarnings("unused")
-    void _free() {
-      super._free();
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

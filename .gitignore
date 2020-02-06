@@ -3,3 +3,4 @@ logs/
 mindseye-java.iml
 reports/
 target/
+*.hprof

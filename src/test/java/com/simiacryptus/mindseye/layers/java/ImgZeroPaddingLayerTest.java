@@ -45,27 +45,8 @@ public abstract class ImgZeroPaddingLayerTest extends LayerTestBase {
     return new ImgZeroPaddingLayer(1, 1);
   }
 
-  public @SuppressWarnings("unused")
-  void _free() { super._free(); }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  ImgZeroPaddingLayerTest addRef() {
-    return (ImgZeroPaddingLayerTest) super.addRef();
-  }
-
   public static class Basic extends ImgZeroPaddingLayerTest {
 
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

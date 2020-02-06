@@ -75,7 +75,7 @@ public class SumReducerLayer extends LayerBase {
             }
             return sum;
           }, RefUtil.addRefs(inObj))).mapToObj(x -> new Tensor(new double[]{x}, new int[]{1}))
-          .toArray(i -> new Tensor[i])), new Result.Accumulator() {
+          .toArray(Tensor[]::new)), new Result.Accumulator() {
         {
           RefUtil.addRefs(inObj);
         }
@@ -97,7 +97,7 @@ public class SumReducerLayer extends LayerBase {
                     tensor.freeRef();
                     return passback;
                   }, data.addRef(), in_l.addRef(), data1))
-                  .toArray(i -> new Tensor[i]));
+                  .toArray(Tensor[]::new));
               in_l.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
             }
           }
@@ -109,7 +109,7 @@ public class SumReducerLayer extends LayerBase {
         public @SuppressWarnings("unused")
         void _free() {
           super._free();
-          RefUtil.freeRefs(inObj);
+          RefUtil.freeRef(inObj);
         }
       }) {
 
@@ -127,14 +127,14 @@ public class SumReducerLayer extends LayerBase {
         }
 
         public void _free() {
-          RefUtil.freeRefs(inObj);
+          RefUtil.freeRef(inObj);
           super._free();
         }
       };
       temp_62_0003.freeRef();
       return temp_62_0002;
     } finally {
-      RefUtil.freeRefs(inObj);
+      RefUtil.freeRef(inObj);
     }
   }
 

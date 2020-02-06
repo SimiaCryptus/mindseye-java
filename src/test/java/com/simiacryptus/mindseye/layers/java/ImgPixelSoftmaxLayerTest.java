@@ -41,31 +41,8 @@ public abstract class ImgPixelSoftmaxLayerTest extends LayerTestBase {
     return new ImgPixelSoftmaxLayer();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-    super._free();
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  ImgPixelSoftmaxLayerTest addRef() {
-    return (ImgPixelSoftmaxLayerTest) super.addRef();
-  }
-
   public static class Basic extends ImgPixelSoftmaxLayerTest {
 
-    public @SuppressWarnings("unused")
-    void _free() {
-      super._free();
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

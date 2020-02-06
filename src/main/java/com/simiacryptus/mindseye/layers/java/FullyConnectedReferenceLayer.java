@@ -126,7 +126,7 @@ public class FullyConnectedReferenceLayer extends LayerBase {
   public Result eval(@Nullable final Result... inObj) {
     assert inObj != null;
     final Result inputResult = inObj[0].addRef();
-    RefUtil.freeRefs(inObj);
+    RefUtil.freeRef(inObj);
     final TensorList indata = inputResult.getData();
     @Nonnull
     int[] inputDimensions = indata.getDimensions();
@@ -165,11 +165,11 @@ public class FullyConnectedReferenceLayer extends LayerBase {
                     }, indata.addRef(),
                     fullyConnectedReferenceLayer.addRef(),
                     delta.addRef()))
-                .toArray(i -> new Tensor[i]);
+                .toArray(Tensor[]::new);
             Tensor tensor = RefUtil.get(RefArrays.stream(RefUtil.addRefs(array)).reduce((a, b) -> {
               return Tensor.add(a,b);
             }));
-            RefUtil.freeRefs(array);
+            RefUtil.freeRef(array);
             assert weights != null;
             Delta<UUID> temp_02_0010 = buffer.get(fullyConnectedReferenceLayer.getId(), weights.getData());
             assert temp_02_0010 != null;
@@ -191,7 +191,7 @@ public class FullyConnectedReferenceLayer extends LayerBase {
                       deltaTensor.addRef()));
                   deltaTensor.freeRef();
                   return inputTensor;
-                }, delta.addRef())).toArray(i -> new Tensor[i]));
+                }, delta.addRef())).toArray(Tensor[]::new));
             inputResult.accumulate(buffer.addRef(),
                 tensorList);
           }
@@ -224,7 +224,7 @@ public class FullyConnectedReferenceLayer extends LayerBase {
             }, input.addRef(), output.addRef()));
             input.freeRef();
             return output;
-          }, indata.addRef())).toArray(i -> new Tensor[i]));
+          }, indata.addRef())).toArray(Tensor[]::new));
       return new Result(data, accumulator) {
         {
           inputResult.addRef();

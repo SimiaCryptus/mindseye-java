@@ -44,31 +44,8 @@ public abstract class BiasMetaLayerTest extends LayerTestBase {
     return new BiasMetaLayer();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-    super._free();
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  BiasMetaLayerTest addRef() {
-    return (BiasMetaLayerTest) super.addRef();
-  }
-
   public static class Basic extends BiasMetaLayerTest {
 
-    public @SuppressWarnings("unused")
-    void _free() {
-      super._free();
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

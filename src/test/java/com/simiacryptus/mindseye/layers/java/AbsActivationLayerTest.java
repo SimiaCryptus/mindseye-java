@@ -32,31 +32,7 @@ public abstract class AbsActivationLayerTest extends ActivationLayerTestBase {
     super(new AbsActivationLayer());
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-    super._free();
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  AbsActivationLayerTest addRef() {
-    return (AbsActivationLayerTest) super.addRef();
-  }
-
   public static class Basic extends AbsActivationLayerTest {
-
-    public @SuppressWarnings("unused")
-    void _free() {
-      super._free();
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
 
     @Nonnull
     @Override

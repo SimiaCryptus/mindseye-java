@@ -47,31 +47,8 @@ public abstract class AvgReducerLayerTest extends LayerTestBase {
     return new int[][]{{200, 200, 3}};
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-    super._free();
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  AvgReducerLayerTest addRef() {
-    return (AvgReducerLayerTest) super.addRef();
-  }
-
   public static class Basic extends AvgMetaLayerTest {
 
-    public @SuppressWarnings("unused")
-    void _free() {
-      super._free();
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

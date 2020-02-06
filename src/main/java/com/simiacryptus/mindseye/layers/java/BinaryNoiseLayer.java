@@ -99,15 +99,17 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     final Result input = inObj[0].addRef();
-    RefUtil.freeRefs(inObj);
+    RefUtil.freeRef(inObj);
     TensorList inputData = input.getData();
     @Nonnull final int[] dimensions = inputData.getDimensions();
     final int length = inputData.length();
-    Tensor temp_32_0004 = maskList.get(0);
-    if (!RefArrays.equals(temp_32_0004.getDimensions(), dimensions)) {
-      clear();
+    if(!maskList.isEmpty()) {
+      Tensor temp_32_0004 = maskList.get(0);
+      if (!RefArrays.equals(temp_32_0004.getDimensions(), dimensions)) {
+        clear();
+      }
+      temp_32_0004.freeRef();
     }
-    temp_32_0004.freeRef();
     @Nonnull final Tensor tensorPrototype = new Tensor(dimensions);
     double amplitude = 1.0 / getValue();
     while (length > maskList.size()) {
@@ -119,8 +121,8 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
       }
     }
     tensorPrototype.freeRef();
-    TensorArray data = new TensorArray(maskList.stream().limit(length).toArray(i -> new Tensor[i]));
-    assert inputData.length() == data.length() : (inputData.length() + " != " + data.length());
+    TensorArray data = new TensorArray(maskList.stream().limit(length).toArray(Tensor[]::new));
+    assert inputData.length() == data.length() : inputData.length() + " != " + data.length();
     inputData.freeRef();
     try {
       Result.Accumulator accumulator = new Result.Accumulator() {
@@ -130,14 +132,12 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
 
         @Override
         public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
-          input.accumulate(buffer == null ? null : buffer.addRef(), new TensorArray(delta.stream().map(t -> {
+          input.accumulate(buffer, new TensorArray(delta.stream().map(t -> {
             Tensor temp_32_0003 = t.map(x -> 0);
             t.freeRef();
             return temp_32_0003;
-          }).toArray(i -> new Tensor[i])));
+          }).toArray(Tensor[]::new)));
           delta.freeRef();
-          if (null != buffer)
-            buffer.freeRef();
         }
 
         public @SuppressWarnings("unused")
@@ -204,8 +204,8 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
   }
 
   public void _free() {
-    maskList.freeRef();
     clear();
+    maskList.freeRef();
     super._free();
   }
 

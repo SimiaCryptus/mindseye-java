@@ -98,7 +98,7 @@ public class EntropyLossLayer extends LayerBase {
             //RefUtil.set(gradient, dataIndex, gradientTensor);
             return new Tensor(new double[]{total}, 1);
           }, indata.addRef(), RefUtil.addRefs(inObj), RefUtil.addRef(gradient)))
-          .toArray(i -> new Tensor[i]));
+          .toArray(Tensor[]::new));
       Result.Accumulator accumulator = new Result.Accumulator() {
         {
           RefUtil.addRefs(inObj);
@@ -127,7 +127,7 @@ public class EntropyLossLayer extends LayerBase {
                       return passback;
                     }, indata.addRef(), RefUtil.addRef(gradient),
                     delta.addRef()))
-                .toArray(i -> new Tensor[i]));
+                .toArray(Tensor[]::new));
             inObj[1].accumulate(buffer == null ? null : buffer.addRef(),
                 tensorArray);
           }
@@ -145,7 +145,7 @@ public class EntropyLossLayer extends LayerBase {
                   tensor.freeRef();
                   return passback;
                 }, delta.addRef(), RefUtil.addRef(gradient)))
-                .toArray(i -> new Tensor[i]));
+                .toArray(Tensor[]::new));
             inObj[0].accumulate(buffer == null ? null : buffer.addRef(),
                 tensorArray);
           }
@@ -157,7 +157,7 @@ public class EntropyLossLayer extends LayerBase {
         public @SuppressWarnings("unused")
         void _free() {
           super._free();
-          RefUtil.freeRefs(inObj);
+          RefUtil.freeRef(inObj);
           indata.freeRef();
           RefUtil.freeRef(gradient);
         }
@@ -176,12 +176,12 @@ public class EntropyLossLayer extends LayerBase {
         }
 
         public void _free() {
-          RefUtil.freeRefs(inObj);
+          RefUtil.freeRef(inObj);
           super._free();
         }
       };
     } finally {
-      RefUtil.freeRefs(inObj);
+      RefUtil.freeRef(inObj);
       RefUtil.freeRef(gradient);
       indata.freeRef();
     }

@@ -45,27 +45,8 @@ public abstract class ImgTileSelectLayerTest extends LayerTestBase {
     return new ImgTileSelectLayer(3, 2, 2, 3);
   }
 
-  public @SuppressWarnings("unused")
-  void _free() { super._free(); }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  ImgTileSelectLayerTest addRef() {
-    return (ImgTileSelectLayerTest) super.addRef();
-  }
-
   public static class Basic extends ImgTileSelectLayerTest {
 
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

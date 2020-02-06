@@ -41,17 +41,6 @@ public class SignReducerLayerTest {
       return new SignReducerLayer();
     }
 
-    public @SuppressWarnings("unused")
-    void _free() {
-      super._free();
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Normal addRef() {
-      return (Normal) super.addRef();
-    }
   }
 
   public static class Basic extends SignReducerLayerTest {

@@ -81,7 +81,7 @@ public class RescaledSubnetLayer extends LayerBase {
     if (1 == scale) {
       assert subnetwork != null;
       Result temp_11_0004 = subnetwork.eval(RefUtil.addRefs(inObj));
-      RefUtil.freeRefs(inObj);
+      RefUtil.freeRef(inObj);
       return temp_11_0004;
     }
 
@@ -96,11 +96,11 @@ public class RescaledSubnetLayer extends LayerBase {
           return network.add(subnetwork == null ? null : subnetwork.addRef(),
               network.add(new ImgBandSelectLayer(select), condensed.addRef()));
         }, condensed.addRef(), network.addRef()))
-        .toArray(i -> new DAGNode[i])));
+        .toArray(DAGNode[]::new)));
     condensed.freeRef();
     RefUtil.freeRef(network.add(new ImgReshapeLayer(scale, scale, true)));
     Result temp_11_0003 = network.eval(RefUtil.addRefs(inObj));
-    RefUtil.freeRefs(inObj);
+    RefUtil.freeRef(inObj);
     network.freeRef();
     return temp_11_0003;
   }

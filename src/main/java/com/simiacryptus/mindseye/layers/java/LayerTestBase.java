@@ -29,6 +29,7 @@ import org.junit.Test;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.lang.management.ManagementFactory;
 import java.util.Arrays;
 
 public abstract class LayerTestBase extends StandardLayerTests {
@@ -52,16 +53,14 @@ public abstract class LayerTestBase extends StandardLayerTests {
   @After
   public void cleanup() {
     RefSystem.gc();
+    long used = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed();
+    logger.info("Total memory after GC: " + used);
+//    try {
+//      Thread.sleep(5*1000);
+//    } catch (InterruptedException e) {
+//      e.printStackTrace();
+//    }
     //GpuController.remove();
-  }
-
-  public @SuppressWarnings("unused")
-  void _free() { super._free(); }
-
-  public @Override
-  @SuppressWarnings("unused")
-  LayerTestBase addRef() {
-    return (LayerTestBase) super.addRef();
   }
 
   @Nonnull

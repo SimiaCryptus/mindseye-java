@@ -65,7 +65,7 @@ public class ImgZeroPaddingLayer extends LayerBase {
     temp_25_0002.freeRef();
     ImgCropLayer imgCropLayer = new ImgCropLayer(dimensions[0] + 2 * this.sizeX, dimensions[1] + 2 * this.sizeY);
     Result temp_25_0001 = imgCropLayer.eval(RefUtil.addRefs(inObj));
-    RefUtil.freeRefs(inObj);
+    RefUtil.freeRef(inObj);
     imgCropLayer.freeRef();
     return temp_25_0001;
   }

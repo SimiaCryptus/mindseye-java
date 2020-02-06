@@ -41,31 +41,8 @@ public abstract class ImgPixelSumLayerTest extends LayerTestBase {
     return new ImgPixelSumLayer();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-    super._free();
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  ImgPixelSumLayerTest addRef() {
-    return (ImgPixelSumLayerTest) super.addRef();
-  }
-
   public static class Basic extends ImgPixelSumLayerTest {
 
-    public @SuppressWarnings("unused")
-    void _free() {
-      super._free();
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

@@ -48,30 +48,11 @@ public abstract class BiasLayerTest extends LayerTestBase {
     return temp_75_0001;
   }
 
-  public @SuppressWarnings("unused")
-  void _free() { super._free(); }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  BiasLayerTest addRef() {
-    return (BiasLayerTest) super.addRef();
-  }
-
   public static class Basic extends BiasLayerTest {
     public Basic() {
       super(5);
     }
 
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
   public static class Reducing extends BiasLayerTest {
@@ -90,15 +71,6 @@ public abstract class BiasLayerTest extends LayerTestBase {
       return temp_75_0003;
     }
 
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Reducing addRef() {
-      return (Reducing) super.addRef();
-    }
   }
 
 }

@@ -41,31 +41,8 @@ public abstract class DropoutNoiseLayerTest extends LayerTestBase {
     return new DropoutNoiseLayer();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-    super._free();
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  DropoutNoiseLayerTest addRef() {
-    return (DropoutNoiseLayerTest) super.addRef();
-  }
-
   public static class Basic extends DropoutNoiseLayerTest {
 
-    public @SuppressWarnings("unused")
-    void _free() {
-      super._free();
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

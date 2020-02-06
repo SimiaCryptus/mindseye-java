@@ -32,31 +32,7 @@ public abstract class LinearActivationLayerTest extends ActivationLayerTestBase 
     super(new LinearActivationLayer());
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-    super._free();
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  LinearActivationLayerTest addRef() {
-    return (LinearActivationLayerTest) super.addRef();
-  }
-
   public static class Basic extends LinearActivationLayerTest {
-
-    public @SuppressWarnings("unused")
-    void _free() {
-      super._free();
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
 
     @Nonnull
     @Override

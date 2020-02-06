@@ -45,31 +45,8 @@ public abstract class ImgTileAssemblyLayerTest extends LayerTestBase {
     return new ImgTileAssemblyLayer(2, 3);
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-    super._free();
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  ImgTileAssemblyLayerTest addRef() {
-    return (ImgTileAssemblyLayerTest) super.addRef();
-  }
-
   public static class Basic extends ImgTileAssemblyLayerTest {
 
-    public @SuppressWarnings("unused")
-    void _free() {
-      super._free();
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

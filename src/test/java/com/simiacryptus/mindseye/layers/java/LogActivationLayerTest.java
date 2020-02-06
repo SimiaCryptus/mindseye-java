@@ -38,31 +38,7 @@ public abstract class LogActivationLayerTest extends ActivationLayerTestBase {
     return new SingleDerivativeTester(1e-2, 1e-8);
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-    super._free();
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  LogActivationLayerTest addRef() {
-    return (LogActivationLayerTest) super.addRef();
-  }
-
   public static class Basic extends LogActivationLayerTest {
-
-    public @SuppressWarnings("unused")
-    void _free() {
-      super._free();
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
 
     @Nonnull
     @Override

@@ -89,7 +89,7 @@ public class ProductLayer extends LayerBase {
           }
           sum_A[dataIndex] = sum;
           return new Tensor(new double[]{sum}, 1);
-        }, RefUtil.addRefs(inObj))).toArray(i -> new Tensor[i]);
+        }, RefUtil.addRefs(inObj))).toArray(Tensor[]::new);
     temp_49_0008.freeRef();
     in0.freeRef();
     try {
@@ -112,14 +112,14 @@ public class ProductLayer extends LayerBase {
                         for (int i = 0; i < lTensor.length(); i++) {
                           double d = lTensor.getData()[i];
                           double deltaV = dataTensor.get(0);
-                          final double value = d == 0 ? 0 : (deltaV * sum_A[dataIndex] / d);
+                          final double value = d == 0 ? 0 : deltaV * sum_A[dataIndex] / d;
                           passback.set(i, value);
                         }
                         lTensor.freeRef();
                         dataTensor.freeRef();
                         return passback;
                       }, data.addRef(), delta.addRef()))
-                      .toArray(i -> new Tensor[i])));
+                      .toArray(Tensor[]::new)));
               data.freeRef();
             }
           }
@@ -131,7 +131,7 @@ public class ProductLayer extends LayerBase {
         public @SuppressWarnings("unused")
         void _free() {
           super._free();
-          RefUtil.freeRefs(inObj);
+          RefUtil.freeRef(inObj);
         }
       }) {
 
@@ -149,13 +149,13 @@ public class ProductLayer extends LayerBase {
         }
 
         public void _free() {
-          RefUtil.freeRefs(inObj);
+          RefUtil.freeRef(inObj);
           super._free();
         }
       };
     } finally {
-      RefUtil.freeRefs(inObj);
-      RefUtil.freeRefs(outputA);
+      RefUtil.freeRef(inObj);
+      RefUtil.freeRef(outputA);
     }
   }
 

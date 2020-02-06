@@ -41,31 +41,8 @@ public abstract class TensorConcatLayerTest extends LayerTestBase {
     return new TensorConcatLayer();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-    super._free();
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  TensorConcatLayerTest addRef() {
-    return (TensorConcatLayerTest) super.addRef();
-  }
-
   public static class Basic extends TensorConcatLayerTest {
 
-    public @SuppressWarnings("unused")
-    void _free() {
-      super._free();
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

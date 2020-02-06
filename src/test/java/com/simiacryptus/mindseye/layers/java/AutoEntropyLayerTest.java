@@ -53,27 +53,7 @@ public abstract class AutoEntropyLayerTest extends MetaLayerTestBase {
     return new int[][]{{100}};
   }
 
-  public @SuppressWarnings("unused")
-  void _free() { super._free(); }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  AutoEntropyLayerTest addRef() {
-    return (AutoEntropyLayerTest) super.addRef();
-  }
-
   public static class Basic extends AutoEntropyLayerTest {
-
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
 
     @Nonnull
     @Override

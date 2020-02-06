@@ -53,7 +53,7 @@ public class SumInputsLayer extends LayerBase {
   public static PipelineNetwork combine(@Nullable PipelineNetwork... networks) {
     PipelineNetwork temp_55_0005 = PipelineNetwork.combine(new SumInputsLayer(), RefUtil.addRefs(networks));
     if (null != networks)
-      RefUtil.freeRefs(networks);
+      RefUtil.freeRef(networks);
     return temp_55_0005;
   }
 
@@ -79,12 +79,12 @@ public class SumInputsLayer extends LayerBase {
                     right.addRef()));
               } else {
                 RefUtil.freeRef(tensor);
-                tensor = left.reduceParallel(right.addRef(), (v1, v2) -> v1 + v2);
+                tensor = left.reduceParallel(right.addRef(), Double::sum);
               }
               right.freeRef();
               left.freeRef();
               return tensor;
-            }, r.addRef(), l.addRef())).toArray(i -> new Tensor[i]));
+            }, r.addRef(), l.addRef())).toArray(Tensor[]::new));
         r.freeRef();
         l.freeRef();
         return temp_55_0002;
@@ -117,7 +117,7 @@ public class SumInputsLayer extends LayerBase {
                   Tensor temp_55_0004 = new Tensor(new double[]{t.sum()});
                   t.freeRef();
                   return temp_55_0004;
-                }).toArray(i -> new Tensor[i]));
+                }).toArray(Tensor[]::new));
                 projectedDelta.freeRef();
                 projectedDelta = new_projectedDelta;
               }
@@ -134,7 +134,7 @@ public class SumInputsLayer extends LayerBase {
         public @SuppressWarnings("unused")
         void _free() {
           super._free();
-          RefUtil.freeRefs(inObj);
+          RefUtil.freeRef(inObj);
         }
       }) {
 
@@ -152,12 +152,12 @@ public class SumInputsLayer extends LayerBase {
         }
 
         public void _free() {
-          RefUtil.freeRefs(inObj);
+          RefUtil.freeRef(inObj);
           super._free();
         }
       };
     } finally {
-      RefUtil.freeRefs(inObj);
+      RefUtil.freeRef(inObj);
     }
   }
 

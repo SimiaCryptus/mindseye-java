@@ -39,37 +39,11 @@ public abstract class MonitoringWrapperTest extends LayerTestBase {
   @Nonnull
   @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
-    MonitoringSynapse inner = new MonitoringSynapse();
-    MonitoringWrapperLayer temp_54_0001 = new MonitoringWrapperLayer(inner.addRef());
-    inner.freeRef();
-    return temp_54_0001;
-  }
-
-  public @SuppressWarnings("unused")
-  void _free() {
-    super._free();
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  MonitoringWrapperTest addRef() {
-    return (MonitoringWrapperTest) super.addRef();
+    return new MonitoringWrapperLayer(new MonitoringSynapse());
   }
 
   public static class Basic extends MonitoringWrapperTest {
 
-    public @SuppressWarnings("unused")
-    void _free() {
-      super._free();
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

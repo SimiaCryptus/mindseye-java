@@ -110,7 +110,7 @@ public class LinearActivationLayer extends LayerBase {
   public Result eval(@Nullable final Result... inObj) {
     assert inObj != null;
     final Result in0 = inObj[0].addRef();
-    RefUtil.freeRefs(inObj);
+    RefUtil.freeRef(inObj);
     final TensorList inData = in0.getData();
     final int itemCnt = inData.length();
     assert weights != null;
@@ -165,7 +165,7 @@ public class LinearActivationLayer extends LayerBase {
                   }
                   return passback;
                 }, inData.addRef(), delta.addRef()))
-                .toArray(i -> new Tensor[i]));
+                .toArray(Tensor[]::new));
             in0.accumulate(buffer.addRef(), tensorList);
           }
           delta.freeRef();
@@ -190,7 +190,7 @@ public class LinearActivationLayer extends LayerBase {
             });
             tensor.freeRef();
             return tensor1;
-          }, inData.addRef())).toArray(i -> new Tensor[i]));
+          }, inData.addRef())).toArray(Tensor[]::new));
       return new Result(data, accumulator) {
         {
           in0.addRef();

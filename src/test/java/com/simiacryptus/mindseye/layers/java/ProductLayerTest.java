@@ -41,27 +41,8 @@ public abstract class ProductLayerTest extends LayerTestBase {
     return new ProductLayer();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() { super._free(); }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  ProductLayerTest addRef() {
-    return (ProductLayerTest) super.addRef();
-  }
-
   public static class Basic extends ProductLayerTest {
 
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

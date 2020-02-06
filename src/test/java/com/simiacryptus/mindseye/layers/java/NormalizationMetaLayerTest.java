@@ -55,18 +55,6 @@ public abstract class NormalizationMetaLayerTest extends MetaLayerTestBase {
     return new int[][]{{10}};
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-    super._free();
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  NormalizationMetaLayerTest addRef() {
-    return (NormalizationMetaLayerTest) super.addRef();
-  }
-
   @Nonnull
   @Override
   protected Layer lossLayer() {
@@ -75,17 +63,6 @@ public abstract class NormalizationMetaLayerTest extends MetaLayerTestBase {
 
   public static class Basic extends NormalizationMetaLayerTest {
 
-    public @SuppressWarnings("unused")
-    void _free() {
-      super._free();
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

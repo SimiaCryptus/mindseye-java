@@ -127,7 +127,7 @@ public class UnpoolingLayer extends LayerBase {
   public Result eval(@Nonnull final Result... inObj) {
     //assert Arrays.stream(inObj).flatMapToDouble(input-> input.getData().stream().flatMapToDouble(x-> Arrays.stream(x.getData()))).allMatch(v->Double.isFinite(v));
     final Result input = inObj[0].addRef();
-    RefUtil.freeRefs(inObj);
+    RefUtil.freeRef(inObj);
     final TensorList batch = input.getData();
     @Nonnull final int[] inputDims = batch.getDimensions();
     assert 3 == inputDims.length;
@@ -140,7 +140,7 @@ public class UnpoolingLayer extends LayerBase {
           inputData.freeRef();
           return temp_58_0002;
         }, outputDims.addRef(), batch.addRef()))
-        .toArray(i -> new Tensor[i]));
+        .toArray(Tensor[]::new));
     outputDims.freeRef();
     batch.freeRef();
     try {
@@ -162,7 +162,7 @@ public class UnpoolingLayer extends LayerBase {
                       passback);
                   err.freeRef();
                   return temp_58_0004;
-                }, error.addRef())).toArray(i -> new Tensor[i]));
+                }, error.addRef())).toArray(Tensor[]::new));
             input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
           }
           error.freeRef();

@@ -32,27 +32,7 @@ public abstract class GaussianNoiseLayerTest extends ActivationLayerTestBase {
     super(new GaussianNoiseLayer());
   }
 
-  public @SuppressWarnings("unused")
-  void _free() { super._free(); }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  GaussianNoiseLayerTest addRef() {
-    return (GaussianNoiseLayerTest) super.addRef();
-  }
-
   public static class Basic extends GaussianNoiseLayerTest {
-
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
 
     @Nonnull
     @Override

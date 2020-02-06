@@ -41,31 +41,8 @@ public abstract class ImgConcatLayerTest extends LayerTestBase {
     return new ImgConcatLayer();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-    super._free();
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  ImgConcatLayerTest addRef() {
-    return (ImgConcatLayerTest) super.addRef();
-  }
-
   public static class Basic extends ImgConcatLayerTest {
 
-    public @SuppressWarnings("unused")
-    void _free() {
-      super._free();
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

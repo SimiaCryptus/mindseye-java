@@ -49,16 +49,6 @@ public abstract class AvgMetaLayerTest extends MetaLayerTestBase {
     return new int[][]{{100}};
   }
 
-  public @SuppressWarnings("unused")
-  void _free() { super._free(); }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  AvgMetaLayerTest addRef() {
-    return (AvgMetaLayerTest) super.addRef();
-  }
-
   @Nonnull
   @Override
   protected Layer lossLayer() {
@@ -66,16 +56,6 @@ public abstract class AvgMetaLayerTest extends MetaLayerTestBase {
   }
 
   public static class Basic extends AvgMetaLayerTest {
-
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
 
     @Nonnull
     @Override

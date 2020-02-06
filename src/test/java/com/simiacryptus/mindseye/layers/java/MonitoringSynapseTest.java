@@ -41,31 +41,8 @@ public abstract class MonitoringSynapseTest extends LayerTestBase {
     return new MonitoringSynapse();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-    super._free();
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  MonitoringSynapseTest addRef() {
-    return (MonitoringSynapseTest) super.addRef();
-  }
-
   public static class Basic extends MonitoringSynapseTest {
 
-    public @SuppressWarnings("unused")
-    void _free() {
-      super._free();
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

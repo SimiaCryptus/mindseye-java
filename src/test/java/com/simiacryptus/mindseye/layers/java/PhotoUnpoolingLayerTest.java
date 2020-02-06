@@ -41,27 +41,8 @@ public abstract class PhotoUnpoolingLayerTest extends LayerTestBase {
     return new PhotoUnpoolingLayer(2, 2);
   }
 
-  public @SuppressWarnings("unused")
-  void _free() { super._free(); }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  PhotoUnpoolingLayerTest addRef() {
-    return (PhotoUnpoolingLayerTest) super.addRef();
-  }
-
   public static class Basic extends PhotoUnpoolingLayerTest {
 
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

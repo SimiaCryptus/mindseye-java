@@ -41,27 +41,8 @@ public abstract class UnpoolingLayerTest extends LayerTestBase {
     return new UnpoolingLayer(2, 2);
   }
 
-  public @SuppressWarnings("unused")
-  void _free() { super._free(); }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  UnpoolingLayerTest addRef() {
-    return (UnpoolingLayerTest) super.addRef();
-  }
-
   public static class Basic extends UnpoolingLayerTest {
 
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

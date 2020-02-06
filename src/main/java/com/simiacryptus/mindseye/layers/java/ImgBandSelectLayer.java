@@ -64,14 +64,14 @@ public class ImgBandSelectLayer extends LayerBase {
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     final Result input = inObj[0].addRef();
-    RefUtil.freeRefs(inObj);
+    RefUtil.freeRef(inObj);
     final TensorList batch = input.getData();
     @Nonnull final int[] inputDims = batch.getDimensions();
     assert 3 == inputDims.length;
     @Nonnull final Tensor outputDims = new Tensor(inputDims[0], inputDims[1], bands.length);
     @Nonnull
     TensorArray wrap = new TensorArray(RefIntStream.range(0, batch.length()).parallel().mapToObj(RefUtil
-        .wrapInterface((IntFunction<? extends Tensor>) dataIndex -> outputDims.mapCoords(RefUtil.wrapInterface((c) -> {
+        .wrapInterface((IntFunction<? extends Tensor>) dataIndex -> outputDims.mapCoords(RefUtil.wrapInterface(c -> {
               int[] coords = c.getCoords();
               @Nullable
               Tensor tensor = batch.get(dataIndex);
@@ -80,7 +80,7 @@ public class ImgBandSelectLayer extends LayerBase {
               return temp_45_0002;
             }, batch.addRef())), outputDims,
             batch.addRef()))
-        .toArray(i -> new Tensor[i]));
+        .toArray(Tensor[]::new));
     batch.freeRef();
     try {
       Result.Accumulator accumulator = new Result.Accumulator() {
@@ -102,7 +102,7 @@ public class ImgBandSelectLayer extends LayerBase {
                   }, passback.addRef(), err.addRef()));
                   err.freeRef();
                   return passback;
-                }, error.addRef())).toArray(i -> new Tensor[i]));
+                }, error.addRef())).toArray(Tensor[]::new));
             input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
           }
           error.freeRef();

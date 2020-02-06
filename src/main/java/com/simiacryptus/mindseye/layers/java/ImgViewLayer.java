@@ -248,7 +248,7 @@ public class ImgViewLayer extends LayerBase {
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     final Result input = inObj[0].addRef();
-    RefUtil.freeRefs(inObj);
+    RefUtil.freeRef(inObj);
     final TensorList batch = input.getData();
     @Nonnull final int[] inputDims = batch.getDimensions();
     assert 3 == inputDims.length;
@@ -274,7 +274,7 @@ public class ImgViewLayer extends LayerBase {
                       passback.addRef());
                   err.freeRef();
                   return passback;
-                }, error.addRef())).toArray(i -> new Tensor[i]));
+                }, error.addRef())).toArray(Tensor[]::new));
             input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
           }
           error.freeRef();
@@ -295,7 +295,7 @@ public class ImgViewLayer extends LayerBase {
             fwd(inputData.addRef(), outputData.addRef());
             inputData.freeRef();
             return outputData;
-          }, batch.addRef())).toArray(i -> new Tensor[i]));
+          }, batch.addRef())).toArray(Tensor[]::new));
       return new Result(data, accumulator) {
         {
           input.addRef();
@@ -320,8 +320,8 @@ public class ImgViewLayer extends LayerBase {
   @Nonnull
   public int[] getViewDimensions(int[] sourceDimensions, int[] destinationDimensions, int[] offset) {
     @Nonnull final int[] viewDim = new int[3];
-    RefArrays.parallelSetAll(viewDim, i -> isWrap() ? (destinationDimensions[i])
-        : (Math.min(sourceDimensions[i], destinationDimensions[i] + offset[i]) - Math.max(offset[i], 0)));
+    RefArrays.parallelSetAll(viewDim, i -> isWrap() ? destinationDimensions[i]
+        : Math.min(sourceDimensions[i], destinationDimensions[i] + offset[i]) - Math.max(offset[i], 0));
     return viewDim;
   }
 
@@ -374,7 +374,7 @@ public class ImgViewLayer extends LayerBase {
     assert 3 == inDim.length;
     assert 3 == outDim.length;
     assert inDim[2] == outDim[2] : RefArrays.toString(inDim) + "; " + RefArrays.toString(outDim);
-    outputData.coordStream(true).forEach(RefUtil.wrapInterface((Consumer<? super Coordinate>) (c) -> {
+    outputData.coordStream(true).forEach(RefUtil.wrapInterface((Consumer<? super Coordinate>) c -> {
       int[] coords = c.getCoords();
       double[] xy = coordinateMapping(coords[0], coords[1]);
       int x = (int) Math.round(xy[0]);
@@ -402,7 +402,7 @@ public class ImgViewLayer extends LayerBase {
     assert 3 == inputDeltaDims.length;
     assert outDeltaDims[2] == inputDeltaDims[2] : RefArrays.toString(outDeltaDims) + "; "
         + RefArrays.toString(inputDeltaDims);
-    outputDelta.coordStream(true).forEach(RefUtil.wrapInterface((Consumer<? super Coordinate>) (c) -> {
+    outputDelta.coordStream(true).forEach(RefUtil.wrapInterface((Consumer<? super Coordinate>) c -> {
       int[] outCoord = c.getCoords();
       double[] inCoords = coordinateMapping(outCoord[0], outCoord[1]);
       int x = (int) Math.round(inCoords[0]);

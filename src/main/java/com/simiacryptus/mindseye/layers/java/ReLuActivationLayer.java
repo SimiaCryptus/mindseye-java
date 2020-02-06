@@ -92,7 +92,7 @@ public class ReLuActivationLayer extends LayerBase {
   public Result eval(@Nullable final Result... inObj) {
     assert inObj != null;
     final Result input = inObj[0].addRef();
-    RefUtil.freeRefs(inObj);
+    RefUtil.freeRef(inObj);
     final TensorList indata = input.getData();
     final int itemCnt = indata.length();
     final ReLuActivationLayer reLuActivationLayer = ReLuActivationLayer.this.addRef();
@@ -154,7 +154,7 @@ public class ReLuActivationLayer extends LayerBase {
                   }
                   return passback;
                 }, delta.addRef(), indata.addRef()))
-                .toArray(i -> new Tensor[i]));
+                .toArray(Tensor[]::new));
             input.accumulate(buffer.addRef(), tensorArray);
           }
           delta.freeRef();
@@ -184,7 +184,7 @@ public class ReLuActivationLayer extends LayerBase {
               }
             }
             return tensor;
-          }, indata.addRef())).toArray(i -> new Tensor[i]));
+          }, indata.addRef())).toArray(Tensor[]::new));
       return new Result(data, accumulator) {
         {
           input.freeRef();

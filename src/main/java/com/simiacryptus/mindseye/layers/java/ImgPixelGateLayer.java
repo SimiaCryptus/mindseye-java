@@ -60,7 +60,7 @@ public class ImgPixelGateLayer extends LayerBase {
   public Result eval(@Nonnull final Result... inObj) {
     assert 2 == inObj.length;
     Result temp_29_0006 = eval(inObj[0].addRef(), inObj[1].addRef());
-    RefUtil.freeRefs(inObj);
+    RefUtil.freeRef(inObj);
     return temp_29_0006;
   }
 
@@ -88,7 +88,7 @@ public class ImgPixelGateLayer extends LayerBase {
             inputTensor.freeRef();
             return temp_29_0003;
           }, inputData.addRef(), gateData.addRef()))
-          .toArray(i -> new Tensor[i])), new Result.Accumulator() {
+          .toArray(Tensor[]::new)), new Result.Accumulator() {
         {
           input.addRef();
           gate.addRef();
@@ -120,7 +120,7 @@ public class ImgPixelGateLayer extends LayerBase {
                       return temp_29_0004;
                     }, delta.addRef(), input.addRef(),
                     gateData.addRef()))
-                .toArray(i -> new Tensor[i]));
+                .toArray(Tensor[]::new));
             input.accumulate(buffer == null ? null : buffer.addRef(),
                 tensorArray);
           }
@@ -147,7 +147,7 @@ public class ImgPixelGateLayer extends LayerBase {
                       return temp_29_0005;
                     }, gateData.addRef(), delta.addRef(),
                     inputData.addRef()))
-                .toArray(i -> new Tensor[i]));
+                .toArray(Tensor[]::new));
             gate.accumulate(buffer == null ? null : buffer.addRef(),
                 tensorArray);
           }

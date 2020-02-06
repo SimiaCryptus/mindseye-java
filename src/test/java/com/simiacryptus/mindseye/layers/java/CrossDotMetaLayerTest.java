@@ -45,31 +45,8 @@ public abstract class CrossDotMetaLayerTest extends LayerTestBase {
     return new CrossDotMetaLayer();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-    super._free();
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  CrossDotMetaLayerTest addRef() {
-    return (CrossDotMetaLayerTest) super.addRef();
-  }
-
   public static class Basic extends CrossDotMetaLayerTest {
 
-    public @SuppressWarnings("unused")
-    void _free() {
-      super._free();
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

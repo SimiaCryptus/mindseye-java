@@ -41,27 +41,8 @@ public abstract class AssertDimensionsLayerTest extends LayerTestBase {
     return new AssertDimensionsLayer(2, 2);
   }
 
-  public @SuppressWarnings("unused")
-  void _free() { super._free(); }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  AssertDimensionsLayerTest addRef() {
-    return (AssertDimensionsLayerTest) super.addRef();
-  }
-
   public static class Basic extends AssertDimensionsLayerTest {
 
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

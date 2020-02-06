@@ -46,17 +46,6 @@ public class ValueLayerTest {
       return temp_46_0001;
     }
 
-    public @SuppressWarnings("unused")
-    void _free() {
-      super._free();
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Normal addRef() {
-      return (Normal) super.addRef();
-    }
   }
 
 }

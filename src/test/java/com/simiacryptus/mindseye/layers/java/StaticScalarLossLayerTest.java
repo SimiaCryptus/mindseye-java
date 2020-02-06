@@ -45,31 +45,8 @@ public abstract class StaticScalarLossLayerTest extends LayerTestBase {
     return new StaticScalarLossLayer();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-    super._free();
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  StaticScalarLossLayerTest addRef() {
-    return (StaticScalarLossLayerTest) super.addRef();
-  }
-
   public static class Basic extends StaticScalarLossLayerTest {
 
-    public @SuppressWarnings("unused")
-    void _free() {
-      super._free();
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

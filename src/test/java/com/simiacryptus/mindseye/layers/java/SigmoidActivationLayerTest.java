@@ -32,18 +32,6 @@ public abstract class SigmoidActivationLayerTest extends ActivationLayerTestBase
     super(new SigmoidActivationLayer());
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-    super._free();
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  SigmoidActivationLayerTest addRef() {
-    return (SigmoidActivationLayerTest) super.addRef();
-  }
-
   @Nonnull
   @Override
   protected Layer lossLayer() {
@@ -52,17 +40,6 @@ public abstract class SigmoidActivationLayerTest extends ActivationLayerTestBase
 
   public static class Basic extends SigmoidActivationLayerTest {
 
-    public @SuppressWarnings("unused")
-    void _free() {
-      super._free();
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

@@ -60,7 +60,7 @@ public class ImgPixelSoftmaxLayer extends LayerBase {
   public Result eval(@Nonnull final Result... inObj) {
     assert 1 == inObj.length;
     Result temp_52_0011 = eval(inObj[0].addRef());
-    RefUtil.freeRefs(inObj);
+    RefUtil.freeRef(inObj);
     return temp_52_0011;
   }
 
@@ -86,7 +86,7 @@ public class ImgPixelSoftmaxLayer extends LayerBase {
       if (null != inputTensor)
         inputTensor.freeRef();
       return temp_52_0002;
-    }).toArray(i -> new Tensor[i]));
+    }).toArray(Tensor[]::new));
     TensorArray exps = new TensorArray(RefIntStream.range(0, inputData.length())
         .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) index -> {
           final Tensor inputTensor = inputData.get(index);
@@ -102,7 +102,7 @@ public class ImgPixelSoftmaxLayer extends LayerBase {
           inputTensor.freeRef();
           return temp_52_0003;
         }, inputData.addRef(), maxima.addRef()))
-        .toArray(i -> new Tensor[i]));
+        .toArray(Tensor[]::new));
     maxima.freeRef();
     TensorArray sums = new TensorArray(exps.stream().map(expTensor -> {
       Tensor temp_52_0015 = new Tensor(width, height, 1);
@@ -118,7 +118,7 @@ public class ImgPixelSoftmaxLayer extends LayerBase {
       if (null != expTensor)
         expTensor.freeRef();
       return temp_52_0005;
-    }).toArray(i -> new Tensor[i]));
+    }).toArray(Tensor[]::new));
     TensorArray output = new TensorArray(RefIntStream.range(0, inputData.length())
         .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) index -> {
           Tensor sumTensor = sums.get(index);
@@ -126,14 +126,14 @@ public class ImgPixelSoftmaxLayer extends LayerBase {
           Tensor temp_52_0016 = new Tensor(inputDims);
           temp_52_0016.setByCoord(RefUtil.wrapInterface(c -> {
                   int[] coords = c.getCoords();
-                  return (expTensor.get(c) / sumTensor.get(coords[0], coords[1], 0));
+                  return expTensor.get(c) / sumTensor.get(coords[0], coords[1], 0);
                 }, sumTensor.addRef(), expTensor.addRef()));
           Tensor temp_52_0007 = temp_52_0016.addRef();
           temp_52_0016.freeRef();
           expTensor.freeRef();
           sumTensor.freeRef();
           return temp_52_0007;
-        }, sums.addRef(), exps.addRef())).toArray(i -> new Tensor[i]));
+        }, sums.addRef(), exps.addRef())).toArray(Tensor[]::new));
     try {
       return new Result(output, new Result.Accumulator() {
         {
@@ -166,7 +166,7 @@ public class ImgPixelSoftmaxLayer extends LayerBase {
                   deltaTensor.freeRef();
                   return temp_52_0009;
                 }, delta.addRef(), exps.addRef()))
-                .toArray(i -> new Tensor[i]));
+                .toArray(Tensor[]::new));
 
             TensorArray passback = new TensorArray(RefIntStream.range(0, inputData.length())
                 .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) index -> {
@@ -195,7 +195,7 @@ public class ImgPixelSoftmaxLayer extends LayerBase {
                       return temp_52_0010;
                     }, sums.addRef(), dots.addRef(),
                     delta.addRef(), exps.addRef()))
-                .toArray(i -> new Tensor[i]));
+                .toArray(Tensor[]::new));
 
             dots.freeRef();
             input.accumulate(buffer == null ? null : buffer.addRef(),

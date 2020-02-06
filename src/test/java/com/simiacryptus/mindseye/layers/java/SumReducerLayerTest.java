@@ -47,27 +47,8 @@ public abstract class SumReducerLayerTest extends LayerTestBase {
     return new int[][]{{200, 200, 3}};
   }
 
-  public @SuppressWarnings("unused")
-  void _free() { super._free(); }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  SumReducerLayerTest addRef() {
-    return (SumReducerLayerTest) super.addRef();
-  }
-
   public static class Basic extends SumReducerLayerTest {
 
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

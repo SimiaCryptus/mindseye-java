@@ -53,27 +53,8 @@ public abstract class EntropyLossLayerTest extends LayerTestBase {
     return Util.R.get().nextDouble();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() { super._free(); }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  EntropyLossLayerTest addRef() {
-    return (EntropyLossLayerTest) super.addRef();
-  }
-
   public static class Basic extends EntropyLossLayerTest {
 
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

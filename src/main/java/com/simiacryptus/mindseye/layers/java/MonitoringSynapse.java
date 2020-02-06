@@ -92,10 +92,8 @@ public final class MonitoringSynapse extends LayerBase implements MonitoredItem 
   public Result eval(@Nonnull final Result... inObj) {
     assert 1 == inObj.length;
     final Result input = inObj[0].addRef();
-    RefUtil.freeRefs(inObj);
+    RefUtil.freeRef(inObj);
     final TensorList inputdata = input.getData();
-    RefSystem.nanoTime();
-    RefSystem.nanoTime();
     totalBatches++;
     totalItems += inputdata.length();
     forwardStatistics.clear();
@@ -112,9 +110,7 @@ public final class MonitoringSynapse extends LayerBase implements MonitoredItem 
         @Override
         public void accept(@Nullable DeltaSet<UUID> buffer, @Nullable TensorList data) {
           backpropStatistics.clear();
-          input.accumulate(buffer == null ? null : buffer.addRef(), data == null ? null : data.addRef());
-          if (null != buffer)
-            buffer.freeRef();
+          input.accumulate(buffer, data == null ? null : data.addRef());
           assert data != null;
           data.stream().parallel().forEach(t -> {
             backpropStatistics.add(t.getData());

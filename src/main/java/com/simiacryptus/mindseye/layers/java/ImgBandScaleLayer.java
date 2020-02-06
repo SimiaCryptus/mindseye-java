@@ -66,7 +66,7 @@ public class ImgBandScaleLayer extends LayerBase {
   @Nullable
   public double[] getWeights() {
     assert weights != null;
-    if (!RefArrays.stream(weights).allMatch(v -> Double.isFinite(v))) {
+    if (!RefArrays.stream(weights).allMatch(Double::isFinite)) {
       throw new IllegalStateException(RefArrays.toString(weights));
     }
     return weights;
@@ -78,7 +78,7 @@ public class ImgBandScaleLayer extends LayerBase {
     for (int i = 0; i < bias.length; i++) {
       bias[i] = f.applyAsDouble(i);
     }
-    assert RefArrays.stream(bias).allMatch(v -> Double.isFinite(v));
+    assert RefArrays.stream(bias).allMatch(Double::isFinite);
   }
 
   @Nonnull
@@ -96,7 +96,7 @@ public class ImgBandScaleLayer extends LayerBase {
   public Result eval(@Nullable final Result... inObj) {
     assert inObj != null;
     Result temp_50_0008 = eval(inObj[0].addRef());
-    RefUtil.freeRefs(inObj);
+    RefUtil.freeRef(inObj);
     return temp_50_0008;
   }
 
@@ -124,7 +124,7 @@ public class ImgBandScaleLayer extends LayerBase {
       tensor.freeRef();
       return temp_50_0002;
     };
-    Tensor[] data = inData.stream().parallel().map(tensorTensorFunction).toArray(i -> new Tensor[i]);
+    Tensor[] data = inData.stream().parallel().map(tensorTensorFunction).toArray(Tensor[]::new);
     final ImgBandScaleLayer imgBandScaleLayer = ImgBandScaleLayer.this.addRef();
     try {
       return new Result(new TensorArray(RefUtil.addRefs(data)), new Result.Accumulator() {
@@ -157,7 +157,7 @@ public class ImgBandScaleLayer extends LayerBase {
                       array[i] += deltaArray[i * x * y + j] * inputData[i * x * y + j];
                     }
                   }
-                  assert RefArrays.stream(array).allMatch(v -> Double.isFinite(v));
+                  assert RefArrays.stream(array).allMatch(Double::isFinite);
                   assert deltaBuffer != null;
                   deltaBuffer.addInPlace(array);
                   RecycleBin.DOUBLES.recycle(array, array.length);
@@ -168,17 +168,17 @@ public class ImgBandScaleLayer extends LayerBase {
           }
           if (input.isAlive()) {
             Tensor[] tensors = delta.stream().map(t -> {
-              Tensor temp_50_0007 = t.mapCoords(RefUtil.wrapInterface((c) -> {
+              Tensor temp_50_0007 = t.mapCoords(RefUtil.wrapInterface(c -> {
                     assert weights != null;
                     return t.get(c) * weights[c.getCoords()[2]];
                   },
                   t.addRef()));
               t.freeRef();
               return temp_50_0007;
-            }).toArray(i -> new Tensor[i]);
+            }).toArray(Tensor[]::new);
             @Nonnull
             TensorArray tensorArray = new TensorArray(RefUtil.addRefs(tensors));
-            RefUtil.freeRefs(tensors);
+            RefUtil.freeRef(tensors);
             input.accumulate(buffer.addRef(), tensorArray);
           }
           delta.freeRef();
@@ -211,7 +211,7 @@ public class ImgBandScaleLayer extends LayerBase {
     } finally {
       input.freeRef();
       imgBandScaleLayer.freeRef();
-      RefUtil.freeRefs(data);
+      RefUtil.freeRef(data);
       inData.freeRef();
     }
   }
@@ -231,7 +231,7 @@ public class ImgBandScaleLayer extends LayerBase {
       bias[i] = ds[i];
     }
     assert bias != null;
-    assert RefArrays.stream(bias).allMatch(v -> Double.isFinite(v));
+    assert RefArrays.stream(bias).allMatch(Double::isFinite);
   }
 
   @Nonnull

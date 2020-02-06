@@ -202,7 +202,7 @@ public class ImgTileAssemblyLayer extends LayerBase {
             }
 
             return outputData;
-          }, RefUtil.addRefs(inObj))).toArray(i -> new Tensor[i])), new Result.Accumulator() {
+          }, RefUtil.addRefs(inObj))).toArray(Tensor[]::new)), new Result.Accumulator() {
         {
           RefUtil.addRefs(inObj);
         }
@@ -235,7 +235,7 @@ public class ImgTileAssemblyLayer extends LayerBase {
                           offsetX < 0 || offsetY < 0, (double) finalRow / rows, (double) finalCol / columns);
                       deltaTensor.freeRef();
                       return passbackTensor;
-                    }, delta.addRef())).toArray(i -> new Tensor[i]));
+                    }, delta.addRef())).toArray(Tensor[]::new));
                 in.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
               }
               in.freeRef();
@@ -251,7 +251,7 @@ public class ImgTileAssemblyLayer extends LayerBase {
         public @SuppressWarnings("unused")
         void _free() {
           super._free();
-          RefUtil.freeRefs(inObj);
+          RefUtil.freeRef(inObj);
         }
       }) {
 
@@ -265,14 +265,14 @@ public class ImgTileAssemblyLayer extends LayerBase {
         }
 
         public void _free() {
-          RefUtil.freeRefs(inObj);
+          RefUtil.freeRef(inObj);
           super._free();
         }
       };
       temp_63_0004.freeRef();
       return temp_63_0003;
     } finally {
-      RefUtil.freeRefs(inObj);
+      RefUtil.freeRef(inObj);
     }
   }
 
@@ -335,7 +335,7 @@ public class ImgTileAssemblyLayer extends LayerBase {
       totalHeight += rowHeight - getPaddingY();
       totalWidth = Math.max(totalWidth, positionX);
     }
-    RefUtil.freeRefs(inObj);
+    RefUtil.freeRef(inObj);
     return new int[]{totalWidth + getPaddingX(), totalHeight + getPaddingY(), bands};
   }
 }

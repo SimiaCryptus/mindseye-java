@@ -41,15 +41,6 @@ public class TargetValueLayerTest {
       return new TargetValueLayer(0.0, 0.1, 0.2);
     }
 
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Normal addRef() {
-      return (Normal) super.addRef();
-    }
   }
 
 }

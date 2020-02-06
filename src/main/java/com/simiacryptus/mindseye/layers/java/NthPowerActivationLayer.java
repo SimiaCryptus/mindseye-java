@@ -143,7 +143,7 @@ public final class NthPowerActivationLayer extends LayerBase {
             @Nullable final double[] inputData = input.getData();
             @Nullable final double[] gradientData = gradient.getData();
             @Nullable final double[] outputData = output.getData();
-            RefUtil.set((inputGradientA), dataIndex, gradient);
+            RefUtil.set(inputGradientA, dataIndex, gradient);
             if (power == 2) {
               NthPowerActivationLayer.square(input.addRef(), inputData, gradientData,
                   outputData);
@@ -159,7 +159,7 @@ public final class NthPowerActivationLayer extends LayerBase {
             }
             input.freeRef();
             return output;
-          }, RefUtil.addRefs(inputGradientA), RefUtil.addRefs(inObj))).toArray(i -> new Tensor[i])),
+          }, RefUtil.addRefs(inputGradientA), RefUtil.addRefs(inObj))).toArray(Tensor[]::new)),
           new Result.Accumulator() {
             {
               RefUtil.addRefs(inObj);
@@ -186,7 +186,7 @@ public final class NthPowerActivationLayer extends LayerBase {
                       }, passback.addRef()));
                       return passback;
                     }, RefUtil.addRefs(inputGradientA), data.addRef()))
-                    .toArray(i -> new Tensor[i]));
+                    .toArray(Tensor[]::new));
                 inObj[0].accumulate(buffer == null ? null : buffer.addRef(),
                     tensorArray);
               }
@@ -198,8 +198,8 @@ public final class NthPowerActivationLayer extends LayerBase {
             public @SuppressWarnings("unused")
             void _free() {
               super._free();
-              RefUtil.freeRefs(inObj);
-              RefUtil.freeRefs(inputGradientA);
+              RefUtil.freeRef(inObj);
+              RefUtil.freeRef(inputGradientA);
             }
           }) {
 
@@ -213,13 +213,13 @@ public final class NthPowerActivationLayer extends LayerBase {
         }
 
         public void _free() {
-          RefUtil.freeRefs(inObj);
+          RefUtil.freeRef(inObj);
           super._free();
         }
       };
     } finally {
-      RefUtil.freeRefs(inObj);
-      RefUtil.freeRefs(inputGradientA);
+      RefUtil.freeRef(inObj);
+      RefUtil.freeRef(inputGradientA);
     }
   }
 

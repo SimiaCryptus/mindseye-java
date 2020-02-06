@@ -32,16 +32,6 @@ public abstract class SinewaveActivationLayerTest extends ActivationLayerTestBas
     super(new SinewaveActivationLayer());
   }
 
-  public @SuppressWarnings("unused")
-  void _free() { super._free(); }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  SinewaveActivationLayerTest addRef() {
-    return (SinewaveActivationLayerTest) super.addRef();
-  }
-
   @Nonnull
   @Override
   protected Layer lossLayer() {
@@ -50,15 +40,6 @@ public abstract class SinewaveActivationLayerTest extends ActivationLayerTestBas
 
   public static class Basic extends SinewaveActivationLayerTest {
 
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

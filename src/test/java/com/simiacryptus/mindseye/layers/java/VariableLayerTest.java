@@ -44,32 +44,8 @@ public abstract class VariableLayerTest extends LayerTestBase {
     return temp_44_0001;
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-    super._free();
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  VariableLayerTest addRef() {
-    return (VariableLayerTest) super.addRef();
-  }
-
   public static class Basic extends VariableLayerTest {
 
-
-    public @SuppressWarnings("unused")
-    void _free() {
-      super._free();
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

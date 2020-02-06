@@ -72,7 +72,7 @@ public class MaxDropoutNoiseLayer extends LayerBase {
   public Result eval(@Nullable final Result... inObj) {
     assert inObj != null;
     final Result in0 = inObj[0].addRef();
-    RefUtil.freeRefs(inObj);
+    RefUtil.freeRef(inObj);
     final TensorList data0 = in0.getData();
     final int itemCnt = data0.length();
     final Tensor[] mask = RefIntStream.range(0, itemCnt)
@@ -83,13 +83,13 @@ public class MaxDropoutNoiseLayer extends LayerBase {
           cells.forEach(RefUtil.wrapInterface((Consumer<? super RefList<Coordinate>>) cell -> {
             output.set(RefUtil.get(cell.stream()
                 .max(RefComparator.comparingDouble(RefUtil.wrapInterface(
-                    (ToDoubleFunction<? super Coordinate>) c -> input.get(c), input.addRef())))), 1);
+                    input::get, input.addRef())))), 1);
             cell.freeRef();
           }, input.addRef(), output.addRef()));
           cells.freeRef();
           input.freeRef();
           return output;
-        }, data0.addRef())).toArray(i -> new Tensor[i]);
+        }, data0.addRef())).toArray(Tensor[]::new);
     try {
       Result.Accumulator accumulator = new Result.Accumulator() {
         {
@@ -116,7 +116,7 @@ public class MaxDropoutNoiseLayer extends LayerBase {
                       return passback;
                     }, data0.addRef(), delta.addRef(),
                     RefUtil.addRefs(mask)))
-                .toArray(i -> new Tensor[i]));
+                .toArray(Tensor[]::new));
             in0.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
           }
           delta.freeRef();
@@ -127,7 +127,7 @@ public class MaxDropoutNoiseLayer extends LayerBase {
         public @SuppressWarnings("unused")
         void _free() {
           super._free();
-          RefUtil.freeRefs(mask);
+          RefUtil.freeRef(mask);
           data0.freeRef();
           in0.freeRef();
         }
@@ -144,7 +144,7 @@ public class MaxDropoutNoiseLayer extends LayerBase {
               outputData[i] = input[i] * maskT[i];
             }
             return output;
-          }, data0.addRef(), RefUtil.addRefs(mask))).toArray(i -> new Tensor[i]));
+          }, data0.addRef(), RefUtil.addRefs(mask))).toArray(Tensor[]::new));
       return new Result(data, accumulator) {
         {
           in0.addRef();
@@ -161,7 +161,7 @@ public class MaxDropoutNoiseLayer extends LayerBase {
         }
       };
     } finally {
-      RefUtil.freeRefs(mask);
+      RefUtil.freeRef(mask);
       data0.freeRef();
       in0.freeRef();
     }

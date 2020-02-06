@@ -46,31 +46,8 @@ public abstract class L1NormalizationLayerTest extends LayerTestBase {
     return super.random() * 100;
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-    super._free();
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  L1NormalizationLayerTest addRef() {
-    return (L1NormalizationLayerTest) super.addRef();
-  }
-
   public static class Basic extends L1NormalizationLayerTest {
 
-    public @SuppressWarnings("unused")
-    void _free() {
-      super._free();
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

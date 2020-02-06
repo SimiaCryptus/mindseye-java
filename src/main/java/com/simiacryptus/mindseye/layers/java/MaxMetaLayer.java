@@ -60,7 +60,7 @@ public class MaxMetaLayer extends LayerBase {
   public Result eval(@Nullable final Result... inObj) {
     assert inObj != null;
     final Result input = inObj[0].addRef();
-    RefUtil.freeRefs(inObj);
+    RefUtil.freeRef(inObj);
     TensorList temp_40_0005 = input.getData();
     final int itemCnt = temp_40_0005.length();
     temp_40_0005.freeRef();
@@ -72,7 +72,7 @@ public class MaxMetaLayer extends LayerBase {
     for (int i = 0; i < vectorSize; i++) {
       final int itemNumber = i;
       indicies[i] = RefUtil.get(RefIntStream.range(0, itemCnt).mapToObj(x -> x).max(
-          RefComparator.comparing(RefUtil.wrapInterface((Function<? super Integer, ? extends Double>) dataIndex -> {
+          RefComparator.comparingDouble(RefUtil.wrapInterface(dataIndex -> {
             TensorList temp_40_0007 = input.getData();
             Tensor tensor = temp_40_0007.get(dataIndex);
             temp_40_0007.freeRef();
@@ -96,13 +96,13 @@ public class MaxMetaLayer extends LayerBase {
             RefArrays.parallelSetAll(RefUtil.addRefs(feedback),
                 RefUtil.wrapInterface(i -> new Tensor(delta.getDimensions()), delta.addRef()));
             input0Tensor.coordStream(true)
-                .forEach(RefUtil.wrapInterface((Consumer<? super Coordinate>) (inputCoord) -> {
+                .forEach(RefUtil.wrapInterface((Consumer<? super Coordinate>) inputCoord -> {
                   feedback[indicies[inputCoord.getIndex()]].add(inputCoord, delta.get(inputCoord));
                 }, delta.addRef(), RefUtil.addRefs(feedback)));
             delta.freeRef();
             @Nonnull
             TensorArray tensorArray = new TensorArray(RefUtil.addRefs(feedback));
-            RefUtil.freeRefs(feedback);
+            RefUtil.freeRef(feedback);
             input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
           }
           data.freeRef();

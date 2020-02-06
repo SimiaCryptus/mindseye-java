@@ -45,27 +45,8 @@ public abstract class ImgCropLayerTest extends LayerTestBase {
     return new ImgCropLayer(1, 1);
   }
 
-  public @SuppressWarnings("unused")
-  void _free() { super._free(); }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  ImgCropLayerTest addRef() {
-    return (ImgCropLayerTest) super.addRef();
-  }
-
   public static class Basic extends ImgCropLayerTest {
 
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

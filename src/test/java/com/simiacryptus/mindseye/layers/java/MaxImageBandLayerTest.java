@@ -41,27 +41,8 @@ public abstract class MaxImageBandLayerTest extends LayerTestBase {
     return new MaxImageBandLayer();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() { super._free(); }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  MaxImageBandLayerTest addRef() {
-    return (MaxImageBandLayerTest) super.addRef();
-  }
-
   public static class Basic extends MaxImageBandLayerTest {
 
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

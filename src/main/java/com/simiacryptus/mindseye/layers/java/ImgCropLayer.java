@@ -63,7 +63,7 @@ public class ImgCropLayer extends LayerBase {
     double fy = (inDim[1] - outDim[1]) / 2.0;
     final int paddingX = (int) (fx < 0 ? Math.ceil(fx) : Math.floor(fx));
     final int paddingY = (int) (fy < 0 ? Math.ceil(fy) : Math.floor(fy));
-    outputData.coordStream(true).forEach(RefUtil.wrapInterface((Consumer<? super Coordinate>) (c) -> {
+    outputData.coordStream(true).forEach(RefUtil.wrapInterface((Consumer<? super Coordinate>) c -> {
       int x = c.getCoords()[0] + paddingX;
       int y = c.getCoords()[1] + paddingY;
       int z = c.getCoords()[2];
@@ -95,7 +95,7 @@ public class ImgCropLayer extends LayerBase {
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     final Result input = inObj[0].addRef();
-    RefUtil.freeRefs(inObj);
+    RefUtil.freeRef(inObj);
     final TensorList batch = input.getData();
     @Nonnull final int[] inputDims = batch.getDimensions();
     assert 3 == inputDims.length;
@@ -116,7 +116,7 @@ public class ImgCropLayer extends LayerBase {
                   copy(err.addRef(), passback.addRef());
                   err.freeRef();
                   return passback;
-                }, error.addRef())).toArray(i -> new Tensor[i]));
+                }, error.addRef())).toArray(Tensor[]::new));
             input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
           }
           error.freeRef();
@@ -138,7 +138,7 @@ public class ImgCropLayer extends LayerBase {
                 outputData.addRef());
             inputData.freeRef();
             return outputData;
-          }, batch.addRef())).toArray(i -> new Tensor[i]));
+          }, batch.addRef())).toArray(Tensor[]::new));
       return new Result(data, accumulator) {
         {
           input.addRef();

@@ -20,7 +20,10 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
+import com.simiacryptus.ref.lang.MustCall;
+import com.simiacryptus.ref.lang.RefIgnore;
 import com.simiacryptus.ref.lang.RefUtil;
+import org.junit.After;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -29,10 +32,18 @@ import java.util.Random;
 
 public abstract class FullyConnectedLayerTest extends LayerTestBase {
 
-  @Nonnull
+  @Nonnull @RefIgnore
   private final FullyConnectedLayer fullyConnectedLayer;
   private final int inputs;
   private final int outputs;
+
+  @After
+  @MustCall
+  public void cleanup() {
+    super.cleanup();
+    if (null != fullyConnectedLayer)
+      fullyConnectedLayer.freeRef();
+  }
 
   protected FullyConnectedLayerTest(int inputs, int outputs) {
     FullyConnectedLayer temp_19_0001 = new FullyConnectedLayer(new int[]{inputs}, new int[]{outputs});
@@ -60,35 +71,11 @@ public abstract class FullyConnectedLayerTest extends LayerTestBase {
     return fullyConnectedLayer.addRef();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-    super._free();
-    fullyConnectedLayer.freeRef();
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  FullyConnectedLayerTest addRef() {
-    return (FullyConnectedLayerTest) super.addRef();
-  }
-
   public static class Basic extends FullyConnectedLayerTest {
     public Basic() {
       super(3, 3);
     }
 
-    public @SuppressWarnings("unused")
-    void _free() {
-      super._free();
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
   //  /**

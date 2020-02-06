@@ -52,7 +52,7 @@ public abstract class SimpleActivationLayer<T extends SimpleActivationLayer<T>> 
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     final Result inObj0 = inObj[0].addRef();
-    RefUtil.freeRefs(inObj);
+    RefUtil.freeRef(inObj);
     final TensorList indata0 = inObj0.getData();
     final int itemCnt = indata0.length();
     assert 0 < itemCnt;
@@ -62,18 +62,20 @@ public abstract class SimpleActivationLayer<T extends SimpleActivationLayer<T>> 
           .mapToObj(RefUtil.wrapInterface((IntFunction<Tensor>) dataIndex -> {
             @Nullable final Tensor input = indata0.get(dataIndex);
             @Nonnull final Tensor output = new Tensor(indata0.getDimensions());
-            @Nonnull final Tensor inputGradient = new Tensor(input.length());
+            int length = input.length();
+            @Nonnull final Tensor inputGradient = new Tensor(length);
             @Nonnull final double[] results = new double[2];
-            for (int i = 0; i < input.length(); i++) {
-              eval(input.getData()[i], results);
+            double[] inputData = input.getData();
+            for (int i = 0; i < length; i++) {
+              eval(inputData[i], results);
               inputGradient.set(i, results[1]);
               output.set(i, results[0]);
             }
-            RefUtil.set((inputGradientA), dataIndex, inputGradient);
+            RefUtil.set(inputGradientA, dataIndex, inputGradient);
             input.freeRef();
             return output;
-          }, indata0.addRef()))
-          .toArray(i -> new Tensor[i]));
+          }, indata0))
+          .toArray(Tensor[]::new));
       final boolean inObj0Alive = inObj0.isAlive();
       Result.Accumulator accumulator = new Result.Accumulator() {
         {
@@ -103,7 +105,7 @@ public abstract class SimpleActivationLayer<T extends SimpleActivationLayer<T>> 
                       if(null != tensor1) tensor1.freeRef();
                       return passback;
                     }, data, RefUtil.addRefs(inputGradientA)))
-                    .toArray(i -> new Tensor[i])));
+                    .toArray(Tensor[]::new)));
           } else {
             data.freeRef();
           }
@@ -114,7 +116,7 @@ public abstract class SimpleActivationLayer<T extends SimpleActivationLayer<T>> 
         public @SuppressWarnings("unused")
         void _free() {
           super._free();
-          RefUtil.freeRefs(inputGradientA);
+          RefUtil.freeRef(inputGradientA);
           inObj0.freeRef();
         }
       };
@@ -130,8 +132,7 @@ public abstract class SimpleActivationLayer<T extends SimpleActivationLayer<T>> 
         }
       };
     } finally {
-      RefUtil.freeRefs(inputGradientA);
-      indata0.freeRef();
+      RefUtil.freeRef(inputGradientA);
       inObj0.freeRef();
     }
   }

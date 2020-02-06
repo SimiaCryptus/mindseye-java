@@ -78,7 +78,7 @@ public class AvgMetaLayer extends LayerBase {
   public Result eval(@Nullable final Result... inObj) {
     assert inObj != null;
     final Result input = inObj[0].addRef();
-    RefUtil.freeRefs(inObj);
+    RefUtil.freeRef(inObj);
     TensorList inputData = input.getData();
     final int itemCnt = inputData.length();
     AtomicBoolean passback = new AtomicBoolean(false);
@@ -146,7 +146,7 @@ public class AvgMetaLayer extends LayerBase {
     try {
       if (null == lastResult || inputData.length() > minBatchCount) {
         @Nonnull final ToDoubleFunction<Coordinate> f = RefUtil
-            .wrapInterface((c) -> RefIntStream.range(0, itemCnt).mapToDouble(RefUtil.wrapInterface(dataIndex -> {
+            .wrapInterface(c -> RefIntStream.range(0, itemCnt).mapToDouble(RefUtil.wrapInterface(dataIndex -> {
                   Tensor tensor = inputData.get(dataIndex);
                   double temp_21_0005 = tensor.get(c);
                   tensor.freeRef();

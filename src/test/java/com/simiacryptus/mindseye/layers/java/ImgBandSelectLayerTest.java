@@ -41,27 +41,8 @@ public abstract class ImgBandSelectLayerTest extends LayerTestBase {
     return new ImgBandSelectLayer(0, 2);
   }
 
-  public @SuppressWarnings("unused")
-  void _free() { super._free(); }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  ImgBandSelectLayerTest addRef() {
-    return (ImgBandSelectLayerTest) super.addRef();
-  }
-
   public static class Basic extends ImgBandSelectLayerTest {
 
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

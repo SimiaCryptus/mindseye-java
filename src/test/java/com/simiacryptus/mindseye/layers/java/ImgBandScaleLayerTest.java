@@ -42,27 +42,8 @@ public abstract class ImgBandScaleLayerTest extends LayerTestBase {
     return temp_76_0001;
   }
 
-  public @SuppressWarnings("unused")
-  void _free() { super._free(); }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  ImgBandScaleLayerTest addRef() {
-    return (ImgBandScaleLayerTest) super.addRef();
-  }
-
   public static class Basic extends ImgBandScaleLayerTest {
 
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

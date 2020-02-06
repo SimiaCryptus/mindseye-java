@@ -48,18 +48,6 @@ public abstract class MaxMetaLayerTest extends MetaLayerTestBase {
     return new int[][]{{3}};
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-    super._free();
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  MaxMetaLayerTest addRef() {
-    return (MaxMetaLayerTest) super.addRef();
-  }
-
   @Nonnull
   @Override
   protected Layer lossLayer() {
@@ -68,18 +56,6 @@ public abstract class MaxMetaLayerTest extends MetaLayerTestBase {
 
   public static class Basic extends MaxMetaLayerTest {
 
-
-    public @SuppressWarnings("unused")
-    void _free() {
-      super._free();
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

@@ -74,7 +74,7 @@ public class ImgTileSelectLayer extends LayerBase {
     assert 3 == inDim.length;
     assert 3 == outDim.length;
     assert inDim[2] == outDim[2] : RefArrays.toString(inDim) + "; " + RefArrays.toString(outDim);
-    outputData.coordStream(true).forEach(RefUtil.wrapInterface((Consumer<? super Coordinate>) (c) -> {
+    outputData.coordStream(true).forEach(RefUtil.wrapInterface((Consumer<? super Coordinate>) c -> {
       int x = c.getCoords()[0] + posX;
       int y = c.getCoords()[1] + posY;
       int z = c.getCoords()[2];
@@ -132,7 +132,7 @@ public class ImgTileSelectLayer extends LayerBase {
         assert temp_14_0005 != null;
         TensorList temp_14_0006 = temp_14_0005.getData();
         temp_14_0005.freeRef();
-        RefUtil.set((tiles), index++, temp_14_0006.get(0));
+        RefUtil.set(tiles, index++, temp_14_0006.get(0));
         temp_14_0006.freeRef();
         tileSelectLayer.freeRef();
       }
@@ -158,7 +158,7 @@ public class ImgTileSelectLayer extends LayerBase {
       for (int col = 0; col < cols; col++) {
         int positionX = col * strideX + offsetX;
         int positionY = row * strideY + offsetY;
-        RefUtil.set((tiles), index++,
+        RefUtil.set(tiles, index++,
             new ImgTileSelectLayer(width, height, positionX, positionY,
                 offsetX < 0 || offsetY < 0));
       }
@@ -170,7 +170,7 @@ public class ImgTileSelectLayer extends LayerBase {
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     final Result input = inObj[0].addRef();
-    RefUtil.freeRefs(inObj);
+    RefUtil.freeRef(inObj);
     final TensorList batch = input.getData();
     @Nonnull final int[] inputDims = batch.getDimensions();
     assert 3 == inputDims.length;
@@ -194,7 +194,7 @@ public class ImgTileSelectLayer extends LayerBase {
                       -positionY, toroidal);
                   err.freeRef();
                   return passback;
-                }, error.addRef())).toArray(i -> new Tensor[i]));
+                }, error.addRef())).toArray(Tensor[]::new));
             input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
           }
           error.freeRef();
@@ -216,7 +216,7 @@ public class ImgTileSelectLayer extends LayerBase {
                 positionX, positionY, toroidal);
             inputData.freeRef();
             return outputData;
-          }, batch.addRef())).toArray(i -> new Tensor[i]));
+          }, batch.addRef())).toArray(Tensor[]::new));
       return new Result(data, accumulator) {
         {
           input.addRef();
@@ -241,8 +241,8 @@ public class ImgTileSelectLayer extends LayerBase {
   @Nonnull
   public int[] getViewDimensions(int[] sourceDimensions, int[] destinationDimensions, int[] offset) {
     @Nonnull final int[] viewDim = new int[3];
-    RefArrays.parallelSetAll(viewDim, i -> toroidal ? (destinationDimensions[i])
-        : (Math.min(sourceDimensions[i], destinationDimensions[i] + offset[i]) - Math.max(offset[i], 0)));
+    RefArrays.parallelSetAll(viewDim, i -> toroidal ? destinationDimensions[i]
+        : Math.min(sourceDimensions[i], destinationDimensions[i] + offset[i]) - Math.max(offset[i], 0));
     return viewDim;
   }
 

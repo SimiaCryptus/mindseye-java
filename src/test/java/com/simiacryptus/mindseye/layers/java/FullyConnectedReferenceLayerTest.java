@@ -20,6 +20,9 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
+import com.simiacryptus.ref.lang.MustCall;
+import com.simiacryptus.ref.lang.RefIgnore;
+import org.junit.After;
 
 import javax.annotation.Nonnull;
 import java.util.Random;
@@ -29,6 +32,7 @@ public abstract class FullyConnectedReferenceLayerTest extends LayerTestBase {
   private final int[] outputDims;
   private final int[] inputDims;
   @Nonnull
+  @RefIgnore
   private final FullyConnectedReferenceLayer layer;
 
   public FullyConnectedReferenceLayerTest(int[] inputDims, @Nonnull int[] outputDims) {
@@ -55,17 +59,12 @@ public abstract class FullyConnectedReferenceLayerTest extends LayerTestBase {
     return layer.addRef();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-    super._free();
-    layer.freeRef();
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  FullyConnectedReferenceLayerTest addRef() {
-    return (FullyConnectedReferenceLayerTest) super.addRef();
+  @After
+  @MustCall
+  public void cleanup() {
+    super.cleanup();
+    if (null != layer)
+      layer.freeRef();
   }
 
   public static class Basic extends FullyConnectedReferenceLayerTest {
@@ -73,17 +72,6 @@ public abstract class FullyConnectedReferenceLayerTest extends LayerTestBase {
       super(new int[]{2}, new int[]{2});
     }
 
-    public @SuppressWarnings("unused")
-    void _free() {
-      super._free();
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
   public static class Image extends FullyConnectedReferenceLayerTest {
@@ -91,17 +79,6 @@ public abstract class FullyConnectedReferenceLayerTest extends LayerTestBase {
       super(new int[]{3, 3, 3}, new int[]{2, 2, 4});
     }
 
-    public @SuppressWarnings("unused")
-    void _free() {
-      super._free();
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Image addRef() {
-      return (Image) super.addRef();
-    }
   }
 
 }

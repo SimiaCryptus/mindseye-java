@@ -32,16 +32,6 @@ public abstract class ReLuActivationLayerTest extends ActivationLayerTestBase {
     super(new ReLuActivationLayer());
   }
 
-  public @SuppressWarnings("unused")
-  void _free() { super._free(); }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  ReLuActivationLayerTest addRef() {
-    return (ReLuActivationLayerTest) super.addRef();
-  }
-
   @Nonnull
   @Override
   protected Layer lossLayer() {
@@ -50,15 +40,6 @@ public abstract class ReLuActivationLayerTest extends ActivationLayerTestBase {
 
   public static class Basic extends ReLuActivationLayerTest {
 
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
   }
 
 }

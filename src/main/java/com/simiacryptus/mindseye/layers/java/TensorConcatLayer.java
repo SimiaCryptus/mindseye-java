@@ -131,25 +131,25 @@ public class TensorConcatLayer extends LayerBase {
               RefSystem.arraycopy(tensorData, pos, dest.getData(), 0,
                   Math.min(dest.length(), tensorData.length - pos));
               pos += dest.length();
-              RefUtil.set((outputTensors2), i, dest.addRef());
+              RefUtil.set(outputTensors2, i, dest.addRef());
               dest.freeRef();
             }
             tensor.freeRef();
             splitBatches.add(RefUtil.addRefs(outputTensors2));
-            RefUtil.freeRefs(outputTensors2);
+            RefUtil.freeRef(outputTensors2);
           }
 
           data.freeRef();
           @Nonnull final Tensor[][] splitData = new Tensor[inObj.length][];
           for (int i = 0; i < splitData.length; i++) {
-            RefUtil.set((splitData), i, new Tensor[numBatches]);
+            RefUtil.set(splitData, i, new Tensor[numBatches]);
           }
           for (int i = 0; i < inObj.length; i++) {
             for (int b = 0; b < numBatches; b++) {
               Tensor[] tensors = splitBatches.get(b);
               assert tensors != null;
-              RefUtil.set((splitData[i]), b, tensors[i].addRef());
-              RefUtil.freeRefs(tensors);
+              RefUtil.set(splitData[i], b, tensors[i].addRef());
+              RefUtil.freeRef(tensors);
             }
           }
 
@@ -158,7 +158,7 @@ public class TensorConcatLayer extends LayerBase {
             TensorArray wrap = new TensorArray(RefUtil.addRefs(splitData[i]));
             inObj[i].accumulate(buffer == null ? null : buffer.addRef(), wrap.addRef());
             if (0 < wrap.currentRefCount()) {
-              RefUtil.freeRefs(splitData);
+              RefUtil.freeRef(splitData);
               RuntimeException temp_09_0007 = new RuntimeException(
                   inObj[i].getClass() + " leak: " + wrap.currentRefCount());
               wrap.freeRef();
@@ -170,13 +170,13 @@ public class TensorConcatLayer extends LayerBase {
           }
           if (null != buffer)
             buffer.freeRef();
-          RefUtil.freeRefs(splitData);
+          RefUtil.freeRef(splitData);
         }
 
         public @SuppressWarnings("unused")
         void _free() {
           super._free();
-          RefUtil.freeRefs(inObj);
+          RefUtil.freeRef(inObj);
         }
       }) {
 
@@ -194,12 +194,12 @@ public class TensorConcatLayer extends LayerBase {
         }
 
         public void _free() {
-          RefUtil.freeRefs(inObj);
+          RefUtil.freeRef(inObj);
           super._free();
         }
       };
     } finally {
-      RefUtil.freeRefs(inObj);
+      RefUtil.freeRef(inObj);
       outputTensors.freeRef();
     }
   }

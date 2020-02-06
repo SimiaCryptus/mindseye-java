@@ -66,12 +66,12 @@ public class StaticScalarLossLayer extends LayerBase {
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     if (1 != inObj.length) {
-      RefUtil.freeRefs(inObj);
+      RefUtil.freeRef(inObj);
       throw new IllegalArgumentException();
     }
     //if (inObj[0].getData().length() != 1) throw new IllegalArgumentException();
     final Result in0 = inObj[0].addRef();
-    RefUtil.freeRefs(inObj);
+    RefUtil.freeRef(inObj);
     TensorList indata = in0.getData();
     try {
       Result.Accumulator accumulator = new Result.Accumulator() {
@@ -94,7 +94,7 @@ public class StaticScalarLossLayer extends LayerBase {
                   a.freeRef();
                   return new Tensor(new double[]{deriv}, 1);
                 }, indata.addRef(), data.addRef()))
-                .toArray(i -> new Tensor[i]));
+                .toArray(Tensor[]::new));
             in0.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
           }
           data.freeRef();
@@ -115,7 +115,7 @@ public class StaticScalarLossLayer extends LayerBase {
             final double diff = Math.abs(a.get(0) - getTarget());
             a.freeRef();
             return new Tensor(new double[]{diff}, 1);
-          }, indata.addRef())).toArray(i -> new Tensor[i]));
+          }, indata.addRef())).toArray(Tensor[]::new));
       return new Result(data, accumulator) {
         {
           in0.addRef();

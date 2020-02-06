@@ -145,7 +145,7 @@ public class PhotoUnpoolingLayer extends LayerBase {
     TensorList temp_34_0006 = inObj[1].getData();
     Tensor outputDims = new Tensor(temp_34_0006.getDimensions());
     temp_34_0006.freeRef();
-    RefUtil.freeRefs(inObj);
+    RefUtil.freeRef(inObj);
     TensorArray data = new TensorArray(RefIntStream.range(0, batch.length()).parallel()
         .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
               Tensor inputData = batch.get(dataIndex);
@@ -157,7 +157,7 @@ public class PhotoUnpoolingLayer extends LayerBase {
               return temp_34_0003;
             }, outputDims.addRef(), referencebatch.addRef(),
             batch.addRef()))
-        .toArray(i -> new Tensor[i]));
+        .toArray(Tensor[]::new));
     outputDims.freeRef();
     batch.freeRef();
     try {
@@ -183,7 +183,7 @@ public class PhotoUnpoolingLayer extends LayerBase {
                   err.freeRef();
                   return temp_34_0005;
                 }, referencebatch.addRef(), error.addRef()))
-                .toArray(i -> new Tensor[i]));
+                .toArray(Tensor[]::new));
             input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
           }
           error.freeRef();

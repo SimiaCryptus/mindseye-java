@@ -66,7 +66,7 @@ public class ImgBandBiasLayer extends LayerBase {
   @Nullable
   public double[] getBias() {
     assert bias != null;
-    if (!RefArrays.stream(bias).allMatch(v -> Double.isFinite(v))) {
+    if (!RefArrays.stream(bias).allMatch(Double::isFinite)) {
       throw new IllegalStateException(RefArrays.toString(bias));
     }
     return bias;
@@ -78,7 +78,7 @@ public class ImgBandBiasLayer extends LayerBase {
     for (int i = 0; i < bias.length; i++) {
       bias[i] = f.applyAsDouble(i);
     }
-    assert RefArrays.stream(bias).allMatch(v -> Double.isFinite(v));
+    assert RefArrays.stream(bias).allMatch(Double::isFinite);
   }
 
   public void setWeightsLog(double value) {
@@ -96,7 +96,7 @@ public class ImgBandBiasLayer extends LayerBase {
 
   @Nonnull
   public double[] add(@Nonnull final double[] input) {
-    assert RefArrays.stream(input).allMatch(v -> Double.isFinite(v));
+    assert RefArrays.stream(input).allMatch(Double::isFinite);
     @Nullable final double[] bias = getBias();
     assert null != bias;
     if (input.length % bias.length != 0)
@@ -106,7 +106,7 @@ public class ImgBandBiasLayer extends LayerBase {
     for (int i = 0; i < array.length; i++) {
       array[i] = input[i] + bias[i / size];
     }
-    assert RefArrays.stream(array).allMatch(v -> Double.isFinite(v));
+    assert RefArrays.stream(array).allMatch(Double::isFinite);
     return array;
   }
 
@@ -119,7 +119,7 @@ public class ImgBandBiasLayer extends LayerBase {
   public Result eval(@Nullable final Result... inObj) {
     assert inObj != null;
     Result temp_24_0005 = eval(inObj[0].addRef());
-    RefUtil.freeRefs(inObj);
+    RefUtil.freeRef(inObj);
     return temp_24_0005;
   }
 
@@ -145,7 +145,7 @@ public class ImgBandBiasLayer extends LayerBase {
         Tensor temp_24_0002 = new Tensor(add(r.getData()), r.getDimensions());
         r.freeRef();
         return temp_24_0002;
-      }).toArray(i -> new Tensor[i])), new Result.Accumulator() {
+      }).toArray(Tensor[]::new)), new Result.Accumulator() {
         {
           input.addRef();
           imgBandBiasLayer.addRef();
@@ -167,7 +167,7 @@ public class ImgBandBiasLayer extends LayerBase {
                   array[i / size] = 0.0;
                 }
               }
-              assert RefArrays.stream(array).allMatch(v -> Double.isFinite(v));
+              assert RefArrays.stream(array).allMatch(Double::isFinite);
               assert deltaBuffer != null;
               deltaBuffer.addInPlace(array);
               RecycleBin.DOUBLES.recycle(array, array.length);
@@ -227,7 +227,7 @@ public class ImgBandBiasLayer extends LayerBase {
       bias[i] = ds[i];
     }
     assert bias != null;
-    assert RefArrays.stream(bias).allMatch(v -> Double.isFinite(v));
+    assert RefArrays.stream(bias).allMatch(Double::isFinite);
   }
 
   @Nonnull

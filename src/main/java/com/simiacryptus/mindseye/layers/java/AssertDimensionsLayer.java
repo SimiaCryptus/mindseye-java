@@ -61,11 +61,11 @@ public class AssertDimensionsLayer extends LayerBase {
   @Override
   public Result eval(@Nonnull final Result... array) {
     if (0 == array.length) {
-      RefUtil.freeRefs(array);
+      RefUtil.freeRef(array);
       throw new IllegalArgumentException(getName());
     }
     Result input = array[0].addRef();
-    RefUtil.freeRefs(array);
+    RefUtil.freeRef(array);
     TensorList temp_77_0001 = input.getData();
     if (0 == temp_77_0001.length()) {
       input.freeRef();

@@ -55,7 +55,7 @@ public class CrossDotMetaLayer extends LayerBase {
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     final Result input = inObj[0].addRef();
-    RefUtil.freeRefs(inObj);
+    RefUtil.freeRef(inObj);
     final TensorList indata = input.getData();
     final int itemCnt = indata.length();
     final int dim = Tensor.length(indata.getDimensions());
@@ -107,7 +107,7 @@ public class CrossDotMetaLayer extends LayerBase {
             deltaTensor.freeRef();
             @Nonnull
             TensorArray tensorArray = new TensorArray(RefUtil.addRefs(feedback));
-            RefUtil.freeRefs(feedback);
+            RefUtil.freeRef(feedback);
             input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
           }
           delta.freeRef();

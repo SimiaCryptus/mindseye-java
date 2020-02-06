@@ -38,7 +38,7 @@ public abstract class HyperbolicActivationLayerTest extends ActivationLayerTestB
   @Nullable
   @Override
   protected RefHashMap<Tensor[], Tensor> getReferenceIO() {
-    final RefHashMap<Tensor[], Tensor> map = RefUtil.addRef(super.getReferenceIO());
+    final RefHashMap<Tensor[], Tensor> map = super.getReferenceIO();
     assert map != null;
     RefUtil.freeRef(map.put(new Tensor[]{new Tensor(0.0)}, new Tensor(0.0)));
     return map;
@@ -64,31 +64,7 @@ public abstract class HyperbolicActivationLayerTest extends ActivationLayerTestB
     return temp_69_0001;
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-    super._free();
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  HyperbolicActivationLayerTest addRef() {
-    return (HyperbolicActivationLayerTest) super.addRef();
-  }
-
   public static class Basic extends HyperbolicActivationLayerTest {
-
-    public @SuppressWarnings("unused")
-    void _free() {
-      super._free();
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Basic addRef() {
-      return (Basic) super.addRef();
-    }
 
     @Nonnull
     @Override

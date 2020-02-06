@@ -54,18 +54,6 @@ public abstract class ProductInputsLayerTest extends LayerTestBase {
     return new ProductInputsLayer();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-    super._free();
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  ProductInputsLayerTest addRef() {
-    return (ProductInputsLayerTest) super.addRef();
-  }
-
   public static class N1Test extends ProductInputsLayerTest {
 
     @Nonnull
@@ -74,17 +62,6 @@ public abstract class ProductInputsLayerTest extends LayerTestBase {
       return new int[][]{{3}, {1}};
     }
 
-    public @SuppressWarnings("unused")
-    void _free() {
-      super._free();
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    N1Test addRef() {
-      return (N1Test) super.addRef();
-    }
   }
 
   public static class NNNTest extends ProductInputsLayerTest {
@@ -95,17 +72,6 @@ public abstract class ProductInputsLayerTest extends LayerTestBase {
       return new int[][]{{3}, {3}, {3}};
     }
 
-    public @SuppressWarnings("unused")
-    void _free() {
-      super._free();
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    NNNTest addRef() {
-      return (NNNTest) super.addRef();
-    }
   }
 
   public static class NNTest extends ProductInputsLayerTest {
@@ -116,16 +82,5 @@ public abstract class ProductInputsLayerTest extends LayerTestBase {
       return new int[][]{{3}, {3}};
     }
 
-    public @SuppressWarnings("unused")
-    void _free() {
-      super._free();
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    NNTest addRef() {
-      return (NNTest) super.addRef();
-    }
   }
 }

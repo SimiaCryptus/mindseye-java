@@ -59,7 +59,7 @@ public class ScaleMetaLayer extends LayerBase {
   public Result eval(@Nonnull final Result... inObj) {
     final Result in0 = inObj[0].addRef();
     final Result in1 = inObj[1].addRef();
-    RefUtil.freeRefs(inObj);
+    RefUtil.freeRef(inObj);
     final TensorList data0 = in0.getData();
     final TensorList data1 = in1.getData();
     final int itemCnt = data0.length();
@@ -72,7 +72,7 @@ public class ScaleMetaLayer extends LayerBase {
               .mapIndex(RefUtil.wrapInterface((v, c) -> v * data10.get(c), data10.addRef()));
           tensor.freeRef();
           return tensor1;
-        }, data10.addRef(), data0.addRef())).toArray(i -> new Tensor[i]);
+        }, data10.addRef(), data0.addRef())).toArray(Tensor[]::new);
     data0.freeRef();
     Tensor tensor0 = tensors[0].addRef();
     try {
@@ -95,7 +95,7 @@ public class ScaleMetaLayer extends LayerBase {
                   }, data10.addRef()));
                   t.freeRef();
                   return temp_56_0006;
-                }, data10.addRef())).toArray(i -> new Tensor[i]));
+                }, data10.addRef())).toArray(Tensor[]::new));
             in0.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
           }
           if (in1.isAlive()) {
@@ -114,7 +114,7 @@ public class ScaleMetaLayer extends LayerBase {
                       return i == 0 ? passback.addRef() : passback.map(v -> 0);
                     },
                     passback.addRef()))
-                .toArray(i -> new Tensor[i]));
+                .toArray(Tensor[]::new));
             passback.freeRef();
             in1.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
           }
@@ -152,7 +152,7 @@ public class ScaleMetaLayer extends LayerBase {
       };
     } finally {
       tensor0.freeRef();
-      RefUtil.freeRefs(tensors);
+      RefUtil.freeRef(tensors);
       data10.freeRef();
       in1.freeRef();
       in0.freeRef();
