@@ -20,11 +20,9 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
-import com.simiacryptus.ref.lang.RefUtil;
+import com.simiacryptus.mindseye.test.LayerTestBase;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Random;
 
 public abstract class RescaledSubnetLayerTest extends LayerTestBase {
@@ -38,10 +36,7 @@ public abstract class RescaledSubnetLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
-    SigmoidActivationLayer subnetwork = new SigmoidActivationLayer();
-    RescaledSubnetLayer temp_60_0001 = new RescaledSubnetLayer(2, subnetwork.addRef());
-    subnetwork.freeRef();
-    return temp_60_0001;
+    return new RescaledSubnetLayer(2, new SigmoidActivationLayer());
   }
 
   public static class Basic extends RescaledSubnetLayerTest {

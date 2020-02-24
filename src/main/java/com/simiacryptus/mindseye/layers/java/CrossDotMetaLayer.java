@@ -75,73 +75,11 @@ public class CrossDotMetaLayer extends LayerBase {
         results.set(new int[]{i, j}, v);
       }
     }
-    try {
-      Result.Accumulator accumulator = new Result.Accumulator() {
-        {
-          indata.addRef();
-          input.addRef();
-        }
-
-        @Override
-        public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
-          if (input.isAlive()) {
-            @Nullable final Tensor deltaTensor = delta.get(0);
-            @Nonnull final Tensor feedback[] = new Tensor[itemCnt];
-            RefArrays.parallelSetAll(RefUtil.addRefs(feedback), i -> new Tensor(dim));
-
-            for (int i = 0; i < dim; i++) {
-              for (int j = 0; j < dim; j++) {
-                if (i == j) {
-                  continue;
-                }
-                final double v = deltaTensor.get(i, j);
-                for (int k = 0; k < itemCnt; k++) {
-                  Tensor tensor = indata.get(k);
-                  @Nullable final double[] kk = tensor.getData();
-                  tensor.freeRef();
-                  feedback[k].add(i, v * kk[j]);
-                  feedback[k].add(j, v * kk[i]);
-                }
-              }
-            }
-            deltaTensor.freeRef();
-            @Nonnull
-            TensorArray tensorArray = new TensorArray(RefUtil.addRefs(feedback));
-            RefUtil.freeRef(feedback);
-            input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
-          }
-          delta.freeRef();
-          if (null != buffer)
-            buffer.freeRef();
-        }
-
-        public @SuppressWarnings("unused")
-        void _free() {
-          super._free();
-          indata.freeRef();
-          input.freeRef();
-        }
-      };
-      return new Result(new TensorArray(results.addRef()), accumulator) {
-        {
-          input.addRef();
-        }
-        @Override
-        public boolean isAlive() {
-          return input.isAlive();
-        }
-
-        @Override
-        public void _free() {
-          input.freeRef();
-          super._free();
-        }
-      };
-    } finally {
-      results.freeRef();
-      indata.freeRef();
-      input.freeRef();
-    }
+    TensorArray data = new TensorArray(results);
+    boolean alive = input.isAlive();
+    Result.Accumulator accumulator = new Accumulator(indata, itemCnt, dim, input.getAccumulator(), input.isAlive());
+    input.freeRef();
+    return new Result(data, accumulator, alive);
   }
 
   @Nonnull
@@ -166,5 +104,63 @@ public class CrossDotMetaLayer extends LayerBase {
   @SuppressWarnings("unused")
   CrossDotMetaLayer addRef() {
     return (CrossDotMetaLayer) super.addRef();
+  }
+
+  private static class Accumulator extends Result.Accumulator {
+
+    private final TensorList indata;
+    private final int itemCnt;
+    private final int dim;
+    private Result.Accumulator accumulator;
+    private boolean alive;
+
+    public Accumulator(TensorList indata, int itemCnt, int dim, Result.Accumulator accumulator, boolean alive) {
+      this.indata = indata;
+      this.itemCnt = itemCnt;
+      this.dim = dim;
+      this.accumulator = accumulator;
+      this.alive = alive;
+    }
+
+    @Override
+    public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
+      if (alive) {
+        @Nullable final Tensor deltaTensor = delta.get(0);
+        @Nonnull final Tensor feedback[] = new Tensor[itemCnt];
+        RefArrays.parallelSetAll(RefUtil.addRefs(feedback), i -> new Tensor(dim));
+
+        for (int i = 0; i < dim; i++) {
+          for (int j = 0; j < dim; j++) {
+            if (i == j) {
+              continue;
+            }
+            final double v = deltaTensor.get(i, j);
+            for (int k = 0; k < itemCnt; k++) {
+              Tensor tensor = indata.get(k);
+              @Nullable final double[] kk = tensor.getData();
+              tensor.freeRef();
+              feedback[k].add(i, v * kk[j]);
+              feedback[k].add(j, v * kk[i]);
+            }
+          }
+        }
+        deltaTensor.freeRef();
+        @Nonnull
+        TensorArray tensorArray = new TensorArray(RefUtil.addRefs(feedback));
+        RefUtil.freeRef(feedback);
+        DeltaSet<UUID> buffer1 = buffer == null ? null : buffer.addRef();
+        this.accumulator.accept(buffer1, tensorArray);
+      }
+      delta.freeRef();
+      if (null != buffer)
+        buffer.freeRef();
+    }
+
+    public @SuppressWarnings("unused")
+    void _free() {
+      super._free();
+      indata.freeRef();
+      accumulator.freeRef();
+    }
   }
 }

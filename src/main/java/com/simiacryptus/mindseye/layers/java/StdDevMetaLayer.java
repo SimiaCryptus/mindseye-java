@@ -41,31 +41,21 @@ public class StdDevMetaLayer extends PipelineNetwork {
 
   public StdDevMetaLayer(final int minBatchCount) {
     super(1);
-    AvgMetaLayer temp_70_0001 = new AvgMetaLayer();
-    temp_70_0001.setMinBatchCount(minBatchCount);
-    RefUtil.freeRef(add(temp_70_0001.addRef()));
-    temp_70_0001.freeRef();
+    AvgMetaLayer avgMetaLayer = new AvgMetaLayer();
+    avgMetaLayer.setMinBatchCount(minBatchCount);
+    RefUtil.freeRef(add(avgMetaLayer.addRef()));
     RefUtil.freeRef(add(new AvgReducerLayer()));
     InnerNode square = add(new SqActivationLayer());
     RefUtil.freeRef(add(new SqActivationLayer(), getInput(0), square.addRef()));
-    AvgMetaLayer temp_70_0002 = new AvgMetaLayer();
-    temp_70_0002.setMinBatchCount(minBatchCount);
-    RefUtil.freeRef(add(temp_70_0002.addRef()));
-    temp_70_0002.freeRef();
+    RefUtil.freeRef(add(avgMetaLayer));
     RefUtil.freeRef(add(new AvgReducerLayer()));
-    LinearActivationLayer temp_70_0003 = new LinearActivationLayer();
-    temp_70_0003.setScale(-1);
-    LinearActivationLayer temp_70_0005 = temp_70_0003.addRef();
-    temp_70_0005.freeze();
-    RefUtil.freeRef(
-        add(new SumInputsLayer(), getHead(), add(temp_70_0005.addRef(), square.addRef())));
-    temp_70_0005.freeRef();
-    temp_70_0003.freeRef();
-    square.freeRef();
-    NthPowerActivationLayer temp_70_0004 = new NthPowerActivationLayer();
-    temp_70_0004.setPower(0.5);
-    RefUtil.freeRef(add(temp_70_0004.addRef()));
-    temp_70_0004.freeRef();
+    LinearActivationLayer negative = new LinearActivationLayer();
+    negative.setScale(-1);
+    negative.freeze();
+    RefUtil.freeRef(add(new SumInputsLayer(), getHead(), add(negative, square)));
+    NthPowerActivationLayer sqrt = new NthPowerActivationLayer();
+    sqrt.setPower(0.5);
+    RefUtil.freeRef(add(sqrt));
   }
 
   protected StdDevMetaLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -79,7 +69,9 @@ public class StdDevMetaLayer extends PipelineNetwork {
   }
 
   public @SuppressWarnings("unused")
-  void _free() { super._free(); }
+  void _free() {
+    super._free();
+  }
 
   @Nonnull
   public @Override

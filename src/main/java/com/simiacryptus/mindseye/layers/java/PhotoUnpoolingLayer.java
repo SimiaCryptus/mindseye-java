@@ -23,6 +23,7 @@ import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.*;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -140,83 +141,30 @@ public class PhotoUnpoolingLayer extends LayerBase {
     final Result input = inObj[0].addRef();
     final TensorList batch = input.getData();
     final TensorList referencebatch = inObj[1].getData();
+    RefUtil.freeRef(inObj);
     @Nonnull final int[] inputDims = batch.getDimensions();
     assert 3 == inputDims.length;
-    TensorList temp_34_0006 = inObj[1].getData();
-    Tensor outputDims = new Tensor(temp_34_0006.getDimensions());
-    temp_34_0006.freeRef();
-    RefUtil.freeRef(inObj);
-    TensorArray data = new TensorArray(RefIntStream.range(0, batch.length()).parallel()
+    TensorArray data = fwd(batch, referencebatch.addRef());
+    boolean alive = input.isAlive();
+    Result.Accumulator accumulator = new Accumulator(referencebatch, inputDims, input.getAccumulator(), input.isAlive());
+    input.freeRef();
+    return new Result(data, accumulator, alive || !isFrozen());
+  }
+
+  @NotNull
+  private TensorArray fwd(TensorList batch, TensorList referencebatch) {
+    Tensor outputDims = new Tensor(referencebatch.getDimensions());
+    return new TensorArray(RefIntStream.range(0, batch.length()).parallel()
         .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-              Tensor inputData = batch.get(dataIndex);
-              Tensor referenceData = referencebatch.get(dataIndex);
-              Tensor temp_34_0003 = PhotoUnpoolingLayer.copyExpand(inputData.addRef(),
-                  outputDims.copy(), referenceData.addRef());
-              referenceData.freeRef();
-              inputData.freeRef();
-              return temp_34_0003;
-            }, outputDims.addRef(), referencebatch.addRef(),
-            batch.addRef()))
+          Tensor inputData = batch.get(dataIndex);
+          Tensor referenceData = referencebatch.get(dataIndex);
+          Tensor temp_34_0003 = PhotoUnpoolingLayer.copyExpand(inputData.addRef(),
+              outputDims.copy(), referenceData.addRef());
+          referenceData.freeRef();
+          inputData.freeRef();
+          return temp_34_0003;
+        }, outputDims, referencebatch, batch))
         .toArray(Tensor[]::new));
-    outputDims.freeRef();
-    batch.freeRef();
-    try {
-      Result.Accumulator accumulator = new Result.Accumulator() {
-        {
-          input.addRef();
-          referencebatch.addRef();
-        }
-
-        @Override
-        public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList error) {
-          //assert error.stream().flatMapToDouble(x-> Arrays.stream(x.getData())).allMatch(v->Double.isFinite(v));
-          if (input.isAlive()) {
-            @Nonnull
-            TensorArray tensorArray = new TensorArray(RefIntStream.range(0, error.length()).parallel()
-                .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-                  @Nonnull final Tensor passback = new Tensor(inputDims);
-                  @Nullable final Tensor err = error.get(dataIndex);
-                  Tensor referenceData = referencebatch.get(dataIndex);
-                  Tensor temp_34_0005 = PhotoUnpoolingLayer.copyCondense(err.addRef(),
-                      passback, referenceData.addRef());
-                  referenceData.freeRef();
-                  err.freeRef();
-                  return temp_34_0005;
-                }, referencebatch.addRef(), error.addRef()))
-                .toArray(Tensor[]::new));
-            input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
-          }
-          error.freeRef();
-          if (null != buffer)
-            buffer.freeRef();
-        }
-
-        public @SuppressWarnings("unused")
-        void _free() {
-          input.freeRef();
-          referencebatch.freeRef();
-          super._free();
-        }
-      };
-      return new Result(data, accumulator) {
-        {
-          input.addRef();
-        }
-        @Override
-        public boolean isAlive() {
-          return input.isAlive() || !isFrozen();
-        }
-
-        @Override
-        public void _free() {
-          input.freeRef();
-          super._free();
-        }
-      };
-    } finally {
-      referencebatch.freeRef();
-      input.freeRef();
-    }
   }
 
   @Nonnull
@@ -232,7 +180,9 @@ public class PhotoUnpoolingLayer extends LayerBase {
   }
 
   public @SuppressWarnings("unused")
-  void _free() { super._free(); }
+  void _free() {
+    super._free();
+  }
 
   @Nonnull
   public @Override
@@ -241,4 +191,50 @@ public class PhotoUnpoolingLayer extends LayerBase {
     return (PhotoUnpoolingLayer) super.addRef();
   }
 
+  private static class Accumulator extends Result.Accumulator {
+
+    private final TensorList referencebatch;
+    private final int[] inputDims;
+    private Result.Accumulator accumulator;
+    private boolean alive;
+
+    public Accumulator(TensorList referencebatch, int[] inputDims, Result.Accumulator accumulator, boolean alive) {
+      this.referencebatch = referencebatch;
+      this.inputDims = inputDims;
+      this.accumulator = accumulator;
+      this.alive = alive;
+    }
+
+    @Override
+    public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList error) {
+      //assert error.stream().flatMapToDouble(x-> Arrays.stream(x.getData())).allMatch(v->Double.isFinite(v));
+      if (alive) {
+        @Nonnull
+        TensorArray tensorArray = new TensorArray(RefIntStream.range(0, error.length()).parallel()
+            .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+              @Nonnull final Tensor passback = new Tensor(inputDims);
+              @Nullable final Tensor err = error.get(dataIndex);
+              Tensor referenceData = referencebatch.get(dataIndex);
+              Tensor temp_34_0005 = PhotoUnpoolingLayer.copyCondense(err.addRef(),
+                  passback, referenceData.addRef());
+              referenceData.freeRef();
+              err.freeRef();
+              return temp_34_0005;
+            }, referencebatch.addRef(), error.addRef()))
+            .toArray(Tensor[]::new));
+        DeltaSet<UUID> buffer1 = buffer == null ? null : buffer.addRef();
+        this.accumulator.accept(buffer1, tensorArray);
+      }
+      error.freeRef();
+      if (null != buffer)
+        buffer.freeRef();
+    }
+
+    public @SuppressWarnings("unused")
+    void _free() {
+      accumulator.freeRef();
+      referencebatch.freeRef();
+      super._free();
+    }
+  }
 }

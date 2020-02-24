@@ -132,73 +132,23 @@ public class ImgReshapeLayer extends LayerBase {
     assert expand || 0 == inputDims[1] % kernelSizeY : inputDims[1] + " % " + kernelSizeY;
     assert !expand || 0 == inputDims[2] % (kernelSizeX * kernelSizeY);
     //assert input.getData().stream().flatMapToDouble(x-> Arrays.stream(x.getData())).allMatch(v->Double.isFinite(v));
+    TensorArray data = fwd(batch, inputDims);
+    boolean alive = input.isAlive();
+    Result.Accumulator accumulator = new Accumulator(expand, inputDims, input.getAccumulator(), input.isAlive());
+    input.freeRef();
+    return new Result(data, accumulator, alive || !isFrozen());
+  }
+
+  @NotNull
+  private TensorArray fwd(TensorList batch, int[] inputDims) {
     Tensor outputDims = getOutputDims(inputDims);
-    TensorArray data = new TensorArray(RefIntStream.range(0, batch.length()).parallel()
+    return new TensorArray(RefIntStream.range(0, batch.length())
+        //.parallel()
         .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
           Tensor inputData = batch.get(dataIndex);
-          Tensor temp_43_0002 = expand
-              ? ImgReshapeLayer.copyExpand(inputData.addRef(), outputDims.copy())
-              : ImgReshapeLayer.copyCondense(inputData.addRef(), outputDims.copy());
-          inputData.freeRef();
-          return temp_43_0002;
-        }, outputDims, batch.addRef()))
-        .toArray(Tensor[]::new));
-    batch.freeRef();
-    try {
-      Result.Accumulator accumulator = new Result.Accumulator() {
-        {
-          input.addRef();
-        }
-
-        @Override
-        public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList error) {
-          //assert error.stream().flatMapToDouble(x-> Arrays.stream(x.getData())).allMatch(v->Double.isFinite(v));
-          if (input.isAlive()) {
-            @Nonnull
-            TensorArray tensorArray = new TensorArray(RefIntStream.range(0, error.length()).parallel()
-                .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-                  @Nonnull final Tensor passback = new Tensor(inputDims);
-                  @Nullable final Tensor err = error.get(dataIndex);
-                  Tensor temp_43_0004 = expand
-                      ? ImgReshapeLayer.copyCondense(err.addRef(),
-                      passback)
-                      : ImgReshapeLayer.copyExpand(err.addRef(),
-                      passback.addRef());
-                  err.freeRef();
-                  return temp_43_0004;
-                }, error.addRef())).toArray(Tensor[]::new));
-            input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
-          }
-          error.freeRef();
-          if (null != buffer)
-            buffer.freeRef();
-        }
-
-        public @SuppressWarnings("unused")
-        void _free() {
-          super._free();
-          input.freeRef();
-        }
-      };
-      return new Result(data, accumulator) {
-        {
-          input.addRef();
-        }
-
-        @Override
-        public boolean isAlive() {
-          return input.isAlive() || !isFrozen();
-        }
-
-        @Override
-        public void _free() {
-          input.freeRef();
-          super._free();
-        }
-      };
-    } finally {
-      input.freeRef();
-    }
+          if (expand) return ImgReshapeLayer.copyExpand(inputData, outputDims.copy());
+          else return ImgReshapeLayer.copyCondense(inputData, outputDims.copy());
+        }, outputDims, batch)).toArray(Tensor[]::new));
   }
 
   @NotNull
@@ -240,4 +190,42 @@ public class ImgReshapeLayer extends LayerBase {
     return (ImgReshapeLayer) super.addRef();
   }
 
+  private static class Accumulator extends Result.Accumulator {
+
+    private final int[] inputDims;
+    private boolean expand;
+    private Result.Accumulator accumulator;
+    private boolean alive;
+
+    public Accumulator(boolean expand, int[] inputDims, Result.Accumulator accumulator, boolean alive) {
+      this.inputDims = inputDims;
+      this.expand = expand;
+      this.accumulator = accumulator;
+      this.alive = alive;
+    }
+
+    @Override
+    public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList error) {
+      //assert error.stream().flatMapToDouble(x-> Arrays.stream(x.getData())).allMatch(v->Double.isFinite(v));
+      if (alive) {
+        this.accumulator.accept(buffer, new TensorArray(RefIntStream.range(0, error.length()).parallel()
+            .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+              @Nonnull final Tensor passback = new Tensor(inputDims);
+              @Nullable final Tensor err = error.get(dataIndex);
+              if (expand) return ImgReshapeLayer.copyCondense(err, passback);
+              else return ImgReshapeLayer.copyExpand(err, passback);
+            }, error)).toArray(Tensor[]::new)));
+      } else {
+        error.freeRef();
+        if (null != buffer)
+          buffer.freeRef();
+      }
+    }
+
+    public @SuppressWarnings("unused")
+    void _free() {
+      super._free();
+      accumulator.freeRef();
+    }
+  }
 }

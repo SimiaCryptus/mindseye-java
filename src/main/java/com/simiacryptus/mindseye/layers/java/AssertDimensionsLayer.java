@@ -66,16 +66,14 @@ public class AssertDimensionsLayer extends LayerBase {
     }
     Result input = array[0].addRef();
     RefUtil.freeRef(array);
-    TensorList temp_77_0001 = input.getData();
-    if (0 == temp_77_0001.length()) {
+    TensorList inputData = input.getData();
+    if (0 == inputData.length()) {
       input.freeRef();
-      temp_77_0001.freeRef();
+      inputData.freeRef();
       throw new IllegalArgumentException(getName());
     }
-    temp_77_0001.freeRef();
-    TensorList temp_77_0002 = input.getData();
-    @Nonnull final int[] inputDims = temp_77_0002.getDimensions();
-    temp_77_0002.freeRef();
+    @Nonnull final int[] inputDims = inputData.getDimensions();
+    inputData.freeRef();
     if (Tensor.length(inputDims) != Tensor.length(dims)) {
       input.freeRef();
       throw new IllegalArgumentException(

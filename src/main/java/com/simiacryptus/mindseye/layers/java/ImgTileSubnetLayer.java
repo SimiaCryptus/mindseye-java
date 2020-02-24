@@ -24,7 +24,6 @@ import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.mindseye.layers.WrapperLayer;
 import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.RefArrayList;
-import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefList;
 
 import javax.annotation.Nonnull;
@@ -82,16 +81,14 @@ public class ImgTileSubnetLayer extends WrapperLayer {
     if (cols == 1 && rows == 1) {
       input.freeRef();
       inputData.freeRef();
-      Layer temp_12_0006 = getInner();
-      assert temp_12_0006 != null;
-      Result temp_12_0005 = temp_12_0006.eval(RefUtil.addRefs(inObj));
-      temp_12_0006.freeRef();
-      RefUtil.freeRef(inObj);
-      return temp_12_0005;
+      return inner.eval(inObj);
     }
     RefUtil.freeRef(inObj);
     Result[] results = new Result[rows * cols];
-    TensorList[] passback = new TensorList[rows * cols];
+    RefArrayList<TensorList> passback = new RefArrayList<TensorList>(cols * rows);
+    for (int i = 0; i < cols * rows; i++) {
+      passback.add(null);
+    }
     int index = 0;
     AtomicInteger passbacks = new AtomicInteger(0);
     for (int row = 0; row < rows; row++) {
@@ -103,72 +100,21 @@ public class ImgTileSubnetLayer extends WrapperLayer {
         assert positionX < inputDims[0];
         assert positionY < inputDims[1];
         final int finalIndex = index;
+        Result.Accumulator accumulator = new TileAccumulator(passback.addRef(), finalIndex, passbacks, rows, cols, input.getAccumulator());
         ImgTileSelectLayer tileSelectLayer = new ImgTileSelectLayer(width, height, positionX, positionY);
-        Result selectedTile = tileSelectLayer.eval(new Result(inputData.addRef(), new Result.Accumulator() {
-          {
-            input.addRef();
-            RefUtil.addRefs(passback);
-          }
-
-          @Override
-          public void accept(@Nullable DeltaSet<UUID> ctx, @Nullable TensorList delta) {
-            RefUtil.set(passback, finalIndex, delta);
-            if (passbacks.incrementAndGet() == rows * cols) {
-              passbacks.set(0);
-              ImgTileAssemblyLayer imgTileAssemblyLayer = new ImgTileAssemblyLayer(cols, rows);
-              Result temp_12_0007 = imgTileAssemblyLayer.eval(RefArrays.stream(RefUtil.addRefs(passback)).map(t -> {
-                Result temp_12_0004 = new Result(t == null ? null : t.addRef(), new Result.Accumulator() {
-                  @Override
-                  public void accept(@Nullable DeltaSet<UUID> c2, @Nullable TensorList d2) {
-                    if (null != d2)
-                      d2.freeRef();
-                    if (null != c2)
-                      c2.freeRef();
-                  }
-
-                  public @SuppressWarnings("unused")
-                  void _free() {
-                    super._free();
-                  }
-                });
-                if (null != t)
-                  t.freeRef();
-                return temp_12_0004;
-              }).<Result>toArray(Result[]::new));
-              TensorList reassembled = temp_12_0007.getData();
-              temp_12_0007.freeRef();
-              imgTileAssemblyLayer.freeRef();
-              input.accumulate(ctx == null ? null : ctx.addRef(), reassembled.addRef());
-              reassembled.freeRef();
-            }
-            if (null != ctx)
-              ctx.freeRef();
-          }
-
-          public @SuppressWarnings("unused")
-          void _free() {
-            super._free();
-            input.freeRef();
-            RefUtil.freeRef(passback);
-          }
-        }));
+        TensorList selectedTile = Result.getData(tileSelectLayer.eval(new Result(inputData.addRef())));
         tileSelectLayer.freeRef();
-        Layer temp_12_0008 = getInner();
-        assert temp_12_0008 != null;
-        RefUtil.set(results, index, temp_12_0008.eval(selectedTile.addRef()));
-        temp_12_0008.freeRef();
-        selectedTile.freeRef();
+        RefUtil.set(results, index, inner.eval(new Result(selectedTile, accumulator)));
         index = index + 1;
       }
     }
-    RefUtil.freeRef(passback);
+    passback.freeRef();
     inputData.freeRef();
     input.freeRef();
     ImgTileAssemblyLayer imgTileAssemblyLayer = new ImgTileAssemblyLayer(cols, rows);
-    Result temp_12_0003 = imgTileAssemblyLayer.eval(RefUtil.addRefs(results));
+    Result assembledResult = imgTileAssemblyLayer.eval(results);
     imgTileAssemblyLayer.freeRef();
-    RefUtil.freeRef(results);
-    return temp_12_0003;
+    return assembledResult;
   }
 
   @Nonnull
@@ -200,4 +146,51 @@ public class ImgTileSubnetLayer extends WrapperLayer {
     return (ImgTileSubnetLayer) super.addRef();
   }
 
+  private static class TileAccumulator extends Result.Accumulator {
+
+    private final RefArrayList<TensorList> passback;
+    private final int finalIndex;
+    private final AtomicInteger passbacks;
+    private final int rows;
+    private final int cols;
+    private Result.Accumulator accumulator;
+
+    public TileAccumulator(RefArrayList<TensorList> passback, int finalIndex, AtomicInteger passbacks, int rows, int cols, Result.Accumulator accumulator) {
+      this.passback = passback;
+      this.finalIndex = finalIndex;
+      this.passbacks = passbacks;
+      this.rows = rows;
+      this.cols = cols;
+      this.accumulator = accumulator;
+    }
+
+    @Override
+    public void accept(@Nullable DeltaSet<UUID> ctx, @Nullable TensorList delta) {
+      //Result.getData(tileSelectLayer.eval(new Result(delta)));
+      RefUtil.freeRef(passback.set(finalIndex, delta));
+      if (passbacks.incrementAndGet() == rows * cols) {
+        passbacks.set(0);
+        ImgTileAssemblyLayer imgTileAssemblyLayer = new ImgTileAssemblyLayer(cols, rows);
+        TensorList reassembled = Result.getData(imgTileAssemblyLayer.eval(passback.stream().map(t -> {
+          return new Result(t);
+        }).<Result>toArray(Result[]::new)));
+        imgTileAssemblyLayer.freeRef();
+        try {
+          this.accumulator.accept(ctx, reassembled);
+        } finally {
+          this.accumulator.freeRef();
+        }
+      } else {
+        if (null != ctx)
+          ctx.freeRef();
+      }
+    }
+
+    public @SuppressWarnings("unused")
+    void _free() {
+      super._free();
+      accumulator.freeRef();
+      RefUtil.freeRef(passback);
+    }
+  }
 }

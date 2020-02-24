@@ -33,7 +33,6 @@ import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
-import java.util.function.ToDoubleFunction;
 
 @SuppressWarnings("serial")
 public class SumMetaLayer extends LayerBase {
@@ -49,12 +48,9 @@ public class SumMetaLayer extends LayerBase {
 
   protected SumMetaLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> resources) {
     super(json);
-    Tensor temp_13_0001 = Tensor.fromJson(json.get("lastResult"), resources);
     if (null != lastResult)
       lastResult.freeRef();
-    lastResult = temp_13_0001 == null ? null : temp_13_0001.addRef();
-    if (null != temp_13_0001)
-      temp_13_0001.freeRef();
+    lastResult = Tensor.fromJson(json.get("lastResult"), resources);
     minBatches = json.get("minBatches").getAsInt();
   }
 
@@ -84,75 +80,25 @@ public class SumMetaLayer extends LayerBase {
     TensorList inputData = input.getData();
     final int itemCnt = inputData.length();
     if (null == lastResult || minBatches < itemCnt) {
-      @Nonnull final ToDoubleFunction<Coordinate> f = RefUtil
+      Tensor data0 = inputData.get(0);
+      Tensor mapCoords = data0.mapCoords(RefUtil
           .wrapInterface(c -> RefIntStream.range(0, itemCnt).mapToDouble(RefUtil.wrapInterface(dataIndex -> {
             Tensor tensor = inputData.get(dataIndex);
             double temp_13_0004 = tensor.get(c);
             tensor.freeRef();
             return temp_13_0004;
-          }, inputData.addRef())).sum(), inputData.addRef());
-      Tensor temp_13_0005 = inputData.get(0);
-      Tensor temp_13_0002 = temp_13_0005.mapCoords(f);
-      temp_13_0005.freeRef();
+          }, inputData.addRef())).sum(), inputData.addRef()));
+      data0.freeRef();
       if (null != lastResult)
         lastResult.freeRef();
-      lastResult = temp_13_0002.addRef();
-      temp_13_0002.freeRef();
+      lastResult = mapCoords;
     }
     inputData.freeRef();
-    try {
-      Result.Accumulator accumulator = new Result.Accumulator() {
-        {
-          input.addRef();
-        }
-
-        @Override
-        public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList data) {
-          if (input.isAlive()) {
-            @Nullable final Tensor delta = data.get(0);
-            @Nonnull final Tensor feedback[] = new Tensor[itemCnt];
-            RefArrays.parallelSetAll(RefUtil.addRefs(feedback),
-                RefUtil.wrapInterface(i -> new Tensor(delta.getDimensions()), delta.addRef()));
-            delta.coordStream(false).forEach(RefUtil.wrapInterface((Consumer<? super Coordinate>) inputCoord -> {
-              for (int inputItem = 0; inputItem < itemCnt; inputItem++) {
-                feedback[inputItem].add(inputCoord, delta.get(inputCoord));
-              }
-            }, RefUtil.addRefs(feedback), delta.addRef()));
-            delta.freeRef();
-            @Nonnull
-            TensorArray tensorArray = new TensorArray(RefUtil.addRefs(feedback));
-            RefUtil.freeRef(feedback);
-            input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
-          }
-          data.freeRef();
-          if (null != buffer)
-            buffer.freeRef();
-        }
-
-        public @SuppressWarnings("unused")
-        void _free() {
-          super._free();
-          input.freeRef();
-        }
-      };
-      return new Result(new TensorArray(lastResult == null ? null : lastResult.addRef()), accumulator) {
-        {
-          input.addRef();
-        }
-        @Override
-        public boolean isAlive() {
-          return input.isAlive();
-        }
-
-        @Override
-        public void _free() {
-          input.freeRef();
-          super._free();
-        }
-      };
-    } finally {
-      input.freeRef();
-    }
+    boolean alive = input.isAlive();
+    Result.Accumulator accumulator = new Accumulator(itemCnt, input.getAccumulator(), alive);
+    TensorArray data = new TensorArray(lastResult == null ? null : lastResult.addRef());
+    input.freeRef();
+    return new Result(data, accumulator, alive);
   }
 
   @Nonnull
@@ -184,5 +130,48 @@ public class SumMetaLayer extends LayerBase {
   @SuppressWarnings("unused")
   SumMetaLayer addRef() {
     return (SumMetaLayer) super.addRef();
+  }
+
+  private static class Accumulator extends Result.Accumulator {
+
+    private final int itemCnt;
+    private Result.Accumulator accumulator;
+    private boolean alive;
+
+    public Accumulator(int itemCnt, Result.Accumulator accumulator, boolean alive) {
+      this.itemCnt = itemCnt;
+      this.accumulator = accumulator;
+      this.alive = alive;
+    }
+
+    @Override
+    public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList data) {
+      if (alive) {
+        @Nullable final Tensor delta = data.get(0);
+        @Nonnull final Tensor feedback[] = new Tensor[itemCnt];
+        RefArrays.parallelSetAll(RefUtil.addRefs(feedback),
+            RefUtil.wrapInterface(i -> new Tensor(delta.getDimensions()), delta.addRef()));
+
+        delta.coordStream(false).forEach(RefUtil.wrapInterface((Consumer<? super Coordinate>) inputCoord -> {
+          for (int inputItem = 0; inputItem < itemCnt; inputItem++) {
+            feedback[inputItem].add(inputCoord, delta.get(inputCoord));
+          }
+        }, RefUtil.addRefs(feedback), delta));
+        @Nonnull
+        TensorArray tensorArray = new TensorArray(feedback);
+        DeltaSet<UUID> buffer1 = buffer == null ? null : buffer.addRef();
+
+        this.accumulator.accept(buffer1, tensorArray);
+      }
+      data.freeRef();
+      if (null != buffer)
+        buffer.freeRef();
+    }
+
+    public @SuppressWarnings("unused")
+    void _free() {
+      super._free();
+      accumulator.freeRef();
+    }
   }
 }

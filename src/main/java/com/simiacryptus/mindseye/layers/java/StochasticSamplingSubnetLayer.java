@@ -55,12 +55,7 @@ public class StochasticSamplingSubnetLayer extends LayerBase implements Stochast
   public StochasticSamplingSubnetLayer(@Nullable final Layer subnetwork, final int samples) {
     super();
     this.samples = samples;
-    Layer temp_22_0001 = subnetwork == null ? null : subnetwork.addRef();
-    this.subnetwork = temp_22_0001 == null ? null : temp_22_0001.addRef();
-    if (null != temp_22_0001)
-      temp_22_0001.freeRef();
-    if (null != subnetwork)
-      subnetwork.freeRef();
+    this.subnetwork = subnetwork;
   }
 
   protected StochasticSamplingSubnetLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -68,17 +63,19 @@ public class StochasticSamplingSubnetLayer extends LayerBase implements Stochast
     samples = json.getAsJsonPrimitive("samples").getAsInt();
     seed = json.getAsJsonPrimitive("seed").getAsLong();
     JsonObject subnetwork = json.getAsJsonObject("subnetwork");
-    Layer temp_22_0008 = Layer.fromJson(subnetwork, rs);
-    Layer temp_22_0002 = temp_22_0008.addRef();
-    temp_22_0008.freeRef();
-    this.subnetwork = temp_22_0002 == null ? null : temp_22_0002.addRef();
-    if (null != temp_22_0002)
-      temp_22_0002.freeRef();
+    this.subnetwork = Layer.fromJson(subnetwork, rs);
   }
 
   public long[] getSeeds() {
     Random random = new Random(seed);
     return RefIntStream.range(0, this.samples).mapToLong(i -> random.nextLong()).toArray();
+  }
+
+  @Nonnull
+  @Override
+  public void setFrozen(final boolean frozen) {
+    assert subnetwork != null;
+    subnetwork.setFrozen(frozen);
   }
 
   @Nonnull
@@ -95,13 +92,13 @@ public class StochasticSamplingSubnetLayer extends LayerBase implements Stochast
             .mapToObj(RefUtil.wrapInterface((IntFunction<? extends DAGNode>) gateNetwork::getInput,
                 gateNetwork.addRef()))
             .toArray(DAGNode[]::new)));
-    LinearActivationLayer temp_22_0007 = new LinearActivationLayer();
-    temp_22_0007.setScale(1.0 / samples.length);
-    temp_22_0007.freeze();
-    RefUtil.freeRef(gateNetwork.add(temp_22_0007));
-    Result temp_22_0003 = gateNetwork.eval(samples);
+    LinearActivationLayer scale = new LinearActivationLayer();
+    scale.setScale(1.0 / samples.length);
+    scale.freeze();
+    RefUtil.freeRef(gateNetwork.add(scale));
+    Result result = gateNetwork.eval(samples);
     gateNetwork.freeRef();
-    return temp_22_0003;
+    return result;
   }
 
   @Nullable
@@ -153,13 +150,6 @@ public class StochasticSamplingSubnetLayer extends LayerBase implements Stochast
   @Override
   public RefList<double[]> state() {
     return new RefArrayList<>();
-  }
-
-  @Nonnull
-  @Override
-  public void setFrozen(final boolean frozen) {
-    assert subnetwork != null;
-    subnetwork.setFrozen(frozen);
   }
 
   @Override

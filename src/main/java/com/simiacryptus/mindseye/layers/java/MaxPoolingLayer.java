@@ -29,6 +29,7 @@ import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefList;
 import com.simiacryptus.util.JsonUtil;
 import com.simiacryptus.util.Util;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,7 +75,6 @@ public class MaxPoolingLayer extends LayerBase {
       return (int) Math.ceil(p.inputDims[i] * 1.0 / p.kernelDims[i]);
     }).toArray();
     @Nonnull final Tensor output = new Tensor(newDims);
-
     RefList<Tuple2<Integer, int[]>> temp_53_0001 = output.coordStream(true)
         .map(RefUtil.wrapInterface((Function<? super Coordinate, ? extends Tuple2<Integer, int[]>>) o -> {
           Tensor tensor = new Tensor(p.kernelDims);
@@ -103,37 +103,23 @@ public class MaxPoolingLayer extends LayerBase {
 
     final Result in = inObj[0].addRef();
     RefUtil.freeRef(inObj);
-    TensorList temp_53_0005 = in.getData();
-    temp_53_0005.length();
+    final TensorList inData = in.getData();
+    @Nonnull final int[] inputDims = inData.getDimensions();
+    int length = inData.length();
+    TensorArray data = fwd(inputDims, length);
+    boolean alive = in.isAlive();
+    int[][] gradientMap = getGradientMap(in.addRef(), inData, inputDims, length, data.addRef());
+    Result.Accumulator accumulator = new Accumulator(inputDims, gradientMap, in.getAccumulator(), in.isAlive());
+    in.freeRef();
+    return new Result(data, accumulator, alive);
+  }
 
-    temp_53_0005.freeRef();
-    TensorList temp_53_0006 = in.getData();
-    @Nonnull final int[] inputDims = temp_53_0006.getDimensions();
-    temp_53_0006.freeRef();
+  private int[][] getGradientMap(Result in, TensorList inData, int[] inputDims, int length, TensorArray data) {
     final RefList<Tuple2<Integer, int[]>> regions = MaxPoolingLayer.calcRegionsCache
-        .apply(new MaxPoolingLayer.CalcRegionsParameter(inputDims, kernelDims));
-    TensorList temp_53_0007 = in.getData();
-    final Tensor[] outputA = RefIntStream.range(0, temp_53_0007.length()).mapToObj(dataIndex -> {
-      final int[] newDims = RefIntStream.range(0, inputDims.length).map(i -> {
-        return (int) Math.ceil(inputDims[i] * 1.0 / kernelDims[i]);
-      }).toArray();
-      return new Tensor(newDims);
-    }).toArray(Tensor[]::new);
-    temp_53_0007.freeRef();
-    RefArrays.stream(RefUtil.addRefs(outputA)).mapToInt(x -> {
-      int temp_53_0004 = x.length();
-      x.freeRef();
-      return temp_53_0004;
-    }).sum();
-    TensorList temp_53_0008 = in.getData();
-    @Nonnull final int[][] gradientMapA = new int[temp_53_0008.length()][];
-    temp_53_0008.freeRef();
-    TensorList temp_53_0009 = in.getData();
-    RefIntStream.range(0, temp_53_0009.length()).forEach(RefUtil.wrapInterface(dataIndex -> {
-      TensorList temp_53_0010 = in.getData();
-      @Nullable final Tensor input = temp_53_0010.get(dataIndex);
-      temp_53_0010.freeRef();
-      final Tensor output = outputA[dataIndex].addRef();
+        .apply(new CalcRegionsParameter(inputDims, kernelDims));
+    return RefIntStream.range(0, length).mapToObj(RefUtil.wrapInterface(dataIndex -> {
+      @Nullable final Tensor input = inData.get(dataIndex);
+      final Tensor output = ((TensorList) data).get(dataIndex);
       @Nonnull final IntToDoubleFunction keyExtractor = RefUtil.wrapInterface(input::get,
           input.addRef());
       @Nonnull final int[] gradientMap = new int[input.length()];
@@ -151,70 +137,18 @@ public class MaxPoolingLayer extends LayerBase {
         }
         gradientMap[from] = toMax;
         output.set(from, input.get(toMax));
-      }, output.addRef(), input.addRef()));
-      output.freeRef();
-      input.freeRef();
-      gradientMapA[dataIndex] = gradientMap;
-    }, in.addRef(), RefUtil.addRefs(outputA), regions == null ? null : regions.addRef()));
-    temp_53_0009.freeRef();
-    if (null != regions)
-      regions.freeRef();
-    try {
-      Result.Accumulator accumulator = new Result.Accumulator() {
-        {
-          in.addRef();
-        }
+      }, output, input, keyExtractor));
+      return gradientMap;
+    }, in, data, regions, inData)).toArray(l->new int[l][]);
+  }
 
-        @Override
-        public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList data) {
-          if (in.isAlive()) {
-            TensorList temp_53_0011 = in.getData();
-            @Nonnull
-            TensorArray tensorArray = new TensorArray(RefIntStream.range(0, temp_53_0011.length()).parallel()
-                .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-                  @Nonnull final Tensor backSignal = new Tensor(inputDims);
-                  final int[] ints = gradientMapA[dataIndex];
-                  @Nullable final Tensor datum = data.get(dataIndex);
-                  for (int i = 0; i < datum.length(); i++) {
-                    backSignal.add(ints[i], datum.get(i));
-                  }
-                  datum.freeRef();
-                  return backSignal;
-                }, data.addRef())).toArray(Tensor[]::new));
-            temp_53_0011.freeRef();
-            in.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
-          }
-          data.freeRef();
-          if (null != buffer)
-            buffer.freeRef();
-        }
-
-        public @SuppressWarnings("unused")
-        void _free() {
-          super._free();
-          in.freeRef();
-        }
-      };
-      return new Result(new TensorArray(RefUtil.addRefs(outputA)), accumulator) {
-        {
-          in.addRef();
-        }
-
-        @Override
-        public boolean isAlive() {
-          return in.isAlive();
-        }
-
-        @Override
-        public void _free() {
-          in.freeRef();
-          super._free();
-        }
-      };
-    } finally {
-      RefUtil.freeRef(outputA);
-      in.freeRef();
-    }
+  @NotNull
+  private TensorArray fwd(int[] inputDims, int length) {
+    return new TensorArray(RefIntStream.range(0, length).mapToObj(dataIndex -> {
+        return new Tensor(RefIntStream.range(0, inputDims.length).map(i -> {
+          return (int) Math.ceil(inputDims[i] * 1.0 / kernelDims[i]);
+        }).toArray());
+      }).toArray(Tensor[]::new));
   }
 
   @Nonnull
@@ -277,6 +211,54 @@ public class MaxPoolingLayer extends LayerBase {
       result = prime * result + RefArrays.hashCode(inputDims);
       result = prime * result + RefArrays.hashCode(kernelDims);
       return result;
+    }
+  }
+
+  private static class Accumulator extends Result.Accumulator {
+
+    private final int[] inputDims;
+    private final int[][] gradientMapA;
+    private Result.Accumulator accumulator;
+    private boolean alive;
+
+    public Accumulator(int[] inputDims, int[][] gradientMapA, Result.Accumulator accumulator, boolean alive) {
+      this.inputDims = inputDims;
+      this.gradientMapA = gradientMapA;
+      this.accumulator = accumulator;
+      this.alive = alive;
+    }
+
+    @Override
+    public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList data) {
+      if (alive) {
+        @Nonnull
+        TensorArray tensorArray = new TensorArray(RefIntStream.range(0, data.length()).parallel()
+            .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+              @Nonnull final Tensor backSignal = new Tensor(inputDims);
+              final int[] ints = gradientMapA[dataIndex];
+              @Nullable final Tensor datum = data.get(dataIndex);
+              for (int i = 0; i < datum.length(); i++) {
+                backSignal.add(ints[i], datum.get(i));
+              }
+              datum.freeRef();
+              return backSignal;
+            }, data)).toArray(Tensor[]::new));
+        try {
+          this.accumulator.accept(buffer, tensorArray);
+        } finally {
+          this.accumulator.freeRef();
+        }
+      } else {
+        if (null != buffer)
+          buffer.freeRef();
+        data.freeRef();
+      }
+    }
+
+    public @SuppressWarnings("unused")
+    void _free() {
+      super._free();
+      accumulator.freeRef();
     }
   }
 }

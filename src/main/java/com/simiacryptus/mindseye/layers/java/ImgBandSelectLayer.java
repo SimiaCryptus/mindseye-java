@@ -27,6 +27,7 @@ import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.RefArrayList;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefList;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -68,73 +69,25 @@ public class ImgBandSelectLayer extends LayerBase {
     final TensorList batch = input.getData();
     @Nonnull final int[] inputDims = batch.getDimensions();
     assert 3 == inputDims.length;
+    @Nonnull TensorArray wrap = fwd(batch, inputDims);
+    boolean alive = input.isAlive();
+    Result.Accumulator accumulator = new Accumulator(bands, inputDims, input.getAccumulator(), input.isAlive());
+    input.freeRef();
+    return new Result(wrap, accumulator, alive || !isFrozen());
+  }
+
+  @NotNull
+  private TensorArray fwd(TensorList batch, int[] inputDims) {
     @Nonnull final Tensor outputDims = new Tensor(inputDims[0], inputDims[1], bands.length);
-    @Nonnull
-    TensorArray wrap = new TensorArray(RefIntStream.range(0, batch.length()).parallel().mapToObj(RefUtil
-        .wrapInterface((IntFunction<? extends Tensor>) dataIndex -> outputDims.mapCoords(RefUtil.wrapInterface(c -> {
-              int[] coords = c.getCoords();
-              @Nullable
-              Tensor tensor = batch.get(dataIndex);
-              double temp_45_0002 = tensor.get(coords[0], coords[1], bands[coords[2]]);
-              tensor.freeRef();
-              return temp_45_0002;
-            }, batch.addRef())), outputDims,
-            batch.addRef()))
+    return new TensorArray(RefIntStream.range(0, batch.length()).parallel().mapToObj(RefUtil
+        .wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+          Tensor tensor = batch.get(dataIndex);
+          return outputDims.mapCoords(RefUtil.wrapInterface(c -> {
+            int[] coords = c.getCoords();
+            return tensor.get(coords[0], coords[1], bands[coords[2]]);
+          }, batch.addRef(), tensor));
+        }, outputDims, batch))
         .toArray(Tensor[]::new));
-    batch.freeRef();
-    try {
-      Result.Accumulator accumulator = new Result.Accumulator() {
-        {
-          input.addRef();
-        }
-
-        @Override
-        public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList error) {
-          if (input.isAlive()) {
-            @Nonnull
-            TensorArray tensorArray = new TensorArray(RefIntStream.range(0, error.length()).parallel()
-                .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-                  @Nonnull final Tensor passback = new Tensor(inputDims);
-                  @Nullable final Tensor err = error.get(dataIndex);
-                  err.coordStream(false).forEach(RefUtil.wrapInterface((Consumer<? super Coordinate>) c -> {
-                    int[] coords = c.getCoords();
-                    passback.set(coords[0], coords[1], bands[coords[2]], err.get(c));
-                  }, passback.addRef(), err.addRef()));
-                  err.freeRef();
-                  return passback;
-                }, error.addRef())).toArray(Tensor[]::new));
-            input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
-          }
-          error.freeRef();
-          if (null != buffer)
-            buffer.freeRef();
-        }
-
-        public @SuppressWarnings("unused")
-        void _free() {
-          super._free();
-          input.freeRef();
-        }
-      };
-      return new Result(wrap, accumulator) {
-        {
-          input.addRef();
-        }
-
-        @Override
-        public boolean isAlive() {
-          return input.isAlive() || !isFrozen();
-        }
-
-        @Override
-        public void _free() {
-          input.freeRef();
-          super._free();
-        }
-      };
-    } finally {
-      input.freeRef();
-    }
   }
 
   @Nonnull
@@ -167,4 +120,50 @@ public class ImgBandSelectLayer extends LayerBase {
     return (ImgBandSelectLayer) super.addRef();
   }
 
+  private static class Accumulator extends Result.Accumulator {
+
+    private final int[] inputDims;
+    private int[] bands;
+    private Result.Accumulator accumulator;
+    private boolean alive;
+
+    public Accumulator(int[] bands, int[] inputDims, Result.Accumulator accumulator, boolean alive) {
+      this.inputDims = inputDims;
+      this.bands = bands;
+      this.accumulator = accumulator;
+      this.alive = alive;
+    }
+
+    @Override
+    public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList error) {
+      if (alive) {
+        @Nonnull
+        TensorArray tensorArray = new TensorArray(RefIntStream.range(0, error.length()).parallel()
+            .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+              @Nonnull final Tensor passback = new Tensor(inputDims);
+              @Nullable final Tensor err = error.get(dataIndex);
+              err.coordStream(false).forEach(RefUtil.wrapInterface((Consumer<? super Coordinate>) c -> {
+                int[] coords = c.getCoords();
+                passback.set(coords[0], coords[1], bands[coords[2]], err.get(c));
+              }, passback.addRef(), err));
+              return passback;
+            }, error)).toArray(Tensor[]::new));
+        try {
+          this.accumulator.accept(buffer, tensorArray);
+        } finally {
+          this.accumulator.freeRef();
+        }
+      } else {
+        error.freeRef();
+        if (null != buffer)
+          buffer.freeRef();
+      }
+    }
+
+    public @SuppressWarnings("unused")
+    void _free() {
+      super._free();
+      accumulator.freeRef();
+    }
+  }
 }

@@ -21,10 +21,12 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
+import com.simiacryptus.ref.lang.RefIgnore;
 import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefList;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -125,102 +127,46 @@ public final class NthPowerActivationLayer extends LayerBase {
   @Nonnull
   @Override
   public Result eval(@Nonnull final Result... inObj) {
-    TensorList temp_07_0004 = inObj[0].getData();
-    final int itemCnt = temp_07_0004.length();
-    temp_07_0004.freeRef();
+    final Result in0 = inObj[0].addRef();
+    RefUtil.freeRef(inObj);
+    TensorList inData = in0.getData();
+    final int itemCnt = inData.length();
     assert 0 < itemCnt;
     @Nonnull final Tensor inputGradientA[] = new Tensor[itemCnt];
-    try {
-      return new Result(new TensorArray(RefIntStream.range(0, itemCnt).parallel()
-          .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-            TensorList temp_07_0005 = inObj[0].getData();
-            @Nullable final Tensor input = temp_07_0005.get(dataIndex);
-            temp_07_0005.freeRef();
-            TensorList temp_07_0006 = inObj[0].getData();
-            @Nonnull final Tensor output = new Tensor(temp_07_0006.getDimensions());
-            temp_07_0006.freeRef();
-            @Nonnull final Tensor gradient = new Tensor(input.length());
-            @Nullable final double[] inputData = input.getData();
-            @Nullable final double[] gradientData = gradient.getData();
-            @Nullable final double[] outputData = output.getData();
-            RefUtil.set(inputGradientA, dataIndex, gradient);
-            if (power == 2) {
-              NthPowerActivationLayer.square(input.addRef(), inputData, gradientData,
-                  outputData);
-            } else if (power == 0.5) {
-              NthPowerActivationLayer.squareRoot(input.addRef(), inputData, gradientData,
-                  outputData);
-            } else if (power == 0.0) {
-              NthPowerActivationLayer.unity(input.addRef(), inputData, gradientData,
-                  outputData);
-            } else {
-              NthPowerActivationLayer.nthPower(power, input.addRef(), inputData, gradientData,
-                  outputData);
-            }
-            input.freeRef();
-            return output;
-          }, RefUtil.addRefs(inputGradientA), RefUtil.addRefs(inObj))).toArray(Tensor[]::new)),
-          new Result.Accumulator() {
-            {
-              RefUtil.addRefs(inObj);
-              RefUtil.addRefs(inputGradientA);
-            }
+    TensorArray data = fwd(inData, itemCnt, inputGradientA);
+    boolean alive = 0.0 != power && in0.isAlive();
+    Result.Accumulator accumulator = new Accumulator(inputGradientA, itemCnt, in0.getAccumulator(), in0.isAlive());
+    in0.freeRef();
+    return new Result(data, accumulator, alive);
+  }
 
-            @Override
-            public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList data) {
-              if (inObj[0].isAlive()) {
-                @Nonnull
-                TensorArray tensorArray = new TensorArray(RefIntStream.range(0, itemCnt).parallel()
-                    .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-                      @Nonnull final Tensor passback = new Tensor(data.getDimensions());
-                      @Nullable final Tensor tensor = data.get(dataIndex);
-                      @Nullable
-                      double[] tensorData = tensor.getData();
-                      tensor.freeRef();
-                      @Nullable final double[] gradientData = inputGradientA[dataIndex].getData();
-                      RefIntStream.range(0, passback.length()).forEach(RefUtil.wrapInterface(i -> {
-                        final double v = gradientData[i];
-                        if (Double.isFinite(v)) {
-                          passback.set(i, tensorData[i] * v);
-                        }
-                      }, passback.addRef()));
-                      return passback;
-                    }, RefUtil.addRefs(inputGradientA), data.addRef()))
-                    .toArray(Tensor[]::new));
-                inObj[0].accumulate(buffer == null ? null : buffer.addRef(),
-                    tensorArray);
+  @NotNull
+  private TensorArray fwd(TensorList inData, int itemCnt, @RefIgnore Tensor[] inputGradientA) {
+    return new TensorArray(RefIntStream.range(0, itemCnt).parallel()
+            .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+              @Nullable final Tensor input = inData.get(dataIndex);
+              @Nonnull final Tensor output = new Tensor(inData.getDimensions());
+              @Nonnull final Tensor gradient = new Tensor(input.length());
+              @Nullable final double[] inputData = input.getData();
+              @Nullable final double[] gradientData = gradient.getData();
+              @Nullable final double[] outputData = output.getData();
+              RefUtil.set(inputGradientA, dataIndex, gradient);
+              if (power == 2) {
+                NthPowerActivationLayer.square(input.addRef(), inputData, gradientData,
+                    outputData);
+              } else if (power == 0.5) {
+                NthPowerActivationLayer.squareRoot(input.addRef(), inputData, gradientData,
+                    outputData);
+              } else if (power == 0.0) {
+                NthPowerActivationLayer.unity(input.addRef(), inputData, gradientData,
+                    outputData);
+              } else {
+                NthPowerActivationLayer.nthPower(power, input.addRef(), inputData, gradientData,
+                    outputData);
               }
-              data.freeRef();
-              if (null != buffer)
-                buffer.freeRef();
-            }
-
-            public @SuppressWarnings("unused")
-            void _free() {
-              super._free();
-              RefUtil.freeRef(inObj);
-              RefUtil.freeRef(inputGradientA);
-            }
-          }) {
-
-        {
-          RefUtil.addRefs(inObj);
-        }
-
-        @Override
-        public boolean isAlive() {
-          return 0.0 != power && inObj[0].isAlive();
-        }
-
-        public void _free() {
-          RefUtil.freeRef(inObj);
-          super._free();
-        }
-      };
-    } finally {
-      RefUtil.freeRef(inObj);
-      RefUtil.freeRef(inputGradientA);
-    }
+              input.freeRef();
+              return output;
+            }, inData)).toArray(Tensor[]::new));
   }
 
   @Nonnull
@@ -238,7 +184,9 @@ public final class NthPowerActivationLayer extends LayerBase {
   }
 
   public @SuppressWarnings("unused")
-  void _free() { super._free(); }
+  void _free() {
+    super._free();
+  }
 
   @Nonnull
   public @Override
@@ -247,4 +195,51 @@ public final class NthPowerActivationLayer extends LayerBase {
     return (NthPowerActivationLayer) super.addRef();
   }
 
+  private static class Accumulator extends Result.Accumulator {
+
+    private final Tensor[] inputGradientA;
+    private final int itemCnt;
+    private Result.Accumulator accumulator;
+    private boolean alive;
+
+    public Accumulator(Tensor[] inputGradientA, int itemCnt, Result.Accumulator accumulator, boolean alive) {
+      this.inputGradientA = inputGradientA;
+      this.itemCnt = itemCnt;
+      this.accumulator = accumulator;
+      this.alive = alive;
+    }
+
+    @Override
+    public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList data) {
+      if (alive) {
+        this.accumulator.accept(buffer, new TensorArray(RefIntStream.range(0, itemCnt).parallel()
+              .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+                @Nonnull final Tensor passback = new Tensor(data.getDimensions());
+                @Nullable final Tensor tensor = data.get(dataIndex);
+                @Nullable
+                double[] tensorData = tensor.getData();
+                @Nullable final double[] gradientData = inputGradientA[dataIndex].getData();
+                RefIntStream.range(0, passback.length()).forEach(RefUtil.wrapInterface(i -> {
+                  final double v = gradientData[i];
+                  if (Double.isFinite(v)) {
+                    passback.set(i, tensorData[i] * v);
+                  }
+                }, passback.addRef()));
+                tensor.freeRef();
+                return passback;
+              }, data)).toArray(Tensor[]::new)));
+      } else {
+        data.freeRef();
+        if (null != buffer)
+          buffer.freeRef();
+      }
+    }
+
+    public @SuppressWarnings("unused")
+    void _free() {
+      super._free();
+      accumulator.freeRef();
+      RefUtil.freeRef(inputGradientA);
+    }
+  }
 }

@@ -26,6 +26,7 @@ import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefList;
 import com.simiacryptus.util.Util;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,20 +47,14 @@ public class ReLuActivationLayer extends LayerBase {
 
   public ReLuActivationLayer() {
     super();
-    Tensor temp_23_0001 = new Tensor(1);
-    weights = temp_23_0001.addRef();
-    temp_23_0001.freeRef();
+    weights = new Tensor(1);
     weights.set(0, 1.);
-
     this.frozen = true;
   }
 
   protected ReLuActivationLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> resources) {
     super(json);
-    Tensor temp_23_0002 = Tensor.fromJson(json.get("weights"), resources);
-    weights = temp_23_0002 == null ? null : temp_23_0002.addRef();
-    if (null != temp_23_0002)
-      temp_23_0002.freeRef();
+    weights = Tensor.fromJson(json.get("weights"), resources);
   }
 
   protected double getMobility() {
@@ -94,118 +89,31 @@ public class ReLuActivationLayer extends LayerBase {
     final Result input = inObj[0].addRef();
     RefUtil.freeRef(inObj);
     final TensorList indata = input.getData();
+    final boolean inputAlive = input.isAlive();
+    Result.Accumulator accumulator = new Accumulator(indata.addRef(), inputAlive, this.weights.addRef(), this.getId(), this.isFrozen(), input.getAccumulator());
+    input.freeRef();
+    TensorArray data = fwd(indata);
+    return new Result(data, accumulator, inputAlive || !isFrozen());
+  }
+
+  @NotNull
+  private TensorArray fwd(TensorList indata) {
     final int itemCnt = indata.length();
-    final ReLuActivationLayer reLuActivationLayer = ReLuActivationLayer.this.addRef();
-    try {
-      Result.Accumulator accumulator = new Result.Accumulator() {
-        {
-          reLuActivationLayer.addRef();
-          indata.addRef();
-          weights.addRef();
-          input.addRef();
-        }
-
-        @Override
-        public void accept(@Nonnull DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
-          if (!ReLuActivationLayer.this.isFrozen()) {
-            RefIntStream.range(0, delta.length()).parallel().forEach(RefUtil.wrapInterface(dataIndex -> {
-                  @Nullable
-                  Tensor deltaTensor = delta.get(dataIndex);
-                  @Nullable final double[] deltaData = deltaTensor.getData();
-                  deltaTensor.freeRef();
-                  @Nullable
-                  Tensor inputTensor = indata.get(dataIndex);
-                  @Nullable final double[] inputData = inputTensor.getData();
-                  inputTensor.freeRef();
-                  assert weights != null;
-                  @Nonnull final Tensor weightDelta = new Tensor(weights.getDimensions());
-                  @Nullable final double[] weightDeltaData = weightDelta.getData();
-                  weightDelta.freeRef();
-                  for (int i = 0; i < deltaData.length; i++) {
-                    weightDeltaData[0] += inputData[i] < 0 ? 0 : deltaData[i] * inputData[i];
-                  }
-                  Delta<UUID> temp_23_0006 = buffer.get(reLuActivationLayer.getId(), weights.getData());
-                  assert temp_23_0006 != null;
-                  temp_23_0006.addInPlace(weightDeltaData);
-                  temp_23_0006.freeRef();
-                }, buffer.addRef(), delta.addRef(),
-                indata.addRef(),
-                reLuActivationLayer.addRef()));
-          }
-          if (input.isAlive()) {
-            assert weights != null;
-            final double weight = weights.getData()[0];
-            @Nonnull
-            TensorArray tensorArray = new TensorArray(RefIntStream.range(0, delta.length()).parallel()
-                .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-                  @Nullable
-                  Tensor deltaTensor = delta.get(dataIndex);
-                  @Nullable final double[] deltaData = deltaTensor.getData();
-                  deltaTensor.freeRef();
-                  @Nullable
-                  Tensor inTensor = indata.get(dataIndex);
-                  @Nullable final double[] inputData = inTensor.getData();
-                  @Nonnull final int[] dims = inTensor.getDimensions();
-                  inTensor.freeRef();
-                  @Nonnull final Tensor passback = new Tensor(dims);
-                  for (int i = 0; i < passback.length(); i++) {
-                    final double value = inputData[i] < 0 ? 0 : deltaData[i] * weight;
-                    passback.set(i, value);
-                  }
-                  return passback;
-                }, delta.addRef(), indata.addRef()))
-                .toArray(Tensor[]::new));
-            input.accumulate(buffer.addRef(), tensorArray);
-          }
-          delta.freeRef();
-          buffer.freeRef();
-        }
-
-        public @SuppressWarnings("unused")
-        void _free() {
-          super._free();
-          reLuActivationLayer.freeRef();
-          indata.freeRef();
-          weights.freeRef();
-          input.freeRef();
-        }
-      };
-      TensorArray data = new TensorArray(RefIntStream.range(0, itemCnt).parallel()
-          .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-            @Nullable
-            Tensor tensorElement = indata.get(dataIndex);
-            assert weights != null;
-            @Nonnull final Tensor tensor = tensorElement.multiply(weights.get(0));
-            tensorElement.freeRef();
-            @Nullable final double[] outputData = tensor.getData();
-            for (int i = 0; i < outputData.length; i++) {
-              if (outputData[i] < 0) {
-                outputData[i] = 0;
-              }
+    return new TensorArray(RefIntStream.range(0, itemCnt).parallel()
+        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+          @Nullable
+          Tensor tensorElement = indata.get(dataIndex);
+          assert weights != null;
+          @Nonnull final Tensor tensor = tensorElement.multiply(weights.get(0));
+          tensorElement.freeRef();
+          @Nullable final double[] outputData = tensor.getData();
+          for (int i = 0; i < outputData.length; i++) {
+            if (outputData[i] < 0) {
+              outputData[i] = 0;
             }
-            return tensor;
-          }, indata.addRef())).toArray(Tensor[]::new));
-      return new Result(data, accumulator) {
-        {
-          input.freeRef();
-        }
-
-        @Override
-        public boolean isAlive() {
-          return input.isAlive() || !isFrozen();
-        }
-
-        @Override
-        public void _free() {
-          input.freeRef();
-          super._free();
-        }
-      };
-    } finally {
-      reLuActivationLayer.freeRef();
-      indata.freeRef();
-      input.freeRef();
-    }
+          }
+          return tensor;
+        }, indata)).toArray(Tensor[]::new));
   }
 
   @Nonnull
@@ -237,4 +145,86 @@ public class ReLuActivationLayer extends LayerBase {
     return (ReLuActivationLayer) super.addRef();
   }
 
+  private static class Accumulator extends Result.Accumulator {
+
+    private final TensorList indata;
+    private final boolean inputAlive;
+    private Tensor weights;
+    private UUID id;
+    private boolean frozen;
+    private Result.Accumulator accumulator;
+
+    public Accumulator(TensorList indata, boolean inputAlive, Tensor weights, UUID id, boolean frozen, Result.Accumulator accumulator) {
+      this.indata = indata;
+      this.inputAlive = inputAlive;
+      this.weights = weights;
+      this.id = id;
+      this.frozen = frozen;
+      this.accumulator = accumulator;
+    }
+
+    @Override
+    public void accept(@Nonnull DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
+      if (!frozen) {
+        RefIntStream.range(0, delta.length()).parallel().forEach(RefUtil.wrapInterface(dataIndex -> {
+              @Nullable
+              Tensor deltaTensor = delta.get(dataIndex);
+              @Nullable final double[] deltaData = deltaTensor.getData();
+              deltaTensor.freeRef();
+              @Nullable
+              Tensor inputTensor = indata.get(dataIndex);
+              @Nullable final double[] inputData = inputTensor.getData();
+              inputTensor.freeRef();
+              assert this.weights != null;
+              @Nonnull final Tensor weightDelta = new Tensor(this.weights.getDimensions());
+              @Nullable final double[] weightDeltaData = weightDelta.getData();
+              weightDelta.freeRef();
+              for (int i = 0; i < deltaData.length; i++) {
+                weightDeltaData[0] += inputData[i] < 0 ? 0 : deltaData[i] * inputData[i];
+              }
+              Delta<UUID> temp_23_0006 = buffer.get(id, this.weights.getData());
+              assert temp_23_0006 != null;
+              temp_23_0006.addInPlace(weightDeltaData);
+              temp_23_0006.freeRef();
+            }, buffer.addRef(), delta.addRef(),
+            indata.addRef(),
+            weights.addRef()));
+      }
+      if (inputAlive) {
+        assert this.weights != null;
+        final double weight = this.weights.getData()[0];
+        @Nonnull
+        TensorArray tensorArray = new TensorArray(RefIntStream.range(0, delta.length()).parallel()
+            .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+              @Nullable
+              Tensor deltaTensor = delta.get(dataIndex);
+              @Nullable final double[] deltaData = deltaTensor.getData();
+              deltaTensor.freeRef();
+              @Nullable
+              Tensor inTensor = indata.get(dataIndex);
+              @Nullable final double[] inputData = inTensor.getData();
+              @Nonnull final int[] dims = inTensor.getDimensions();
+              inTensor.freeRef();
+              @Nonnull final Tensor passback = new Tensor(dims);
+              for (int i = 0; i < passback.length(); i++) {
+                final double value = inputData[i] < 0 ? 0 : deltaData[i] * weight;
+                passback.set(i, value);
+              }
+              return passback;
+            }, delta, indata.addRef())).toArray(Tensor[]::new));
+        this.accumulator.accept(buffer, tensorArray);
+      } else {
+        delta.freeRef();
+        buffer.freeRef();
+      }
+    }
+
+    public @SuppressWarnings("unused")
+    void _free() {
+      super._free();
+      indata.freeRef();
+      weights.freeRef();
+      accumulator.freeRef();
+    }
+  }
 }

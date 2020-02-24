@@ -46,7 +46,7 @@ public abstract class HyperbolicActivationLayerTest extends ActivationLayerTestB
 
   @Override
   public ComponentTest<TrainingTester.ComponentResult> getTrainingTester() {
-    TrainingTester temp_69_0002 = new TrainingTester() {
+    TrainingTester trainingTester = new TrainingTester() {
 
       public @SuppressWarnings("unused")
       void _free() {
@@ -58,10 +58,8 @@ public abstract class HyperbolicActivationLayerTest extends ActivationLayerTestB
         return HyperbolicActivationLayerTest.this.lossLayer();
       }
     };
-    temp_69_0002.setRandomizationMode(TrainingTester.RandomizationMode.Random);
-    TrainingTester temp_69_0001 = temp_69_0002.addRef();
-    temp_69_0002.freeRef();
-    return temp_69_0001;
+    trainingTester.setRandomizationMode(TrainingTester.RandomizationMode.Random);
+    return trainingTester;
   }
 
   public static class Basic extends HyperbolicActivationLayerTest {

@@ -39,10 +39,9 @@ public class NormalizationMetaLayer extends PipelineNetwork {
     RefUtil.freeRef(add(new SqActivationLayer()));
     RefUtil.freeRef(add(new AvgReducerLayer()));
     RefUtil.freeRef(add(new AvgMetaLayer()));
-    NthPowerActivationLayer temp_74_0001 = new NthPowerActivationLayer();
-    temp_74_0001.setPower(-0.5);
-    RefUtil.freeRef(add(temp_74_0001.addRef()));
-    temp_74_0001.freeRef();
+    NthPowerActivationLayer nthPowerActivationLayer = new NthPowerActivationLayer();
+    nthPowerActivationLayer.setPower(-0.5);
+    RefUtil.freeRef(add(nthPowerActivationLayer));
     RefUtil.freeRef(add(new ProductInputsLayer(), getHead(), getInput(0)));
   }
 
@@ -57,7 +56,9 @@ public class NormalizationMetaLayer extends PipelineNetwork {
   }
 
   public @SuppressWarnings("unused")
-  void _free() { super._free(); }
+  void _free() {
+    super._free();
+  }
 
   @Nonnull
   public @Override

@@ -20,30 +20,22 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
+import com.simiacryptus.mindseye.test.LayerTestBase;
 import com.simiacryptus.ref.lang.MustCall;
 import com.simiacryptus.ref.lang.RefIgnore;
-import com.simiacryptus.ref.lang.RefUtil;
 import org.junit.After;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Random;
 
 public abstract class FullyConnectedLayerTest extends LayerTestBase {
 
-  @Nonnull @RefIgnore
+  @Nonnull
+  @RefIgnore
   private final FullyConnectedLayer fullyConnectedLayer;
   private final int inputs;
   private final int outputs;
-
-  @After
-  @MustCall
-  public void cleanup() {
-    super.cleanup();
-    if (null != fullyConnectedLayer)
-      fullyConnectedLayer.freeRef();
-  }
 
   protected FullyConnectedLayerTest(int inputs, int outputs) {
     FullyConnectedLayer temp_19_0001 = new FullyConnectedLayer(new int[]{inputs}, new int[]{outputs});
@@ -57,6 +49,14 @@ public abstract class FullyConnectedLayerTest extends LayerTestBase {
   @Override
   public Class<? extends Layer> getReferenceLayerClass() {
     return FullyConnectedReferenceLayer.class;
+  }
+
+  @After
+  @MustCall
+  public void cleanup() {
+    super.cleanup();
+    if (null != fullyConnectedLayer)
+      fullyConnectedLayer.freeRef();
   }
 
   @Nonnull

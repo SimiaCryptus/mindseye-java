@@ -27,8 +27,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Map;
 
 @SuppressWarnings("serial")
@@ -39,10 +37,7 @@ public class AutoEntropyLayer extends PipelineNetwork {
 
   public AutoEntropyLayer() {
     super(1);
-    DAGNode input = getInput(0);
-    RefUtil.freeRef(
-        add(new EntropyLossLayer(), input.addRef(), input.addRef()));
-    input.freeRef();
+    RefUtil.freeRef(add(new EntropyLossLayer(), getInput(0), getInput(0)));
   }
 
   protected AutoEntropyLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {

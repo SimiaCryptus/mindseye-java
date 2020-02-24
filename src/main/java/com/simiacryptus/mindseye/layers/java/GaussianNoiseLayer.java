@@ -21,10 +21,12 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
+import com.simiacryptus.mindseye.layers.StochasticComponent;
 import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefList;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,9 +36,10 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 import java.util.function.IntFunction;
+import java.util.function.IntToDoubleFunction;
 
 @SuppressWarnings("serial")
-public class GaussianNoiseLayer extends LayerBase {
+public class GaussianNoiseLayer extends LayerBase implements StochasticComponent {
 
   public static final ThreadLocal<Random> random = new ThreadLocal<Random>() {
     @Nonnull
@@ -58,6 +61,7 @@ public class GaussianNoiseLayer extends LayerBase {
   protected GaussianNoiseLayer(@Nonnull final JsonObject json) {
     super(json);
     value = json.get("value").getAsDouble();
+    seed = json.get("seed").getAsLong();
   }
 
   public double getValue() {
@@ -81,73 +85,28 @@ public class GaussianNoiseLayer extends LayerBase {
     final Result in0 = inObj[0].addRef();
     RefUtil.freeRef(inObj);
     final TensorList inputData = in0.getData();
-    final int itemCnt = inputData.length();
-    final Tensor[] outputA = RefIntStream.range(0, itemCnt)
-        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-          @Nonnull final Random random = new Random(seed);
-          @Nullable final Tensor input = inputData.get(dataIndex);
-          Tensor temp_59_0002 = input.map(x -> {
-            return x + random.nextGaussian() * getValue();
-          });
-          input.freeRef();
-          return temp_59_0002;
-        }, inputData.addRef())).toArray(Tensor[]::new);
     int[] dimensions = inputData.getDimensions();
-    inputData.freeRef();
-    try {
-      Result.Accumulator accumulator = new Result.Accumulator() {
-        {
-          in0.addRef();
-        }
+    TensorArray data = fwd(inputData);
+    boolean alive = in0.isAlive();
+    Result.Accumulator accumulator = new Accumulator(dimensions, in0.getAccumulator(), in0.isAlive());
+    in0.freeRef();
+    return new Result(data, accumulator, alive || !isFrozen());
+  }
 
-        @Override
-        public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
-          if (in0.isAlive()) {
-            @Nonnull
-            TensorArray tensorArray = new TensorArray(RefIntStream.range(0, delta.length())
-                .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-                  Tensor tensor = delta.get(dataIndex);
-                  @Nullable final double[] deltaData = tensor.getData();
-                  tensor.freeRef();
-                  @Nonnull final Tensor passback = new Tensor(dimensions);
-                  for (int i = 0; i < passback.length(); i++) {
-                    passback.set(i, deltaData[i]);
-                  }
-                  return passback;
-                }, delta.addRef())).toArray(Tensor[]::new));
-            in0.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
+  @NotNull
+  private TensorArray fwd(TensorList inputData) {
+    final int itemCnt = inputData.length();
+    return new TensorArray(RefIntStream.range(0, itemCnt)
+        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+          @Nonnull final Random random1 = new Random(seed);
+          Tensor tensor = inputData.get(dataIndex);
+          @Nullable final Tensor input = tensor.copy();
+          tensor.freeRef();
+          for (int i = 0; i < input.length(); i++) {
+            input.set(i, input.get(i) + random1.nextGaussian() * getValue());
           }
-          delta.freeRef();
-          if (null != buffer)
-            buffer.freeRef();
-        }
-
-        public @SuppressWarnings("unused")
-        void _free() {
-          super._free();
-          in0.freeRef();
-        }
-      };
-      return new Result(new TensorArray(RefUtil.addRefs(outputA)), accumulator) {
-        {
-          in0.addRef();
-        }
-
-        @Override
-        public boolean isAlive() {
-          return in0.isAlive() || !isFrozen();
-        }
-
-        @Override
-        public void _free() {
-          in0.freeRef();
-          super._free();
-        }
-      };
-    } finally {
-      RefUtil.freeRef(outputA);
-      in0.freeRef();
-    }
+          return input;
+        }, inputData)).toArray(Tensor[]::new));
   }
 
   @Nonnull
@@ -155,11 +114,12 @@ public class GaussianNoiseLayer extends LayerBase {
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
     @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("value", value);
+    json.addProperty("seed", seed);
     return json;
   }
 
   public void shuffle() {
-    seed = GaussianNoiseLayer.random.get().nextLong();
+    shuffle(GaussianNoiseLayer.random.get().nextLong());
   }
 
   @Nonnull
@@ -168,8 +128,20 @@ public class GaussianNoiseLayer extends LayerBase {
     return RefArrays.asList();
   }
 
+  @Override
+  public void shuffle(long seed) {
+    this.seed = seed;
+  }
+
+  @Override
+  public void clearNoise() {
+    this.seed = 0;
+  }
+
   public @SuppressWarnings("unused")
-  void _free() { super._free(); }
+  void _free() {
+    super._free();
+  }
 
   @Nonnull
   public @Override
@@ -178,4 +150,45 @@ public class GaussianNoiseLayer extends LayerBase {
     return (GaussianNoiseLayer) super.addRef();
   }
 
+  private static class Accumulator extends Result.Accumulator {
+
+    private final int[] dimensions;
+    private Result.Accumulator accumulator;
+    private boolean alive;
+
+    public Accumulator(int[] dimensions, Result.Accumulator accumulator, boolean alive) {
+      this.dimensions = dimensions;
+      this.accumulator = accumulator;
+      this.alive = alive;
+    }
+
+    @Override
+    public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
+      if (alive) {
+        @Nonnull
+        TensorArray tensorArray = new TensorArray(RefIntStream.range(0, delta.length())
+            .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+              Tensor tensor = delta.get(dataIndex);
+              @Nonnull final Tensor passback = new Tensor(dimensions);
+              passback.set((IntToDoubleFunction) tensor::get);
+              tensor.freeRef();
+              return passback;
+            }, delta)).toArray(Tensor[]::new));
+        try {
+          this.accumulator.accept(buffer, tensorArray);
+        } finally {
+          this.accumulator.freeRef();
+        }
+      } else {
+        delta.freeRef();
+        buffer.freeRef();
+      }
+    }
+
+    public @SuppressWarnings("unused")
+    void _free() {
+      super._free();
+      accumulator.freeRef();
+    }
+  }
 }

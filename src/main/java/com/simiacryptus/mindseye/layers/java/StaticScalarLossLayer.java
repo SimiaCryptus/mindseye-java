@@ -25,6 +25,7 @@ import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefList;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,70 +73,22 @@ public class StaticScalarLossLayer extends LayerBase {
     //if (inObj[0].getData().length() != 1) throw new IllegalArgumentException();
     final Result in0 = inObj[0].addRef();
     RefUtil.freeRef(inObj);
-    TensorList indata = in0.getData();
-    try {
-      Result.Accumulator accumulator = new Result.Accumulator() {
-        {
-          indata.addRef();
-          in0.addRef();
-        }
+    boolean alive = in0.isAlive();
+    TensorArray data = fwd(in0.getData());
+    Result.Accumulator accumulator = new Accumulator(this.getTarget(), in0.getAccumulator(), in0.isAlive(), in0.getData());
+    in0.freeRef();
+    return new Result(data, accumulator, alive);
+  }
 
-        @Override
-        public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList data) {
-          if (in0.isAlive()) {
-            @Nonnull
-            TensorArray tensorArray = new TensorArray(RefIntStream.range(0, data.length()).parallel()
-                .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-                  @Nullable final Tensor a = indata.get(dataIndex);
-                  Tensor tensor = data.get(dataIndex);
-                  final double deriv = tensor.get(0)
-                      * (a.get(0) - StaticScalarLossLayer.this.getTarget() < 0 ? -1 : 1);
-                  tensor.freeRef();
-                  a.freeRef();
-                  return new Tensor(new double[]{deriv}, 1);
-                }, indata.addRef(), data.addRef()))
-                .toArray(Tensor[]::new));
-            in0.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
-          }
-          data.freeRef();
-          if (null != buffer)
-            buffer.freeRef();
-        }
-
-        public @SuppressWarnings("unused")
-        void _free() {
-          super._free();
-          indata.freeRef();
-          in0.freeRef();
-        }
-      };
-      TensorArray data = new TensorArray(RefIntStream.range(0, indata.length()).parallel()
-          .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-            @Nullable final Tensor a = indata.get(dataIndex);
-            final double diff = Math.abs(a.get(0) - getTarget());
-            a.freeRef();
-            return new Tensor(new double[]{diff}, 1);
-          }, indata.addRef())).toArray(Tensor[]::new));
-      return new Result(data, accumulator) {
-        {
-          in0.addRef();
-        }
-
-        @Override
-        public boolean isAlive() {
-          return in0.isAlive();
-        }
-
-        @Override
-        public void _free() {
-          in0.freeRef();
-          super._free();
-        }
-      };
-    } finally {
-      indata.freeRef();
-      in0.freeRef();
-    }
+  @NotNull
+  private TensorArray fwd(TensorList indata) {
+    return new TensorArray(RefIntStream.range(0, indata.length()).parallel()
+            .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+              @Nullable final Tensor a = indata.get(dataIndex);
+              final double diff = Math.abs(a.get(0) - getTarget());
+              a.freeRef();
+              return new Tensor(new double[]{diff}, 1);
+            }, indata)).toArray(Tensor[]::new));
   }
 
   @Nonnull
@@ -160,5 +113,50 @@ public class StaticScalarLossLayer extends LayerBase {
   @SuppressWarnings("unused")
   StaticScalarLossLayer addRef() {
     return (StaticScalarLossLayer) super.addRef();
+  }
+
+  private static class Accumulator extends Result.Accumulator {
+
+    private final TensorList indata;
+    private double target;
+    private Result.Accumulator accumulator;
+    private boolean alive;
+
+    public Accumulator(double target, Result.Accumulator accumulator, boolean alive, @NotNull TensorList indata) {
+      this.indata = indata;
+      this.target = target;
+      this.accumulator = accumulator;
+      this.alive = alive;
+    }
+
+    @Override
+    public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList data) {
+      if (alive) {
+        @Nonnull
+        TensorArray tensorArray = new TensorArray(RefIntStream.range(0, data.length()).parallel()
+            .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+              @Nullable final Tensor a = indata.get(dataIndex);
+              Tensor tensor = data.get(dataIndex);
+              final double deriv = tensor.get(0)
+                  * (a.get(0) - target < 0 ? -1 : 1);
+              tensor.freeRef();
+              a.freeRef();
+              return new Tensor(new double[]{deriv}, 1);
+            }, indata.addRef(), data.addRef()))
+            .toArray(Tensor[]::new));
+        DeltaSet<UUID> buffer1 = buffer == null ? null : buffer.addRef();
+        this.accumulator.accept(buffer1, tensorArray);
+      }
+      data.freeRef();
+      if (null != buffer)
+        buffer.freeRef();
+    }
+
+    public @SuppressWarnings("unused")
+    void _free() {
+      super._free();
+      indata.freeRef();
+      accumulator.freeRef();
+    }
   }
 }

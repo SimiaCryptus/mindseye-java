@@ -20,13 +20,10 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
-import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.RefDoubleStream;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Arrays;
 
 public abstract class BinaryEntropyActivationLayerTest extends ActivationLayerTestBase {
   public BinaryEntropyActivationLayerTest() {

@@ -59,15 +59,14 @@ public class ImgZeroPaddingLayer extends LayerBase {
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     assert inObj.length == 1;
-    TensorList temp_25_0002 = inObj[0].getData();
+    TensorList tensorList = inObj[0].getData();
     @Nonnull
-    int[] dimensions = temp_25_0002.getDimensions();
-    temp_25_0002.freeRef();
+    int[] dimensions = tensorList.getDimensions();
+    tensorList.freeRef();
     ImgCropLayer imgCropLayer = new ImgCropLayer(dimensions[0] + 2 * this.sizeX, dimensions[1] + 2 * this.sizeY);
-    Result temp_25_0001 = imgCropLayer.eval(RefUtil.addRefs(inObj));
-    RefUtil.freeRef(inObj);
+    Result result = imgCropLayer.eval(inObj);
     imgCropLayer.freeRef();
-    return temp_25_0001;
+    return result;
   }
 
   @Nonnull
@@ -86,7 +85,9 @@ public class ImgZeroPaddingLayer extends LayerBase {
   }
 
   public @SuppressWarnings("unused")
-  void _free() { super._free(); }
+  void _free() {
+    super._free();
+  }
 
   @Nonnull
   public @Override

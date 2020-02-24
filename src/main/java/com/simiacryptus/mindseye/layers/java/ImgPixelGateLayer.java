@@ -25,6 +25,7 @@ import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefList;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,9 +60,9 @@ public class ImgPixelGateLayer extends LayerBase {
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     assert 2 == inObj.length;
-    Result temp_29_0006 = eval(inObj[0].addRef(), inObj[1].addRef());
+    Result result = eval(inObj[0].addRef(), inObj[1].addRef());
     RefUtil.freeRef(inObj);
-    return temp_29_0006;
+    return result;
   }
 
   @Nonnull
@@ -70,122 +71,29 @@ public class ImgPixelGateLayer extends LayerBase {
     final TensorList gateData = gate.getData();
     int[] inputDims = inputData.getDimensions();
     assert 3 == inputDims.length;
-    try {
-      return new Result(new TensorArray(RefIntStream.range(0, inputData.length())
-          .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) i -> {
-            Tensor inputTensor = inputData.get(i);
-            Tensor gateTensor = gateData.get(gateData.length() == 1 ? 0 : i);
-            Tensor temp_29_0009 = new Tensor(inputDims[0], inputDims[1], inputDims[2]);
-            temp_29_0009.setByCoord(RefUtil.wrapInterface((ToDoubleFunction<Coordinate>) c -> {
-                              int[] coords = c.getCoords();
-                              return inputTensor.get(coords[0], coords[1], coords[2])
-                                  * gateTensor.get(coords[0], coords[1], 0);
-                            }, inputTensor.addRef(),
-                            gateTensor.addRef()));
-            Tensor temp_29_0003 = temp_29_0009.addRef();
-            temp_29_0009.freeRef();
-            gateTensor.freeRef();
-            inputTensor.freeRef();
-            return temp_29_0003;
-          }, inputData.addRef(), gateData.addRef()))
-          .toArray(Tensor[]::new)), new Result.Accumulator() {
-        {
-          input.addRef();
-          gate.addRef();
-          gateData.addRef();
-          inputData.addRef();
-        }
+    TensorArray data = fwd(inputData.addRef(), gateData.addRef(), inputDims);
+    boolean alive = input.isAlive();
+    Accumulator accumulator = new Accumulator(gateData, inputData, inputDims, input.getAccumulator(), input.isAlive(), gate.getAccumulator(), gate.isAlive());
+    gate.freeRef();
+    input.freeRef();
+    return new Result(data, accumulator, alive || !isFrozen());
+  }
 
-        @Override
-        public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
-          if (input.isAlive()) {
-            @Nonnull
-            TensorArray tensorArray = new TensorArray(RefIntStream.range(0, delta.length())
-                .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) i -> {
-                      Tensor deltaTensor = delta.get(i);
-                      Tensor gateTensor = gateData.get(gateData.length() == 1 ? 0 : i);
-                      TensorList temp_29_0012 = input.getData();
-                      Tensor temp_29_0010 = new Tensor(temp_29_0012.getDimensions());
-                      temp_29_0012.freeRef();
-                      temp_29_0010.setByCoord(RefUtil.wrapInterface(c -> {
-                                              int[] coords = c.getCoords();
-                                              return deltaTensor.get(coords[0], coords[1], coords[2])
-                                                  * gateTensor.get(coords[0], coords[1], 0);
-                                            }, gateTensor.addRef(),
-                                            deltaTensor.addRef()));
-                      Tensor temp_29_0004 = temp_29_0010.addRef();
-                      temp_29_0010.freeRef();
-                      gateTensor.freeRef();
-                      deltaTensor.freeRef();
-                      return temp_29_0004;
-                    }, delta.addRef(), input.addRef(),
-                    gateData.addRef()))
-                .toArray(Tensor[]::new));
-            input.accumulate(buffer == null ? null : buffer.addRef(),
-                tensorArray);
-          }
-          if (gate.isAlive()) {
-            @Nonnull
-            TensorArray tensorArray = new TensorArray(RefIntStream.range(0, delta.length())
-                .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) i -> {
-                      Tensor deltaTensor = delta.get(i);
-                      Tensor inputTensor = inputData.get(i);
-                      Tensor temp_29_0011 = new Tensor(gateData.getDimensions());
-                      temp_29_0011.setByCoord(RefUtil.wrapInterface(
-                                            c -> RefIntStream.range(0, inputDims[2]).mapToDouble(RefUtil.wrapInterface(b -> {
-                                                  int[] coords = c.getCoords();
-                                                  return deltaTensor.get(coords[0], coords[1], b)
-                                                      * inputTensor.get(coords[0], coords[1], b);
-                                                }, inputTensor.addRef(),
-                                                deltaTensor.addRef())).sum(),
-                                            inputTensor.addRef(),
-                                            deltaTensor.addRef()));
-                      Tensor temp_29_0005 = temp_29_0011.addRef();
-                      temp_29_0011.freeRef();
-                      inputTensor.freeRef();
-                      deltaTensor.freeRef();
-                      return temp_29_0005;
-                    }, gateData.addRef(), delta.addRef(),
-                    inputData.addRef()))
-                .toArray(Tensor[]::new));
-            gate.accumulate(buffer == null ? null : buffer.addRef(),
-                tensorArray);
-          }
-          delta.freeRef();
-          if (null != buffer)
-            buffer.freeRef();
-        }
-
-        public @SuppressWarnings("unused")
-        void _free() {
-          super._free();
-          gate.freeRef();
-          input.freeRef();
-          gateData.freeRef();
-          inputData.freeRef();
-        }
-      }) {
-
-        {
-          input.addRef();
-        }
-
-        @Override
-        public boolean isAlive() {
-          return input.isAlive() || !isFrozen();
-        }
-
-        public void _free() {
-          input.freeRef();
-          super._free();
-        }
-      };
-    } finally {
-      gate.freeRef();
-      input.freeRef();
-      gateData.freeRef();
-      inputData.freeRef();
-    }
+  @NotNull
+  private TensorArray fwd(TensorList inputData, TensorList gateData, int[] inputDims) {
+    return new TensorArray(RefIntStream.range(0, inputData.length())
+            .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) i -> {
+              Tensor inputTensor = inputData.get(i);
+              Tensor gateTensor = gateData.get(gateData.length() == 1 ? 0 : i);
+              Tensor outputTensor = new Tensor(inputDims[0], inputDims[1], inputDims[2]);
+              outputTensor.setByCoord(RefUtil.wrapInterface((ToDoubleFunction<Coordinate>) c -> {
+                    int[] coords = c.getCoords();
+                    return inputTensor.get(coords[0], coords[1], coords[2])
+                        * gateTensor.get(coords[0], coords[1], 0);
+                  }, inputTensor, gateTensor));
+              return outputTensor;
+            }, inputData, gateData))
+            .toArray(Tensor[]::new));
   }
 
   @Nonnull
@@ -210,5 +118,89 @@ public class ImgPixelGateLayer extends LayerBase {
   @SuppressWarnings("unused")
   ImgPixelGateLayer addRef() {
     return (ImgPixelGateLayer) super.addRef();
+  }
+
+  private static class Accumulator extends Result.Accumulator {
+
+    private final TensorList gateData;
+    private final TensorList inputData;
+    private final int[] inputDims;
+    private Result.Accumulator inputAccumulator;
+    private boolean inputAlive;
+    private Result.Accumulator gateAccumulator;
+    private boolean gateAlive;
+
+    public Accumulator(TensorList gateData, TensorList inputData, int[] inputDims, Result.Accumulator inputAccumulator, boolean inputAlive, Result.Accumulator gateAccumulator, boolean gateAlive) {
+      this.gateData = gateData;
+      this.inputData = inputData;
+      this.inputDims = inputDims;
+      this.inputAccumulator = inputAccumulator;
+      this.inputAlive = inputAlive;
+      this.gateAccumulator = gateAccumulator;
+      this.gateAlive = gateAlive;
+    }
+
+    @Override
+    public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
+      if (inputAlive) {
+        @Nonnull
+        TensorArray tensorArray = new TensorArray(RefIntStream.range(0, delta.length())
+            .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) i -> {
+                  Tensor deltaTensor = delta.get(i);
+                  Tensor gateTensor = gateData.get(gateData.length() == 1 ? 0 : i);
+                  Tensor feedbackTensor = new Tensor(inputData.getDimensions());
+                  feedbackTensor.setByCoord(RefUtil.wrapInterface(c -> {
+                        int[] coords = c.getCoords();
+                        return deltaTensor.get(coords[0], coords[1], coords[2])
+                            * gateTensor.get(coords[0], coords[1], 0);
+                      }, gateTensor.addRef(),
+                      deltaTensor.addRef()));
+                  gateTensor.freeRef();
+                  deltaTensor.freeRef();
+                  return feedbackTensor;
+                }, delta.addRef(), inputData.addRef(),
+                gateData.addRef()))
+            .toArray(Tensor[]::new));
+        DeltaSet<UUID> buffer1 = buffer == null ? null : buffer.addRef();
+        inputAccumulator.accept(buffer1, tensorArray);
+      }
+      if (gateAlive) {
+        @Nonnull
+        TensorArray tensorArray = new TensorArray(RefIntStream.range(0, delta.length())
+            .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) i -> {
+                  Tensor deltaTensor = delta.get(i);
+                  Tensor inputTensor = inputData.get(i);
+                  Tensor feedbackTensor = new Tensor(gateData.getDimensions());
+                  feedbackTensor.setByCoord(RefUtil.wrapInterface(
+                      c -> RefIntStream.range(0, inputDims[2]).mapToDouble(RefUtil.wrapInterface(b -> {
+                            int[] coords = c.getCoords();
+                            return deltaTensor.get(coords[0], coords[1], b)
+                                * inputTensor.get(coords[0], coords[1], b);
+                          }, inputTensor.addRef(),
+                          deltaTensor.addRef())).sum(),
+                      inputTensor.addRef(),
+                      deltaTensor.addRef()));
+                  inputTensor.freeRef();
+                  deltaTensor.freeRef();
+                  return feedbackTensor;
+                }, gateData.addRef(), delta.addRef(),
+                inputData.addRef()))
+            .toArray(Tensor[]::new));
+        DeltaSet<UUID> buffer1 = buffer == null ? null : buffer.addRef();
+        gateAccumulator.accept(buffer1, tensorArray);
+      }
+      delta.freeRef();
+      if (null != buffer)
+        buffer.freeRef();
+    }
+
+    public @SuppressWarnings("unused")
+    void _free() {
+      super._free();
+      gateAccumulator.freeRef();
+      inputAccumulator.freeRef();
+      gateData.freeRef();
+      inputData.freeRef();
+    }
   }
 }

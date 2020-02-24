@@ -24,7 +24,6 @@ import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefList;
-import com.simiacryptus.ref.wrappers.RefSystem;
 import com.simiacryptus.util.MonitoredItem;
 import com.simiacryptus.util.MonitoredObject;
 import com.simiacryptus.util.data.PercentileStatistics;
@@ -77,8 +76,7 @@ public final class MonitoringSynapse extends LayerBase implements MonitoredItem 
   @Nonnull
   public MonitoringSynapse addTo(@Nonnull final MonitoredObject obj) {
     addTo(obj, getName());
-    MonitoringSynapse temp_37_0003 = this.addRef();
-    return temp_37_0003;
+    return this.addRef();
   }
 
   public void addTo(@Nonnull MonitoredObject obj, String name) {
@@ -101,48 +99,10 @@ public final class MonitoringSynapse extends LayerBase implements MonitoredItem 
       forwardStatistics.add(t.getData());
       t.freeRef();
     });
-    try {
-      Result.Accumulator accumulator = new Result.Accumulator() {
-        {
-          input.addRef();
-        }
-
-        @Override
-        public void accept(@Nullable DeltaSet<UUID> buffer, @Nullable TensorList data) {
-          backpropStatistics.clear();
-          input.accumulate(buffer, data == null ? null : data.addRef());
-          assert data != null;
-          data.stream().parallel().forEach(t -> {
-            backpropStatistics.add(t.getData());
-            t.freeRef();
-          });
-          data.freeRef();
-        }
-
-        public @SuppressWarnings("unused")
-        void _free() {
-          super._free();
-          input.freeRef();
-        }
-      };
-      return new Result(inputdata, accumulator) {
-        {
-          input.addRef();
-        }
-        @Override
-        public boolean isAlive() {
-          return input.isAlive();
-        }
-
-        @Override
-        public void _free() {
-          input.freeRef();
-          super._free();
-        }
-      };
-    } finally {
-      input.freeRef();
-    }
+    boolean alive = input.isAlive();
+    Result.Accumulator accumulator = new Accumulator(input.getAccumulator());
+    input.freeRef();
+    return new Result(inputdata, accumulator, alive);
   }
 
   @Nonnull
@@ -170,5 +130,37 @@ public final class MonitoringSynapse extends LayerBase implements MonitoredItem 
   @SuppressWarnings("unused")
   MonitoringSynapse addRef() {
     return (MonitoringSynapse) super.addRef();
+  }
+
+  private class Accumulator extends Result.Accumulator {
+
+    private Result.Accumulator accumulator;
+
+    public Accumulator(Result.Accumulator accumulator) {
+      this.accumulator = accumulator;
+    }
+
+    @Override
+    public void accept(@Nullable DeltaSet<UUID> buffer, @Nullable TensorList data) {
+      backpropStatistics.clear();
+      TensorList delta = data == null ? null : data.addRef();
+      try {
+        this.accumulator.accept(buffer, delta);
+      } finally {
+        this.accumulator.freeRef();
+      }
+      assert data != null;
+      data.stream().parallel().forEach(t -> {
+        backpropStatistics.add(t.getData());
+        t.freeRef();
+      });
+      data.freeRef();
+    }
+
+    public @SuppressWarnings("unused")
+    void _free() {
+      super._free();
+      accumulator.freeRef();
+    }
   }
 }

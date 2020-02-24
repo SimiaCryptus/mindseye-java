@@ -25,6 +25,7 @@ import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefList;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,9 +60,9 @@ public class ImgPixelSumLayer extends LayerBase {
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     assert 1 == inObj.length;
-    Result temp_47_0004 = eval(inObj[0].addRef());
+    Result result = eval(inObj[0].addRef());
     RefUtil.freeRef(inObj);
-    return temp_47_0004;
+    return result;
   }
 
   @Nonnull
@@ -69,74 +70,27 @@ public class ImgPixelSumLayer extends LayerBase {
     final TensorList inputData = input.getData();
     int[] inputDims = inputData.getDimensions();
     assert 3 == inputDims.length;
-    try {
-      return new Result(new TensorArray(inputData.stream().map(tensor -> {
-        Tensor temp_47_0006 = new Tensor(inputDims[0], inputDims[1], 1);
-        final ToDoubleFunction<Coordinate> f = RefUtil.wrapInterface((ToDoubleFunction<Coordinate>) c -> {
-          return RefIntStream.range(0, inputDims[2]).mapToDouble(RefUtil.wrapInterface((IntToDoubleFunction) i -> {
-            int[] coords = c.getCoords();
-            return tensor.get(coords[0], coords[1], i);
-          }, tensor == null ? null : tensor.addRef())).sum();
-        }, tensor == null ? null : tensor.addRef());
-        temp_47_0006.setByCoord(f);
-        Tensor temp_47_0002 = temp_47_0006.addRef();
-        temp_47_0006.freeRef();
-        if (null != tensor)
-          tensor.freeRef();
-        return temp_47_0002;
-      }).toArray(Tensor[]::new)), new Result.Accumulator() {
-        {
-          input.addRef();
-        }
+    TensorArray data = fwd(inputData, inputDims);
+    boolean alive = input.isAlive();
+    Accumulator accumulator = new Accumulator(inputDims, input.getAccumulator(), input.isAlive());
+    input.freeRef();
+    return new Result(data, accumulator, alive || !isFrozen());
+  }
 
-        @Override
-        public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
-          if (input.isAlive()) {
-            @Nonnull
-            TensorArray tensorArray = new TensorArray(delta.stream().map(deltaTensor -> {
-              int[] deltaDims = deltaTensor.getDimensions();
-              Tensor temp_47_0007 = new Tensor(deltaDims[0], deltaDims[1], inputDims[2]);
-              temp_47_0007.setByCoord(RefUtil.wrapInterface(c -> {
-                          int[] coords = c.getCoords();
-                          return deltaTensor.get(coords[0], coords[1], 0);
-                        }, deltaTensor.addRef()));
-              Tensor temp_47_0003 = temp_47_0007.addRef();
-              temp_47_0007.freeRef();
-              deltaTensor.freeRef();
-              return temp_47_0003;
-            }).toArray(Tensor[]::new));
-            input.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
-          }
-          delta.freeRef();
-          if (null != buffer)
-            buffer.freeRef();
-        }
-
-        public @SuppressWarnings("unused")
-        void _free() {
-          super._free();
-          input.freeRef();
-        }
-      }) {
-
-        {
-          input.addRef();
-        }
-
-        @Override
-        public boolean isAlive() {
-          return input.isAlive() || !isFrozen();
-        }
-
-        public void _free() {
-          input.freeRef();
-          super._free();
-        }
-      };
-    } finally {
-      input.freeRef();
-      inputData.freeRef();
-    }
+  @NotNull
+  private TensorArray fwd(TensorList inputData, int[] inputDims) {
+    TensorArray tensorArray = new TensorArray(inputData.stream().map(tensor -> {
+      Tensor outputTensor = new Tensor(inputDims[0], inputDims[1], 1);
+      outputTensor.setByCoord(RefUtil.wrapInterface((ToDoubleFunction<Coordinate>) c -> {
+        return RefIntStream.range(0, inputDims[2]).mapToDouble(RefUtil.wrapInterface((IntToDoubleFunction) i -> {
+          int[] coords = c.getCoords();
+          return tensor.get(coords[0], coords[1], i);
+        }, tensor == null ? null : tensor.addRef())).sum();
+      }, tensor));
+      return outputTensor;
+    }).toArray(Tensor[]::new));
+    inputData.freeRef();
+    return tensorArray;
   }
 
   @Nonnull
@@ -161,5 +115,52 @@ public class ImgPixelSumLayer extends LayerBase {
   @SuppressWarnings("unused")
   ImgPixelSumLayer addRef() {
     return (ImgPixelSumLayer) super.addRef();
+  }
+
+  private static class Accumulator extends Result.Accumulator {
+
+    private final int[] inputDims;
+    private Result.Accumulator accumulator;
+    private boolean alive;
+
+    public Accumulator(int[] inputDims, Result.Accumulator accumulator, boolean alive) {
+      this.inputDims = inputDims;
+      this.accumulator = accumulator;
+      this.alive = alive;
+    }
+
+    @Override
+    public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
+      if (alive) {
+        @Nonnull
+        TensorArray tensorArray = new TensorArray(delta.stream().map(deltaTensor -> {
+          int[] deltaDims = deltaTensor.getDimensions();
+          Tensor temp_47_0007 = new Tensor(deltaDims[0], deltaDims[1], inputDims[2]);
+          temp_47_0007.setByCoord(RefUtil.wrapInterface(c -> {
+            int[] coords = c.getCoords();
+            return deltaTensor.get(coords[0], coords[1], 0);
+          }, deltaTensor.addRef()));
+          Tensor temp_47_0003 = temp_47_0007.addRef();
+          temp_47_0007.freeRef();
+          deltaTensor.freeRef();
+          return temp_47_0003;
+        }).toArray(Tensor[]::new));
+        DeltaSet<UUID> buffer1 = buffer == null ? null : buffer.addRef();
+        try {
+          this.accumulator.accept(buffer1, tensorArray);
+        } finally {
+          this.accumulator.freeRef();
+        }
+      }
+      delta.freeRef();
+      if (null != buffer)
+        buffer.freeRef();
+    }
+
+    public @SuppressWarnings("unused")
+    void _free() {
+      super._free();
+      accumulator.freeRef();
+    }
   }
 }

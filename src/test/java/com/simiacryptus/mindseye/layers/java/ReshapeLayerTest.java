@@ -20,6 +20,7 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
+import com.simiacryptus.mindseye.test.LayerTestBase;
 import com.simiacryptus.mindseye.test.ToleranceStatistics;
 import com.simiacryptus.mindseye.test.unit.BatchingTester;
 import com.simiacryptus.mindseye.test.unit.ComponentTest;
@@ -106,7 +107,9 @@ public abstract class ReshapeLayerTest extends LayerTestBase {
         }
 
         public @SuppressWarnings("unused")
-        void _free() { super._free(); }
+        void _free() {
+          super._free();
+        }
       };
       batchingTester.setBatchSize(5);
       return batchingTester;

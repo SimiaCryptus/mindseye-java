@@ -62,50 +62,16 @@ public class ReshapeLayer extends LayerBase {
   @Override
   public Result eval(@Nonnull final Result... inObj) {
     assert 1 == inObj.length;
-    TensorList data = inObj[0].getData();
+    final Result in0 = inObj[0].addRef();
+    TensorList data0 = in0.getData();
+    RefUtil.freeRef(inObj);
     @Nonnull
-    int[] inputDims = data.getDimensions();
-    try {
-      return new Result(new ReshapedTensorList(data, outputDims), new Result.Accumulator() {
-        {
-          RefUtil.addRefs(inObj);
-        }
-
-        @Override
-        public void accept(@Nullable DeltaSet<UUID> buffer, @Nullable TensorList delta) {
-          @Nonnull
-          ReshapedTensorList tensorList = new ReshapedTensorList(delta == null ? null : delta.addRef(), inputDims);
-          if (null != delta)
-            delta.freeRef();
-          inObj[0].accumulate(buffer == null ? null : buffer.addRef(), tensorList);
-          if (null != buffer)
-            buffer.freeRef();
-        }
-
-        public @SuppressWarnings("unused")
-        void _free() {
-          super._free();
-          RefUtil.freeRef(inObj);
-        }
-      }) {
-
-        {
-          RefUtil.addRefs(inObj);
-        }
-
-        @Override
-        public boolean isAlive() {
-          return inObj[0].isAlive();
-        }
-
-        public void _free() {
-          RefUtil.freeRef(inObj);
-          super._free();
-        }
-      };
-    } finally {
-      RefUtil.freeRef(inObj);
-    }
+    int[] inputDims = data0.getDimensions();
+    ReshapedTensorList data = new ReshapedTensorList(data0, outputDims);
+    boolean alive = in0.isAlive();
+    Accumulator accumulator = new Accumulator(inputDims, in0.getAccumulator());
+    in0.freeRef();
+    return new Result(data, accumulator, alive);
   }
 
   @Nonnull
@@ -135,4 +101,25 @@ public class ReshapeLayer extends LayerBase {
     return (ReshapeLayer) super.addRef();
   }
 
+  private static class Accumulator extends Result.Accumulator {
+
+    private final int[] inputDims;
+    private Result.Accumulator accumulator;
+
+    public Accumulator(int[] inputDims, Result.Accumulator accumulator) {
+      this.inputDims = inputDims;
+      this.accumulator = accumulator;
+    }
+
+    @Override
+    public void accept(@Nullable DeltaSet<UUID> buffer, @Nullable TensorList delta) {
+      this.accumulator.accept(buffer, new ReshapedTensorList(delta, inputDims));
+    }
+
+    public @SuppressWarnings("unused")
+    void _free() {
+      super._free();
+      accumulator.freeRef();
+    }
+  }
 }

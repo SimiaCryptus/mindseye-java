@@ -26,13 +26,11 @@ import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.mindseye.layers.ValueLayer;
 import com.simiacryptus.mindseye.network.DAGNetwork;
 import com.simiacryptus.mindseye.network.DAGNode;
-import com.simiacryptus.ref.lang.RefUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 
@@ -48,24 +46,14 @@ public class TargetValueLayer extends DAGNetwork {
 
   public TargetValueLayer(final double... values) {
     super(1);
-    DAGNode temp_05_0001 = add(new ValueLayer(new Tensor(values)));
-    target = temp_05_0001.addRef();
-    temp_05_0001.freeRef();
-    DAGNode temp_05_0002 = add(new MeanSqLossLayer(), getInput(0), target.addRef());
-    head = temp_05_0002.addRef();
-    temp_05_0002.freeRef();
+    target = add(new ValueLayer(new Tensor(values)));
+    head = add(new MeanSqLossLayer(), getInput(0), target.addRef());
   }
 
   protected TargetValueLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json, rs);
-    DAGNode temp_05_0003 = getNodeById(UUID.fromString(json.getAsJsonPrimitive("head").getAsString()));
-    head = temp_05_0003 == null ? null : temp_05_0003.addRef();
-    if (null != temp_05_0003)
-      temp_05_0003.freeRef();
-    DAGNode temp_05_0004 = getNodeById(UUID.fromString(json.getAsJsonPrimitive("target").getAsString()));
-    target = temp_05_0004 == null ? null : temp_05_0004.addRef();
-    if (null != temp_05_0004)
-      temp_05_0004.freeRef();
+    head = getNodeById(UUID.fromString(json.getAsJsonPrimitive("head").getAsString()));
+    target = getNodeById(UUID.fromString(json.getAsJsonPrimitive("target").getAsString()));
   }
 
   @Override
@@ -75,10 +63,10 @@ public class TargetValueLayer extends DAGNetwork {
 
   public void setTarget(double[] value) {
     assert target != null;
-    ValueLayer temp_05_0005 = target.<ValueLayer>getLayer();
-    assert temp_05_0005 != null;
-    temp_05_0005.setData(new Tensor(value));
-    temp_05_0005.freeRef();
+    ValueLayer valueLayer = target.<ValueLayer>getLayer();
+    assert valueLayer != null;
+    valueLayer.setData(new Tensor(value));
+    valueLayer.freeRef();
   }
 
   @Nonnull

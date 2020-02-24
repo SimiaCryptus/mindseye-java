@@ -28,6 +28,7 @@ import com.simiacryptus.ref.wrappers.RefList;
 import com.simiacryptus.util.FastRandom;
 import com.simiacryptus.util.JsonUtil;
 import com.simiacryptus.util.Util;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,9 +62,7 @@ public class FullyConnectedReferenceLayer extends LayerBase {
     this.outputDims = RefArrays.copyOf(outputDims, outputDims.length);
     final int inputs = Tensor.length(inputDims);
     final int outputs = Tensor.length(outputDims);
-    Tensor temp_02_0002 = new Tensor(inputs, outputs);
-    weights = temp_02_0002.addRef();
-    temp_02_0002.freeRef();
+    weights = new Tensor(inputs, outputs);
     set(() -> {
       final double ratio = Math.sqrt(6. / (inputs + outputs + 1));
       final double fate = Util.R.get().nextDouble();
@@ -75,10 +74,7 @@ public class FullyConnectedReferenceLayer extends LayerBase {
     super(json);
     outputDims = JsonUtil.getIntArray(json.getAsJsonArray("outputDims"));
     inputDims = JsonUtil.getIntArray(json.getAsJsonArray("inputDims"));
-    Tensor temp_02_0003 = Tensor.fromJson(json.get("weights"), resources);
-    weights = temp_02_0003 == null ? null : temp_02_0003.addRef();
-    if (null != temp_02_0003)
-      temp_02_0003.freeRef();
+    weights = Tensor.fromJson(json.get("weights"), resources);
   }
 
   @Nullable
@@ -130,122 +126,35 @@ public class FullyConnectedReferenceLayer extends LayerBase {
     final TensorList indata = inputResult.getData();
     @Nonnull
     int[] inputDimensions = indata.getDimensions();
-    final FullyConnectedReferenceLayer fullyConnectedReferenceLayer = this.addRef();
-    assert fullyConnectedReferenceLayer.inputDims != null;
-    assert Tensor.length(inputDimensions) == Tensor.length(fullyConnectedReferenceLayer.inputDims) : RefArrays
-        .toString(inputDimensions) + " == " + RefArrays.toString(fullyConnectedReferenceLayer.inputDims);
-    try {
-      Result.Accumulator accumulator = new Result.Accumulator() {
-        {
-          fullyConnectedReferenceLayer.addRef();
-          inputResult.addRef();
-          weights.addRef();
-          indata.addRef();
-        }
+    assert this.inputDims != null;
+    assert Tensor.length(inputDimensions) == Tensor.length(this.inputDims) : RefArrays
+        .toString(inputDimensions) + " == " + RefArrays.toString(this.inputDims);
+    boolean alive = inputResult.isAlive();
+    Result.Accumulator accumulator = new Accumulator(indata.addRef(), getWeights(), getId(), inputDims, isFrozen(), inputResult.getAccumulator(), inputResult.isAlive());
+    inputResult.freeRef();
+    TensorArray data = fwd(indata);
+    return new Result(data, accumulator, alive || !isFrozen());
+  }
 
-        @Override
-        public void accept(@Nonnull DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
-          if (!FullyConnectedReferenceLayer.this.isFrozen()) {
-            Tensor[] array = RefIntStream.range(0, indata.length())
-                .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) i -> {
-                      @Nullable final Tensor inputTensor = indata.get(i);
-                      @Nullable final Tensor deltaTensor = delta.get(i);
-                      assert fullyConnectedReferenceLayer.weights != null;
-                      @Nonnull
-                      Tensor weights = new Tensor(fullyConnectedReferenceLayer.weights.getDimensions());
-                      weights.coordStream(false).forEach(RefUtil.wrapInterface((Consumer<? super Coordinate>) c -> {
-                            int[] coords = c.getCoords();
-                            weights.set(c, inputTensor.get(coords[0]) * deltaTensor.get(coords[1]));
-                          }, weights.addRef(),
-                          inputTensor.addRef(),
-                          deltaTensor.addRef()));
-                      deltaTensor.freeRef();
-                      inputTensor.freeRef();
-                      return weights;
-                    }, indata.addRef(),
-                    fullyConnectedReferenceLayer.addRef(),
-                    delta.addRef()))
-                .toArray(Tensor[]::new);
-            Tensor tensor = RefUtil.get(RefArrays.stream(RefUtil.addRefs(array)).reduce((a, b) -> {
-              return Tensor.add(a,b);
-            }));
-            RefUtil.freeRef(array);
-            assert weights != null;
-            Delta<UUID> temp_02_0010 = buffer.get(fullyConnectedReferenceLayer.getId(), weights.getData());
-            assert temp_02_0010 != null;
-            temp_02_0010.addInPlace(tensor.getData());
-            temp_02_0010.freeRef();
-            tensor.freeRef();
-          }
-          if (inputResult.isAlive()) {
-            @Nonnull final TensorList tensorList = new TensorArray(RefIntStream.range(0, indata.length())
-                .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) i -> {
-                  assert inputDims != null;
-                  @Nullable final Tensor inputTensor = new Tensor(inputDims);
-                  @Nullable final Tensor deltaTensor = delta.get(i);
-                  assert weights != null;
-                  weights.coordStream(false).forEach(RefUtil.wrapInterface((Consumer<? super Coordinate>) c -> {
-                        int[] coords = c.getCoords();
-                        inputTensor.set(coords[0], inputTensor.get(coords[0]) + weights.get(c) * deltaTensor.get(coords[1]));
-                      }, inputTensor.addRef(),
-                      deltaTensor.addRef()));
-                  deltaTensor.freeRef();
-                  return inputTensor;
-                }, delta.addRef())).toArray(Tensor[]::new));
-            inputResult.accumulate(buffer.addRef(),
-                tensorList);
-          }
-          delta.freeRef();
-          buffer.freeRef();
-        }
-
-        public @SuppressWarnings("unused")
-        void _free() {
-          super._free();
-          fullyConnectedReferenceLayer.freeRef();
-          inputResult.freeRef();
-          weights.freeRef();
-          indata.freeRef();
-        }
-      };
-      TensorArray data = new TensorArray(RefIntStream.range(0, indata.length())
-          .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) index -> {
-            @Nullable final Tensor input = indata.get(index);
-            assert outputDims != null;
-            @Nullable final Tensor output = new Tensor(outputDims);
-            assert weights != null;
-            weights.coordStream(false).forEach(RefUtil.wrapInterface((Consumer<? super Coordinate>) c -> {
-              int[] coords = c.getCoords();
-              double prev = output.get(coords[1]);
-              double w = weights.get(c);
-              double i = input.get(coords[0]);
-              double value = prev + w * i;
-              output.set(coords[1], value);
-            }, input.addRef(), output.addRef()));
-            input.freeRef();
-            return output;
-          }, indata.addRef())).toArray(Tensor[]::new));
-      return new Result(data, accumulator) {
-        {
-          inputResult.addRef();
-        }
-
-        @Override
-        public boolean isAlive() {
-          return inputResult.isAlive() || !isFrozen();
-        }
-
-        @Override
-        public void _free() {
-          inputResult.freeRef();
-          super._free();
-        }
-      };
-    } finally {
-      fullyConnectedReferenceLayer.freeRef();
-      indata.freeRef();
-      inputResult.freeRef();
-    }
+  @NotNull
+  private TensorArray fwd(TensorList indata) {
+    return new TensorArray(RefIntStream.range(0, indata.length())
+            .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) index -> {
+              @Nullable final Tensor input = indata.get(index);
+              assert outputDims != null;
+              @Nullable final Tensor output = new Tensor(outputDims);
+              assert weights != null;
+              weights.coordStream(false).forEach(RefUtil.wrapInterface((Consumer<? super Coordinate>) c -> {
+                int[] coords = c.getCoords();
+                double prev = output.get(coords[1]);
+                double w = weights.get(c);
+                double i = input.get(coords[0]);
+                double value = prev + w * i;
+                output.set(coords[1], value);
+              }, input.addRef(), output.addRef()));
+              input.freeRef();
+              return output;
+            }, indata)).toArray(Tensor[]::new));
   }
 
   @Nonnull
@@ -285,10 +194,10 @@ public class FullyConnectedReferenceLayer extends LayerBase {
   @Nonnull
   @Override
   public RefList<double[]> state() {
-    Tensor temp_02_0012 = getWeights();
-    assert temp_02_0012 != null;
-    RefList<double[]> temp_02_0011 = RefArrays.asList(temp_02_0012.getData());
-    temp_02_0012.freeRef();
+    Tensor weights = getWeights();
+    assert weights != null;
+    RefList<double[]> temp_02_0011 = RefArrays.asList(weights.getData());
+    weights.freeRef();
     return temp_02_0011;
   }
 
@@ -305,4 +214,91 @@ public class FullyConnectedReferenceLayer extends LayerBase {
     return (FullyConnectedReferenceLayer) super.addRef();
   }
 
+  private static class Accumulator extends Result.Accumulator {
+
+    private final TensorList indata;
+    private Tensor weights;
+    private UUID id;
+    private boolean frozen;
+    private int[] inputDims;
+    private Result.Accumulator accumulator;
+    private boolean alive;
+
+    public Accumulator(TensorList indata, Tensor weights, UUID id, int[] inputDims, boolean frozen, Result.Accumulator accumulator, boolean alive) {
+      this.indata = indata;
+      this.weights = weights;
+      this.id = id;
+      this.frozen = frozen;
+      this.inputDims = inputDims;
+      this.accumulator = accumulator;
+      this.alive = alive;
+    }
+
+    @Override
+    public void accept(@Nonnull DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
+      if (!frozen) {
+        Tensor[] array = RefIntStream.range(0, indata.length())
+            .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) i -> {
+                  @Nullable final Tensor inputTensor = indata.get(i);
+                  @Nullable final Tensor deltaTensor = delta.get(i);
+                  assert weights != null;
+                  @Nonnull
+                  Tensor weights = new Tensor(this.weights.getDimensions());
+                  weights.coordStream(false).forEach(RefUtil.wrapInterface((Consumer<? super Coordinate>) c -> {
+                        int[] coords = c.getCoords();
+                        weights.set(c, inputTensor.get(coords[0]) * deltaTensor.get(coords[1]));
+                      }, weights.addRef(),
+                      inputTensor.addRef(),
+                      deltaTensor.addRef()));
+                  deltaTensor.freeRef();
+                  inputTensor.freeRef();
+                  return weights;
+                }, indata.addRef(),
+                weights.addRef(),
+                delta.addRef()))
+            .toArray(Tensor[]::new);
+        Tensor tensor = RefUtil.get(RefArrays.stream(RefUtil.addRefs(array)).reduce((a, b) -> {
+          return Tensor.add(a, b);
+        }));
+        RefUtil.freeRef(array);
+        assert weights != null;
+        Delta<UUID> temp_02_0010 = buffer.get(id, weights.getData());
+        assert temp_02_0010 != null;
+        temp_02_0010.addInPlace(tensor.getData());
+        temp_02_0010.freeRef();
+        tensor.freeRef();
+      }
+      if (alive) {
+        @Nonnull final TensorList tensorList = new TensorArray(RefIntStream.range(0, indata.length())
+            .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) i -> {
+              assert inputDims != null;
+              @Nullable final Tensor inputTensor = new Tensor(inputDims);
+              @Nullable final Tensor deltaTensor = delta.get(i);
+              assert weights != null;
+              weights.coordStream(false).forEach(RefUtil.wrapInterface((Consumer<? super Coordinate>) c -> {
+                    int[] coords = c.getCoords();
+                    inputTensor.set(coords[0], inputTensor.get(coords[0]) + weights.get(c) * deltaTensor.get(coords[1]));
+                  }, inputTensor.addRef(),
+                  deltaTensor.addRef()));
+              deltaTensor.freeRef();
+              return inputTensor;
+            }, delta.addRef())).toArray(Tensor[]::new));
+        try {
+          this.accumulator.accept(buffer.addRef(), tensorList);
+        } finally {
+          this.accumulator.freeRef();
+        }
+      }
+      delta.freeRef();
+      buffer.freeRef();
+    }
+
+    public @SuppressWarnings("unused")
+    void _free() {
+      super._free();
+      weights.freeRef();
+      accumulator.freeRef();
+      indata.freeRef();
+    }
+  }
 }

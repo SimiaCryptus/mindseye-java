@@ -25,6 +25,7 @@ import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefList;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,100 +64,26 @@ public class ScaleMetaLayer extends LayerBase {
     final TensorList data0 = in0.getData();
     final TensorList data1 = in1.getData();
     final int itemCnt = data0.length();
-    final Tensor data10 = data1.get(0);
+    final Tensor scale = data1.get(0);
     data1.freeRef();
-    final Tensor[] tensors = RefIntStream.range(0, itemCnt)
-        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-          Tensor tensor = data0.get(dataIndex);
-          Tensor tensor1 = tensor
-              .mapIndex(RefUtil.wrapInterface((v, c) -> v * data10.get(c), data10.addRef()));
-          tensor.freeRef();
-          return tensor1;
-        }, data10.addRef(), data0.addRef())).toArray(Tensor[]::new);
-    data0.freeRef();
-    Tensor tensor0 = tensors[0].addRef();
-    try {
-      Result.Accumulator accumulator = new Result.Accumulator() {
-        {
-          data10.addRef();
-          tensor0.addRef();
-          in0.addRef();
-          in1.addRef();
-        }
+    int[] dimensions = data0.getDimensions();
+    TensorArray data = fwd(data0, itemCnt, scale.addRef());
+    boolean alive = in0.isAlive() || in1.isAlive();
+    Result.Accumulator accumulator = new Accumulator(scale, dimensions, itemCnt, in0.getAccumulator(), in0.isAlive(), in1.isAlive(), in1.getAccumulator());
+    in0.freeRef();
+    in1.freeRef();
+    return new Result(data, accumulator, alive);
+  }
 
-        @Override
-        public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList data) {
-          if (in0.isAlive()) {
-            @Nonnull
-            TensorArray tensorArray = new TensorArray(
-                data.stream().map(RefUtil.wrapInterface((Function<? super Tensor, ? extends Tensor>) t -> {
-                  Tensor temp_56_0006 = t.mapIndex(RefUtil.wrapInterface((v, c) -> {
-                    return v * data10.get(c);
-                  }, data10.addRef()));
-                  t.freeRef();
-                  return temp_56_0006;
-                }, data10.addRef())).toArray(Tensor[]::new));
-            in0.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
-          }
-          if (in1.isAlive()) {
-            @Nullable final Tensor passback = tensor0.mapIndex(RefUtil.wrapInterface((v, c) -> {
-              return RefIntStream.range(0, itemCnt).mapToDouble(RefUtil.wrapInterface(i -> {
-                Tensor tensor = data.get(i);
-                double v1 = tensor.get(c) * tensor.get(c);
-                tensor.freeRef();
-                return v1;
-              }, data.addRef())).sum();
-            }, data.addRef()));
-            @Nonnull
-            TensorArray tensorArray = new TensorArray(RefIntStream.range(0, data.length())
-                .mapToObj(RefUtil.wrapInterface(
-                    (IntFunction<? extends Tensor>) i -> {
-                      return i == 0 ? passback.addRef() : passback.map(v -> 0);
-                    },
-                    passback.addRef()))
-                .toArray(Tensor[]::new));
-            passback.freeRef();
-            in1.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
-          }
-          data.freeRef();
-          if (null != buffer)
-            buffer.freeRef();
-        }
-
-        public @SuppressWarnings("unused")
-        void _free() {
-          super._free();
-          data10.freeRef();
-          tensor0.freeRef();
-          in0.freeRef();
-          in1.freeRef();
-        }
-      };
-      return new Result(new TensorArray(RefUtil.addRefs(tensors)), accumulator) {
-        {
-          in0.addRef();
-          in1.addRef();
-        }
-
-        @Override
-        public boolean isAlive() {
-          return in0.isAlive() || in1.isAlive();
-        }
-
-        @Override
-        public void _free() {
-          in0.freeRef();
-          in1.freeRef();
-          super._free();
-        }
-      };
-    } finally {
-      tensor0.freeRef();
-      RefUtil.freeRef(tensors);
-      data10.freeRef();
-      in1.freeRef();
-      in0.freeRef();
-    }
+  @NotNull
+  private TensorArray fwd(TensorList data0, int itemCnt, Tensor scale) {
+    return new TensorArray(RefIntStream.range(0, itemCnt)
+          .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+            Tensor tensor = data0.get(dataIndex);
+            Tensor tensor1 = tensor.mapIndex((v, c) -> v * scale.get(c));
+            tensor.freeRef();
+            return tensor1;
+          }, scale, data0)).toArray(Tensor[]::new));
   }
 
   @Nonnull
@@ -181,5 +108,74 @@ public class ScaleMetaLayer extends LayerBase {
   @SuppressWarnings("unused")
   ScaleMetaLayer addRef() {
     return (ScaleMetaLayer) super.addRef();
+  }
+
+  private static class Accumulator extends Result.Accumulator {
+
+    private final Tensor scale;
+    private final int[] dimensions;
+    private final int itemCnt;
+    private Result.Accumulator accumulator0;
+    private boolean alive0;
+    private boolean alive1;
+    private Result.Accumulator accumulator1;
+
+    public Accumulator(Tensor scale, int[] dimensions, int itemCnt, Result.Accumulator accumulator0, boolean alive0, boolean alive1, Result.Accumulator accumulator1) {
+      this.scale = scale;
+      this.dimensions = dimensions;
+      this.itemCnt = itemCnt;
+      this.accumulator0 = accumulator0;
+      this.alive0 = alive0;
+      this.alive1 = alive1;
+      this.accumulator1 = accumulator1;
+    }
+
+    @Override
+    public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList data) {
+      if (alive0) {
+        @Nonnull
+        TensorArray tensorArray = new TensorArray(
+            data.stream().map(RefUtil.wrapInterface((Function<? super Tensor, ? extends Tensor>) t -> {
+              Tensor temp_56_0006 = t.mapIndex(RefUtil.wrapInterface((v, c) -> {
+                return v * scale.get(c);
+              }, scale.addRef()));
+              t.freeRef();
+              return temp_56_0006;
+            }, scale.addRef())).toArray(Tensor[]::new));
+        DeltaSet<UUID> buffer1 = buffer == null ? null : buffer.addRef();
+          this.accumulator0.accept(buffer1, tensorArray);
+      }
+      if (alive1) {
+        int length = data.length();
+        Tensor indices = new Tensor(dimensions);
+        @Nullable final Tensor passback = indices.mapCoords(RefUtil.wrapInterface((c) -> {
+          return RefIntStream.range(0, itemCnt).mapToDouble(RefUtil.wrapInterface(i -> {
+            Tensor tensor = data.get(i);
+            double v1 = tensor.get(c) * tensor.get(c);
+            tensor.freeRef();
+            return v1;
+          }, data.addRef())).sum();
+        }, data));
+        indices.freeRef();
+        @Nonnull
+        TensorArray tensorArray = new TensorArray(RefIntStream.range(0, length)
+            .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) i -> {
+              return i == 0 ? passback.addRef() : passback.map(v -> 0);
+            }, passback)).toArray(Tensor[]::new));
+          accumulator1.accept(buffer, tensorArray);
+      } else {
+        data.freeRef();
+        if (null != buffer)
+          buffer.freeRef();
+      }
+    }
+
+    public @SuppressWarnings("unused")
+    void _free() {
+      super._free();
+      scale.freeRef();
+      accumulator0.freeRef();
+      accumulator1.freeRef();
+    }
   }
 }

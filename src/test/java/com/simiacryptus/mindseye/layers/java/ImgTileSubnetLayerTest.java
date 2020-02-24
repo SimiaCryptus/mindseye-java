@@ -20,11 +20,9 @@
 package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
-import com.simiacryptus.ref.lang.RefUtil;
+import com.simiacryptus.mindseye.test.LayerTestBase;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Random;
 
 public abstract class ImgTileSubnetLayerTest extends LayerTestBase {
@@ -35,17 +33,27 @@ public abstract class ImgTileSubnetLayerTest extends LayerTestBase {
     return new int[][]{{6, 6, 1}};
   }
 
-  @Nonnull
-  @Override
-  public Layer getLayer(final int[][] inputSize, Random random) {
-    LinearActivationLayer subnetwork = new LinearActivationLayer();
-    ImgTileSubnetLayer temp_51_0001 = new ImgTileSubnetLayer(subnetwork.addRef(), 3, 3, 2,
-        2);
-    subnetwork.freeRef();
-    return temp_51_0001;
+  public static class Basic extends ImgTileSubnetLayerTest {
+
+    @Nonnull
+    @Override
+    public Layer getLayer(final int[][] inputSize, Random random) {
+      return new ImgTileSubnetLayer(
+          new LinearActivationLayer(),
+          3, 3, 3, 3);
+    }
+
   }
 
-  public static class Basic extends ImgTileSubnetLayerTest {
+  public static class Overlapping extends ImgTileSubnetLayerTest {
+
+    @Nonnull
+    @Override
+    public Layer getLayer(final int[][] inputSize, Random random) {
+      return new ImgTileSubnetLayer(
+          new LinearActivationLayer(),
+          3, 3, 2, 2);
+    }
 
   }
 

@@ -25,6 +25,7 @@ import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefList;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -58,93 +59,35 @@ public class CrossProductLayer extends LayerBase {
     assert 1 == inObj.length;
     final Result in = inObj[0].addRef();
     TensorList indata = in.getData();
-    try {
-      try {
-        return new Result(new TensorArray(indata.stream().parallel().map(tensor -> {
-          final int inputDim = tensor.length();
-          final int outputDim = (inputDim * inputDim - inputDim) / 2;
-          @Nonnull final Tensor result1 = new Tensor(outputDim);
-          @Nullable final double[] inputData = tensor.getData();
-          tensor.freeRef();
-          @Nullable final double[] resultData = result1.getData();
-          RefIntStream.range(0, inputDim).forEach(x -> {
-            RefIntStream.range(x + 1, inputDim).forEach(y -> {
-              resultData[CrossProductLayer.index(x, y, inputDim)] = inputData[x] * inputData[y];
-            });
-          });
-          return result1;
-        }).toArray(Tensor[]::new)), new Result.Accumulator() {
-          {
-            in.addRef();
-            indata.addRef();
-          }
+    TensorArray data = fwd(indata.addRef());
+    boolean alive = alive(inObj);
+    Accumulator accumulator = new Accumulator(indata, in.getAccumulator(), in.isAlive());
+    in.freeRef();
+    return new Result(data, accumulator, alive);
+  }
 
-          @Override
-          public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
-            if (in.isAlive()) {
-              assert delta.length() == delta.length();
-              @Nonnull
-              TensorArray tensorArray = new TensorArray(RefIntStream.range(0, delta.length()).parallel()
-                  .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) batchIndex -> {
-                    @Nullable final Tensor deltaTensor = delta.get(batchIndex);
-                    final int outputDim = deltaTensor.length();
-                    final int inputDim = (1 + (int) Math.sqrt(1 + 8 * outputDim)) / 2;
-                    @Nonnull final Tensor passback = new Tensor(inputDim);
-                    @Nullable final double[] passbackData = passback.getData();
-                    @Nullable final double[] tensorData = deltaTensor.getData();
-                    deltaTensor.freeRef();
-                    Tensor inputTensor = indata.get(batchIndex);
-                    @Nullable final double[] inputData = inputTensor.getData();
-                    inputTensor.freeRef();
-                    RefIntStream.range(0, inputDim).forEach(x -> {
-                      RefIntStream.range(x + 1, inputDim).forEach(y -> {
-                        passbackData[x] += tensorData[CrossProductLayer.index(x, y, inputDim)] * inputData[y];
-                        passbackData[y] += tensorData[CrossProductLayer.index(x, y, inputDim)] * inputData[x];
-                      });
-                    });
-                    return passback;
-                  }, indata.addRef(), delta.addRef()))
-                  .toArray(Tensor[]::new));
-              in.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
-            }
-            delta.freeRef();
-            if (null != buffer)
-              buffer.freeRef();
-          }
+  private boolean alive(Result[] inObj) {
+    return Result.anyAlive(inObj);
+  }
 
-          public @SuppressWarnings("unused")
-          void _free() {
-            super._free();
-            in.freeRef();
-            indata.freeRef();
-          }
-        }) {
-
-          {
-            RefUtil.addRefs(inObj);
-          }
-
-          @Override
-          public boolean isAlive() {
-            for (@Nonnull final Result element : inObj)
-              if (element.isAlive()) {
-                return true;
-              }
-            return false;
-          }
-
-          public void _free() {
-            RefUtil.freeRef(inObj);
-            super._free();
-          }
-        };
-      } finally {
-        RefUtil.freeRef(inObj);
-        indata.freeRef();
-      }
-    } finally {
-      in.freeRef();
-    }
+  @NotNull
+  private TensorArray fwd(TensorList indata) {
+    TensorArray tensorArray = new TensorArray(indata.stream().parallel().map(tensor -> {
+      final int inputDim = tensor.length();
+      final int outputDim = (inputDim * inputDim - inputDim) / 2;
+      @Nonnull final Tensor result1 = new Tensor(outputDim);
+      @Nullable final double[] inputData = tensor.getData();
+      tensor.freeRef();
+      @Nullable final double[] resultData = result1.getData();
+      RefIntStream.range(0, inputDim).forEach(x -> {
+        RefIntStream.range(x + 1, inputDim).forEach(y -> {
+          resultData[CrossProductLayer.index(x, y, inputDim)] = inputData[x] * inputData[y];
+        });
+      });
+      return result1;
+    }).toArray(Tensor[]::new));
+    indata.freeRef();
+    return tensorArray;
   }
 
   @Nonnull
@@ -171,4 +114,57 @@ public class CrossProductLayer extends LayerBase {
     return (CrossProductLayer) super.addRef();
   }
 
+  private static class Accumulator extends Result.Accumulator {
+
+    private final TensorList indata;
+    private Result.Accumulator accumulator;
+    private boolean alive;
+
+    public Accumulator(TensorList indata, Result.Accumulator accumulator, boolean alive) {
+      this.indata = indata;
+      this.accumulator = accumulator;
+      this.alive = alive;
+    }
+
+    @Override
+    public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
+      if (alive) {
+        assert delta.length() == delta.length();
+        @Nonnull
+        TensorArray tensorArray = new TensorArray(RefIntStream.range(0, delta.length()).parallel()
+            .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) batchIndex -> {
+              @Nullable final Tensor deltaTensor = delta.get(batchIndex);
+              final int outputDim = deltaTensor.length();
+              final int inputDim = (1 + (int) Math.sqrt(1 + 8 * outputDim)) / 2;
+              @Nonnull final Tensor passback = new Tensor(inputDim);
+              @Nullable final double[] passbackData = passback.getData();
+              @Nullable final double[] tensorData = deltaTensor.getData();
+              deltaTensor.freeRef();
+              Tensor inputTensor = indata.get(batchIndex);
+              @Nullable final double[] inputData = inputTensor.getData();
+              inputTensor.freeRef();
+              RefIntStream.range(0, inputDim).forEach(x -> {
+                RefIntStream.range(x + 1, inputDim).forEach(y -> {
+                  passbackData[x] += tensorData[CrossProductLayer.index(x, y, inputDim)] * inputData[y];
+                  passbackData[y] += tensorData[CrossProductLayer.index(x, y, inputDim)] * inputData[x];
+                });
+              });
+              return passback;
+            }, indata.addRef(), delta.addRef()))
+            .toArray(Tensor[]::new));
+        DeltaSet<UUID> buffer1 = buffer == null ? null : buffer.addRef();
+        this.accumulator.accept(buffer1, tensorArray);
+      }
+      delta.freeRef();
+      if (null != buffer)
+        buffer.freeRef();
+    }
+
+    public @SuppressWarnings("unused")
+    void _free() {
+      super._free();
+      accumulator.freeRef();
+      indata.freeRef();
+    }
+  }
 }

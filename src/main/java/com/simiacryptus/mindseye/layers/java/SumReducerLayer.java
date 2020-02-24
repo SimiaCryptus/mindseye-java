@@ -25,6 +25,7 @@ import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefList;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,6 +35,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.IntFunction;
 import java.util.function.IntToDoubleFunction;
+
+import static com.simiacryptus.mindseye.lang.Result.anyAlive;
 
 @SuppressWarnings("serial")
 public class SumReducerLayer extends LayerBase {
@@ -57,85 +60,34 @@ public class SumReducerLayer extends LayerBase {
   @Nonnull
   @Override
   public Result eval(@Nonnull final Result... inObj) {
-    try {
-      TensorList temp_62_0003 = inObj[0].getData();
-      Result temp_62_0002 = new Result(new TensorArray(RefIntStream.range(0, temp_62_0003.length()).parallel()
-          .mapToDouble(RefUtil.wrapInterface((IntToDoubleFunction) dataIndex -> {
-            double sum = 0;
-            for (@Nonnull final Result element : inObj) {
-              TensorList data = element.getData();
-              @Nullable
-              Tensor tensor = data.get(dataIndex);
-              data.freeRef();
-              @Nullable final double[] input = tensor.getData();
-              tensor.freeRef();
-              for (final double element2 : input) {
-                sum += element2;
-              }
-            }
-            return sum;
-          }, RefUtil.addRefs(inObj))).mapToObj(x -> new Tensor(new double[]{x}, new int[]{1}))
-          .toArray(Tensor[]::new)), new Result.Accumulator() {
-        {
-          RefUtil.addRefs(inObj);
-        }
+    TensorList temp_62_0003 = inObj[0].getData();
+    int length = temp_62_0003.length();
+    temp_62_0003.freeRef();
+    boolean alive = anyAlive(RefUtil.addRefs(inObj));
+    TensorArray data = fwd(RefUtil.addRefs(inObj), length);
+    Accumulator accumulator = new Accumulator(inObj);
+    return new Result(data, accumulator, alive);
+  }
 
-        @Override
-        public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList data) {
-          for (@Nonnull final Result in_l : inObj) {
-            if (in_l.isAlive()) {
-              TensorList data1 = in_l.getData();
-              @Nonnull
-              TensorArray tensorArray = new TensorArray(RefIntStream.range(0, data1.length()).parallel()
-                  .mapToObj(RefUtil.wrapInterface((IntFunction<Tensor>) dataIndex -> {
-                    Tensor tensor = data.get(dataIndex);
-                    assert 1 == tensor.length() : RefArrays.toString(tensor.getDimensions());
-                    @Nonnull final Tensor passback = new Tensor(data1.getDimensions());
-                    for (int i = 0; i < Tensor.length(data1.getDimensions()); i++) {
-                      passback.set(i, tensor.get(0));
-                    }
-                    tensor.freeRef();
-                    return passback;
-                  }, data.addRef(), in_l.addRef(), data1))
-                  .toArray(Tensor[]::new));
-              in_l.accumulate(buffer == null ? null : buffer.addRef(), tensorArray);
+  @NotNull
+  private TensorArray fwd(@Nonnull Result[] inObj, int length) {
+    return new TensorArray(RefIntStream.range(0, length).parallel()
+        .mapToDouble(RefUtil.wrapInterface((IntToDoubleFunction) dataIndex -> {
+          double sum = 0;
+          for (@Nonnull final Result element : inObj) {
+            TensorList data = element.getData();
+            @Nullable
+            Tensor tensor = data.get(dataIndex);
+            data.freeRef();
+            @Nullable final double[] input = tensor.getData();
+            tensor.freeRef();
+            for (final double element2 : input) {
+              sum += element2;
             }
           }
-          data.freeRef();
-          if (null != buffer)
-            buffer.freeRef();
-        }
-
-        public @SuppressWarnings("unused")
-        void _free() {
-          super._free();
-          RefUtil.freeRef(inObj);
-        }
-      }) {
-
-        {
-          RefUtil.addRefs(inObj);
-        }
-
-        @Override
-        public boolean isAlive() {
-          for (@Nonnull final Result element : inObj)
-            if (element.isAlive()) {
-              return true;
-            }
-          return false;
-        }
-
-        public void _free() {
-          RefUtil.freeRef(inObj);
-          super._free();
-        }
-      };
-      temp_62_0003.freeRef();
-      return temp_62_0002;
-    } finally {
-      RefUtil.freeRef(inObj);
-    }
+          return sum;
+        }, inObj)).mapToObj(x -> new Tensor(new double[]{x}, new int[]{1}))
+        .toArray(Tensor[]::new));
   }
 
   @Nonnull
@@ -160,5 +112,52 @@ public class SumReducerLayer extends LayerBase {
   @SuppressWarnings("unused")
   SumReducerLayer addRef() {
     return (SumReducerLayer) super.addRef();
+  }
+
+  private static class Accumulator extends Result.Accumulator {
+
+    private final Result[] inObj;
+
+    public Accumulator(Result... inObj) {
+      this.inObj = inObj;
+    }
+
+    @Override
+    public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList data) {
+      for (@Nonnull final Result in_l : inObj) {
+        if (in_l.isAlive()) {
+          TensorList data1 = in_l.getData();
+          @Nonnull
+          TensorArray tensorArray = new TensorArray(RefIntStream.range(0, data1.length()).parallel()
+              .mapToObj(RefUtil.wrapInterface((IntFunction<Tensor>) dataIndex -> {
+                Tensor tensor = data.get(dataIndex);
+                assert 1 == tensor.length() : RefArrays.toString(tensor.getDimensions());
+                @Nonnull final Tensor passback = new Tensor(data1.getDimensions());
+                for (int i = 0; i < Tensor.length(data1.getDimensions()); i++) {
+                  passback.set(i, tensor.get(0));
+                }
+                tensor.freeRef();
+                return passback;
+              }, data.addRef(), in_l.addRef(), data1))
+              .toArray(Tensor[]::new));
+          DeltaSet<UUID> buffer1 = buffer == null ? null : buffer.addRef();
+          Result.Accumulator accumulator = in_l.getAccumulator();
+          try {
+            accumulator.accept(buffer1, tensorArray);
+          } finally {
+            accumulator.freeRef();
+          }
+        }
+      }
+      data.freeRef();
+      if (null != buffer)
+        buffer.freeRef();
+    }
+
+    public @SuppressWarnings("unused")
+    void _free() {
+      super._free();
+      RefUtil.freeRef(inObj);
+    }
   }
 }
