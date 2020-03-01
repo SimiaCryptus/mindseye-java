@@ -70,4 +70,8 @@ public final class SqActivationLayer extends SimpleActivationLayer<SqActivationL
     results[1] = d;
   }
 
+  @Override
+  public boolean isFrozen() {
+    return true;
+  }
 }

@@ -118,7 +118,7 @@ public class ImgPixelSoftmaxLayer extends LayerBase {
     boolean alive = input.isAlive();
     Accumulator accumulator = new Accumulator(sums, inputData, exps, width, height, inputBands, inputDims, input.getAccumulator(), input.isAlive());
     input.freeRef();
-    return new Result(output, accumulator, alive || !isFrozen());
+    return new Result(output, accumulator, alive);
   }
 
   @Nonnull

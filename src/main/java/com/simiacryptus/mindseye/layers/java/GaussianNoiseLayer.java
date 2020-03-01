@@ -90,7 +90,7 @@ public class GaussianNoiseLayer extends LayerBase implements StochasticComponent
     boolean alive = in0.isAlive();
     Result.Accumulator accumulator = new Accumulator(dimensions, in0.getAccumulator(), in0.isAlive());
     in0.freeRef();
-    return new Result(data, accumulator, alive || !isFrozen());
+    return new Result(data, accumulator, alive);
   }
 
   @NotNull

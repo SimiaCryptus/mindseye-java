@@ -148,7 +148,7 @@ public class PhotoUnpoolingLayer extends LayerBase {
     boolean alive = input.isAlive();
     Result.Accumulator accumulator = new Accumulator(referencebatch, inputDims, input.getAccumulator(), input.isAlive());
     input.freeRef();
-    return new Result(data, accumulator, alive || !isFrozen());
+    return new Result(data, accumulator, alive);
   }
 
   @NotNull

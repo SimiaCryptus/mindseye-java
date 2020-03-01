@@ -111,12 +111,12 @@ public class BiasLayer extends LayerBase {
   public Result eval(@Nonnull final Result... inObj) {
     TensorList input = first(RefUtil.addRefs(inObj));
     TensorArray data = fwd(input);
-    boolean alive = 0 < inObj.length && inObj[0].isAlive() || !isFrozen();
+    boolean alive = 0 < inObj.length && inObj[0].isAlive();
     final Result.Accumulator accumulator1 = inObj[0].getAccumulator();
     final boolean alive1 = inObj[0].isAlive();
     Accumulator accumulator = new Accumulator(bias.addRef(), isFrozen(), getId(), accumulator1, alive1);
     RefUtil.freeRef(inObj);
-    return new Result(data, accumulator, alive);
+    return new Result(data, accumulator, alive || !isFrozen());
   }
 
   @NotNull

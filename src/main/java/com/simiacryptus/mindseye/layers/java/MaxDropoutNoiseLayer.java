@@ -78,7 +78,7 @@ public class MaxDropoutNoiseLayer extends LayerBase {
     Result.Accumulator accumulator = new Accumulator(RefUtil.addRefs(mask), data0.addRef(), in0.getAccumulator(), in0.isAlive());
     in0.freeRef();
     TensorArray data = fwd(data0, mask);
-    return new Result(data, accumulator, alive || !isFrozen());
+    return new Result(data, accumulator, alive);
   }
 
   @NotNull

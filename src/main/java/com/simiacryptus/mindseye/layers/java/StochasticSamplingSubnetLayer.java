@@ -108,7 +108,7 @@ public class StochasticSamplingSubnetLayer extends LayerBase implements Stochast
       return subnetwork.eval(inObj);
     }
     Result[] counting = RefArrays.stream(inObj).map(r -> {
-      return new CountingResult(r, samples);
+      return new CountingResult(r, samples, StochasticSamplingSubnetLayer.this.addRef());
     }).toArray(Result[]::new);
     return average(
         RefArrays.stream(getSeeds()).mapToObj(RefUtil.wrapInterface((LongFunction<? extends Result>) seed1 -> {

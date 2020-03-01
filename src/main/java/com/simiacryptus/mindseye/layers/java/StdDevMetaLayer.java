@@ -46,7 +46,7 @@ public class StdDevMetaLayer extends PipelineNetwork {
     RefUtil.freeRef(add(avgMetaLayer.addRef()));
     RefUtil.freeRef(add(new AvgReducerLayer()));
     InnerNode square = add(new SqActivationLayer());
-    RefUtil.freeRef(add(new SqActivationLayer(), getInput(0), square.addRef()));
+    RefUtil.freeRef(add(new SqActivationLayer(), getInput(0)));
     RefUtil.freeRef(add(avgMetaLayer));
     RefUtil.freeRef(add(new AvgReducerLayer()));
     LinearActivationLayer negative = new LinearActivationLayer();

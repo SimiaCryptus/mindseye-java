@@ -210,15 +210,15 @@ public class TensorConcatLayer extends LayerBase {
         } finally {
           accumulator.freeRef();
         }
-        if (0 < wrap.currentRefCount()) {
-          RefUtil.freeRef(splitData);
-          RuntimeException temp_09_0007 = new RuntimeException(
-              inObj[i].getClass() + " leak: " + wrap.currentRefCount());
-          wrap.freeRef();
-          if (null != buffer)
-            buffer.freeRef();
-          throw temp_09_0007;
-        }
+//        if (0 < wrap.currentRefCount()) {
+//          RefUtil.freeRef(splitData);
+//          RuntimeException temp_09_0007 = new RuntimeException(
+//              inObj[i].getClass() + " leak: " + wrap.currentRefCount());
+//          wrap.freeRef();
+//          if (null != buffer)
+//            buffer.freeRef();
+//          throw temp_09_0007;
+//        }
         wrap.freeRef();
       }
       if (null != buffer)

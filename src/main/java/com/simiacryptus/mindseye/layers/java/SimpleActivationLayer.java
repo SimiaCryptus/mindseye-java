@@ -53,25 +53,29 @@ public abstract class SimpleActivationLayer<T extends SimpleActivationLayer<T>> 
   @Nonnull
   @Override
   public Result eval(@Nonnull final Result... inObj) {
+    if (1 != inObj.length) {
+      RefUtil.freeRef(inObj);
+      throw new IllegalArgumentException();
+    }
     final Result inObj0 = inObj[0].addRef();
     RefUtil.freeRef(inObj);
     final TensorList indata0 = inObj0.getData();
     final int itemCnt = indata0.length();
     assert 0 < itemCnt;
     @Nonnull final Tensor inputGradientA[] = new Tensor[itemCnt];
-    TensorArray data = fwd(indata0, itemCnt, inputGradientA);
+    TensorArray data = fwd(indata0, inputGradientA);
     final boolean inObj0Alive = inObj0.isAlive();
     Result.Accumulator accumulator = new Accumulator(inObj0Alive, itemCnt, inputGradientA, inObj0.getAccumulator());
     inObj0.freeRef();
-    return new Result(data, accumulator, inObj0Alive);
+    return new Result(data, accumulator, inObj0Alive || !isFrozen());
   }
 
   @NotNull
-  private TensorArray fwd(TensorList indata0, int itemCnt, @RefIgnore Tensor[] inputGradient_out) {
-    return new TensorArray(RefIntStream.range(0, itemCnt).parallel()
+  private TensorArray fwd(TensorList inputList, @RefIgnore Tensor[] inputGradient_out) {
+    return new TensorArray(RefIntStream.range(0, inputList.length()).parallel()
           .mapToObj(RefUtil.wrapInterface((IntFunction<Tensor>) dataIndex -> {
-            @Nullable final Tensor input = indata0.get(dataIndex);
-            @Nonnull final Tensor output = new Tensor(indata0.getDimensions());
+            @Nullable final Tensor input = inputList.get(dataIndex);
+            @Nonnull final Tensor output = new Tensor(input.getDimensions());
             int length = input.length();
             @Nonnull final Tensor inputGradient = new Tensor(length);
             @Nonnull final double[] results = new double[2];
@@ -84,7 +88,7 @@ public abstract class SimpleActivationLayer<T extends SimpleActivationLayer<T>> 
             RefUtil.set(inputGradient_out, dataIndex, inputGradient);
             input.freeRef();
             return output;
-          }, indata0))
+          }, inputList))
           .toArray(Tensor[]::new));
   }
 

@@ -74,7 +74,7 @@ public class ImgPixelSumLayer extends LayerBase {
     boolean alive = input.isAlive();
     Accumulator accumulator = new Accumulator(inputDims, input.getAccumulator(), input.isAlive());
     input.freeRef();
-    return new Result(data, accumulator, alive || !isFrozen());
+    return new Result(data, accumulator, alive);
   }
 
   @NotNull

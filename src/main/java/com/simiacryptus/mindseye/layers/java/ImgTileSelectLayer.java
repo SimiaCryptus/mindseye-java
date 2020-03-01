@@ -180,7 +180,7 @@ public class ImgTileSelectLayer extends LayerBase {
     Result.Accumulator accumulator = new Accumulator(positionX, positionY, toroidal, inputDims, input.getAccumulator(), input.isAlive());
     input.freeRef();
     TensorArray data = fwd(batch, dimOut);
-    return new Result(data, accumulator, alive || !isFrozen());
+    return new Result(data, accumulator, alive);
   }
 
   @NotNull

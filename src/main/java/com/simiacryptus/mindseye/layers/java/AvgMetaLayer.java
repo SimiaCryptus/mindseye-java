@@ -80,8 +80,9 @@ public class AvgMetaLayer extends LayerBase {
     final int itemCnt = inputData.length();
     AtomicBoolean passback = new AtomicBoolean(false);
     @Nullable Tensor thisResult = fwd(inputData, itemCnt, passback);
+    boolean active = passback.get();
     boolean alive = input.isAlive();
-    Result.Accumulator accumulator = new Accumulator(thisResult.addRef(), passback, itemCnt, input.getAccumulator(), input.isAlive());
+    Result.Accumulator accumulator = new Accumulator(thisResult.addRef(), itemCnt, input.getAccumulator(), alive, active);
     input.freeRef();
     TensorArray data = new TensorArray(thisResult);
     return new Result(data, accumulator, alive);
@@ -157,35 +158,38 @@ public class AvgMetaLayer extends LayerBase {
   private static class Accumulator extends Result.Accumulator {
 
     private final Tensor tensor;
-    private final AtomicBoolean passback;
     private final int itemCnt;
     private Result.Accumulator accumulator;
     private boolean alive;
+    private boolean active;
 
-    public Accumulator(Tensor tensor, AtomicBoolean passback, int itemCnt, Result.Accumulator accumulator, boolean alive) {
+    public Accumulator(Tensor tensor, int itemCnt, Result.Accumulator accumulator, boolean alive, boolean active) {
       this.tensor = tensor;
-      this.passback = passback;
       this.itemCnt = itemCnt;
       this.accumulator = accumulator;
       this.alive = alive;
+      this.active = active;
     }
 
     @Override
     public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList data) {
-      if (passback.get() && alive) {
+      if (alive) {
         @Nullable final Tensor delta = data.get(0);
         @Nonnull final Tensor feedback[] = new Tensor[itemCnt];
+        int[] deltaDimensions = delta.getDimensions();
         RefArrays.parallelSetAll(RefUtil.addRefs(feedback),
-            RefUtil.wrapInterface(i -> new Tensor(delta.getDimensions()), delta.addRef()));
-        tensor.coordStream(true)
-            .forEach(RefUtil.wrapInterface(inputCoord -> {
-              for (int inputItem = 0; inputItem < itemCnt; inputItem++) {
-                feedback[inputItem].add(inputCoord, delta.get(inputCoord) / itemCnt);
-              }
-            }, delta, RefUtil.addRefs(feedback)));
-        @Nonnull
-        TensorArray tensorArray = new TensorArray(feedback);
-        this.accumulator.accept(buffer == null ? null : buffer.addRef(), tensorArray);
+            i -> new Tensor(deltaDimensions));
+        if (active) {
+          tensor.coordStream(true)
+              .forEach(RefUtil.wrapInterface(inputCoord -> {
+                for (int inputItem = 0; inputItem < itemCnt; inputItem++) {
+                  feedback[inputItem].add(inputCoord, delta.get(inputCoord) / itemCnt);
+                }
+              }, delta, RefUtil.addRefs(feedback)));
+        } else {
+          delta.freeRef();
+        }
+        this.accumulator.accept(buffer == null ? null : buffer.addRef(), new TensorArray(feedback));
       }
       data.freeRef();
       if (null != buffer)

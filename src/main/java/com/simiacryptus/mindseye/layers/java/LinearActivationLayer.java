@@ -108,7 +108,7 @@ public class LinearActivationLayer extends LayerBase {
     RefUtil.freeRef(inObj);
     boolean alive = in0.isAlive();
     TensorArray data = fwd(in0.getData());
-    Result.Accumulator accumulator = new Accumulator(in0.getData(), weights.addRef(), getId(), isFrozen(), in0.getAccumulator(), in0.isAlive());
+    Result.Accumulator accumulator = new Accumulator(in0.getData(), weights.addRef(), getId(), isFrozen(), in0.getAccumulator(), alive);
     in0.freeRef();
     return new Result(data, accumulator, alive || !isFrozen());
   }
@@ -187,22 +187,20 @@ public class LinearActivationLayer extends LayerBase {
               @Nullable
               Tensor inputT = inData.get(dataIndex);
               @Nullable final double[] deltaData = deltaT.getData();
-              deltaT.freeRef();
               @Nullable final double[] inputData = inputT.getData();
-              inputT.freeRef();
               @Nonnull final Tensor weightDelta = new Tensor(weights.getDimensions());
               for (int i = 0; i < deltaData.length; i++) {
                 weightDelta.add(0, deltaData[i] * inputData[inputData.length == 1 ? 0 : i]);
                 weightDelta.add(1, deltaData[i]);
               }
+              deltaT.freeRef();
+              inputT.freeRef();
               Delta<UUID> temp_04_0006 = buffer.get(id, weights.getData());
               assert temp_04_0006 != null;
               temp_04_0006.addInPlace(weightDelta.getData());
               temp_04_0006.freeRef();
               weightDelta.freeRef();
-            }, buffer.addRef(), inData.addRef(),
-            weights.addRef(),
-            delta.addRef()));
+            }, buffer.addRef(), inData.addRef(), weights.addRef(), delta.addRef()));
       }
       if (alive) {
         @Nonnull final TensorList tensorList = new TensorArray(RefIntStream.range(0, delta.length())
@@ -218,11 +216,7 @@ public class LinearActivationLayer extends LayerBase {
               return passback;
             }, inData.addRef(), delta.addRef()))
             .toArray(Tensor[]::new));
-        try {
-          this.accumulator.accept(buffer.addRef(), tensorList);
-        } finally {
-          this.accumulator.freeRef();
-        }
+        this.accumulator.accept(buffer.addRef(), tensorList);
       }
       delta.freeRef();
       buffer.freeRef();

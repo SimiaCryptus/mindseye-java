@@ -76,7 +76,7 @@ public class ImgPixelGateLayer extends LayerBase {
     Accumulator accumulator = new Accumulator(gateData, inputData, inputDims, input.getAccumulator(), input.isAlive(), gate.getAccumulator(), gate.isAlive());
     gate.freeRef();
     input.freeRef();
-    return new Result(data, accumulator, alive || !isFrozen());
+    return new Result(data, accumulator, alive);
   }
 
   @NotNull

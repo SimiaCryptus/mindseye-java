@@ -131,33 +131,30 @@ public class SumInputsLayer extends LayerBase {
         if (input.isAlive()) {
           @Nonnull
           TensorList projectedDelta = delta == null ? null : delta.addRef();
-          TensorList temp_55_0007 = input.getData();
+          TensorList data = input.getData();
           assert projectedDelta != null;
-          if (1 < projectedDelta.length() && temp_55_0007.length() == 1) {
+          if (1 < projectedDelta.length() && data.length() == 1) {
             TensorArray projectedDelta1 = new TensorArray(RefUtil.get(projectedDelta.stream().parallel().reduce((a, b) -> {
               return Tensor.add(a, b);
             })));
             projectedDelta.freeRef();
             projectedDelta = projectedDelta1;
           }
-          temp_55_0007.freeRef();
-          TensorList temp_55_0008 = input.getData();
           if (1 < Tensor.length(projectedDelta.getDimensions())
-              && Tensor.length(temp_55_0008.getDimensions()) == 1) {
+              && Tensor.length(data.getDimensions()) == 1) {
             @Nonnull
             TensorArray new_projectedDelta = new TensorArray(projectedDelta.stream().map(t -> {
-              Tensor temp_55_0004 = new Tensor(new double[]{t.sum()});
+              double sum = t.sum();
               t.freeRef();
-              return temp_55_0004;
+              return new Tensor(new double[]{sum});
             }).toArray(Tensor[]::new));
             projectedDelta.freeRef();
             projectedDelta = new_projectedDelta;
           }
-          temp_55_0008.freeRef();
-          DeltaSet<UUID> buffer1 = buffer == null ? null : buffer.addRef();
+          data.freeRef();
           Result.Accumulator accumulator = input.getAccumulator();
           try {
-            accumulator.accept(buffer1, projectedDelta);
+            accumulator.accept(buffer.addRef(), projectedDelta);
           } finally {
             accumulator.freeRef();
           }

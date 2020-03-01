@@ -104,7 +104,7 @@ public class ImgCropLayer extends LayerBase {
     Result.Accumulator accumulator = new Accumulator(inputDims, input.getAccumulator(), alive);
     input.freeRef();
     TensorArray data = fwd(batch, inputDims[2]);
-    return new Result(data, accumulator, alive || !isFrozen());
+    return new Result(data, accumulator, alive);
   }
 
   @NotNull

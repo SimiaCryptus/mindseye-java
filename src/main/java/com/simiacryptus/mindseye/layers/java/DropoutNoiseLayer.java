@@ -97,7 +97,7 @@ public class DropoutNoiseLayer extends LayerBase implements StochasticComponent 
     Result.Accumulator accumulator = new Accumulator(RefUtil.addRefs(mask), inputResult.getAccumulator(), inputResult.isAlive());
     inputResult.freeRef();
     TensorArray data = fwd(inputData, itemCnt, mask);
-    return new Result(data, accumulator, alive || !isFrozen());
+    return new Result(data, accumulator, alive);
   }
 
   @NotNull

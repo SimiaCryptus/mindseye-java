@@ -23,6 +23,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.simiacryptus.mindseye.lang.*;
+import com.simiacryptus.ref.lang.RefIgnore;
 import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.RefArrayList;
 import com.simiacryptus.ref.wrappers.RefArrays;
@@ -210,31 +211,27 @@ public class ImgViewLayer extends LayerBase {
     }
   }
 
-  private static double get(@Nonnull Tensor tensor, int width, int height, int x, int y, int channel, boolean wrap) {
-    try {
-      assert channel >= 0 : channel;
-      if (wrap) {
-        while (x < 0)
-          x += width;
-        x %= width;
-        while (y < 0)
-          y += height;
-        y %= height;
-      }
-      if (x < 0) {
-        return 0.0;
-      } else if (x >= width) {
-        return 0.0;
-      }
-      if (y < 0) {
-        return 0.0;
-      } else if (y >= height) {
-        return 0.0;
-      }
-      return tensor.get(x, y, channel);
-    } finally {
-      tensor.freeRef();
+  private static double get(@Nonnull @RefIgnore Tensor tensor, int width, int height, int x, int y, int channel, boolean wrap) {
+    assert channel >= 0 : channel;
+    if (wrap) {
+      while (x < 0)
+        x += width;
+      x %= width;
+      while (y < 0)
+        y += height;
+      y %= height;
     }
+    if (x < 0) {
+      return 0.0;
+    } else if (x >= width) {
+      return 0.0;
+    }
+    if (y < 0) {
+      return 0.0;
+    } else if (y >= height) {
+      return 0.0;
+    }
+    return tensor.get(x, y, channel);
   }
 
   @Nonnull
@@ -253,7 +250,7 @@ public class ImgViewLayer extends LayerBase {
     Result.Accumulator accumulator = new Accumulator(addRef(), inputDims, input.getAccumulator(), input.isAlive());
     input.freeRef();
     TensorArray data = fwd(batch, dimOut);
-    return new Result(data, accumulator, alive || !isFrozen());
+    return new Result(data, accumulator, alive);
   }
 
   @NotNull
@@ -261,9 +258,7 @@ public class ImgViewLayer extends LayerBase {
     return new TensorArray(RefIntStream.range(0, batch.length())
             .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
               @Nonnull final Tensor outputData = new Tensor(dimOut);
-              Tensor inputData = batch.get(dataIndex);
-              fwd(inputData.addRef(), outputData.addRef());
-              inputData.freeRef();
+              fwd(batch.get(dataIndex), outputData.addRef());
               return outputData;
             }, batch)).toArray(Tensor[]::new));
   }
@@ -336,10 +331,10 @@ public class ImgViewLayer extends LayerBase {
       else
         channel = coords[2] + 1;
       if (0 < channel) {
-        outputData.set(c, get(inputData.addRef(), inputDims[0], inputDims[1], x, y, channel - 1, wrap));
+        outputData.set(c, get(inputData, inputDims[0], inputDims[1], x, y, channel - 1, wrap));
       } else {
-        final double value = getNegativeBias() - get(inputData.addRef(),
-            inputDims[0], inputDims[1], x, y, -channel - 1, wrap);
+        final double value = getNegativeBias() -
+            get(inputData, inputDims[0], inputDims[1], x, y, -channel - 1, wrap);
         outputData.set(c, value);
       }
     }, inputData, outputData));

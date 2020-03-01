@@ -121,9 +121,9 @@ public class AvgReducerLayer extends LayerBase {
 
     @Override
     public void accept(@Nullable DeltaSet<UUID> buffer, @Nonnull TensorList delta) {
-      for (@Nonnull final Result in_l : inObj) {
-        if (in_l.isAlive()) {
-          TensorList inData = in_l.getData();
+      for (@Nonnull final Result result : inObj) {
+        if (result.isAlive()) {
+          TensorList inData = result.getData();
           @Nonnull final TensorList tensorList = new TensorArray(RefIntStream.range(0, inData.length()).parallel()
               .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
                 Tensor deltaTensor = delta.get(dataIndex);
@@ -137,10 +137,9 @@ public class AvgReducerLayer extends LayerBase {
                 return passback;
               }, delta.addRef(), inData))
               .toArray(Tensor[]::new));
-          DeltaSet<UUID> buffer1 = buffer == null ? null : buffer.addRef();
-          Result.Accumulator accumulator = in_l.getAccumulator();
+          Result.Accumulator accumulator = result.getAccumulator();
           try {
-            accumulator.accept(buffer1, tensorList);
+            accumulator.accept(buffer.addRef(), tensorList);
           } finally {
             accumulator.freeRef();
           }

@@ -136,7 +136,7 @@ public class UnpoolingLayer extends LayerBase {
     boolean alive = input.isAlive();
     Result.Accumulator accumulator = new Accumulator(inputDims, input.getAccumulator(), input.isAlive());
     input.freeRef();
-    return new Result(data, accumulator, alive || !isFrozen());
+    return new Result(data, accumulator, alive);
   }
 
   @NotNull
