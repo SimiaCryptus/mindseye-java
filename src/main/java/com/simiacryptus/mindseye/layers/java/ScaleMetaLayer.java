@@ -75,17 +75,6 @@ public class ScaleMetaLayer extends LayerBase {
     return new Result(data, accumulator, alive);
   }
 
-  @NotNull
-  private TensorArray fwd(TensorList data0, int itemCnt, Tensor scale) {
-    return new TensorArray(RefIntStream.range(0, itemCnt)
-          .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-            Tensor tensor = data0.get(dataIndex);
-            Tensor tensor1 = tensor.mapIndex((v, c) -> v * scale.get(c));
-            tensor.freeRef();
-            return tensor1;
-          }, scale, data0)).toArray(Tensor[]::new));
-  }
-
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
@@ -108,6 +97,17 @@ public class ScaleMetaLayer extends LayerBase {
   @SuppressWarnings("unused")
   ScaleMetaLayer addRef() {
     return (ScaleMetaLayer) super.addRef();
+  }
+
+  @NotNull
+  private TensorArray fwd(TensorList data0, int itemCnt, Tensor scale) {
+    return new TensorArray(RefIntStream.range(0, itemCnt)
+        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+          Tensor tensor = data0.get(dataIndex);
+          Tensor tensor1 = tensor.mapIndex((v, c) -> v * scale.get(c));
+          tensor.freeRef();
+          return tensor1;
+        }, scale, data0)).toArray(Tensor[]::new));
   }
 
   private static class Accumulator extends Result.Accumulator {
@@ -143,7 +143,7 @@ public class ScaleMetaLayer extends LayerBase {
               return temp_56_0006;
             }, scale.addRef())).toArray(Tensor[]::new));
         DeltaSet<UUID> buffer1 = buffer == null ? null : buffer.addRef();
-          this.accumulator0.accept(buffer1, tensorArray);
+        this.accumulator0.accept(buffer1, tensorArray);
       }
       if (alive1) {
         int length = data.length();
@@ -162,7 +162,7 @@ public class ScaleMetaLayer extends LayerBase {
             .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) i -> {
               return i == 0 ? passback.addRef() : passback.map(v -> 0);
             }, passback)).toArray(Tensor[]::new));
-          accumulator1.accept(buffer, tensorArray);
+        accumulator1.accept(buffer, tensorArray);
       } else {
         data.freeRef();
         if (null != buffer)

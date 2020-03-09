@@ -94,23 +94,6 @@ public class HyperbolicActivationLayer extends LayerBase {
     return new Result(data, accumulator, alive || !isFrozen());
   }
 
-  @NotNull
-  private TensorArray fwd(TensorList indata) {
-    final int itemCnt = indata.length();
-    return new TensorArray(RefIntStream.range(0, itemCnt)
-        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-          @Nullable final Tensor input = indata.get(dataIndex);
-          Tensor temp_16_0005 = input.map(v -> {
-            final int sign = v < 0 ? negativeMode : 1;
-            assert weights != null;
-            final double a = Math.max(0, weights.get(v < 0 ? 1 : 0));
-            return sign * (Math.sqrt(Math.pow(a * v, 2) + 1) - a) / a;
-          });
-          input.freeRef();
-          return temp_16_0005;
-        }, indata)).toArray(Tensor[]::new));
-  }
-
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, @Nonnull DataSerializer dataSerializer) {
@@ -156,6 +139,23 @@ public class HyperbolicActivationLayer extends LayerBase {
     return (HyperbolicActivationLayer) super.addRef();
   }
 
+  @NotNull
+  private TensorArray fwd(TensorList indata) {
+    final int itemCnt = indata.length();
+    return new TensorArray(RefIntStream.range(0, itemCnt)
+        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+          @Nullable final Tensor input = indata.get(dataIndex);
+          Tensor temp_16_0005 = input.map(v -> {
+            final int sign = v < 0 ? negativeMode : 1;
+            assert weights != null;
+            final double a = Math.max(0, weights.get(v < 0 ? 1 : 0));
+            return sign * (Math.sqrt(Math.pow(a * v, 2) + 1) - a) / a;
+          });
+          input.freeRef();
+          return temp_16_0005;
+        }, indata)).toArray(Tensor[]::new));
+  }
+
   private static class Accumulator extends Result.Accumulator {
 
     private final TensorList indata;
@@ -193,7 +193,7 @@ public class HyperbolicActivationLayer extends LayerBase {
                 final double d = deltaData[i];
                 final double x = inputData[i];
                 final int sign = x < 0 ? negativeMode : 1;
-                final double a = Math.max(0, weights.getData()[x < 0 ? 1 : 0]);
+                final double a = Math.max(0, weights.get(x < 0 ? 1 : 0));
                 weightDelta.add(x < 0 ? 1 : 0, -sign * d / (a * a * Math.sqrt(1 + Math.pow(a * x, 2))));
               }
               deltaI.freeRef();
@@ -223,7 +223,7 @@ public class HyperbolicActivationLayer extends LayerBase {
                 final double d = deltaData[i];
                 final int sign = x < 0 ? negativeMode : 1;
                 assert weights != null;
-                final double a = Math.max(0, weights.getData()[x < 0 ? 1 : 0]);
+                final double a = Math.max(0, weights.get(x < 0 ? 1 : 0));
                 passback.set(i, sign * d * a * x / Math.sqrt(1 + a * x * a * x));
               }
               deltaTensor.freeRef();

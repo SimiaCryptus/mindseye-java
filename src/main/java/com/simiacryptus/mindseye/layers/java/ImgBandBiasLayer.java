@@ -135,28 +135,6 @@ public class ImgBandBiasLayer extends LayerBase {
     return result;
   }
 
-  @NotNull
-  private TensorArray fwd(double[] bias, TensorList inputData) {
-    TensorArray tensorArray = new TensorArray(inputData.stream().parallel().map(r -> {
-      int[] dimensions = r.getDimensions();
-      if (dimensions.length != 3) {
-        r.freeRef();
-        throw new IllegalArgumentException(RefArrays.toString(dimensions));
-      }
-      assert bias != null;
-      if (dimensions[2] != bias.length) {
-        r.freeRef();
-        throw new IllegalArgumentException(RefString.format(
-            "%s: %s does not have %s bands", getName(), RefArrays.toString(dimensions), bias.length));
-      }
-      Tensor tensor = new Tensor(add(r.getData()), dimensions);
-      r.freeRef();
-      return tensor;
-    }).toArray(Tensor[]::new));
-    inputData.freeRef();
-    return tensorArray;
-  }
-
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
@@ -196,6 +174,28 @@ public class ImgBandBiasLayer extends LayerBase {
   @SuppressWarnings("unused")
   ImgBandBiasLayer addRef() {
     return (ImgBandBiasLayer) super.addRef();
+  }
+
+  @NotNull
+  private TensorArray fwd(double[] bias, TensorList inputData) {
+    TensorArray tensorArray = new TensorArray(inputData.stream().parallel().map(r -> {
+      int[] dimensions = r.getDimensions();
+      if (dimensions.length != 3) {
+        r.freeRef();
+        throw new IllegalArgumentException(RefArrays.toString(dimensions));
+      }
+      assert bias != null;
+      if (dimensions[2] != bias.length) {
+        r.freeRef();
+        throw new IllegalArgumentException(RefString.format(
+            "%s: %s does not have %s bands", getName(), RefArrays.toString(dimensions), bias.length));
+      }
+      Tensor tensor = new Tensor(add(r.getData()), dimensions);
+      r.freeRef();
+      return tensor;
+    }).toArray(Tensor[]::new));
+    inputData.freeRef();
+    return tensorArray;
   }
 
   private static class Accumulator extends Result.Accumulator {

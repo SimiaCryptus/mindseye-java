@@ -75,53 +75,10 @@ public class MaxDropoutNoiseLayer extends LayerBase {
     final TensorList data0 = in0.getData();
     final Tensor[] mask = getMask(data0.addRef());
     boolean alive = in0.isAlive();
-    Result.Accumulator accumulator = new Accumulator(RefUtil.addRefs(mask), data0.addRef(), in0.getAccumulator(), in0.isAlive());
+    Result.Accumulator accumulator = new Accumulator(RefUtil.addRef(mask), data0.addRef(), in0.getAccumulator(), in0.isAlive());
     in0.freeRef();
     TensorArray data = fwd(data0, mask);
     return new Result(data, accumulator, alive);
-  }
-
-  @NotNull
-  private Tensor[] getMask(TensorList data0) {
-    return RefIntStream.range(0, data0.length())
-          .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-            @Nullable final Tensor input = data0.get(dataIndex);
-            @Nullable final Tensor output = input.map(x -> 0);
-            final RefList<RefList<Coordinate>> cells = getCellMap_cached.apply(new IntArray(output.getDimensions()));
-            try {
-              cells.forEach(cell -> {
-                try {
-                  output.set(RefUtil.get(cell.stream()
-                      .max(RefComparator.comparingDouble(
-                          coords -> input.get(coords)
-                      ))), 1);
-                } finally {
-                  cell.freeRef();
-                }
-              });
-            } finally {
-              cells.freeRef();
-              input.freeRef();
-            }
-            return output;
-          }, data0)).toArray(Tensor[]::new);
-  }
-
-  @NotNull
-  private TensorArray fwd(TensorList data0, Tensor[] mask) {
-    return new TensorArray(RefIntStream.range(0, data0.length())
-            .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-              Tensor inputData = data0.get(dataIndex);
-              @Nullable final double[] input = inputData.getData();
-              @Nullable final double[] maskT = mask[dataIndex].getData();
-              @Nonnull final Tensor output = new Tensor(inputData.getDimensions());
-              inputData.freeRef();
-              @Nullable final double[] outputData = output.getData();
-              for (int i = 0; i < outputData.length; i++) {
-                outputData[i] = input[i] * maskT[i];
-              }
-              return output;
-            }, data0, mask)).toArray(Tensor[]::new));
   }
 
   @Nonnull
@@ -150,6 +107,49 @@ public class MaxDropoutNoiseLayer extends LayerBase {
   @SuppressWarnings("unused")
   MaxDropoutNoiseLayer addRef() {
     return (MaxDropoutNoiseLayer) super.addRef();
+  }
+
+  @NotNull
+  private Tensor[] getMask(TensorList data0) {
+    return RefIntStream.range(0, data0.length())
+        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+          @Nullable final Tensor input = data0.get(dataIndex);
+          @Nullable final Tensor output = input.map(x -> 0);
+          final RefList<RefList<Coordinate>> cells = getCellMap_cached.apply(new IntArray(output.getDimensions()));
+          try {
+            cells.forEach(cell -> {
+              try {
+                output.set(RefUtil.get(cell.stream()
+                    .max(RefComparator.comparingDouble(
+                        coords -> input.get(coords)
+                    ))), 1);
+              } finally {
+                cell.freeRef();
+              }
+            });
+          } finally {
+            cells.freeRef();
+            input.freeRef();
+          }
+          return output;
+        }, data0)).toArray(Tensor[]::new);
+  }
+
+  @NotNull
+  private TensorArray fwd(TensorList data0, Tensor[] mask) {
+    return new TensorArray(RefIntStream.range(0, data0.length())
+        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+          Tensor inputData = data0.get(dataIndex);
+          @Nullable final double[] input = inputData.getData();
+          @Nullable final double[] maskT = mask[dataIndex].getData();
+          @Nonnull final Tensor output = new Tensor(inputData.getDimensions());
+          inputData.freeRef();
+          @Nullable final double[] outputData = output.getData();
+          for (int i = 0; i < outputData.length; i++) {
+            outputData[i] = input[i] * maskT[i];
+          }
+          return output;
+        }, data0, mask)).toArray(Tensor[]::new));
   }
 
   @Nonnull
@@ -205,7 +205,7 @@ public class MaxDropoutNoiseLayer extends LayerBase {
                   }
                   return passback;
                 }, data0.addRef(), delta,
-                RefUtil.addRefs(mask)))
+                RefUtil.addRef(mask)))
             .toArray(Tensor[]::new));
         try {
           this.accumulator.accept(buffer, tensorArray);

@@ -70,28 +70,6 @@ public abstract class SimpleActivationLayer<T extends SimpleActivationLayer<T>> 
     return new Result(data, accumulator, inObj0Alive || !isFrozen());
   }
 
-  @NotNull
-  private TensorArray fwd(TensorList inputList, @RefIgnore Tensor[] inputGradient_out) {
-    return new TensorArray(RefIntStream.range(0, inputList.length()).parallel()
-          .mapToObj(RefUtil.wrapInterface((IntFunction<Tensor>) dataIndex -> {
-            @Nullable final Tensor input = inputList.get(dataIndex);
-            @Nonnull final Tensor output = new Tensor(input.getDimensions());
-            int length = input.length();
-            @Nonnull final Tensor inputGradient = new Tensor(length);
-            @Nonnull final double[] results = new double[2];
-            double[] inputData = input.getData();
-            for (int i = 0; i < length; i++) {
-              eval(inputData[i], results);
-              inputGradient.set(i, results[1]);
-              output.set(i, results[0]);
-            }
-            RefUtil.set(inputGradient_out, dataIndex, inputGradient);
-            input.freeRef();
-            return output;
-          }, inputList))
-          .toArray(Tensor[]::new));
-  }
-
   @Nonnull
   @Override
   public RefList<double[]> state() {
@@ -112,6 +90,28 @@ public abstract class SimpleActivationLayer<T extends SimpleActivationLayer<T>> 
 
   protected abstract void eval(final double x, double[] results);
 
+  @NotNull
+  private TensorArray fwd(TensorList inputList, @RefIgnore Tensor[] inputGradient_out) {
+    return new TensorArray(RefIntStream.range(0, inputList.length()).parallel()
+        .mapToObj(RefUtil.wrapInterface((IntFunction<Tensor>) dataIndex -> {
+          @Nullable final Tensor input = inputList.get(dataIndex);
+          @Nonnull final Tensor output = new Tensor(input.getDimensions());
+          int length = input.length();
+          @Nonnull final Tensor inputGradient = new Tensor(length);
+          @Nonnull final double[] results = new double[2];
+          double[] inputData = input.getData();
+          for (int i = 0; i < length; i++) {
+            eval(inputData[i], results);
+            inputGradient.set(i, results[1]);
+            output.set(i, results[0]);
+          }
+          RefUtil.set(inputGradient_out, dataIndex, inputGradient);
+          input.freeRef();
+          return output;
+        }, inputList))
+        .toArray(Tensor[]::new));
+  }
+
   private static class Accumulator extends Result.Accumulator {
 
     private final boolean inObj0Alive;
@@ -131,23 +131,23 @@ public abstract class SimpleActivationLayer<T extends SimpleActivationLayer<T>> 
       data.assertAlive();
       if (null != buffer) buffer.assertAlive();
       if (inObj0Alive) {
-          this.accumulator.accept(buffer, new TensorArray(RefIntStream.range(0, itemCnt).parallel()
-                    .mapToObj(RefUtil.wrapInterface((IntFunction<Tensor>) dataIndex -> {
-                      @Nonnull final Tensor passback = new Tensor(data.getDimensions());
-                      Tensor tensor1 = null == inputGradientA ? null : inputGradientA[dataIndex].addRef();
-                      @Nullable final double[] gradientData = null == tensor1 ? null : tensor1.getData();
-                      @Nullable
-                      Tensor tensor = data.get(dataIndex);
-                      RefIntStream.range(0, passback.length()).forEach(RefUtil.wrapInterface(i -> {
-                        final double v = null == gradientData ? 0 : gradientData[i];
-                        if (Double.isFinite(v)) {
-                          passback.set(i, tensor.get(i) * v);
-                        }
-                      }, passback.addRef(), tensor));
-                      if (null != tensor1) tensor1.freeRef();
-                      return passback;
-                    }, data, RefUtil.addRefs(inputGradientA)))
-                    .toArray(Tensor[]::new)));
+        this.accumulator.accept(buffer, new TensorArray(RefIntStream.range(0, itemCnt).parallel()
+            .mapToObj(RefUtil.wrapInterface((IntFunction<Tensor>) dataIndex -> {
+              @Nonnull final Tensor passback = new Tensor(data.getDimensions());
+              Tensor tensor1 = null == inputGradientA ? null : inputGradientA[dataIndex].addRef();
+              @Nullable final double[] gradientData = null == tensor1 ? null : tensor1.getData();
+              @Nullable
+              Tensor tensor = data.get(dataIndex);
+              RefIntStream.range(0, passback.length()).forEach(RefUtil.wrapInterface(i -> {
+                final double v = null == gradientData ? 0 : gradientData[i];
+                if (Double.isFinite(v)) {
+                  passback.set(i, tensor.get(i) * v);
+                }
+              }, passback.addRef(), tensor));
+              if (null != tensor1) tensor1.freeRef();
+              return passback;
+            }, data, RefUtil.addRef(inputGradientA)))
+            .toArray(Tensor[]::new)));
       } else {
         data.freeRef();
         if (null != buffer)

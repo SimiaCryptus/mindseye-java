@@ -139,23 +139,6 @@ public class UnpoolingLayer extends LayerBase {
     return new Result(data, accumulator, alive);
   }
 
-  @NotNull
-  private TensorArray fwd(TensorList batch, int[] inputDims) {
-    Tensor outputDims = new Tensor(inputDims[0] * sizeX, inputDims[1] * sizeY, inputDims[2]);
-    TensorArray data = new TensorArray(RefIntStream.range(0, batch.length()).parallel()
-        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-          Tensor inputData = batch.get(dataIndex);
-          Tensor temp_58_0002 = UnpoolingLayer.copyExpand(inputData.addRef(),
-              outputDims.copy());
-          inputData.freeRef();
-          return temp_58_0002;
-        }, outputDims.addRef(), batch.addRef()))
-        .toArray(Tensor[]::new));
-    outputDims.freeRef();
-    batch.freeRef();
-    return data;
-  }
-
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
@@ -181,6 +164,23 @@ public class UnpoolingLayer extends LayerBase {
   @SuppressWarnings("unused")
   UnpoolingLayer addRef() {
     return (UnpoolingLayer) super.addRef();
+  }
+
+  @NotNull
+  private TensorArray fwd(TensorList batch, int[] inputDims) {
+    Tensor outputDims = new Tensor(inputDims[0] * sizeX, inputDims[1] * sizeY, inputDims[2]);
+    TensorArray data = new TensorArray(RefIntStream.range(0, batch.length()).parallel()
+        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+          Tensor inputData = batch.get(dataIndex);
+          Tensor temp_58_0002 = UnpoolingLayer.copyExpand(inputData.addRef(),
+              outputDims.copy());
+          inputData.freeRef();
+          return temp_58_0002;
+        }, outputDims.addRef(), batch.addRef()))
+        .toArray(Tensor[]::new));
+    outputDims.freeRef();
+    batch.freeRef();
+    return data;
   }
 
   private static class Accumulator extends Result.Accumulator {

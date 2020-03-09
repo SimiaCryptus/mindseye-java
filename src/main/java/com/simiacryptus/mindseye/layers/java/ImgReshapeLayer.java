@@ -140,18 +140,6 @@ public class ImgReshapeLayer extends LayerBase {
   }
 
   @NotNull
-  private TensorArray fwd(TensorList batch, int[] inputDims) {
-    Tensor outputDims = getOutputDims(inputDims);
-    return new TensorArray(RefIntStream.range(0, batch.length())
-        //.parallel()
-        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-          Tensor inputData = batch.get(dataIndex);
-          if (expand) return ImgReshapeLayer.copyExpand(inputData, outputDims.copy());
-          else return ImgReshapeLayer.copyCondense(inputData, outputDims.copy());
-        }, outputDims, batch)).toArray(Tensor[]::new));
-  }
-
-  @NotNull
   public Tensor getOutputDims(int[] inputDims) {
     if (expand) {
       return new Tensor(inputDims[0] * kernelSizeX, inputDims[1] * kernelSizeY,
@@ -188,6 +176,18 @@ public class ImgReshapeLayer extends LayerBase {
   @SuppressWarnings("unused")
   ImgReshapeLayer addRef() {
     return (ImgReshapeLayer) super.addRef();
+  }
+
+  @NotNull
+  private TensorArray fwd(TensorList batch, int[] inputDims) {
+    Tensor outputDims = getOutputDims(inputDims);
+    return new TensorArray(RefIntStream.range(0, batch.length())
+        //.parallel()
+        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+          Tensor inputData = batch.get(dataIndex);
+          if (expand) return ImgReshapeLayer.copyExpand(inputData, outputDims.copy());
+          else return ImgReshapeLayer.copyCondense(inputData, outputDims.copy());
+        }, outputDims, batch)).toArray(Tensor[]::new));
   }
 
   private static class Accumulator extends Result.Accumulator {

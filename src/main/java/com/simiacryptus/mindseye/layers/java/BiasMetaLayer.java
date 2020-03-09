@@ -70,24 +70,6 @@ public class BiasMetaLayer extends LayerBase {
     return new Result(data, accumulator, alive);
   }
 
-  @NotNull
-  private TensorArray fwd(Result in1, TensorList data0, int itemCnt) {
-    final TensorList data1 = in1.getData();
-    in1.freeRef();
-    Tensor tensor1 = data1.get(0);
-    data1.freeRef();
-    return new TensorArray(RefIntStream.range(0, itemCnt).parallel()
-        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-          Tensor tensor = data0.get(dataIndex);
-          Tensor temp_48_0003 = tensor.mapIndex(RefUtil.wrapInterface((v, c) -> {
-            return v + tensor1.get(c);
-          }, tensor1.addRef()));
-          tensor.freeRef();
-          return temp_48_0003;
-        }, tensor1, data0))
-        .toArray(Tensor[]::new));
-  }
-
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
@@ -110,6 +92,24 @@ public class BiasMetaLayer extends LayerBase {
   @SuppressWarnings("unused")
   BiasMetaLayer addRef() {
     return (BiasMetaLayer) super.addRef();
+  }
+
+  @NotNull
+  private TensorArray fwd(Result in1, TensorList data0, int itemCnt) {
+    final TensorList data1 = in1.getData();
+    in1.freeRef();
+    Tensor tensor1 = data1.get(0);
+    data1.freeRef();
+    return new TensorArray(RefIntStream.range(0, itemCnt).parallel()
+        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+          Tensor tensor = data0.get(dataIndex);
+          Tensor temp_48_0003 = tensor.mapIndex(RefUtil.wrapInterface((v, c) -> {
+            return v + tensor1.get(c);
+          }, tensor1.addRef()));
+          tensor.freeRef();
+          return temp_48_0003;
+        }, tensor1, data0))
+        .toArray(Tensor[]::new));
   }
 
   private static class Accumulator extends Result.Accumulator {

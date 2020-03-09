@@ -202,26 +202,6 @@ public class FullyConnectedLayer extends LayerBase {
     return new Result(data, accumulator, !isFrozen() || alive);
   }
 
-  @NotNull
-  private TensorArray fwd(TensorList indata) {
-    @Nonnull
-    DoubleMatrix doubleMatrix = new DoubleMatrix(Tensor.length(indata.getDimensions()), Tensor.length(outputDims),
-        this.weights.getData());
-    @Nonnull final DoubleMatrix matrixObj = FullyConnectedLayer.transpose(doubleMatrix);
-    @Nonnull
-    TensorArray tensorArray = new TensorArray(RefIntStream.range(0, indata.length()).parallel()
-        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-          @Nullable final Tensor input = indata.get(dataIndex);
-          @Nullable final Tensor output = new Tensor(outputDims);
-          matrixObj.mmuli(new DoubleMatrix(input.length(), 1, input.getData()),
-              new DoubleMatrix(output.length(), 1, output.getData()));
-          input.freeRef();
-          return output;
-        }, indata)).toArray(Tensor[]::new));
-    RecycleBin.DOUBLES.recycle(matrixObj.data, matrixObj.data.length);
-    return tensorArray;
-  }
-
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, @Nonnull DataSerializer dataSerializer) {
@@ -315,6 +295,26 @@ public class FullyConnectedLayer extends LayerBase {
   @SuppressWarnings("unused")
   FullyConnectedLayer addRef() {
     return (FullyConnectedLayer) super.addRef();
+  }
+
+  @NotNull
+  private TensorArray fwd(TensorList indata) {
+    @Nonnull
+    DoubleMatrix doubleMatrix = new DoubleMatrix(Tensor.length(indata.getDimensions()), Tensor.length(outputDims),
+        this.weights.getData());
+    @Nonnull final DoubleMatrix matrixObj = FullyConnectedLayer.transpose(doubleMatrix);
+    @Nonnull
+    TensorArray tensorArray = new TensorArray(RefIntStream.range(0, indata.length()).parallel()
+        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+          @Nullable final Tensor input = indata.get(dataIndex);
+          @Nullable final Tensor output = new Tensor(outputDims);
+          matrixObj.mmuli(new DoubleMatrix(input.length(), 1, input.getData()),
+              new DoubleMatrix(output.length(), 1, output.getData()));
+          input.freeRef();
+          return output;
+        }, indata)).toArray(Tensor[]::new));
+    RecycleBin.DOUBLES.recycle(matrixObj.data, matrixObj.data.length);
+    return tensorArray;
   }
 
   private static class Accumulator extends Result.Accumulator {

@@ -79,23 +79,6 @@ public class ImgPixelGateLayer extends LayerBase {
     return new Result(data, accumulator, alive);
   }
 
-  @NotNull
-  private TensorArray fwd(TensorList inputData, TensorList gateData, int[] inputDims) {
-    return new TensorArray(RefIntStream.range(0, inputData.length())
-            .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) i -> {
-              Tensor inputTensor = inputData.get(i);
-              Tensor gateTensor = gateData.get(gateData.length() == 1 ? 0 : i);
-              Tensor outputTensor = new Tensor(inputDims[0], inputDims[1], inputDims[2]);
-              outputTensor.setByCoord(RefUtil.wrapInterface((ToDoubleFunction<Coordinate>) c -> {
-                    int[] coords = c.getCoords();
-                    return inputTensor.get(coords[0], coords[1], coords[2])
-                        * gateTensor.get(coords[0], coords[1], 0);
-                  }, inputTensor, gateTensor));
-              return outputTensor;
-            }, inputData, gateData))
-            .toArray(Tensor[]::new));
-  }
-
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
@@ -118,6 +101,23 @@ public class ImgPixelGateLayer extends LayerBase {
   @SuppressWarnings("unused")
   ImgPixelGateLayer addRef() {
     return (ImgPixelGateLayer) super.addRef();
+  }
+
+  @NotNull
+  private TensorArray fwd(TensorList inputData, TensorList gateData, int[] inputDims) {
+    return new TensorArray(RefIntStream.range(0, inputData.length())
+        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) i -> {
+          Tensor inputTensor = inputData.get(i);
+          Tensor gateTensor = gateData.get(gateData.length() == 1 ? 0 : i);
+          Tensor outputTensor = new Tensor(inputDims[0], inputDims[1], inputDims[2]);
+          outputTensor.setByCoord(RefUtil.wrapInterface((ToDoubleFunction<Coordinate>) c -> {
+            int[] coords = c.getCoords();
+            return inputTensor.get(coords[0], coords[1], coords[2])
+                * gateTensor.get(coords[0], coords[1], 0);
+          }, inputTensor, gateTensor));
+          return outputTensor;
+        }, inputData, gateData))
+        .toArray(Tensor[]::new));
   }
 
   private static class Accumulator extends Result.Accumulator {

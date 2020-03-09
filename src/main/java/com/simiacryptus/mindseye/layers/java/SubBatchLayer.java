@@ -73,24 +73,24 @@ public class SubBatchLayer extends WrapperLayer {
           Tensor[] tensors = new Tensor[data.length()];
           data.freeRef();
           return tensors;
-        }, RefUtil.addRefs(inputs))).toArray(Tensor[][]::new);
+        }, RefUtil.addRef(inputs))).toArray(Tensor[][]::new);
     Result[] batchResults = RefIntStream.range(0, batches)
         .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Result>) batchIndex -> {
           assert inner != null;
           return inner.eval(RefIntStream.range(0, inputs.length)
               .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Result>) inputIndex -> {
-                Tensor[] tensors = RefUtil.addRefs(passbackBuffer[inputIndex]);
+                Tensor[] tensors = RefUtil.addRef(passbackBuffer[inputIndex]);
                 Result.Accumulator accumulator = new SubAccumulator(tensors, batchIndex);
                 TensorList tensorList = inputs[inputIndex].getData();
                 Result result = new Result(new TensorArray(tensorList.get(batchIndex)), accumulator);
                 tensorList.freeRef();
                 return result;
-              }, RefUtil.addRefs(passbackBuffer), RefUtil.addRefs(inputs))).<Result>toArray(Result[]::new));
-        }, RefUtil.addRefs(passbackBuffer), RefUtil.addRefs(inputs), inner == null ? null : inner.addRef()))
+              }, RefUtil.addRef(passbackBuffer), RefUtil.addRef(inputs))).<Result>toArray(Result[]::new));
+        }, RefUtil.addRef(passbackBuffer), RefUtil.addRef(inputs), inner == null ? null : inner.addRef()))
         .toArray(Result[]::new);
     if (null != inner)
       inner.freeRef();
-    TensorArray resultData = new TensorArray(RefArrays.stream(RefUtil.addRefs(batchResults)).map(result -> {
+    TensorArray resultData = new TensorArray(RefArrays.stream(RefUtil.addRef(batchResults)).map(result -> {
       TensorList tensorList = result.getData();
       result.freeRef();
       Tensor tensor = tensorList.get(0);
@@ -159,19 +159,19 @@ public class SubBatchLayer extends WrapperLayer {
                 tensorArray.addRef());
             temp_10_0012.freeRef();
             tensorArray.freeRef();
-          }, deltaSignal.addRef(), RefUtil.addRefs(batchResults),
+          }, deltaSignal.addRef(), RefUtil.addRef(batchResults),
           deltaBuffer == null ? null : deltaBuffer.addRef()));
       deltaSignal.freeRef();
       synchronized (passbackBuffer) {
         RefIntStream.range(0, inputs.length).forEach(RefUtil.wrapInterface(inputIndex -> {
-              TensorArray tensorArray = new TensorArray(RefUtil.addRefs(passbackBuffer[inputIndex]));
+              TensorArray tensorArray = new TensorArray(RefUtil.addRef(passbackBuffer[inputIndex]));
               Result.Accumulator temp_10_0013 = inputs[inputIndex].getAccumulator();
               assert temp_10_0013 != null;
               temp_10_0013.accept(deltaBuffer == null ? null : deltaBuffer.addRef(),
                   tensorArray.addRef());
               temp_10_0013.freeRef();
               tensorArray.freeRef();
-            }, RefUtil.addRefs(passbackBuffer), RefUtil.addRefs(inputs),
+            }, RefUtil.addRef(passbackBuffer), RefUtil.addRef(inputs),
             deltaBuffer == null ? null : deltaBuffer.addRef()));
       }
       if (null != deltaBuffer)

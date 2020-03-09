@@ -178,13 +178,13 @@ public class ImgPixelSoftmaxLayer extends LayerBase {
               Tensor expTensor = exps.get(index);
               Tensor tensor = new Tensor(width, height, 1);
               tensor.setByCoord(RefUtil.wrapInterface(c -> {
-                    return RefIntStream.range(0, inputBands).mapToDouble(RefUtil.wrapInterface(band -> {
-                          int[] coords = c.getCoords();
-                          return expTensor.get(coords[0], coords[1], band)
-                              * deltaTensor.get(coords[0], coords[1], band);
-                        }, deltaTensor.addRef(),
-                        expTensor.addRef())).sum();
-                  }, deltaTensor, expTensor));
+                return RefIntStream.range(0, inputBands).mapToDouble(RefUtil.wrapInterface(band -> {
+                      int[] coords = c.getCoords();
+                      return expTensor.get(coords[0], coords[1], band)
+                          * deltaTensor.get(coords[0], coords[1], band);
+                    }, deltaTensor.addRef(),
+                    expTensor.addRef())).sum();
+              }, deltaTensor, expTensor));
               return tensor;
             }, delta.addRef(), exps.addRef()))
             .toArray(Tensor[]::new));
@@ -197,13 +197,13 @@ public class ImgPixelSoftmaxLayer extends LayerBase {
                   Tensor dotTensor = dots.get(index);
                   Tensor tensor = new Tensor(inputDims);
                   tensor.setByCoord(RefUtil.wrapInterface(c -> {
-                        int[] coords = c.getCoords();
-                        double sum = sumTensor.get(coords[0], coords[1], 0);
-                        double dot = dotTensor.get(coords[0], coords[1], 0);
-                        double deltaValue = deltaTensor.get(c);
-                        double expValue = expTensor.get(c);
-                        return (sum * deltaValue - dot) * expValue / (sum * sum);
-                      }, deltaTensor, expTensor, dotTensor, sumTensor));
+                    int[] coords = c.getCoords();
+                    double sum = sumTensor.get(coords[0], coords[1], 0);
+                    double dot = dotTensor.get(coords[0], coords[1], 0);
+                    double deltaValue = deltaTensor.get(c);
+                    double expValue = expTensor.get(c);
+                    return (sum * deltaValue - dot) * expValue / (sum * sum);
+                  }, deltaTensor, expTensor, dotTensor, sumTensor));
                   return tensor;
                 }, sums.addRef(), dots,
                 delta.addRef(), exps.addRef()))

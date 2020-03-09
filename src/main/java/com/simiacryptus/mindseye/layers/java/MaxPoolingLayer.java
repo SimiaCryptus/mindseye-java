@@ -114,6 +114,32 @@ public class MaxPoolingLayer extends LayerBase {
     return new Result(data, accumulator, alive);
   }
 
+  @Nonnull
+  @Override
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
+    @Nonnull final JsonObject json = super.getJsonStub();
+    json.add("heapCopy", JsonUtil.getJson(kernelDims));
+    return json;
+  }
+
+  @Nonnull
+  @Override
+  public RefList<double[]> state() {
+    return RefArrays.asList();
+  }
+
+  public @SuppressWarnings("unused")
+  void _free() {
+    super._free();
+  }
+
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  MaxPoolingLayer addRef() {
+    return (MaxPoolingLayer) super.addRef();
+  }
+
   private int[][] getGradientMap(Result in, TensorList inData, int[] inputDims, int length, TensorArray data) {
     final RefList<Tuple2<Integer, int[]>> regions = MaxPoolingLayer.calcRegionsCache
         .apply(new CalcRegionsParameter(inputDims, kernelDims));
@@ -139,42 +165,16 @@ public class MaxPoolingLayer extends LayerBase {
         output.set(from, input.get(toMax));
       }, output, input, keyExtractor));
       return gradientMap;
-    }, in, data, regions, inData)).toArray(l->new int[l][]);
+    }, in, data, regions, inData)).toArray(l -> new int[l][]);
   }
 
   @NotNull
   private TensorArray fwd(int[] inputDims, int length) {
     return new TensorArray(RefIntStream.range(0, length).mapToObj(dataIndex -> {
-        return new Tensor(RefIntStream.range(0, inputDims.length).map(i -> {
-          return (int) Math.ceil(inputDims[i] * 1.0 / kernelDims[i]);
-        }).toArray());
-      }).toArray(Tensor[]::new));
-  }
-
-  @Nonnull
-  @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    @Nonnull final JsonObject json = super.getJsonStub();
-    json.add("heapCopy", JsonUtil.getJson(kernelDims));
-    return json;
-  }
-
-  @Nonnull
-  @Override
-  public RefList<double[]> state() {
-    return RefArrays.asList();
-  }
-
-  public @SuppressWarnings("unused")
-  void _free() {
-    super._free();
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  MaxPoolingLayer addRef() {
-    return (MaxPoolingLayer) super.addRef();
+      return new Tensor(RefIntStream.range(0, inputDims.length).map(i -> {
+        return (int) Math.ceil(inputDims[i] * 1.0 / kernelDims[i]);
+      }).toArray());
+    }).toArray(Tensor[]::new));
   }
 
   public static class CalcRegionsParameter {

@@ -77,50 +77,17 @@ public class TensorConcatLayer extends LayerBase {
     TensorList data_0 = inObj[0].getData();
     final int numBatches = data_0.length();
     data_0.freeRef();
-    assert RefArrays.stream(RefUtil.addRefs(inObj)).allMatch(x -> {
+    assert RefArrays.stream(RefUtil.addRef(inObj)).allMatch(x -> {
       TensorList temp_09_0010 = x.getData();
       boolean temp_09_0004 = temp_09_0010.length() == numBatches;
       temp_09_0010.freeRef();
       x.freeRef();
       return temp_09_0004;
     }) : "All inputs must use same batch size";
-    TensorArray data = fwd(numBatches, RefUtil.addRefs(inObj));
-    boolean alive = anyAlive(RefUtil.addRefs(inObj));
+    TensorArray data = fwd(numBatches, RefUtil.addRef(inObj));
+    boolean alive = anyAlive(RefUtil.addRef(inObj));
     Accumulator accumulator = new Accumulator(numBatches, inObj);
     return new Result(data, accumulator, alive);
-  }
-
-  @NotNull
-  private TensorArray fwd(int numBatches, @Nonnull Result[] inObj) {
-    @Nonnull final RefList<Tensor> outputTensors = new RefArrayList<>();
-    int[] outputDims = new int[]{RefArrays.stream(RefUtil.addRefs(inObj)).mapToInt(x -> {
-      TensorList temp_09_0011 = x.getData();
-      int temp_09_0005 = Tensor.length(temp_09_0011.getDimensions());
-      temp_09_0011.freeRef();
-      x.freeRef();
-      return temp_09_0005;
-    }).sum()};
-    for (int b = 0; b < numBatches; b++) {
-      @Nonnull final Tensor outputTensor = new Tensor(outputDims);
-      int pos = 0;
-      @Nullable final double[] outputTensorData = outputTensor.getData();
-      for (int i = 0; i < inObj.length; i++) {
-        TensorList data_i = inObj[i].getData();
-        @Nullable
-        Tensor tensor = data_i.get(b);
-        data_i.freeRef();
-        @Nullable final double[] data = tensor.getData();
-        tensor.freeRef();
-        RefSystem.arraycopy(data, 0, outputTensorData, pos,
-            Math.min(data.length, outputTensorData.length - pos));
-        pos += data.length;
-      }
-      outputTensors.add(outputTensor);
-    }
-    RefUtil.freeRef(inObj);
-    TensorArray tensorArray = new TensorArray(outputTensors.toArray(new Tensor[]{}));
-    outputTensors.freeRef();
-    return tensorArray;
   }
 
   @Nonnull
@@ -148,6 +115,39 @@ public class TensorConcatLayer extends LayerBase {
   @SuppressWarnings("unused")
   TensorConcatLayer addRef() {
     return (TensorConcatLayer) super.addRef();
+  }
+
+  @NotNull
+  private TensorArray fwd(int numBatches, @Nonnull Result[] inObj) {
+    @Nonnull final RefList<Tensor> outputTensors = new RefArrayList<>();
+    int[] outputDims = new int[]{RefArrays.stream(RefUtil.addRef(inObj)).mapToInt(x -> {
+      TensorList temp_09_0011 = x.getData();
+      int temp_09_0005 = Tensor.length(temp_09_0011.getDimensions());
+      temp_09_0011.freeRef();
+      x.freeRef();
+      return temp_09_0005;
+    }).sum()};
+    for (int b = 0; b < numBatches; b++) {
+      @Nonnull final Tensor outputTensor = new Tensor(outputDims);
+      int pos = 0;
+      @Nullable final double[] outputTensorData = outputTensor.getData();
+      for (int i = 0; i < inObj.length; i++) {
+        TensorList data_i = inObj[i].getData();
+        @Nullable
+        Tensor tensor = data_i.get(b);
+        data_i.freeRef();
+        @Nullable final double[] data = tensor.getData();
+        tensor.freeRef();
+        RefSystem.arraycopy(data, 0, outputTensorData, pos,
+            Math.min(data.length, outputTensorData.length - pos));
+        pos += data.length;
+      }
+      outputTensors.add(outputTensor);
+    }
+    RefUtil.freeRef(inObj);
+    TensorArray tensorArray = new TensorArray(outputTensors.toArray(new Tensor[]{}));
+    outputTensors.freeRef();
+    return tensorArray;
   }
 
   private static class Accumulator extends Result.Accumulator {
@@ -182,7 +182,7 @@ public class TensorConcatLayer extends LayerBase {
           dest.freeRef();
         }
         tensor.freeRef();
-        splitBatches.add(RefUtil.addRefs(outputTensors2));
+        splitBatches.add(RefUtil.addRef(outputTensors2));
         RefUtil.freeRef(outputTensors2);
       }
 
@@ -202,7 +202,7 @@ public class TensorConcatLayer extends LayerBase {
 
       splitBatches.freeRef();
       for (int i = 0; i < inObj.length; i++) {
-        TensorArray wrap = new TensorArray(RefUtil.addRefs(splitData[i]));
+        TensorArray wrap = new TensorArray(RefUtil.addRef(splitData[i]));
         DeltaSet<UUID> buffer1 = buffer == null ? null : buffer.addRef();
         Result.Accumulator accumulator = inObj[i].getAccumulator();
         try {

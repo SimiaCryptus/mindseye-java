@@ -183,19 +183,6 @@ public class ImgTileSelectLayer extends LayerBase {
     return new Result(data, accumulator, alive);
   }
 
-  @NotNull
-  private TensorArray fwd(TensorList batch, int[] dimOut) {
-    return new TensorArray(RefIntStream.range(0, batch.length())
-            .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-              @Nonnull final Tensor outputData = new Tensor(dimOut);
-              Tensor inputData = batch.get(dataIndex);
-              copy(inputData.addRef(), outputData.addRef(),
-                  positionX, positionY, toroidal);
-              inputData.freeRef();
-              return outputData;
-            }, batch)).toArray(Tensor[]::new));
-  }
-
   @Nonnull
   public int[] getViewDimensions(int[] sourceDimensions, int[] destinationDimensions, int[] offset) {
     @Nonnull final int[] viewDim = new int[3];
@@ -232,6 +219,19 @@ public class ImgTileSelectLayer extends LayerBase {
   @SuppressWarnings("unused")
   ImgTileSelectLayer addRef() {
     return (ImgTileSelectLayer) super.addRef();
+  }
+
+  @NotNull
+  private TensorArray fwd(TensorList batch, int[] dimOut) {
+    return new TensorArray(RefIntStream.range(0, batch.length())
+        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+          @Nonnull final Tensor outputData = new Tensor(dimOut);
+          Tensor inputData = batch.get(dataIndex);
+          copy(inputData.addRef(), outputData.addRef(),
+              positionX, positionY, toroidal);
+          inputData.freeRef();
+          return outputData;
+        }, batch)).toArray(Tensor[]::new));
   }
 
   private static class Accumulator extends Result.Accumulator {

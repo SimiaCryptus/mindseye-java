@@ -102,14 +102,13 @@ public class BiasLayer extends LayerBase {
 
   public void addWeights(@Nonnull DoubleSupplier f) {
     assert this.bias != null;
-    double[] bias = this.bias.getData();
-    Util.add(f, bias);
+    Util.add(f, this.bias.getData());
   }
 
   @Nonnull
   @Override
   public Result eval(@Nonnull final Result... inObj) {
-    TensorList input = first(RefUtil.addRefs(inObj));
+    TensorList input = first(RefUtil.addRef(inObj));
     TensorArray data = fwd(input);
     boolean alive = 0 < inObj.length && inObj[0].isAlive();
     final Result.Accumulator accumulator1 = inObj[0].getAccumulator();
@@ -117,19 +116,6 @@ public class BiasLayer extends LayerBase {
     Accumulator accumulator = new Accumulator(bias.addRef(), isFrozen(), getId(), accumulator1, alive1);
     RefUtil.freeRef(inObj);
     return new Result(data, accumulator, alive || !isFrozen());
-  }
-
-  @NotNull
-  private TensorArray fwd(TensorList input) {
-    try {
-      return new TensorArray(input.stream().parallel().map(r -> {
-        Tensor tensor = new Tensor(add(r.getData()), r.getDimensions());
-        r.freeRef();
-        return tensor;
-      }).toArray(Tensor[]::new));
-    } finally {
-      input.freeRef();
-    }
   }
 
   @NotNull
@@ -192,6 +178,19 @@ public class BiasLayer extends LayerBase {
     return (BiasLayer) super.addRef();
   }
 
+  @NotNull
+  private TensorArray fwd(TensorList input) {
+    try {
+      return new TensorArray(input.stream().parallel().map(r -> {
+        Tensor tensor = new Tensor(add(r.getData()), r.getDimensions());
+        r.freeRef();
+        return tensor;
+      }).toArray(Tensor[]::new));
+    } finally {
+      input.freeRef();
+    }
+  }
+
   private static class Accumulator extends Result.Accumulator {
 
     private boolean frozen;
@@ -239,7 +238,8 @@ public class BiasLayer extends LayerBase {
     public @SuppressWarnings("unused")
     void _free() {
       super._free();
-      accumulator.freeRef();;
+      accumulator.freeRef();
+      ;
       assert bias != null;
       bias.freeRef();
     }

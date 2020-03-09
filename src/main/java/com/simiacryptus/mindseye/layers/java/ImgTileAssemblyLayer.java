@@ -171,43 +171,10 @@ public class ImgTileAssemblyLayer extends LayerBase {
     assert 3 == in0Data.getDimensions().length;
     int length = in0Data.length();
     in0Data.freeRef();
-    int[] outputDims = getOutputDims(RefUtil.addRefs(inObj));
-    TensorArray data = fwd(length, outputDims, RefUtil.addRefs(inObj));
+    int[] outputDims = getOutputDims(RefUtil.addRef(inObj));
+    TensorArray data = fwd(length, outputDims, RefUtil.addRef(inObj));
     Result.Accumulator accumulator = new Accumulator(columns, offsetX, offsetY, rows, ImgTileAssemblyLayer.this.getPaddingX(), ImgTileAssemblyLayer.this.getPaddingY(), inObj);
     return new Result(data, accumulator, in0Alive);
-  }
-
-  @NotNull
-  private TensorArray fwd(int length, int[] outputDims, @Nonnull Result[] inObj) {
-    return new TensorArray(RefIntStream.range(0, length).parallel()
-            .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-              @Nonnull final Tensor outputData = new Tensor(outputDims);
-
-              int totalWidth = 0;
-              int positionY = offsetY;
-              int inputIndex = 0;
-              for (int row = 0; row < rows; row++) {
-                int positionX = offsetX;
-                int rowHeight = 0;
-                for (int col = 0; col < columns; col++) {
-                  TensorList tileTensor = inObj[inputIndex].getData();
-                  int[] tileDimensions = tileTensor.getDimensions();
-                  rowHeight = Math.max(rowHeight, tileDimensions[1]);
-                  Tensor inputData = tileTensor.get(dataIndex);
-                  tileTensor.freeRef();
-                  ImgTileAssemblyLayer.copy(inputData,
-                      outputData.addRef(), positionX, positionY,
-                      0 >= positionX ? 0 : getPaddingX() / 2, 0 >= positionY ? 0 : getPaddingY() / 2,
-                      offsetX < 0 || offsetY < 0, (double) row / (rows - 1), (double) col / (columns - 1));
-                  positionX += tileDimensions[0] - getPaddingX();
-                  inputIndex += 1;
-                }
-                positionY += rowHeight - getPaddingY();
-                totalWidth = Math.max(totalWidth, positionX);
-              }
-
-              return outputData;
-            }, inObj)).toArray(Tensor[]::new));
   }
 
   @Nonnull
@@ -239,6 +206,39 @@ public class ImgTileAssemblyLayer extends LayerBase {
   @SuppressWarnings("unused")
   ImgTileAssemblyLayer addRef() {
     return (ImgTileAssemblyLayer) super.addRef();
+  }
+
+  @NotNull
+  private TensorArray fwd(int length, int[] outputDims, @Nonnull Result[] inObj) {
+    return new TensorArray(RefIntStream.range(0, length).parallel()
+        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+          @Nonnull final Tensor outputData = new Tensor(outputDims);
+
+          int totalWidth = 0;
+          int positionY = offsetY;
+          int inputIndex = 0;
+          for (int row = 0; row < rows; row++) {
+            int positionX = offsetX;
+            int rowHeight = 0;
+            for (int col = 0; col < columns; col++) {
+              TensorList tileTensor = inObj[inputIndex].getData();
+              int[] tileDimensions = tileTensor.getDimensions();
+              rowHeight = Math.max(rowHeight, tileDimensions[1]);
+              Tensor inputData = tileTensor.get(dataIndex);
+              tileTensor.freeRef();
+              ImgTileAssemblyLayer.copy(inputData,
+                  outputData.addRef(), positionX, positionY,
+                  0 >= positionX ? 0 : getPaddingX() / 2, 0 >= positionY ? 0 : getPaddingY() / 2,
+                  offsetX < 0 || offsetY < 0, (double) row / (rows - 1), (double) col / (columns - 1));
+              positionX += tileDimensions[0] - getPaddingX();
+              inputIndex += 1;
+            }
+            positionY += rowHeight - getPaddingY();
+            totalWidth = Math.max(totalWidth, positionX);
+          }
+
+          return outputData;
+        }, inObj)).toArray(Tensor[]::new));
   }
 
   private int getInt(@Nonnull JsonObject json, String paddingX, int defaultValue) {

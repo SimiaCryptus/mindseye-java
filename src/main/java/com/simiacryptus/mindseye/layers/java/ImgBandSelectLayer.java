@@ -76,20 +76,6 @@ public class ImgBandSelectLayer extends LayerBase {
     return new Result(wrap, accumulator, alive || !isFrozen());
   }
 
-  @NotNull
-  private TensorArray fwd(TensorList batch, int[] inputDims) {
-    @Nonnull final Tensor outputDims = new Tensor(inputDims[0], inputDims[1], bands.length);
-    return new TensorArray(RefIntStream.range(0, batch.length()).parallel().mapToObj(RefUtil
-        .wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-          Tensor tensor = batch.get(dataIndex);
-          return outputDims.mapCoords(RefUtil.wrapInterface(c -> {
-            int[] coords = c.getCoords();
-            return tensor.get(coords[0], coords[1], bands[coords[2]]);
-          }, batch.addRef(), tensor));
-        }, outputDims, batch))
-        .toArray(Tensor[]::new));
-  }
-
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
@@ -118,6 +104,20 @@ public class ImgBandSelectLayer extends LayerBase {
   @SuppressWarnings("unused")
   ImgBandSelectLayer addRef() {
     return (ImgBandSelectLayer) super.addRef();
+  }
+
+  @NotNull
+  private TensorArray fwd(TensorList batch, int[] inputDims) {
+    @Nonnull final Tensor outputDims = new Tensor(inputDims[0], inputDims[1], bands.length);
+    return new TensorArray(RefIntStream.range(0, batch.length()).parallel().mapToObj(RefUtil
+        .wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+          Tensor tensor = batch.get(dataIndex);
+          return outputDims.mapCoords(RefUtil.wrapInterface(c -> {
+            int[] coords = c.getCoords();
+            return tensor.get(coords[0], coords[1], bands[coords[2]]);
+          }, batch.addRef(), tensor));
+        }, outputDims, batch))
+        .toArray(Tensor[]::new));
   }
 
   private static class Accumulator extends Result.Accumulator {

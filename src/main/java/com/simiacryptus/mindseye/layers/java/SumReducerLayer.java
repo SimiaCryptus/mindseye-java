@@ -63,31 +63,10 @@ public class SumReducerLayer extends LayerBase {
     TensorList temp_62_0003 = inObj[0].getData();
     int length = temp_62_0003.length();
     temp_62_0003.freeRef();
-    boolean alive = anyAlive(RefUtil.addRefs(inObj));
-    TensorArray data = fwd(RefUtil.addRefs(inObj), length);
+    boolean alive = anyAlive(RefUtil.addRef(inObj));
+    TensorArray data = fwd(RefUtil.addRef(inObj), length);
     Accumulator accumulator = new Accumulator(inObj);
     return new Result(data, accumulator, alive);
-  }
-
-  @NotNull
-  private TensorArray fwd(@Nonnull Result[] inObj, int length) {
-    return new TensorArray(RefIntStream.range(0, length).parallel()
-        .mapToDouble(RefUtil.wrapInterface((IntToDoubleFunction) dataIndex -> {
-          double sum = 0;
-          for (@Nonnull final Result element : inObj) {
-            TensorList data = element.getData();
-            @Nullable
-            Tensor tensor = data.get(dataIndex);
-            data.freeRef();
-            @Nullable final double[] input = tensor.getData();
-            tensor.freeRef();
-            for (final double element2 : input) {
-              sum += element2;
-            }
-          }
-          return sum;
-        }, inObj)).mapToObj(x -> new Tensor(new double[]{x}, new int[]{1}))
-        .toArray(Tensor[]::new));
   }
 
   @Nonnull
@@ -112,6 +91,27 @@ public class SumReducerLayer extends LayerBase {
   @SuppressWarnings("unused")
   SumReducerLayer addRef() {
     return (SumReducerLayer) super.addRef();
+  }
+
+  @NotNull
+  private TensorArray fwd(@Nonnull Result[] inObj, int length) {
+    return new TensorArray(RefIntStream.range(0, length).parallel()
+        .mapToDouble(RefUtil.wrapInterface((IntToDoubleFunction) dataIndex -> {
+          double sum = 0;
+          for (@Nonnull final Result element : inObj) {
+            TensorList data = element.getData();
+            @Nullable
+            Tensor tensor = data.get(dataIndex);
+            data.freeRef();
+            @Nullable final double[] input = tensor.getData();
+            tensor.freeRef();
+            for (final double element2 : input) {
+              sum += element2;
+            }
+          }
+          return sum;
+        }, inObj)).mapToObj(x -> new Tensor(new double[]{x}, new int[]{1}))
+        .toArray(Tensor[]::new));
   }
 
   private static class Accumulator extends Result.Accumulator {

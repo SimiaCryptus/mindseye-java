@@ -80,17 +80,6 @@ public class StaticScalarLossLayer extends LayerBase {
     return new Result(data, accumulator, alive);
   }
 
-  @NotNull
-  private TensorArray fwd(TensorList indata) {
-    return new TensorArray(RefIntStream.range(0, indata.length()).parallel()
-            .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-              @Nullable final Tensor a = indata.get(dataIndex);
-              final double diff = Math.abs(a.get(0) - getTarget());
-              a.freeRef();
-              return new Tensor(new double[]{diff}, 1);
-            }, indata)).toArray(Tensor[]::new));
-  }
-
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
@@ -113,6 +102,17 @@ public class StaticScalarLossLayer extends LayerBase {
   @SuppressWarnings("unused")
   StaticScalarLossLayer addRef() {
     return (StaticScalarLossLayer) super.addRef();
+  }
+
+  @NotNull
+  private TensorArray fwd(TensorList indata) {
+    return new TensorArray(RefIntStream.range(0, indata.length()).parallel()
+        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+          @Nullable final Tensor a = indata.get(dataIndex);
+          final double diff = Math.abs(a.get(0) - getTarget());
+          a.freeRef();
+          return new Tensor(new double[]{diff}, 1);
+        }, indata)).toArray(Tensor[]::new));
   }
 
   private static class Accumulator extends Result.Accumulator {

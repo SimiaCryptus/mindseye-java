@@ -83,22 +83,6 @@ public class MaxImageBandLayer extends LayerBase {
     return new Result(data, accumulator, alive);
   }
 
-  @NotNull
-  private TensorArray fwd(TensorList inputData, int inputDim, Coordinate[][] maxCoords) {
-    return new TensorArray(RefIntStream.range(0, inputData.length())
-        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-          Tensor inTensor = inputData.get(dataIndex);
-          final RefDoubleStream doubleStream = RefIntStream.range(0, inputDim)
-              .mapToDouble(RefUtil.wrapInterface((IntToDoubleFunction) band -> {
-                final int[] maxCoord = maxCoords[dataIndex][band].getCoords();
-                return inTensor.get(maxCoord[0], maxCoord[1], band);
-              }, inTensor));
-          Tensor outTensor = new Tensor(1, 1, inputDim);
-          outTensor.set(Tensor.getDoubles(doubleStream, inputDim));
-          return outTensor;
-        }, inputData)).toArray(Tensor[]::new));
-  }
-
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
@@ -121,6 +105,22 @@ public class MaxImageBandLayer extends LayerBase {
   @SuppressWarnings("unused")
   MaxImageBandLayer addRef() {
     return (MaxImageBandLayer) super.addRef();
+  }
+
+  @NotNull
+  private TensorArray fwd(TensorList inputData, int inputDim, Coordinate[][] maxCoords) {
+    return new TensorArray(RefIntStream.range(0, inputData.length())
+        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+          Tensor inTensor = inputData.get(dataIndex);
+          final RefDoubleStream doubleStream = RefIntStream.range(0, inputDim)
+              .mapToDouble(RefUtil.wrapInterface((IntToDoubleFunction) band -> {
+                final int[] maxCoord = maxCoords[dataIndex][band].getCoords();
+                return inTensor.get(maxCoord[0], maxCoord[1], band);
+              }, inTensor));
+          Tensor outTensor = new Tensor(1, 1, inputDim);
+          outTensor.set(Tensor.getDoubles(doubleStream, inputDim));
+          return outTensor;
+        }, inputData)).toArray(Tensor[]::new));
   }
 
   public static class CalcRegionsParameter {

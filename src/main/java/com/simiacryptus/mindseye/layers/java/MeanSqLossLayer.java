@@ -72,7 +72,7 @@ public class MeanSqLossLayer extends LayerBase {
     }
     @Nonnull final Tensor diffs[] = new Tensor[leftLength];
     try {
-      TensorArray data = fwd(leftLength, rightLength, diffs, RefUtil.addRefs(inObj));
+      TensorArray data = fwd(leftLength, rightLength, diffs, RefUtil.addRef(inObj));
       boolean alive = inObj[0].isAlive() || inObj[1].isAlive();
       final Result.Accumulator accumulator1 = inObj[0].getAccumulator();
       final Result.Accumulator accumulator2 = inObj[1].getAccumulator();
@@ -83,6 +83,30 @@ public class MeanSqLossLayer extends LayerBase {
       return new Result(data, accumulator, alive);
     } finally {
     }
+  }
+
+  @Nonnull
+  @Override
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
+    return super.getJsonStub();
+  }
+
+  @Nonnull
+  @Override
+  public RefList<double[]> state() {
+    return RefArrays.asList();
+  }
+
+  public @SuppressWarnings("unused")
+  void _free() {
+    super._free();
+  }
+
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  MeanSqLossLayer addRef() {
+    return (MeanSqLossLayer) super.addRef();
   }
 
   @NotNull
@@ -111,31 +135,6 @@ public class MeanSqLossLayer extends LayerBase {
             }, inObj)
         ).toArray(Tensor[]::new));
   }
-
-  @Nonnull
-  @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    return super.getJsonStub();
-  }
-
-  @Nonnull
-  @Override
-  public RefList<double[]> state() {
-    return RefArrays.asList();
-  }
-
-  public @SuppressWarnings("unused")
-  void _free() {
-    super._free();
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  MeanSqLossLayer addRef() {
-    return (MeanSqLossLayer) super.addRef();
-  }
-
 
   private static class Accumulator extends Result.Accumulator {
 
@@ -169,7 +168,7 @@ public class MeanSqLossLayer extends LayerBase {
               diff.freeRef();
               tensor.freeRef();
               return temp_20_0005;
-            }, data.addRef(), RefUtil.addRefs(diffs))).collect(RefCollectors.toList());
+            }, data.addRef(), RefUtil.addRef(diffs))).collect(RefCollectors.toList());
         RefStream<Tensor> tensorStream = temp_20_0015.stream();
         temp_20_0015.freeRef();
         if (1 == leftLength) {
@@ -189,7 +188,7 @@ public class MeanSqLossLayer extends LayerBase {
               Tensor temp_20_0007 = diffs[dataIndex].scale(tensor.get(0) * 2.0 / diffs[dataIndex].length());
               tensor.freeRef();
               return temp_20_0007;
-            }, data.addRef(), RefUtil.addRefs(diffs))).collect(RefCollectors.toList());
+            }, data.addRef(), RefUtil.addRef(diffs))).collect(RefCollectors.toList());
         RefStream<Tensor> tensorStream = temp_20_0016.stream();
         temp_20_0016.freeRef();
         if (1 == rightLength) {

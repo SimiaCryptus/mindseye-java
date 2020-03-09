@@ -65,12 +65,36 @@ public class SoftmaxLayer extends LayerBase {
     temp_08_0008.freeRef();
     @Nonnull final double[] sumA = new double[itemCnt];
     @Nonnull final Tensor expA[] = new Tensor[itemCnt];
-    TensorArray data = fwd(itemCnt, sumA, expA, RefUtil.addRefs(inObj));
+    TensorArray data = fwd(itemCnt, sumA, expA, RefUtil.addRef(inObj));
     final boolean alive = inObj[0].isAlive();
     final Result.Accumulator accumulator1 = inObj[0].getAccumulator();
     RefUtil.freeRef(inObj);
     Accumulator accumulator = new Accumulator(alive, itemCnt, expA, sumA, accumulator1);
     return new Result(data, accumulator, alive);
+  }
+
+  @Nonnull
+  @Override
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
+    return super.getJsonStub();
+  }
+
+  @Nonnull
+  @Override
+  public RefList<double[]> state() {
+    return RefArrays.asList();
+  }
+
+  public @SuppressWarnings("unused")
+  void _free() {
+    super._free();
+  }
+
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  SoftmaxLayer addRef() {
+    return (SoftmaxLayer) super.addRef();
   }
 
   private TensorArray fwd(int itemCnt, double[] sumA, @RefIgnore Tensor[] exp_out, @Nonnull Result[] inObj) {
@@ -100,36 +124,12 @@ public class SoftmaxLayer extends LayerBase {
           RefUtil.set(exp_out, dataIndex, exp);
           return temp_08_0003;
         }, inObj)).toArray(Tensor[]::new);
-    assert RefArrays.stream(RefUtil.addRefs(outputA)).flatMapToDouble(x -> {
+    assert RefArrays.stream(RefUtil.addRef(outputA)).flatMapToDouble(x -> {
       RefDoubleStream temp_08_0005 = RefArrays.stream(x.getData());
       x.freeRef();
       return temp_08_0005;
     }).allMatch(Double::isFinite);
     return new TensorArray(outputA);
-  }
-
-  @Nonnull
-  @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    return super.getJsonStub();
-  }
-
-  @Nonnull
-  @Override
-  public RefList<double[]> state() {
-    return RefArrays.asList();
-  }
-
-  public @SuppressWarnings("unused")
-  void _free() {
-    super._free();
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  SoftmaxLayer addRef() {
-    return (SoftmaxLayer) super.addRef();
   }
 
   private static class Accumulator extends Result.Accumulator {
@@ -169,8 +169,8 @@ public class SoftmaxLayer extends LayerBase {
                 passback.set(i, value);
               }
               return passback;
-            }, RefUtil.addRefs(expA), data)).toArray(Tensor[]::new);
-        assert RefArrays.stream(RefUtil.addRefs(passbackA)).flatMapToDouble(x -> {
+            }, RefUtil.addRef(expA), data)).toArray(Tensor[]::new);
+        assert RefArrays.stream(RefUtil.addRef(passbackA)).flatMapToDouble(x -> {
           RefDoubleStream temp_08_0006 = RefArrays.stream(x.getData());
           x.freeRef();
           return temp_08_0006;

@@ -151,22 +151,6 @@ public class PhotoUnpoolingLayer extends LayerBase {
     return new Result(data, accumulator, alive);
   }
 
-  @NotNull
-  private TensorArray fwd(TensorList batch, TensorList referencebatch) {
-    Tensor outputDims = new Tensor(referencebatch.getDimensions());
-    return new TensorArray(RefIntStream.range(0, batch.length()).parallel()
-        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-          Tensor inputData = batch.get(dataIndex);
-          Tensor referenceData = referencebatch.get(dataIndex);
-          Tensor temp_34_0003 = PhotoUnpoolingLayer.copyExpand(inputData.addRef(),
-              outputDims.copy(), referenceData.addRef());
-          referenceData.freeRef();
-          inputData.freeRef();
-          return temp_34_0003;
-        }, outputDims, referencebatch, batch))
-        .toArray(Tensor[]::new));
-  }
-
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
@@ -189,6 +173,22 @@ public class PhotoUnpoolingLayer extends LayerBase {
   @SuppressWarnings("unused")
   PhotoUnpoolingLayer addRef() {
     return (PhotoUnpoolingLayer) super.addRef();
+  }
+
+  @NotNull
+  private TensorArray fwd(TensorList batch, TensorList referencebatch) {
+    Tensor outputDims = new Tensor(referencebatch.getDimensions());
+    return new TensorArray(RefIntStream.range(0, batch.length()).parallel()
+        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+          Tensor inputData = batch.get(dataIndex);
+          Tensor referenceData = referencebatch.get(dataIndex);
+          Tensor temp_34_0003 = PhotoUnpoolingLayer.copyExpand(inputData.addRef(),
+              outputDims.copy(), referenceData.addRef());
+          referenceData.freeRef();
+          inputData.freeRef();
+          return temp_34_0003;
+        }, outputDims, referencebatch, batch))
+        .toArray(Tensor[]::new));
   }
 
   private static class Accumulator extends Result.Accumulator {

@@ -96,26 +96,6 @@ public class ReLuActivationLayer extends LayerBase {
     return new Result(data, accumulator, inputAlive || !isFrozen());
   }
 
-  @NotNull
-  private TensorArray fwd(TensorList indata) {
-    final int itemCnt = indata.length();
-    return new TensorArray(RefIntStream.range(0, itemCnt).parallel()
-        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-          @Nullable
-          Tensor tensorElement = indata.get(dataIndex);
-          assert weights != null;
-          @Nonnull final Tensor tensor = tensorElement.multiply(weights.get(0));
-          tensorElement.freeRef();
-          @Nullable final double[] outputData = tensor.getData();
-          for (int i = 0; i < outputData.length; i++) {
-            if (outputData[i] < 0) {
-              outputData[i] = 0;
-            }
-          }
-          return tensor;
-        }, indata)).toArray(Tensor[]::new));
-  }
-
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, @Nonnull DataSerializer dataSerializer) {
@@ -143,6 +123,26 @@ public class ReLuActivationLayer extends LayerBase {
   @SuppressWarnings("unused")
   ReLuActivationLayer addRef() {
     return (ReLuActivationLayer) super.addRef();
+  }
+
+  @NotNull
+  private TensorArray fwd(TensorList indata) {
+    final int itemCnt = indata.length();
+    return new TensorArray(RefIntStream.range(0, itemCnt).parallel()
+        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+          @Nullable
+          Tensor tensorElement = indata.get(dataIndex);
+          assert weights != null;
+          @Nonnull final Tensor tensor = tensorElement.multiply(weights.get(0));
+          tensorElement.freeRef();
+          @Nullable final double[] outputData = tensor.getData();
+          for (int i = 0; i < outputData.length; i++) {
+            if (outputData[i] < 0) {
+              outputData[i] = 0;
+            }
+          }
+          return tensor;
+        }, indata)).toArray(Tensor[]::new));
   }
 
   private static class Accumulator extends Result.Accumulator {
@@ -192,7 +192,7 @@ public class ReLuActivationLayer extends LayerBase {
       }
       if (inputAlive) {
         assert this.weights != null;
-        final double weight = this.weights.getData()[0];
+        final double weight = this.weights.get(0);
         @Nonnull
         TensorArray tensorArray = new TensorArray(RefIntStream.range(0, delta.length()).parallel()
             .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {

@@ -77,22 +77,6 @@ public class ImgPixelSumLayer extends LayerBase {
     return new Result(data, accumulator, alive);
   }
 
-  @NotNull
-  private TensorArray fwd(TensorList inputData, int[] inputDims) {
-    TensorArray tensorArray = new TensorArray(inputData.stream().map(tensor -> {
-      Tensor outputTensor = new Tensor(inputDims[0], inputDims[1], 1);
-      outputTensor.setByCoord(RefUtil.wrapInterface((ToDoubleFunction<Coordinate>) c -> {
-        return RefIntStream.range(0, inputDims[2]).mapToDouble(RefUtil.wrapInterface((IntToDoubleFunction) i -> {
-          int[] coords = c.getCoords();
-          return tensor.get(coords[0], coords[1], i);
-        }, tensor == null ? null : tensor.addRef())).sum();
-      }, tensor));
-      return outputTensor;
-    }).toArray(Tensor[]::new));
-    inputData.freeRef();
-    return tensorArray;
-  }
-
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
@@ -115,6 +99,22 @@ public class ImgPixelSumLayer extends LayerBase {
   @SuppressWarnings("unused")
   ImgPixelSumLayer addRef() {
     return (ImgPixelSumLayer) super.addRef();
+  }
+
+  @NotNull
+  private TensorArray fwd(TensorList inputData, int[] inputDims) {
+    TensorArray tensorArray = new TensorArray(inputData.stream().map(tensor -> {
+      Tensor outputTensor = new Tensor(inputDims[0], inputDims[1], 1);
+      outputTensor.setByCoord(RefUtil.wrapInterface((ToDoubleFunction<Coordinate>) c -> {
+        return RefIntStream.range(0, inputDims[2]).mapToDouble(RefUtil.wrapInterface((IntToDoubleFunction) i -> {
+          int[] coords = c.getCoords();
+          return tensor.get(coords[0], coords[1], i);
+        }, tensor == null ? null : tensor.addRef())).sum();
+      }, tensor));
+      return outputTensor;
+    }).toArray(Tensor[]::new));
+    inputData.freeRef();
+    return tensorArray;
   }
 
   private static class Accumulator extends Result.Accumulator {

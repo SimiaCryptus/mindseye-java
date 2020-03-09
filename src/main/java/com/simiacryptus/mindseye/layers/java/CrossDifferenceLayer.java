@@ -21,7 +21,6 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
-import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefList;
@@ -62,30 +61,6 @@ public class CrossDifferenceLayer extends LayerBase {
     return new Result(data, accumulator, alive);
   }
 
-  private boolean alive(Result[] inObj) {
-    return Result.anyAlive(inObj);
-  }
-
-  @NotNull
-  private TensorArray fwd(TensorList input) {
-    TensorArray tensorArray = new TensorArray(input.stream().parallel().map(tensor -> {
-      final int inputDim = tensor.length();
-      final int outputDim = (inputDim * inputDim - inputDim) / 2;
-      @Nonnull final Tensor result1 = new Tensor(outputDim);
-      @Nullable final double[] inputData = tensor.getData();
-      tensor.freeRef();
-      @Nullable final double[] resultData = result1.getData();
-      RefIntStream.range(0, inputDim).forEach(x -> {
-        RefIntStream.range(x + 1, inputDim).forEach(y -> {
-          resultData[CrossDifferenceLayer.index(x, y, inputDim)] = inputData[x] - inputData[y];
-        });
-      });
-      return result1;
-    }).toArray(Tensor[]::new));
-    input.freeRef();
-    return tensorArray;
-  }
-
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
@@ -108,6 +83,30 @@ public class CrossDifferenceLayer extends LayerBase {
   @SuppressWarnings("unused")
   CrossDifferenceLayer addRef() {
     return (CrossDifferenceLayer) super.addRef();
+  }
+
+  private boolean alive(Result[] inObj) {
+    return Result.anyAlive(inObj);
+  }
+
+  @NotNull
+  private TensorArray fwd(TensorList input) {
+    TensorArray tensorArray = new TensorArray(input.stream().parallel().map(tensor -> {
+      final int inputDim = tensor.length();
+      final int outputDim = (inputDim * inputDim - inputDim) / 2;
+      @Nonnull final Tensor result1 = new Tensor(outputDim);
+      @Nullable final double[] inputData = tensor.getData();
+      tensor.freeRef();
+      @Nullable final double[] resultData = result1.getData();
+      RefIntStream.range(0, inputDim).forEach(x -> {
+        RefIntStream.range(x + 1, inputDim).forEach(y -> {
+          resultData[CrossDifferenceLayer.index(x, y, inputDim)] = inputData[x] - inputData[y];
+        });
+      });
+      return result1;
+    }).toArray(Tensor[]::new));
+    input.freeRef();
+    return tensorArray;
   }
 
   private static class Accumulator extends Result.Accumulator {

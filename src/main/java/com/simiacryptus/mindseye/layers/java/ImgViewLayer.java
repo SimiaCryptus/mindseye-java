@@ -253,16 +253,6 @@ public class ImgViewLayer extends LayerBase {
     return new Result(data, accumulator, alive);
   }
 
-  @NotNull
-  private TensorArray fwd(TensorList batch, int[] dimOut) {
-    return new TensorArray(RefIntStream.range(0, batch.length())
-            .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-              @Nonnull final Tensor outputData = new Tensor(dimOut);
-              fwd(batch.get(dataIndex), outputData.addRef());
-              return outputData;
-            }, batch)).toArray(Tensor[]::new));
-  }
-
   @Nonnull
   public int[] getViewDimensions(int[] sourceDimensions, int[] destinationDimensions, int[] offset) {
     @Nonnull final int[] viewDim = new int[3];
@@ -383,6 +373,16 @@ public class ImgViewLayer extends LayerBase {
     xy[0] += rotationCenterX;
     xy[1] += rotationCenterY;
     return xy;
+  }
+
+  @NotNull
+  private TensorArray fwd(TensorList batch, int[] dimOut) {
+    return new TensorArray(RefIntStream.range(0, batch.length())
+        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+          @Nonnull final Tensor outputData = new Tensor(dimOut);
+          fwd(batch.get(dataIndex), outputData.addRef());
+          return outputData;
+        }, batch)).toArray(Tensor[]::new));
   }
 
   private static class Accumulator extends Result.Accumulator {

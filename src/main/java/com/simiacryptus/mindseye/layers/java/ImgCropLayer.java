@@ -107,19 +107,6 @@ public class ImgCropLayer extends LayerBase {
     return new Result(data, accumulator, alive);
   }
 
-  @NotNull
-  private TensorArray fwd(TensorList batch, int inputDim) {
-    return new TensorArray(RefIntStream.range(0, batch.length()).parallel()
-          .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-            @Nonnull final Tensor outputData = new Tensor(sizeX, sizeY, inputDim);
-            Tensor inputData = batch.get(dataIndex);
-            ImgCropLayer.copy(inputData.addRef(),
-                outputData.addRef());
-            inputData.freeRef();
-            return outputData;
-          }, batch)).toArray(Tensor[]::new));
-  }
-
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
@@ -145,6 +132,19 @@ public class ImgCropLayer extends LayerBase {
   @SuppressWarnings("unused")
   ImgCropLayer addRef() {
     return (ImgCropLayer) super.addRef();
+  }
+
+  @NotNull
+  private TensorArray fwd(TensorList batch, int inputDim) {
+    return new TensorArray(RefIntStream.range(0, batch.length()).parallel()
+        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+          @Nonnull final Tensor outputData = new Tensor(sizeX, sizeY, inputDim);
+          Tensor inputData = batch.get(dataIndex);
+          ImgCropLayer.copy(inputData.addRef(),
+              outputData.addRef());
+          inputData.freeRef();
+          return outputData;
+        }, batch)).toArray(Tensor[]::new));
   }
 
   private static class Accumulator extends Result.Accumulator {

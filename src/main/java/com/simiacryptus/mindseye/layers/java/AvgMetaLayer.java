@@ -177,7 +177,7 @@ public class AvgMetaLayer extends LayerBase {
         @Nullable final Tensor delta = data.get(0);
         @Nonnull final Tensor feedback[] = new Tensor[itemCnt];
         int[] deltaDimensions = delta.getDimensions();
-        RefArrays.parallelSetAll(RefUtil.addRefs(feedback),
+        RefArrays.parallelSetAll(RefUtil.addRef(feedback),
             i -> new Tensor(deltaDimensions));
         if (active) {
           tensor.coordStream(true)
@@ -185,7 +185,7 @@ public class AvgMetaLayer extends LayerBase {
                 for (int inputItem = 0; inputItem < itemCnt; inputItem++) {
                   feedback[inputItem].add(inputCoord, delta.get(inputCoord) / itemCnt);
                 }
-              }, delta, RefUtil.addRefs(feedback)));
+              }, delta, RefUtil.addRef(feedback)));
         } else {
           delta.freeRef();
         }

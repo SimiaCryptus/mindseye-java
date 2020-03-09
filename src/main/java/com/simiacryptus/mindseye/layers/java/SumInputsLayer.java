@@ -60,10 +60,34 @@ public class SumInputsLayer extends LayerBase {
   @Nonnull
   @Override
   public Result eval(@Nonnull final Result... inObj) {
-    TensorList data = fwd(RefUtil.addRefs(inObj));
-    boolean alive = anyAlive(RefUtil.addRefs(inObj));
+    TensorList data = fwd(RefUtil.addRef(inObj));
+    boolean alive = anyAlive(RefUtil.addRef(inObj));
     Accumulator accumulator = new Accumulator(inObj);
     return new Result(data, accumulator, alive);
+  }
+
+  @Nonnull
+  @Override
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
+    return super.getJsonStub();
+  }
+
+  @Nonnull
+  @Override
+  public RefList<double[]> state() {
+    return RefArrays.asList();
+  }
+
+  public @SuppressWarnings("unused")
+  void _free() {
+    super._free();
+  }
+
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  SumInputsLayer addRef() {
+    return (SumInputsLayer) super.addRef();
   }
 
   @NotNull
@@ -91,30 +115,6 @@ public class SumInputsLayer extends LayerBase {
             return tensor;
           }, r, l)).toArray(Tensor[]::new));
     }));
-  }
-
-  @Nonnull
-  @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    return super.getJsonStub();
-  }
-
-  @Nonnull
-  @Override
-  public RefList<double[]> state() {
-    return RefArrays.asList();
-  }
-
-  public @SuppressWarnings("unused")
-  void _free() {
-    super._free();
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  SumInputsLayer addRef() {
-    return (SumInputsLayer) super.addRef();
   }
 
   private static class Accumulator extends Result.Accumulator {

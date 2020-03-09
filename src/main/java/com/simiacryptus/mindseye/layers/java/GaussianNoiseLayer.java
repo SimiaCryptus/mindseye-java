@@ -93,22 +93,6 @@ public class GaussianNoiseLayer extends LayerBase implements StochasticComponent
     return new Result(data, accumulator, alive);
   }
 
-  @NotNull
-  private TensorArray fwd(TensorList inputData) {
-    final int itemCnt = inputData.length();
-    return new TensorArray(RefIntStream.range(0, itemCnt)
-        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-          @Nonnull final Random random1 = new Random(seed);
-          Tensor tensor = inputData.get(dataIndex);
-          @Nullable final Tensor input = tensor.copy();
-          tensor.freeRef();
-          for (int i = 0; i < input.length(); i++) {
-            input.set(i, input.get(i) + random1.nextGaussian() * getValue());
-          }
-          return input;
-        }, inputData)).toArray(Tensor[]::new));
-  }
-
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
@@ -148,6 +132,22 @@ public class GaussianNoiseLayer extends LayerBase implements StochasticComponent
   @SuppressWarnings("unused")
   GaussianNoiseLayer addRef() {
     return (GaussianNoiseLayer) super.addRef();
+  }
+
+  @NotNull
+  private TensorArray fwd(TensorList inputData) {
+    final int itemCnt = inputData.length();
+    return new TensorArray(RefIntStream.range(0, itemCnt)
+        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+          @Nonnull final Random random1 = new Random(seed);
+          Tensor tensor = inputData.get(dataIndex);
+          @Nullable final Tensor input = tensor.copy();
+          tensor.freeRef();
+          for (int i = 0; i < input.length(); i++) {
+            input.set(i, input.get(i) + random1.nextGaussian() * getValue());
+          }
+          return input;
+        }, inputData)).toArray(Tensor[]::new));
   }
 
   private static class Accumulator extends Result.Accumulator {

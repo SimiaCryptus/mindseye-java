@@ -75,25 +75,10 @@ public class ProductInputsLayer extends LayerBase {
         throw temp_57_0010;
       }
     }
-    boolean alive = anyAlive(RefUtil.addRefs(inObj));
-    TensorList data = fwd(RefUtil.addRefs(inObj));
+    boolean alive = anyAlive(RefUtil.addRef(inObj));
+    TensorList data = fwd(RefUtil.addRef(inObj));
     Accumulator accumulator = new Accumulator(inObj);
     return new Result(data, accumulator, alive);
-  }
-
-  @NotNull
-  private TensorList fwd(@Nonnull Result[] inObj) {
-    return RefUtil.get(RefArrays.stream(inObj).parallel().map(x -> {
-      return Result.getData(x);
-    }).reduce((l, r) -> {
-      return new TensorArray(
-          RefIntStream.range(0, Math.max(l.length(), r.length())).parallel()
-              .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) i1 -> {
-                return Tensor.product(
-                    l.get(1 == l.length() ? 0 : i1),
-                    r.get(1 == r.length() ? 0 : i1));
-              }, l, r)).toArray(Tensor[]::new));
-    }));
   }
 
   @Nonnull
@@ -120,6 +105,21 @@ public class ProductInputsLayer extends LayerBase {
     return (ProductInputsLayer) super.addRef();
   }
 
+  @NotNull
+  private TensorList fwd(@Nonnull Result[] inObj) {
+    return RefUtil.get(RefArrays.stream(inObj).parallel().map(x -> {
+      return Result.getData(x);
+    }).reduce((l, r) -> {
+      return new TensorArray(
+          RefIntStream.range(0, Math.max(l.length(), r.length())).parallel()
+              .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) i1 -> {
+                return Tensor.product(
+                    l.get(1 == l.length() ? 0 : i1),
+                    r.get(1 == r.length() ? 0 : i1));
+              }, l, r)).toArray(Tensor[]::new));
+    }));
+  }
+
   private static class Accumulator extends Result.Accumulator {
 
     private final Result[] inObj;
@@ -133,7 +133,7 @@ public class ProductInputsLayer extends LayerBase {
       for (@Nonnull final Result input : inObj) {
         if (input.isAlive()) {
           @Nonnull
-          TensorList passback = RefUtil.get(RefArrays.stream(RefUtil.addRefs(inObj)).parallel()
+          TensorList passback = RefUtil.get(RefArrays.stream(RefUtil.addRef(inObj)).parallel()
               .map(RefUtil.wrapInterface((Function<Result, TensorList>) x -> {
                 TensorList temp_57_0004 = x == input ? delta.addRef() : x.getData();
                 x.freeRef();

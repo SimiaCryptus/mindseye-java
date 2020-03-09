@@ -114,7 +114,7 @@ public class StochasticSamplingSubnetLayer extends LayerBase implements Stochast
         RefArrays.stream(getSeeds()).mapToObj(RefUtil.wrapInterface((LongFunction<? extends Result>) seed1 -> {
           shuffleSubnet(seed1);
           assert subnetwork != null;
-          return subnetwork.eval(RefUtil.addRefs(counting));
+          return subnetwork.eval(RefUtil.addRef(counting));
         }, counting)).toArray(Result[]::new));
   }
 

@@ -85,20 +85,6 @@ public class MaxMetaLayer extends LayerBase {
     return new Result(data, accumulator, alive);
   }
 
-  @NotNull
-  private TensorArray fwd(Result input, Tensor input0Tensor, int[] indicies) {
-    TensorArray tensorArray = new TensorArray(input0Tensor.mapIndex(RefUtil.wrapInterface((v, c) -> {
-      TensorList tensorList = input.getData();
-      Tensor tensor = tensorList.get(indicies[c]);
-      tensorList.freeRef();
-      double value = tensor.getData()[c];
-      tensor.freeRef();
-      return value;
-    }, input)));
-    input0Tensor.freeRef();
-    return tensorArray;
-  }
-
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
@@ -123,6 +109,20 @@ public class MaxMetaLayer extends LayerBase {
     return (MaxMetaLayer) super.addRef();
   }
 
+  @NotNull
+  private TensorArray fwd(Result input, Tensor input0Tensor, int[] indicies) {
+    TensorArray tensorArray = new TensorArray(input0Tensor.mapIndex(RefUtil.wrapInterface((v, c) -> {
+      TensorList tensorList = input.getData();
+      Tensor tensor = tensorList.get(indicies[c]);
+      tensorList.freeRef();
+      double value = tensor.get(c);
+      tensor.freeRef();
+      return value;
+    }, input)));
+    input0Tensor.freeRef();
+    return tensorArray;
+  }
+
   private static class Accumulator extends Result.Accumulator {
 
     private final Tensor input0Tensor;
@@ -144,15 +144,15 @@ public class MaxMetaLayer extends LayerBase {
       if (alive) {
         @Nullable final Tensor delta = data.get(0);
         @Nonnull final Tensor feedback[] = new Tensor[itemCnt];
-        RefArrays.parallelSetAll(RefUtil.addRefs(feedback),
+        RefArrays.parallelSetAll(RefUtil.addRef(feedback),
             RefUtil.wrapInterface(i -> new Tensor(delta.getDimensions()), delta.addRef()));
         input0Tensor.coordStream(true)
             .forEach(RefUtil.wrapInterface((Consumer<? super Coordinate>) inputCoord -> {
               feedback[indicies[inputCoord.getIndex()]].add(inputCoord, delta.get(inputCoord));
-            }, delta.addRef(), RefUtil.addRefs(feedback)));
+            }, delta.addRef(), RefUtil.addRef(feedback)));
         delta.freeRef();
         @Nonnull
-        TensorArray tensorArray = new TensorArray(RefUtil.addRefs(feedback));
+        TensorArray tensorArray = new TensorArray(RefUtil.addRef(feedback));
         RefUtil.freeRef(feedback);
         DeltaSet<UUID> buffer1 = buffer == null ? null : buffer.addRef();
         try {

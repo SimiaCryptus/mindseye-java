@@ -131,27 +131,6 @@ public class AvgPoolingLayer extends LayerBase {
     return new Result(tensorArray, accumulator, alive);
   }
 
-  @NotNull
-  private TensorArray fwd(int kernelSize, TensorList data, int[] newDims, RefMap<Coordinate, RefList<int[]>> coordMap) {
-    return new TensorArray(RefIntStream.range(0, data.length())
-            .mapToObj(RefUtil.wrapInterface((IntFunction<Tensor>) dataIndex -> {
-              @Nullable final Tensor input = data.get(dataIndex);
-              @Nonnull final Tensor output = new Tensor(newDims);
-              coordMap.forEach((k, v) -> {
-                double sum = v.stream()
-                    .mapToDouble(RefUtil.wrapInterface(input::get, input.addRef()))
-                    .sum();
-                v.freeRef();
-                if (Double.isFinite(sum)) {
-                  output.add(k, sum / kernelSize);
-                }
-              });
-              input.freeRef();
-              return output;
-            }, data, coordMap))
-            .toArray(Tensor[]::new));
-  }
-
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
@@ -176,6 +155,27 @@ public class AvgPoolingLayer extends LayerBase {
   @SuppressWarnings("unused")
   AvgPoolingLayer addRef() {
     return (AvgPoolingLayer) super.addRef();
+  }
+
+  @NotNull
+  private TensorArray fwd(int kernelSize, TensorList data, int[] newDims, RefMap<Coordinate, RefList<int[]>> coordMap) {
+    return new TensorArray(RefIntStream.range(0, data.length())
+        .mapToObj(RefUtil.wrapInterface((IntFunction<Tensor>) dataIndex -> {
+          @Nullable final Tensor input = data.get(dataIndex);
+          @Nonnull final Tensor output = new Tensor(newDims);
+          coordMap.forEach((k, v) -> {
+            double sum = v.stream()
+                .mapToDouble(RefUtil.wrapInterface(input::get, input.addRef()))
+                .sum();
+            v.freeRef();
+            if (Double.isFinite(sum)) {
+              output.add(k, sum / kernelSize);
+            }
+          });
+          input.freeRef();
+          return output;
+        }, data, coordMap))
+        .toArray(Tensor[]::new));
   }
 
   public static final class IndexMapKey {

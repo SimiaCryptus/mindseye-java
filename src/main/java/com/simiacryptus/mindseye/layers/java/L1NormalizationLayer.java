@@ -70,22 +70,6 @@ public class L1NormalizationLayer extends LayerBase {
     return new Result(data, accumulator, alive);
   }
 
-  @NotNull
-  private TensorArray fwd(TensorList inData) {
-    return new TensorArray(RefIntStream.range(0, inData.length())
-            .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-              @Nullable final Tensor value = inData.get(dataIndex);
-              final double sum = value.sum();
-              if (!Double.isFinite(sum) || 0 == sum) {
-                return value;
-              } else {
-                Tensor temp_26_0003 = value.scale(1.0 / sum);
-                value.freeRef();
-                return temp_26_0003;
-              }
-            }, inData)).toArray(Tensor[]::new));
-  }
-
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
@@ -108,6 +92,22 @@ public class L1NormalizationLayer extends LayerBase {
   @SuppressWarnings("unused")
   L1NormalizationLayer addRef() {
     return (L1NormalizationLayer) super.addRef();
+  }
+
+  @NotNull
+  private TensorArray fwd(TensorList inData) {
+    return new TensorArray(RefIntStream.range(0, inData.length())
+        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+          @Nullable final Tensor value = inData.get(dataIndex);
+          final double sum = value.sum();
+          if (!Double.isFinite(sum) || 0 == sum) {
+            return value;
+          } else {
+            Tensor temp_26_0003 = value.scale(1.0 / sum);
+            value.freeRef();
+            return temp_26_0003;
+          }
+        }, inData)).toArray(Tensor[]::new));
   }
 
   private static class Accumulator extends Result.Accumulator {
@@ -145,13 +145,13 @@ public class L1NormalizationLayer extends LayerBase {
               return passback;
             }, inData.addRef(), outDelta.addRef()))
             .toArray(Tensor[]::new);
-        assert RefArrays.stream(RefUtil.addRefs(passbackArray)).flatMapToDouble(x -> {
+        assert RefArrays.stream(RefUtil.addRef(passbackArray)).flatMapToDouble(x -> {
           RefDoubleStream temp_26_0004 = RefArrays.stream(x.getData());
           x.freeRef();
           return temp_26_0004;
         }).allMatch(Double::isFinite);
         @Nonnull
-        TensorArray tensorArray = new TensorArray(RefUtil.addRefs(passbackArray));
+        TensorArray tensorArray = new TensorArray(RefUtil.addRef(passbackArray));
         RefUtil.freeRef(passbackArray);
         DeltaSet<UUID> buffer1 = buffer == null ? null : buffer.addRef();
         try {

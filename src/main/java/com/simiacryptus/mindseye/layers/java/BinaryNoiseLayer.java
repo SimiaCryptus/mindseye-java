@@ -114,29 +114,6 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
     return new Result(data, accumulator, alive);
   }
 
-  @NotNull
-  private TensorArray fwd(int[] dimensions, int length) {
-    if (!maskList.isEmpty()) {
-      Tensor temp_32_0004 = maskList.get(0);
-      if (!RefArrays.equals(temp_32_0004.getDimensions(), dimensions)) {
-        clear();
-      }
-      temp_32_0004.freeRef();
-    }
-    @Nonnull final Tensor tensorPrototype = new Tensor(dimensions);
-    double amplitude = 1.0 / getValue();
-    while (length > maskList.size()) {
-      if (seed == 0) {
-        maskList.add(tensorPrototype.map(v -> amplitude, false));
-      } else {
-        Random random = new Random(seed * maskList.size());
-        maskList.add(tensorPrototype.map(v -> random.nextDouble() < getValue() ? amplitude : 0, false));
-      }
-    }
-    tensorPrototype.freeRef();
-    return new TensorArray(maskList.stream().limit(length).toArray(Tensor[]::new));
-  }
-
   public void clear() {
     final RefList<Tensor> maskList = this.maskList.addRef();
     synchronized (maskList) {
@@ -184,6 +161,29 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
   @SuppressWarnings("unused")
   BinaryNoiseLayer addRef() {
     return (BinaryNoiseLayer) super.addRef();
+  }
+
+  @NotNull
+  private TensorArray fwd(int[] dimensions, int length) {
+    if (!maskList.isEmpty()) {
+      Tensor temp_32_0004 = maskList.get(0);
+      if (!RefArrays.equals(temp_32_0004.getDimensions(), dimensions)) {
+        clear();
+      }
+      temp_32_0004.freeRef();
+    }
+    @Nonnull final Tensor tensorPrototype = new Tensor(dimensions);
+    double amplitude = 1.0 / getValue();
+    while (length > maskList.size()) {
+      if (seed == 0) {
+        maskList.add(tensorPrototype.map(v -> amplitude, false));
+      } else {
+        Random random = new Random(seed * maskList.size());
+        maskList.add(tensorPrototype.map(v -> random.nextDouble() < getValue() ? amplitude : 0, false));
+      }
+    }
+    tensorPrototype.freeRef();
+    return new TensorArray(maskList.stream().limit(length).toArray(Tensor[]::new));
   }
 
   private static class Accumulator extends Result.Accumulator {

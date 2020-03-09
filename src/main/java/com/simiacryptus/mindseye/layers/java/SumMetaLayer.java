@@ -149,14 +149,14 @@ public class SumMetaLayer extends LayerBase {
       if (alive) {
         @Nullable final Tensor delta = data.get(0);
         @Nonnull final Tensor feedback[] = new Tensor[itemCnt];
-        RefArrays.parallelSetAll(RefUtil.addRefs(feedback),
+        RefArrays.parallelSetAll(RefUtil.addRef(feedback),
             RefUtil.wrapInterface(i -> new Tensor(delta.getDimensions()), delta.addRef()));
 
         delta.coordStream(false).forEach(RefUtil.wrapInterface((Consumer<? super Coordinate>) inputCoord -> {
           for (int inputItem = 0; inputItem < itemCnt; inputItem++) {
             feedback[inputItem].add(inputCoord, delta.get(inputCoord));
           }
-        }, RefUtil.addRefs(feedback), delta));
+        }, RefUtil.addRef(feedback), delta));
         @Nonnull
         TensorArray tensorArray = new TensorArray(feedback);
         DeltaSet<UUID> buffer1 = buffer == null ? null : buffer.addRef();

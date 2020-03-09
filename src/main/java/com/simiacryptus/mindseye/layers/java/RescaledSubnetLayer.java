@@ -79,25 +79,6 @@ public class RescaledSubnetLayer extends LayerBase {
     return result;
   }
 
-  @NotNull
-  private PipelineNetwork getNetwork(int[] inputDims) {
-    @Nonnull final PipelineNetwork network = new PipelineNetwork();
-    @Nullable final DAGNode condensed = network.add(new ImgReshapeLayer(scale, scale, false));
-    DAGNode[] nodes = RefIntStream.range(0, scale * scale)
-        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends InnerNode>) subband -> {
-          @Nonnull final int[] select = new int[inputDims[2]];
-          for (int i = 0; i < inputDims[2]; i++) {
-            select[i] = subband * inputDims[2] + i;
-          }
-          InnerNode selectNode = network.add(new ImgBandSelectLayer(select), condensed.addRef());
-          WrapperLayer wrapperLayer = new WrapperLayer(subnetwork == null ? null : subnetwork.addRef());
-          return network.add(wrapperLayer, selectNode);
-        }, condensed, network.addRef())).toArray(DAGNode[]::new);
-    RefUtil.freeRef(network.add(new ImgConcatLayer(), nodes));
-    RefUtil.freeRef(network.add(new ImgReshapeLayer(scale, scale, true)));
-    return network;
-  }
-
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
@@ -125,6 +106,25 @@ public class RescaledSubnetLayer extends LayerBase {
   @SuppressWarnings("unused")
   RescaledSubnetLayer addRef() {
     return (RescaledSubnetLayer) super.addRef();
+  }
+
+  @NotNull
+  private PipelineNetwork getNetwork(int[] inputDims) {
+    @Nonnull final PipelineNetwork network = new PipelineNetwork();
+    @Nullable final DAGNode condensed = network.add(new ImgReshapeLayer(scale, scale, false));
+    DAGNode[] nodes = RefIntStream.range(0, scale * scale)
+        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends InnerNode>) subband -> {
+          @Nonnull final int[] select = new int[inputDims[2]];
+          for (int i = 0; i < inputDims[2]; i++) {
+            select[i] = subband * inputDims[2] + i;
+          }
+          InnerNode selectNode = network.add(new ImgBandSelectLayer(select), condensed.addRef());
+          WrapperLayer wrapperLayer = new WrapperLayer(subnetwork == null ? null : subnetwork.addRef());
+          return network.add(wrapperLayer, selectNode);
+        }, condensed, network.addRef())).toArray(DAGNode[]::new);
+    RefUtil.freeRef(network.add(new ImgConcatLayer(), nodes));
+    RefUtil.freeRef(network.add(new ImgReshapeLayer(scale, scale, true)));
+    return network;
   }
 
 }

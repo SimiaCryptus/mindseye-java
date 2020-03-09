@@ -64,7 +64,7 @@ public class EntropyLossLayer extends LayerBase {
     @Nonnull final RefArrayList<Tensor> gradient = new RefArrayList<>();
     final double max_prob = 1.;
     boolean alive = alive(inObj[0].addRef());
-    TensorArray data = fwd(zero_tol, indata.addRef(), gradient.addRef(), max_prob, RefUtil.addRefs(inObj));
+    TensorArray data = fwd(zero_tol, indata.addRef(), gradient.addRef(), max_prob, RefUtil.addRef(inObj));
     final Result.Accumulator accumulator1 = inObj[0].getAccumulator();
     final boolean alive1 = inObj[0].isAlive();
     final Result.Accumulator accumulator2 = inObj[1].getAccumulator();
@@ -72,54 +72,6 @@ public class EntropyLossLayer extends LayerBase {
     RefUtil.freeRef(inObj);
     Result.Accumulator accumulator = new Accumulator(indata, gradient, max_prob, zero_tol, accumulator1, alive1, accumulator2, alive2);
     return new Result(data, accumulator, alive);
-  }
-
-  private boolean alive(Result result) {
-    try {
-      if (result.isAlive()) return true;
-      else return false;
-    } finally {
-      result.freeRef();
-    }
-  }
-
-  @NotNull
-  private TensorArray fwd(double zero_tol, TensorList indata, RefArrayList<Tensor> gradient, double max_prob, @Nonnull Result[] inObj) {
-    return new TensorArray(RefIntStream.range(0, indata.length())
-            .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-              @Nullable final Tensor l = indata.get(dataIndex);
-              TensorList temp_03_0006 = inObj[1].getData();
-              @Nullable final Tensor r = temp_03_0006.get(dataIndex);
-              temp_03_0006.freeRef();
-              if (l.length() != r.length()) {
-                IllegalArgumentException temp_03_0004 = new IllegalArgumentException(
-                    l.length() + " != " + r.length());
-                l.freeRef();
-                r.freeRef();
-                throw temp_03_0004;
-              }
-              @Nonnull final Tensor gradientTensor = new Tensor(l.getDimensions());
-              @Nullable final double[] gradientData = gradientTensor.getData();
-              double total = 0;
-              @Nullable final double[] ld = l.getData();
-              @Nullable final double[] rd = r.getData();
-              r.freeRef();
-              for (int i = 0; i < l.length(); i++) {
-                final double lv = Math.max(Math.min(ld[i], max_prob), zero_tol);
-                final double rv = rd[i];
-                if (rv > 0) {
-                  gradientData[i] = -rv / lv;
-                  total += -rv * Math.log(lv);
-                } else {
-                  gradientData[i] = 0;
-                }
-              }
-              l.freeRef();
-              //assert total >= 0;
-              gradient.add(dataIndex, gradientTensor);
-              //RefUtil.set(gradient, dataIndex, gradientTensor);
-              return new Tensor(new double[]{total}, 1);
-            }, indata, inObj, gradient)).toArray(Tensor[]::new));
   }
 
   @Nonnull
@@ -144,6 +96,54 @@ public class EntropyLossLayer extends LayerBase {
   @SuppressWarnings("unused")
   EntropyLossLayer addRef() {
     return (EntropyLossLayer) super.addRef();
+  }
+
+  private boolean alive(Result result) {
+    try {
+      if (result.isAlive()) return true;
+      else return false;
+    } finally {
+      result.freeRef();
+    }
+  }
+
+  @NotNull
+  private TensorArray fwd(double zero_tol, TensorList indata, RefArrayList<Tensor> gradient, double max_prob, @Nonnull Result[] inObj) {
+    return new TensorArray(RefIntStream.range(0, indata.length())
+        .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+          @Nullable final Tensor l = indata.get(dataIndex);
+          TensorList temp_03_0006 = inObj[1].getData();
+          @Nullable final Tensor r = temp_03_0006.get(dataIndex);
+          temp_03_0006.freeRef();
+          if (l.length() != r.length()) {
+            IllegalArgumentException temp_03_0004 = new IllegalArgumentException(
+                l.length() + " != " + r.length());
+            l.freeRef();
+            r.freeRef();
+            throw temp_03_0004;
+          }
+          @Nonnull final Tensor gradientTensor = new Tensor(l.getDimensions());
+          @Nullable final double[] gradientData = gradientTensor.getData();
+          double total = 0;
+          @Nullable final double[] ld = l.getData();
+          @Nullable final double[] rd = r.getData();
+          r.freeRef();
+          for (int i = 0; i < l.length(); i++) {
+            final double lv = Math.max(Math.min(ld[i], max_prob), zero_tol);
+            final double rv = rd[i];
+            if (rv > 0) {
+              gradientData[i] = -rv / lv;
+              total += -rv * Math.log(lv);
+            } else {
+              gradientData[i] = 0;
+            }
+          }
+          l.freeRef();
+          //assert total >= 0;
+          gradient.add(dataIndex, gradientTensor);
+          //RefUtil.set(gradient, dataIndex, gradientTensor);
+          return new Tensor(new double[]{total}, 1);
+        }, indata, inObj, gradient)).toArray(Tensor[]::new));
   }
 
   private static class Accumulator extends Result.Accumulator {

@@ -127,7 +127,7 @@ public class CrossDotMetaLayer extends LayerBase {
       if (alive) {
         @Nullable final Tensor deltaTensor = delta.get(0);
         @Nonnull final Tensor feedback[] = new Tensor[itemCnt];
-        RefArrays.parallelSetAll(RefUtil.addRefs(feedback), i -> new Tensor(dim));
+        RefArrays.parallelSetAll(RefUtil.addRef(feedback), i -> new Tensor(dim));
 
         for (int i = 0; i < dim; i++) {
           for (int j = 0; j < dim; j++) {
@@ -146,7 +146,7 @@ public class CrossDotMetaLayer extends LayerBase {
         }
         deltaTensor.freeRef();
         @Nonnull
-        TensorArray tensorArray = new TensorArray(RefUtil.addRefs(feedback));
+        TensorArray tensorArray = new TensorArray(RefUtil.addRef(feedback));
         RefUtil.freeRef(feedback);
         DeltaSet<UUID> buffer1 = buffer == null ? null : buffer.addRef();
         this.accumulator.accept(buffer1, tensorArray);

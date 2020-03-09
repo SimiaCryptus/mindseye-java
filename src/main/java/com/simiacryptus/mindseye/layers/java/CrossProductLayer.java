@@ -66,30 +66,6 @@ public class CrossProductLayer extends LayerBase {
     return new Result(data, accumulator, alive);
   }
 
-  private boolean alive(Result[] inObj) {
-    return Result.anyAlive(inObj);
-  }
-
-  @NotNull
-  private TensorArray fwd(TensorList indata) {
-    TensorArray tensorArray = new TensorArray(indata.stream().parallel().map(tensor -> {
-      final int inputDim = tensor.length();
-      final int outputDim = (inputDim * inputDim - inputDim) / 2;
-      @Nonnull final Tensor result1 = new Tensor(outputDim);
-      @Nullable final double[] inputData = tensor.getData();
-      tensor.freeRef();
-      @Nullable final double[] resultData = result1.getData();
-      RefIntStream.range(0, inputDim).forEach(x -> {
-        RefIntStream.range(x + 1, inputDim).forEach(y -> {
-          resultData[CrossProductLayer.index(x, y, inputDim)] = inputData[x] * inputData[y];
-        });
-      });
-      return result1;
-    }).toArray(Tensor[]::new));
-    indata.freeRef();
-    return tensorArray;
-  }
-
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
@@ -112,6 +88,30 @@ public class CrossProductLayer extends LayerBase {
   @SuppressWarnings("unused")
   CrossProductLayer addRef() {
     return (CrossProductLayer) super.addRef();
+  }
+
+  private boolean alive(Result[] inObj) {
+    return Result.anyAlive(inObj);
+  }
+
+  @NotNull
+  private TensorArray fwd(TensorList indata) {
+    TensorArray tensorArray = new TensorArray(indata.stream().parallel().map(tensor -> {
+      final int inputDim = tensor.length();
+      final int outputDim = (inputDim * inputDim - inputDim) / 2;
+      @Nonnull final Tensor result1 = new Tensor(outputDim);
+      @Nullable final double[] inputData = tensor.getData();
+      tensor.freeRef();
+      @Nullable final double[] resultData = result1.getData();
+      RefIntStream.range(0, inputDim).forEach(x -> {
+        RefIntStream.range(x + 1, inputDim).forEach(y -> {
+          resultData[CrossProductLayer.index(x, y, inputDim)] = inputData[x] * inputData[y];
+        });
+      });
+      return result1;
+    }).toArray(Tensor[]::new));
+    indata.freeRef();
+    return tensorArray;
   }
 
   private static class Accumulator extends Result.Accumulator {

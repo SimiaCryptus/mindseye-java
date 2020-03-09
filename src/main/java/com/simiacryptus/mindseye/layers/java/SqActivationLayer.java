@@ -35,6 +35,11 @@ public final class SqActivationLayer extends SimpleActivationLayer<SqActivationL
     super(id);
   }
 
+  @Override
+  public boolean isFrozen() {
+    return true;
+  }
+
   @Nonnull
   @SuppressWarnings("unused")
   public static SqActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -68,10 +73,5 @@ public final class SqActivationLayer extends SimpleActivationLayer<SqActivationL
     assert minDeriv <= Math.abs(d);
     results[0] = f;
     results[1] = d;
-  }
-
-  @Override
-  public boolean isFrozen() {
-    return true;
   }
 }
