@@ -95,7 +95,6 @@ public class ImgTileAssemblyLayer extends LayerBase {
     this.paddingY = paddingY;
   }
 
-  @Nonnull
   public static void copy(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData, final int offsetX,
                           final int offsetY, final int paddingX, final int paddingY, final boolean toroidal, final double rowF,
                           final double colF) {

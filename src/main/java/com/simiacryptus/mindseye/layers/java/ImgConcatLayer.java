@@ -58,7 +58,6 @@ public class ImgConcatLayer extends LayerBase {
     return maxBands;
   }
 
-  @Nonnull
   public void setMaxBands(int maxBands) {
     this.maxBands = maxBands;
   }

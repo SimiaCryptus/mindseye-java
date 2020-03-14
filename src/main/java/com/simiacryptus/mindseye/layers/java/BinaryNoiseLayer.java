@@ -77,7 +77,6 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
     return value;
   }
 
-  @Nonnull
   public void setValue(final double value) {
     this.value = value;
     shuffle(StochasticComponent.random.get().nextLong());

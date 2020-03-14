@@ -143,7 +143,7 @@ public class MaxImageBandLayer extends LayerBase {
       if (getClass() != obj.getClass()) {
         return false;
       }
-      @Nonnull final MaxImageBandLayer.CalcRegionsParameter other = (MaxImageBandLayer.CalcRegionsParameter) obj;
+      final MaxImageBandLayer.CalcRegionsParameter other = (MaxImageBandLayer.CalcRegionsParameter) obj;
       if (!RefArrays.equals(inputDims, other.inputDims)) {
         return false;
       }

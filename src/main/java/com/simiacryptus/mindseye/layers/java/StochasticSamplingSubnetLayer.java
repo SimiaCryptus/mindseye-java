@@ -71,7 +71,6 @@ public class StochasticSamplingSubnetLayer extends LayerBase implements Stochast
     return RefIntStream.range(0, this.samples).mapToLong(i -> random.nextLong()).toArray();
   }
 
-  @Nonnull
   @Override
   public void setFrozen(final boolean frozen) {
     assert subnetwork != null;

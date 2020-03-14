@@ -104,17 +104,14 @@ public class HyperbolicActivationLayer extends LayerBase {
     return json;
   }
 
-  @Nonnull
   public void setModeAsymetric() {
     negativeMode = 0;
   }
 
-  @Nonnull
   public void setModeEven() {
     negativeMode = 1;
   }
 
-  @Nonnull
   public void setModeOdd() {
     negativeMode = -1;
   }

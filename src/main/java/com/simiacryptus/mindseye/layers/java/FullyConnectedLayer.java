@@ -103,7 +103,6 @@ public class FullyConnectedLayer extends LayerBase {
     weights.freeRef();
   }
 
-  @Nonnull
   public void setByCoord(@Nonnull final ToDoubleBiFunction<Coordinate, Coordinate> f) {
     assert inputDims != null;
     Tensor temp_15_0011 = new Tensor(inputDims);

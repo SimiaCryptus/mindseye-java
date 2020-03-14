@@ -149,7 +149,6 @@ public class FullyConnectedReferenceLayer extends LayerBase {
     return json;
   }
 
-  @Nonnull
   public void set(@Nonnull final DoubleSupplier f) {
     assert weights != null;
     RefArrays.parallelSetAll(weights.getData(), i -> f.getAsDouble());

@@ -53,7 +53,6 @@ public class ImgCropLayer extends LayerBase {
     sizeY = json.getAsJsonPrimitive("sizeY").getAsInt();
   }
 
-  @Nonnull
   public static void copy(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData) {
     @Nonnull final int[] inDim = inputData.getDimensions();
     @Nonnull final int[] outDim = outputData.getDimensions();

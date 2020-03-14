@@ -68,7 +68,7 @@ public class MaxPoolingLayer extends LayerBase {
     return new MaxPoolingLayer(json, JsonUtil.getIntArray(json.getAsJsonArray("heapCopy")));
   }
 
-  private static RefList<Tuple2<Integer, int[]>> calcRegions(@Nonnull final MaxPoolingLayer.CalcRegionsParameter p) {
+  private static RefList<Tuple2<Integer, int[]>> calcRegions(final MaxPoolingLayer.CalcRegionsParameter p) {
     @Nonnull final Tensor input = new Tensor(p.inputDims);
     final int[] newDims = RefIntStream.range(0, p.inputDims.length).map(i -> {
       //assert 0 == p.inputDims[i] % p.kernelDims[i];
@@ -197,7 +197,7 @@ public class MaxPoolingLayer extends LayerBase {
       if (getClass() != obj.getClass()) {
         return false;
       }
-      @Nonnull final MaxPoolingLayer.CalcRegionsParameter other = (MaxPoolingLayer.CalcRegionsParameter) obj;
+      final MaxPoolingLayer.CalcRegionsParameter other = (MaxPoolingLayer.CalcRegionsParameter) obj;
       if (!RefArrays.equals(inputDims, other.inputDims)) {
         return false;
       }

@@ -60,7 +60,6 @@ public class TensorConcatLayer extends LayerBase {
     return maxBands;
   }
 
-  @Nonnull
   public void setMaxBands(int maxBands) {
     this.maxBands = maxBands;
   }

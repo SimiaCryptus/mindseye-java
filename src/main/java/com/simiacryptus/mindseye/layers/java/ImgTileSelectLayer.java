@@ -67,7 +67,6 @@ public class ImgTileSelectLayer extends LayerBase {
     this.toroidal = null != toroidal && toroidal.getAsBoolean();
   }
 
-  @Nonnull
   public static void copy(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData, final int posX,
                           final int posY, final boolean toroidal) {
     @Nonnull final int[] inDim = inputData.getDimensions();

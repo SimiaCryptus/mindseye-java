@@ -302,7 +302,6 @@ public class ImgViewLayer extends LayerBase {
     return (ImgViewLayer) super.addRef();
   }
 
-  @Nonnull
   protected void fwd(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData) {
     int[] inputDims = inputData.getDimensions();
     @Nonnull final int[] inDim = inputDims;
@@ -330,7 +329,6 @@ public class ImgViewLayer extends LayerBase {
     }, inputData, outputData));
   }
 
-  @Nonnull
   protected void bck(@Nonnull final Tensor outputDelta, @Nonnull final Tensor inputDelta) {
     int[] outDeltaDims = outputDelta.getDimensions();
     @Nonnull final int[] inputDeltaDims = inputDelta.getDimensions();
@@ -412,12 +410,7 @@ public class ImgViewLayer extends LayerBase {
               err.freeRef();
               return passback;
             }, error.addRef())).toArray(Tensor[]::new));
-        DeltaSet<UUID> buffer1 = buffer == null ? null : buffer.addRef();
-        try {
-          this.accumulator.accept(buffer1, tensorArray);
-        } finally {
-          this.accumulator.freeRef();
-        }
+        this.accumulator.accept(buffer == null ? null : buffer.addRef(), tensorArray);
       }
       error.freeRef();
       if (null != buffer)
