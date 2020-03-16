@@ -21,7 +21,6 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.test.LayerTestBase;
-import com.simiacryptus.mindseye.test.unit.ComponentTest;
 import com.simiacryptus.mindseye.test.unit.TrainingTester;
 
 import javax.annotation.Nonnull;
@@ -29,24 +28,10 @@ import java.util.Random;
 
 public abstract class ProductInputsLayerTest extends LayerTestBase {
   @Override
-  public ComponentTest<TrainingTester.ComponentResult> getTrainingTester() {
-    TrainingTester temp_67_0002 = new TrainingTester() {
-
-      public @SuppressWarnings("unused")
-      void _free() {
-        super._free();
-      }
-
-      @Nonnull
-      @Override
-      protected Layer lossLayer() {
-        return ProductInputsLayerTest.this.lossLayer();
-      }
-    };
-    temp_67_0002.setRandomizationMode(TrainingTester.RandomizationMode.Random);
-    TrainingTester temp_67_0001 = temp_67_0002.addRef();
-    temp_67_0002.freeRef();
-    return temp_67_0001;
+  public TrainingTester getTrainingTester() {
+    TrainingTester trainingTester = super.getTrainingTester();
+    trainingTester.setRandomizationMode(TrainingTester.RandomizationMode.Random);
+    return trainingTester;
   }
 
   @Nonnull

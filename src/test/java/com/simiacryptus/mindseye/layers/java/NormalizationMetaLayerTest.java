@@ -21,17 +21,18 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.MetaLayerTestBase;
-import com.simiacryptus.mindseye.test.ToleranceStatistics;
-import com.simiacryptus.mindseye.test.unit.ComponentTest;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.TestInfo;
 
 import javax.annotation.Nonnull;
 import java.util.Random;
 
 public abstract class NormalizationMetaLayerTest extends MetaLayerTestBase {
+
   @Override
-  public ComponentTest<ToleranceStatistics> getDerivativeTester() {
-    return null;
-    //return new BatchDerivativeTester(1e-2, 1e-5, 10);
+  @Disabled
+  public void derivativeTest(TestInfo testInfo) {
+    super.derivativeTest(testInfo);
   }
 
   @Nonnull

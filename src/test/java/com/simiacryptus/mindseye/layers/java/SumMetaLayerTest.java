@@ -21,6 +21,8 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.MetaLayerTestBase;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.TestInfo;
 
 import javax.annotation.Nonnull;
 import java.util.Random;
@@ -28,7 +30,12 @@ import java.util.Random;
 public abstract class SumMetaLayerTest extends MetaLayerTestBase {
   public SumMetaLayerTest() {
     super();
-    validateBatchExecution = false;
+  }
+
+  @Override
+  @Disabled
+  public void batchingTest(TestInfo testInfo) {
+    super.batchingTest(testInfo);
   }
 
   @Nonnull

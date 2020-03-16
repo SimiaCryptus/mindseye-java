@@ -22,7 +22,6 @@ package com.simiacryptus.mindseye.layers.java;
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
-import com.simiacryptus.mindseye.test.unit.ComponentTest;
 import com.simiacryptus.mindseye.test.unit.TrainingTester;
 import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.RefHashMap;
@@ -45,19 +44,8 @@ public abstract class HyperbolicActivationLayerTest extends ActivationLayerTestB
   }
 
   @Override
-  public ComponentTest<TrainingTester.ComponentResult> getTrainingTester() {
-    TrainingTester trainingTester = new TrainingTester() {
-
-      public @SuppressWarnings("unused")
-      void _free() {
-        super._free();
-      }
-
-      @Override
-      protected Layer lossLayer() {
-        return HyperbolicActivationLayerTest.this.lossLayer();
-      }
-    };
+  public TrainingTester getTrainingTester() {
+    TrainingTester trainingTester = super.getTrainingTester();
     trainingTester.setRandomizationMode(TrainingTester.RandomizationMode.Random);
     return trainingTester;
   }

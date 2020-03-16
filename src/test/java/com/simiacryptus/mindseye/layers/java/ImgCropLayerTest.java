@@ -21,6 +21,8 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.test.LayerTestBase;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.TestInfo;
 
 import javax.annotation.Nonnull;
 import java.util.Random;
@@ -28,7 +30,12 @@ import java.util.Random;
 public abstract class ImgCropLayerTest extends LayerTestBase {
 
   public ImgCropLayerTest() {
-    validateBatchExecution = false;
+  }
+
+  @Override
+  @Disabled
+  public void batchingTest(TestInfo testInfo) {
+    super.batchingTest(testInfo);
   }
 
   @Nonnull

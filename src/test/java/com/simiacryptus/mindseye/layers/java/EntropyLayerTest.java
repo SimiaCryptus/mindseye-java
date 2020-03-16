@@ -21,8 +21,6 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
-import com.simiacryptus.mindseye.test.ToleranceStatistics;
-import com.simiacryptus.mindseye.test.unit.ComponentTest;
 import com.simiacryptus.mindseye.test.unit.SingleDerivativeTester;
 
 import javax.annotation.Nonnull;
@@ -33,9 +31,7 @@ public abstract class EntropyLayerTest extends ActivationLayerTestBase {
   }
 
   @Override
-  public ComponentTest<ToleranceStatistics> getDerivativeTester() {
-    if (!validateDifferentials)
-      return null;
+  public SingleDerivativeTester getDerivativeTester() {
     return new SingleDerivativeTester(1e-2, 1e-5);
   }
 
