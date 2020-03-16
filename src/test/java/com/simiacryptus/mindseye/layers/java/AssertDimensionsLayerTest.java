@@ -23,20 +23,19 @@ import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.test.LayerTestBase;
 
 import javax.annotation.Nonnull;
-import java.util.Random;
 
 public abstract class AssertDimensionsLayerTest extends LayerTestBase {
 
   @Nonnull
   @Override
-  public int[][] getSmallDims(Random random) {
-    return new int[][]{{2, 2}};
+  public Layer getLayer() {
+    return new AssertDimensionsLayer(2, 2);
   }
 
   @Nonnull
   @Override
-  public Layer getLayer(final int[][] inputSize, Random random) {
-    return new AssertDimensionsLayer(2, 2);
+  public int[][] getSmallDims() {
+    return new int[][]{{2, 2}};
   }
 
   public static class Basic extends AssertDimensionsLayerTest {

@@ -115,7 +115,7 @@ public final class NthPowerActivationLayer extends LayerBase {
     input.freeRef();
   }
 
-  private static void unity(@Nonnull final Tensor input, final double[] inputData, final double[] gradientData,
+  private static void unity(@Nonnull final Tensor input, final double[] gradientData,
                             final double[] outputData) {
     for (int i = 0; i < input.length(); i++) {
       gradientData[i] = 0;
@@ -184,7 +184,7 @@ public final class NthPowerActivationLayer extends LayerBase {
             NthPowerActivationLayer.squareRoot(input.addRef(), inputData, gradientData,
                 outputData);
           } else if (power == 0.0) {
-            NthPowerActivationLayer.unity(input.addRef(), inputData, gradientData,
+            NthPowerActivationLayer.unity(input.addRef(), gradientData,
                 outputData);
           } else {
             NthPowerActivationLayer.nthPower(power, input.addRef(), inputData, gradientData,

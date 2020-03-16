@@ -23,20 +23,19 @@ import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.test.LayerTestBase;
 
 import javax.annotation.Nonnull;
-import java.util.Random;
 
 public abstract class RescaledSubnetLayerTest extends LayerTestBase {
 
   @Nonnull
   @Override
-  public int[][] getSmallDims(Random random) {
-    return new int[][]{{6, 6, 1}};
+  public Layer getLayer() {
+    return new RescaledSubnetLayer(2, new SigmoidActivationLayer());
   }
 
   @Nonnull
   @Override
-  public Layer getLayer(final int[][] inputSize, Random random) {
-    return new RescaledSubnetLayer(2, new SigmoidActivationLayer());
+  public int[][] getSmallDims() {
+    return new int[][]{{6, 6, 1}};
   }
 
   public static class Basic extends RescaledSubnetLayerTest {

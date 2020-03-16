@@ -22,13 +22,10 @@ package com.simiacryptus.mindseye.layers.java;
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.test.LayerTestBase;
 import com.simiacryptus.mindseye.test.unit.BatchingTester;
-import org.junit.Ignore;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.TestInfo;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Random;
 
 public abstract class ReshapeLayerTest extends LayerTestBase {
 
@@ -42,14 +39,14 @@ public abstract class ReshapeLayerTest extends LayerTestBase {
 
   @Nonnull
   @Override
-  public int[][] getSmallDims(Random random) {
-    return new int[][]{inputDims};
+  public Layer getLayer() {
+    return new ReshapeLayer(outputDims);
   }
 
   @Nonnull
   @Override
-  public Layer getLayer(final int[][] inputSize, Random random) {
-    return new ReshapeLayer(outputDims);
+  public int[][] getSmallDims() {
+    return new int[][]{inputDims};
   }
 
   public static class Basic extends ReshapeLayerTest {
@@ -108,20 +105,20 @@ public abstract class ReshapeLayerTest extends LayerTestBase {
 
     @Override
     @Disabled
-    public void derivativeTest(TestInfo testInfo) {
-      super.derivativeTest(testInfo);
+    public void derivativeTest() {
+      super.derivativeTest();
     }
 
     @Override
     @Disabled
-    public void jsonTest(TestInfo testInfo) {
-      super.jsonTest(testInfo);
+    public void jsonTest() {
+      super.jsonTest();
     }
 
     @Override
     @Disabled
-    public void perfTest(TestInfo testInfo) {
-      super.perfTest(testInfo);
+    public void perfTest() {
+      super.perfTest();
     }
 
   }

@@ -23,25 +23,24 @@ import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.MetaLayerTestBase;
 
 import javax.annotation.Nonnull;
-import java.util.Random;
 
 public abstract class MaxMetaLayerTest extends MetaLayerTestBase {
 
   @Nonnull
   @Override
-  public int[][] getSmallDims(Random random) {
+  public int[][] getLargeDims() {
     return new int[][]{{3}};
   }
 
   @Nonnull
   @Override
-  public Layer getLayer(final int[][] inputSize, Random random) {
+  public Layer getLayer() {
     return new MaxMetaLayer();
   }
 
   @Nonnull
   @Override
-  public int[][] getLargeDims(Random random) {
+  public int[][] getSmallDims() {
     return new int[][]{{3}};
   }
 

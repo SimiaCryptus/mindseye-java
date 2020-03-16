@@ -22,35 +22,33 @@ package com.simiacryptus.mindseye.layers.java;
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.MetaLayerTestBase;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.TestInfo;
 
 import javax.annotation.Nonnull;
-import java.util.Random;
 
 public abstract class NormalizationMetaLayerTest extends MetaLayerTestBase {
 
+  @Nonnull
   @Override
-  @Disabled
-  public void derivativeTest(TestInfo testInfo) {
-    super.derivativeTest(testInfo);
+  public int[][] getLargeDims() {
+    return new int[][]{{10}};
   }
 
   @Nonnull
   @Override
-  public int[][] getSmallDims(Random random) {
-    return new int[][]{{3}};
-  }
-
-  @Nonnull
-  @Override
-  public Layer getLayer(final int[][] inputSize, Random random) {
+  public Layer getLayer() {
     return new NormalizationMetaLayer();
   }
 
   @Nonnull
   @Override
-  public int[][] getLargeDims(Random random) {
-    return new int[][]{{10}};
+  public int[][] getSmallDims() {
+    return new int[][]{{3}};
+  }
+
+  @Override
+  @Disabled
+  public void derivativeTest() {
+    super.derivativeTest();
   }
 
   @Nonnull

@@ -23,21 +23,20 @@ import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.test.LayerTestBase;
 
 import javax.annotation.Nonnull;
-import java.util.Random;
 
 public class TargetValueLayerTest {
   public static class Normal extends LayerTestBase {
 
     @Nonnull
     @Override
-    public int[][] getSmallDims(Random random) {
-      return new int[][]{{3}};
+    public Layer getLayer() {
+      return new TargetValueLayer(0.0, 0.1, 0.2);
     }
 
     @Nonnull
     @Override
-    public Layer getLayer(final int[][] inputSize, Random random) {
-      return new TargetValueLayer(0.0, 0.1, 0.2);
+    public int[][] getSmallDims() {
+      return new int[][]{{3}};
     }
 
   }

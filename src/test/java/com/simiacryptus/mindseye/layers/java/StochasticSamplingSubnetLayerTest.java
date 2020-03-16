@@ -25,19 +25,12 @@ import com.simiacryptus.mindseye.test.LayerTestBase;
 import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
-import java.util.Random;
 
 public abstract class StochasticSamplingSubnetLayerTest extends LayerTestBase {
 
   @Nonnull
   @Override
-  public int[][] getSmallDims(Random random) {
-    return new int[][]{{6, 6, 1}};
-  }
-
-  @Nonnull
-  @Override
-  public Layer getLayer(final int[][] inputSize, Random random) {
+  public Layer getLayer() {
     PipelineNetwork subnetwork = new PipelineNetwork(1);
     RefUtil.freeRef(subnetwork.add(new ProductLayer(), subnetwork.getInput(0),
         subnetwork.add(new BinaryNoiseLayer(0.5), subnetwork.getInput(0))));
@@ -46,6 +39,12 @@ public abstract class StochasticSamplingSubnetLayerTest extends LayerTestBase {
         subnetwork.addRef(), 2);
     subnetwork.freeRef();
     return temp_38_0001;
+  }
+
+  @Nonnull
+  @Override
+  public int[][] getSmallDims() {
+    return new int[][]{{6, 6, 1}};
   }
 
   public static class Basic extends StochasticSamplingSubnetLayerTest {

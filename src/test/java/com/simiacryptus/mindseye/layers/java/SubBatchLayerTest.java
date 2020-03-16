@@ -23,17 +23,23 @@ import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.test.LayerTestBase;
 import com.simiacryptus.ref.lang.MustCall;
 import com.simiacryptus.ref.lang.RefIgnore;
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Random;
 
 public class SubBatchLayerTest extends LayerTestBase {
 
   @Nullable
   @RefIgnore
   private final Layer layer = SubBatchLayer.wrap(new SoftmaxLayer());
+
+  @Nonnull
+  @Override
+  public Layer getLayer() {
+    assert layer != null;
+    return layer.copy();
+  }
 
   @Nullable
   @Override
@@ -43,21 +49,13 @@ public class SubBatchLayerTest extends LayerTestBase {
 
   @Nonnull
   @Override
-  public int[][] getSmallDims(Random random) {
+  public int[][] getSmallDims() {
     return new int[][]{{5}};
   }
 
-  @Nonnull
-  @Override
-  public Layer getLayer(final int[][] inputSize, Random random) {
-    assert layer != null;
-    return layer.copy();
-  }
-
-  @After
+  @AfterEach
   @MustCall
   public void cleanup() {
-    super.cleanup();
     if (null != layer)
       layer.freeRef();
   }

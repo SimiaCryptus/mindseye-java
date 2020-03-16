@@ -23,26 +23,25 @@ import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.test.LayerTestBase;
 
 import javax.annotation.Nonnull;
-import java.util.Random;
 
 public abstract class AvgPoolingLayerTest extends LayerTestBase {
 
   @Nonnull
   @Override
-  public int[][] getSmallDims(Random random) {
-    return new int[][]{{8, 8, 1}};
+  public int[][] getLargeDims() {
+    return new int[][]{{200, 200, 3}};
   }
 
   @Nonnull
   @Override
-  public Layer getLayer(final int[][] inputSize, Random random) {
+  public Layer getLayer() {
     return new AvgPoolingLayer(2, 2, 1);
   }
 
   @Nonnull
   @Override
-  public int[][] getLargeDims(Random random) {
-    return new int[][]{{200, 200, 3}};
+  public int[][] getSmallDims() {
+    return new int[][]{{8, 8, 1}};
   }
 
   public static class Basic extends AvgPoolingLayerTest {

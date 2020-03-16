@@ -23,13 +23,12 @@ import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.test.LayerTestBase;
 
 import javax.annotation.Nonnull;
-import java.util.Random;
 
 public abstract class ImgTileSubnetLayerTest extends LayerTestBase {
 
   @Nonnull
   @Override
-  public int[][] getSmallDims(Random random) {
+  public int[][] getSmallDims() {
     return new int[][]{{6, 6, 1}};
   }
 
@@ -37,7 +36,7 @@ public abstract class ImgTileSubnetLayerTest extends LayerTestBase {
 
     @Nonnull
     @Override
-    public Layer getLayer(final int[][] inputSize, Random random) {
+    public Layer getLayer() {
       return new ImgTileSubnetLayer(
           new LinearActivationLayer(),
           3, 3, 3, 3);
@@ -49,7 +48,7 @@ public abstract class ImgTileSubnetLayerTest extends LayerTestBase {
 
     @Nonnull
     @Override
-    public Layer getLayer(final int[][] inputSize, Random random) {
+    public Layer getLayer() {
       return new ImgTileSubnetLayer(
           new LinearActivationLayer(),
           3, 3, 2, 2);

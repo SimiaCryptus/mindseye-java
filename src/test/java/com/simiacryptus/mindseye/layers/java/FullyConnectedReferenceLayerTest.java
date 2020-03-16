@@ -23,10 +23,9 @@ import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.test.LayerTestBase;
 import com.simiacryptus.ref.lang.MustCall;
 import com.simiacryptus.ref.lang.RefIgnore;
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 
 import javax.annotation.Nonnull;
-import java.util.Random;
 
 public abstract class FullyConnectedReferenceLayerTest extends LayerTestBase {
   @Nonnull
@@ -39,7 +38,7 @@ public abstract class FullyConnectedReferenceLayerTest extends LayerTestBase {
   public FullyConnectedReferenceLayerTest(int[] inputDims, @Nonnull int[] outputDims) {
     this.outputDims = outputDims;
     this.inputDims = inputDims;
-    FullyConnectedReferenceLayer temp_00_0002 = new FullyConnectedReferenceLayer(getSmallDims(new Random())[0],
+    FullyConnectedReferenceLayer temp_00_0002 = new FullyConnectedReferenceLayer(getSmallDims()[0],
         outputDims);
     temp_00_0002.set(i -> random());
     FullyConnectedReferenceLayer temp_00_0001 = temp_00_0002.addRef();
@@ -50,20 +49,19 @@ public abstract class FullyConnectedReferenceLayerTest extends LayerTestBase {
 
   @Nonnull
   @Override
-  public int[][] getSmallDims(Random random) {
-    return new int[][]{inputDims};
+  public Layer getLayer() {
+    return layer.addRef();
   }
 
   @Nonnull
   @Override
-  public Layer getLayer(final int[][] inputSize, Random random) {
-    return layer.addRef();
+  public int[][] getSmallDims() {
+    return new int[][]{inputDims};
   }
 
-  @After
+  @AfterEach
   @MustCall
-  public void cleanup() {
-    super.cleanup();
+  void cleanup() {
     if (null != layer)
       layer.freeRef();
   }

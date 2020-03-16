@@ -22,32 +22,30 @@ package com.simiacryptus.mindseye.layers.java;
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.test.LayerTestBase;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.TestInfo;
 
 import javax.annotation.Nonnull;
-import java.util.Random;
 
 public abstract class ImgCropLayerTest extends LayerTestBase {
 
   public ImgCropLayerTest() {
   }
 
+  @Nonnull
   @Override
-  @Disabled
-  public void batchingTest(TestInfo testInfo) {
-    super.batchingTest(testInfo);
+  public Layer getLayer() {
+    return new ImgCropLayer(1, 1);
   }
 
   @Nonnull
   @Override
-  public int[][] getSmallDims(Random random) {
+  public int[][] getSmallDims() {
     return new int[][]{{8, 8, 1}};
   }
 
-  @Nonnull
   @Override
-  public Layer getLayer(final int[][] inputSize, Random random) {
-    return new ImgCropLayer(1, 1);
+  @Disabled
+  public void batchingTest() {
+    super.batchingTest();
   }
 
   public static class Basic extends ImgCropLayerTest {

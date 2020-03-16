@@ -25,24 +25,23 @@ import com.simiacryptus.mindseye.layers.ValueLayer;
 import com.simiacryptus.mindseye.test.LayerTestBase;
 
 import javax.annotation.Nonnull;
-import java.util.Random;
 
 public class ValueLayerTest {
   public static class Normal extends LayerTestBase {
 
     @Nonnull
     @Override
-    public int[][] getSmallDims(Random random) {
-      return new int[][]{};
-    }
-
-    @Nonnull
-    @Override
-    public Layer getLayer(final int[][] inputSize, Random random) {
+    public Layer getLayer() {
       Tensor tensor = new Tensor(0.1);
       ValueLayer temp_46_0001 = new ValueLayer(tensor.addRef());
       tensor.freeRef();
       return temp_46_0001;
+    }
+
+    @Nonnull
+    @Override
+    public int[][] getSmallDims() {
+      return new int[][]{};
     }
 
   }

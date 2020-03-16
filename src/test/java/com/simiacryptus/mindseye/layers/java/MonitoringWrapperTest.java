@@ -24,20 +24,19 @@ import com.simiacryptus.mindseye.layers.MonitoringWrapperLayer;
 import com.simiacryptus.mindseye.test.LayerTestBase;
 
 import javax.annotation.Nonnull;
-import java.util.Random;
 
 public abstract class MonitoringWrapperTest extends LayerTestBase {
 
   @Nonnull
   @Override
-  public int[][] getSmallDims(Random random) {
-    return new int[][]{{3}};
+  public Layer getLayer() {
+    return new MonitoringWrapperLayer(new MonitoringSynapse());
   }
 
   @Nonnull
   @Override
-  public Layer getLayer(final int[][] inputSize, Random random) {
-    return new MonitoringWrapperLayer(new MonitoringSynapse());
+  public int[][] getSmallDims() {
+    return new int[][]{{3}};
   }
 
   public static class Basic extends MonitoringWrapperTest {

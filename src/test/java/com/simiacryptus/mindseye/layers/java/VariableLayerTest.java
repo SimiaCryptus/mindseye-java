@@ -23,23 +23,22 @@ import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.test.LayerTestBase;
 
 import javax.annotation.Nonnull;
-import java.util.Random;
 
 public abstract class VariableLayerTest extends LayerTestBase {
 
   @Nonnull
   @Override
-  public int[][] getSmallDims(Random random) {
-    return new int[][]{{3}};
-  }
-
-  @Nonnull
-  @Override
-  public Layer getLayer(final int[][] inputSize, Random random) {
+  public Layer getLayer() {
     MonitoringSynapse inner = new MonitoringSynapse();
     VariableLayer temp_44_0001 = new VariableLayer(inner.addRef());
     inner.freeRef();
     return temp_44_0001;
+  }
+
+  @Nonnull
+  @Override
+  public int[][] getSmallDims() {
+    return new int[][]{{3}};
   }
 
   public static class Basic extends VariableLayerTest {

@@ -22,31 +22,23 @@ package com.simiacryptus.mindseye.layers.java;
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.MetaLayerTestBase;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.TestInfo;
 
 import javax.annotation.Nonnull;
-import java.util.Random;
 
 public abstract class SumMetaLayerTest extends MetaLayerTestBase {
   public SumMetaLayerTest() {
     super();
   }
 
+  @Nonnull
   @Override
-  @Disabled
-  public void batchingTest(TestInfo testInfo) {
-    super.batchingTest(testInfo);
+  public int[][] getLargeDims() {
+    return new int[][]{{100}};
   }
 
   @Nonnull
   @Override
-  public int[][] getSmallDims(Random random) {
-    return new int[][]{{3}};
-  }
-
-  @Nonnull
-  @Override
-  public Layer getLayer(final int[][] inputSize, Random random) {
+  public Layer getLayer() {
     SumMetaLayer temp_73_0002 = new SumMetaLayer();
     temp_73_0002.setMinBatches(0);
     SumMetaLayer temp_73_0001 = temp_73_0002.addRef();
@@ -56,8 +48,14 @@ public abstract class SumMetaLayerTest extends MetaLayerTestBase {
 
   @Nonnull
   @Override
-  public int[][] getLargeDims(Random random) {
-    return new int[][]{{100}};
+  public int[][] getSmallDims() {
+    return new int[][]{{3}};
+  }
+
+  @Override
+  @Disabled
+  public void batchingTest() {
+    super.batchingTest();
   }
 
   @Nonnull

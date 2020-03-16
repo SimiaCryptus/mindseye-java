@@ -24,9 +24,14 @@ import com.simiacryptus.mindseye.test.LayerTestBase;
 import com.simiacryptus.mindseye.test.unit.TrainingTester;
 
 import javax.annotation.Nonnull;
-import java.util.Random;
 
 public abstract class ProductInputsLayerTest extends LayerTestBase {
+  @Nonnull
+  @Override
+  public Layer getLayer() {
+    return new ProductInputsLayer();
+  }
+
   @Override
   public TrainingTester getTrainingTester() {
     TrainingTester trainingTester = super.getTrainingTester();
@@ -34,17 +39,11 @@ public abstract class ProductInputsLayerTest extends LayerTestBase {
     return trainingTester;
   }
 
-  @Nonnull
-  @Override
-  public Layer getLayer(final int[][] inputSize, Random random) {
-    return new ProductInputsLayer();
-  }
-
   public static class N1Test extends ProductInputsLayerTest {
 
     @Nonnull
     @Override
-    public int[][] getSmallDims(Random random) {
+    public int[][] getSmallDims() {
       return new int[][]{{3}, {1}};
     }
 
@@ -54,7 +53,7 @@ public abstract class ProductInputsLayerTest extends LayerTestBase {
 
     @Nonnull
     @Override
-    public int[][] getSmallDims(Random random) {
+    public int[][] getSmallDims() {
       return new int[][]{{3}, {3}, {3}};
     }
 
@@ -64,7 +63,7 @@ public abstract class ProductInputsLayerTest extends LayerTestBase {
 
     @Nonnull
     @Override
-    public int[][] getSmallDims(Random random) {
+    public int[][] getSmallDims() {
       return new int[][]{{3}, {3}};
     }
 

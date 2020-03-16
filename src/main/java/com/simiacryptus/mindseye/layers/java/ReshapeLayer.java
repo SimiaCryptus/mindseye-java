@@ -47,7 +47,7 @@ public class ReshapeLayer extends LayerBase {
     this.outputDims = RefArrays.copyOf(outputDims, outputDims.length);
   }
 
-  protected ReshapeLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+  protected ReshapeLayer(@Nonnull final JsonObject json) {
     super(json);
     outputDims = JsonUtil.getIntArray(json.getAsJsonArray("outputDims"));
   }
@@ -55,7 +55,7 @@ public class ReshapeLayer extends LayerBase {
   @Nonnull
   @SuppressWarnings("unused")
   public static ReshapeLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
-    return new ReshapeLayer(json, rs);
+    return new ReshapeLayer(json);
   }
 
   @Nullable

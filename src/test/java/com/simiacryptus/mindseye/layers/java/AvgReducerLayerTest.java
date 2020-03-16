@@ -23,26 +23,25 @@ import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.test.LayerTestBase;
 
 import javax.annotation.Nonnull;
-import java.util.Random;
 
 public abstract class AvgReducerLayerTest extends LayerTestBase {
 
   @Nonnull
   @Override
-  public int[][] getSmallDims(Random random) {
-    return new int[][]{{3}};
+  public int[][] getLargeDims() {
+    return new int[][]{{200, 200, 3}};
   }
 
   @Nonnull
   @Override
-  public Layer getLayer(final int[][] inputSize, Random random) {
+  public Layer getLayer() {
     return new AvgReducerLayer();
   }
 
   @Nonnull
   @Override
-  public int[][] getLargeDims(Random random) {
-    return new int[][]{{200, 200, 3}};
+  public int[][] getSmallDims() {
+    return new int[][]{{3}};
   }
 
   public static class Basic extends AvgMetaLayerTest {

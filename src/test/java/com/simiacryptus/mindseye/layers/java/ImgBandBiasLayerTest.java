@@ -23,24 +23,23 @@ import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.test.LayerTestBase;
 
 import javax.annotation.Nonnull;
-import java.util.Random;
 
 public abstract class ImgBandBiasLayerTest extends LayerTestBase {
 
   @Nonnull
   @Override
-  public int[][] getSmallDims(Random random) {
-    return new int[][]{{2, 2, 3}};
-  }
-
-  @Nonnull
-  @Override
-  public Layer getLayer(final int[][] inputSize, Random random) {
+  public Layer getLayer() {
     ImgBandBiasLayer temp_68_0002 = new ImgBandBiasLayer(3);
     temp_68_0002.addWeights(this::random);
     ImgBandBiasLayer temp_68_0001 = temp_68_0002.addRef();
     temp_68_0002.freeRef();
     return temp_68_0001;
+  }
+
+  @Nonnull
+  @Override
+  public int[][] getSmallDims() {
+    return new int[][]{{2, 2, 3}};
   }
 
   public static class Basic extends ImgBandBiasLayerTest {

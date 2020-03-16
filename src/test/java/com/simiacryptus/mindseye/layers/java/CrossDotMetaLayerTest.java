@@ -22,32 +22,30 @@ package com.simiacryptus.mindseye.layers.java;
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.test.LayerTestBase;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.TestInfo;
 
 import javax.annotation.Nonnull;
-import java.util.Random;
 
 public abstract class CrossDotMetaLayerTest extends LayerTestBase {
 
   public CrossDotMetaLayerTest() {
   }
 
+  @Nonnull
   @Override
-  @Disabled
-  public void batchingTest(TestInfo testInfo) {
-    super.batchingTest(testInfo);
+  public Layer getLayer() {
+    return new CrossDotMetaLayer();
   }
 
   @Nonnull
   @Override
-  public int[][] getSmallDims(Random random) {
+  public int[][] getSmallDims() {
     return new int[][]{{3}};
   }
 
-  @Nonnull
   @Override
-  public Layer getLayer(final int[][] inputSize, Random random) {
-    return new CrossDotMetaLayer();
+  @Disabled
+  public void batchingTest() {
+    super.batchingTest();
   }
 
   public static class Basic extends CrossDotMetaLayerTest {

@@ -34,7 +34,7 @@ import java.util.function.IntFunction;
 @SuppressWarnings("serial")
 public class PhotoUnpoolingLayer extends LayerBase {
 
-  public PhotoUnpoolingLayer(final int sizeX, final int sizeY) {
+  public PhotoUnpoolingLayer() {
     super();
   }
 

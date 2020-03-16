@@ -23,20 +23,19 @@ import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.test.LayerTestBase;
 
 import javax.annotation.Nonnull;
-import java.util.Random;
 
 public abstract class ImgReshapeLayerTest extends LayerTestBase {
 
   @Nonnull
   @Override
-  public int[][] getSmallDims(Random random) {
-    return new int[][]{{8, 8, 1}};
+  public Layer getLayer() {
+    return new ImgReshapeLayer(2, 2, false);
   }
 
   @Nonnull
   @Override
-  public Layer getLayer(final int[][] inputSize, Random random) {
-    return new ImgReshapeLayer(2, 2, false);
+  public int[][] getSmallDims() {
+    return new int[][]{{8, 8, 1}};
   }
 
   public static class Basic extends ImgReshapeLayerTest {

@@ -23,7 +23,6 @@ import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.MetaLayerTestBase;
 
 import javax.annotation.Nonnull;
-import java.util.Random;
 
 public abstract class StdDevMetaLayerTest extends MetaLayerTestBase {
   public StdDevMetaLayerTest() {
@@ -33,20 +32,20 @@ public abstract class StdDevMetaLayerTest extends MetaLayerTestBase {
 
   @Nonnull
   @Override
-  public int[][] getSmallDims(Random random) {
-    return new int[][]{{3}};
+  public int[][] getLargeDims() {
+    return new int[][]{{100}};
   }
 
   @Nonnull
   @Override
-  public Layer getLayer(final int[][] inputSize, Random random) {
+  public Layer getLayer() {
     return new StdDevMetaLayer(0);
   }
 
   @Nonnull
   @Override
-  public int[][] getLargeDims(Random random) {
-    return new int[][]{{100}};
+  public int[][] getSmallDims() {
+    return new int[][]{{3}};
   }
 
   @Nonnull

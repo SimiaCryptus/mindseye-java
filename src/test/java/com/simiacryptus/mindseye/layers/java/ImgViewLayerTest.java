@@ -22,33 +22,31 @@ package com.simiacryptus.mindseye.layers.java;
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.test.LayerTestBase;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.TestInfo;
 
 import javax.annotation.Nonnull;
-import java.util.Random;
 
 public abstract class ImgViewLayerTest extends LayerTestBase {
 
   public ImgViewLayerTest() {
   }
 
-  @Override
-  @Disabled
-  public void batchingTest(TestInfo testInfo) {
-    super.batchingTest(testInfo);
-  }
-
   @Nonnull
   @Override
-  public int[][] getSmallDims(Random random) {
+  public int[][] getSmallDims() {
     return new int[][]{{8, 8, 2}};
+  }
+
+  @Override
+  @Disabled
+  public void batchingTest() {
+    super.batchingTest();
   }
 
   public static class Basic extends ImgViewLayerTest {
 
     @Nonnull
     @Override
-    public Layer getLayer(final int[][] inputSize, Random random) {
+    public Layer getLayer() {
       return new ImgViewLayer(3, 2, 2, 3);
     }
 
@@ -58,7 +56,7 @@ public abstract class ImgViewLayerTest extends LayerTestBase {
 
     @Nonnull
     @Override
-    public Layer getLayer(final int[][] inputSize, Random random) {
+    public Layer getLayer() {
       ImgViewLayer imgViewLayer = new ImgViewLayer(3, 2, 2, 3);
       imgViewLayer.setRotationRadians(Math.PI / 2);
       return imgViewLayer;
@@ -70,7 +68,7 @@ public abstract class ImgViewLayerTest extends LayerTestBase {
 
     @Nonnull
     @Override
-    public Layer getLayer(final int[][] inputSize, Random random) {
+    public Layer getLayer() {
       ImgViewLayer imgViewLayer = new ImgViewLayer(3, 2, 2, 3);
       imgViewLayer.setRotationRadians(Math.PI / 2);
       imgViewLayer.setChannelSelector(new int[]{2, -1});

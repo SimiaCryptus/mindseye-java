@@ -23,20 +23,19 @@ import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.test.LayerTestBase;
 
 import javax.annotation.Nonnull;
-import java.util.Random;
 
 public abstract class MaxPoolingLayerTest extends LayerTestBase {
 
   @Nonnull
   @Override
-  public int[][] getSmallDims(Random random) {
-    return new int[][]{{8, 8, 1}};
+  public Layer getLayer() {
+    return new MaxPoolingLayer(2, 2, 1);
   }
 
   @Nonnull
   @Override
-  public Layer getLayer(final int[][] inputSize, Random random) {
-    return new MaxPoolingLayer(2, 2, 1);
+  public int[][] getSmallDims() {
+    return new int[][]{{8, 8, 1}};
   }
 
   public static class Basic extends MaxPoolingLayerTest {

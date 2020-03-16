@@ -23,20 +23,19 @@ import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.test.LayerTestBase;
 
 import javax.annotation.Nonnull;
-import java.util.Random;
 
 public abstract class ImgPixelGateLayerTest extends LayerTestBase {
 
   @Nonnull
   @Override
-  public int[][] getSmallDims(Random random) {
-    return new int[][]{{2, 2, 3}, {2, 2, 1}};
+  public Layer getLayer() {
+    return new ImgPixelGateLayer();
   }
 
   @Nonnull
   @Override
-  public Layer getLayer(final int[][] inputSize, Random random) {
-    return new ImgPixelGateLayer();
+  public int[][] getSmallDims() {
+    return new int[][]{{2, 2, 3}, {2, 2, 1}};
   }
 
   public static class Basic extends ImgPixelGateLayerTest {

@@ -23,20 +23,19 @@ import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.test.LayerTestBase;
 
 import javax.annotation.Nonnull;
-import java.util.Random;
 
 public abstract class ImgBandSelectLayerTest extends LayerTestBase {
 
   @Nonnull
   @Override
-  public int[][] getSmallDims(Random random) {
-    return new int[][]{{2, 2, 3}};
+  public Layer getLayer() {
+    return new ImgBandSelectLayer(0, 2);
   }
 
   @Nonnull
   @Override
-  public Layer getLayer(final int[][] inputSize, Random random) {
-    return new ImgBandSelectLayer(0, 2);
+  public int[][] getSmallDims() {
+    return new int[][]{{2, 2, 3}};
   }
 
   public static class Basic extends ImgBandSelectLayerTest {

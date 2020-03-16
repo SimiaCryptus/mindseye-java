@@ -23,7 +23,6 @@ import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.test.LayerTestBase;
 
 import javax.annotation.Nonnull;
-import java.util.Random;
 
 public abstract class BiasLayerTest extends LayerTestBase {
 
@@ -35,18 +34,18 @@ public abstract class BiasLayerTest extends LayerTestBase {
 
   @Nonnull
   @Override
-  public int[][] getSmallDims(Random random) {
-    return new int[][]{{dimension}};
-  }
-
-  @Nonnull
-  @Override
-  public Layer getLayer(final int[][] inputSize, Random random) {
+  public Layer getLayer() {
     BiasLayer temp_75_0002 = new BiasLayer(dimension);
     temp_75_0002.addWeights(this::random);
     BiasLayer temp_75_0001 = temp_75_0002.addRef();
     temp_75_0002.freeRef();
     return temp_75_0001;
+  }
+
+  @Nonnull
+  @Override
+  public int[][] getSmallDims() {
+    return new int[][]{{dimension}};
   }
 
   public static class Basic extends BiasLayerTest {
@@ -64,7 +63,7 @@ public abstract class BiasLayerTest extends LayerTestBase {
 
     @Nonnull
     @Override
-    public Layer getLayer(final int[][] inputSize, Random random) {
+    public Layer getLayer() {
       BiasLayer temp_75_0004 = new BiasLayer(1);
       temp_75_0004.addWeights(this::random);
       BiasLayer temp_75_0003 = temp_75_0004.addRef();

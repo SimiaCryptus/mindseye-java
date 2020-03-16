@@ -23,20 +23,19 @@ import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.test.LayerTestBase;
 
 import javax.annotation.Nonnull;
-import java.util.Random;
 
 public abstract class CrossProductLayerTest extends LayerTestBase {
 
   @Nonnull
   @Override
-  public int[][] getSmallDims(Random random) {
-    return new int[][]{{4}};
+  public Layer getLayer() {
+    return new CrossProductLayer();
   }
 
   @Nonnull
   @Override
-  public Layer getLayer(final int[][] inputSize, Random random) {
-    return new CrossProductLayer();
+  public int[][] getSmallDims() {
+    return new int[][]{{4}};
   }
 
   public static class Basic extends CrossProductLayerTest {

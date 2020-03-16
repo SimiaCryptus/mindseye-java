@@ -23,20 +23,19 @@ import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.test.LayerTestBase;
 
 import javax.annotation.Nonnull;
-import java.util.Random;
 
 public abstract class PhotoUnpoolingLayerTest extends LayerTestBase {
 
   @Nonnull
   @Override
-  public int[][] getSmallDims(Random random) {
-    return new int[][]{{4, 4, 2}, {8, 8, 2}};
+  public Layer getLayer() {
+    return new PhotoUnpoolingLayer();
   }
 
   @Nonnull
   @Override
-  public Layer getLayer(final int[][] inputSize, Random random) {
-    return new PhotoUnpoolingLayer(2, 2);
+  public int[][] getSmallDims() {
+    return new int[][]{{4, 4, 2}, {8, 8, 2}};
   }
 
   public static class Basic extends PhotoUnpoolingLayerTest {

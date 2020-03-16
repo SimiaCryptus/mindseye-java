@@ -23,7 +23,6 @@ import com.google.gson.JsonObject;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.*;
-import com.simiacryptus.util.JsonUtil;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,14 +44,14 @@ public class MaxImageBandLayer extends LayerBase {
     super();
   }
 
-  protected MaxImageBandLayer(@Nonnull final JsonObject id, final int... kernelDims) {
+  protected MaxImageBandLayer(@Nonnull final JsonObject id) {
     super(id);
   }
 
   @Nonnull
   @SuppressWarnings("unused")
   public static MaxImageBandLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
-    return new MaxImageBandLayer(json, JsonUtil.getIntArray(json.getAsJsonArray("heapCopy")));
+    return new MaxImageBandLayer(json);
   }
 
   @Nonnull

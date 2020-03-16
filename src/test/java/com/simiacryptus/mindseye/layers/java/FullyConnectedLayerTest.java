@@ -23,11 +23,10 @@ import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.test.LayerTestBase;
 import com.simiacryptus.ref.lang.MustCall;
 import com.simiacryptus.ref.lang.RefIgnore;
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Random;
 
 public abstract class FullyConnectedLayerTest extends LayerTestBase {
 
@@ -45,30 +44,29 @@ public abstract class FullyConnectedLayerTest extends LayerTestBase {
     this.outputs = outputs;
   }
 
+  @Nonnull
+  @Override
+  public Layer getLayer() {
+    return fullyConnectedLayer.addRef();
+  }
+
   @Nullable
   @Override
   public Class<? extends Layer> getReferenceLayerClass() {
     return FullyConnectedReferenceLayer.class;
   }
 
-  @After
-  @MustCall
-  public void cleanup() {
-    super.cleanup();
-    if (null != fullyConnectedLayer)
-      fullyConnectedLayer.freeRef();
-  }
-
   @Nonnull
   @Override
-  public int[][] getSmallDims(Random random) {
+  public int[][] getSmallDims() {
     return new int[][]{{inputs}};
   }
 
-  @Nonnull
-  @Override
-  public Layer getLayer(final int[][] inputSize, Random random) {
-    return fullyConnectedLayer.addRef();
+  @AfterEach
+  @MustCall
+  void cleanup() {
+    if (null != fullyConnectedLayer)
+      fullyConnectedLayer.freeRef();
   }
 
   public static class Basic extends FullyConnectedLayerTest {
