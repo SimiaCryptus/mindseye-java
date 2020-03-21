@@ -288,5 +288,7 @@
   "com.simiacryptus.mindseye.layers.java.ValueLayerTest.Normal" : { },
   "com.simiacryptus.mindseye.layers.java.VariableLayer" : { },
   "com.simiacryptus.mindseye.layers.java.VariableLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.VariableLayerTest.Basic" : { }
+  "com.simiacryptus.mindseye.layers.java.VariableLayerTest.Basic" : { },
+  "com.simiacryptus.mindseye.test.RemoteTests" : { },
+  "com.simiacryptus.mindseye.test.RemoteTests.LocalTest" : { }
 }
