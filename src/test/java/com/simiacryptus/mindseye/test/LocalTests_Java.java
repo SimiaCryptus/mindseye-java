@@ -23,21 +23,27 @@ import com.simiacryptus.aws.exe.EC2NodeSettings;
 import com.simiacryptus.aws.exe.EC2NotebookRunner;
 import com.simiacryptus.util.test.MacroTestRunner;
 import com.simiacryptus.util.test.MacroTestRunner.Isolation;
-import com.simiacryptus.util.CodeUtil;
+import com.simiacryptus.util.test.NotebookReportBase;
+import org.junit.jupiter.api.Test;
 
-public class RemoteTests {
+import javax.annotation.Nonnull;
 
-  public static void main(String[] args) {
-    EC2NotebookRunner.launch(
-        EC2NodeSettings.M5_L,
-        EC2NodeSettings.AMI_AMAZON_LINUX,
-        " -Xmx16g -DTEST_REPO=./runner/",
-        log -> {
-          MacroTestRunner.runAll(log,
-              "com.simiacryptus.mindseye.layers",
-              Isolation.Class
-          );
-        }
+public class LocalTests_Java extends NotebookReportBase {
+
+  @Override
+  public @Nonnull ReportType getReportType() {
+    return ReportType.Components;
+  }
+
+  @Override
+  protected Class<?> getTargetClass() {
+    return MacroTestRunner.class;
+  }
+
+  @Test
+  public void main() {
+    new MacroTestRunner().runAll(getLog(),
+        "com.simiacryptus.mindseye.layers"
     );
   }
 
