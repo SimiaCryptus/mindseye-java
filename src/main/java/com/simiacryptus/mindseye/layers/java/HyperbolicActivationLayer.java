@@ -228,11 +228,7 @@ public class HyperbolicActivationLayer extends LayerBase {
               return passback;
             }, delta, indata.addRef()))
             .toArray(Tensor[]::new));
-        try {
-          this.accumulator.accept(buffer, tensorArray);
-        } finally {
-          this.accumulator.freeRef();
-        }
+        this.accumulator.accept(buffer, tensorArray);
       } else {
         buffer.freeRef();
         delta.freeRef();

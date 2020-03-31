@@ -148,11 +148,7 @@ public class ImgBandSelectLayer extends LayerBase {
               }, passback.addRef(), err));
               return passback;
             }, error)).toArray(Tensor[]::new));
-        try {
-          this.accumulator.accept(buffer, tensorArray);
-        } finally {
-          this.accumulator.freeRef();
-        }
+        this.accumulator.accept(buffer, tensorArray);
       } else {
         error.freeRef();
         if (null != buffer)

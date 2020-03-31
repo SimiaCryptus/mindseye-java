@@ -131,8 +131,7 @@ public class ImgBandBiasLayer extends LayerBase {
     boolean alive = input.isAlive();
     Accumulator accumulator = new Accumulator(bias, getId(), isFrozen(), input.getAccumulator(), input.isAlive());
     input.freeRef();
-    Result result = new Result(data, accumulator, alive || !isFrozen());
-    return result;
+    return new Result(data, accumulator, alive || !isFrozen());
   }
 
   @Nonnull
@@ -239,14 +238,11 @@ public class ImgBandBiasLayer extends LayerBase {
           deltaBuffer.freeRef();
       }
       if (alive) {
-        try {
-          this.accumulator.accept(buffer.addRef(), data.addRef());
-        } finally {
-          this.accumulator.freeRef();
-        }
+        this.accumulator.accept(buffer, data);
+      } else {
+        data.freeRef();
+        buffer.freeRef();
       }
-      data.freeRef();
-      buffer.freeRef();
     }
 
     public @SuppressWarnings("unused")

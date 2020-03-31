@@ -282,11 +282,7 @@ public class FullyConnectedReferenceLayer extends LayerBase {
               deltaTensor.freeRef();
               return inputTensor;
             }, delta.addRef())).toArray(Tensor[]::new));
-        try {
-          this.accumulator.accept(buffer.addRef(), tensorList);
-        } finally {
-          this.accumulator.freeRef();
-        }
+        this.accumulator.accept(buffer.addRef(), tensorList);
       }
       delta.freeRef();
       buffer.freeRef();

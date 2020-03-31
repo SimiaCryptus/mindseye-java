@@ -217,16 +217,12 @@ public class ImgBandScaleLayer extends LayerBase {
         }, inData.addRef(), delta.addRef(), deltaBuffer));
       }
       if (alive) {
-        try {
-          this.accumulator.accept(buffer.addRef(), new TensorArray(delta.stream().map(t -> {
-            return t.mapCoords(RefUtil.wrapInterface(c -> {
-              assert weights != null;
-              return t.get(c) * weights[c.getCoords()[2]];
-            }, t));
-          }).toArray(Tensor[]::new)));
-        } finally {
-          this.accumulator.freeRef();
-        }
+        this.accumulator.accept(buffer.addRef(), new TensorArray(delta.stream().map(t -> {
+          return t.mapCoords(RefUtil.wrapInterface(c -> {
+            assert weights != null;
+            return t.get(c) * weights[c.getCoords()[2]];
+          }, t));
+        }).toArray(Tensor[]::new)));
       }
       delta.freeRef();
       buffer.freeRef();

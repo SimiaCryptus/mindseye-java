@@ -174,11 +174,7 @@ public class GaussianNoiseLayer extends LayerBase implements StochasticComponent
               tensor.freeRef();
               return passback;
             }, delta)).toArray(Tensor[]::new));
-        try {
-          this.accumulator.accept(buffer, tensorArray);
-        } finally {
-          this.accumulator.freeRef();
-        }
+        this.accumulator.accept(buffer, tensorArray);
       } else {
         delta.freeRef();
         buffer.freeRef();

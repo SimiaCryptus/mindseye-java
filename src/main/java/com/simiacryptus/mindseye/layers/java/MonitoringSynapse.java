@@ -144,11 +144,7 @@ public final class MonitoringSynapse extends LayerBase implements MonitoredItem 
     public void accept(@Nullable DeltaSet<UUID> buffer, @Nullable TensorList data) {
       backpropStatistics.clear();
       TensorList delta = data == null ? null : data.addRef();
-      try {
-        this.accumulator.accept(buffer, delta);
-      } finally {
-        this.accumulator.freeRef();
-      }
+      this.accumulator.accept(buffer, delta);
       assert data != null;
       data.stream().parallel().forEach(t -> {
         backpropStatistics.add(t.getData());

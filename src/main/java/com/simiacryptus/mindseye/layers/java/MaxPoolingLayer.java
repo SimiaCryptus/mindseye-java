@@ -243,11 +243,7 @@ public class MaxPoolingLayer extends LayerBase {
               datum.freeRef();
               return backSignal;
             }, data)).toArray(Tensor[]::new));
-        try {
-          this.accumulator.accept(buffer, tensorArray);
-        } finally {
-          this.accumulator.freeRef();
-        }
+        this.accumulator.accept(buffer, tensorArray);
       } else {
         if (null != buffer)
           buffer.freeRef();

@@ -175,11 +175,7 @@ public class ImgTileSubnetLayer extends WrapperLayer {
           return new Result(t);
         }).<Result>toArray(Result[]::new)));
         imgTileAssemblyLayer.freeRef();
-        try {
-          this.accumulator.accept(ctx, reassembled);
-        } finally {
-          this.accumulator.freeRef();
-        }
+        this.accumulator.accept(ctx, reassembled);
       } else {
         if (null != ctx)
           ctx.freeRef();

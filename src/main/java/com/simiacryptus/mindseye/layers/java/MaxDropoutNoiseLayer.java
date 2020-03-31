@@ -207,11 +207,7 @@ public class MaxDropoutNoiseLayer extends LayerBase {
                 }, data0.addRef(), delta,
                 RefUtil.addRef(mask)))
             .toArray(Tensor[]::new));
-        try {
-          this.accumulator.accept(buffer, tensorArray);
-        } finally {
-          this.accumulator.freeRef();
-        }
+        this.accumulator.accept(buffer, tensorArray);
       } else {
         delta.freeRef();
         if (null != buffer)

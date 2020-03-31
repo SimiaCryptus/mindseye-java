@@ -146,11 +146,7 @@ public class ImgPixelSumLayer extends LayerBase {
           return temp_47_0003;
         }).toArray(Tensor[]::new));
         DeltaSet<UUID> buffer1 = buffer == null ? null : buffer.addRef();
-        try {
-          this.accumulator.accept(buffer1, tensorArray);
-        } finally {
-          this.accumulator.freeRef();
-        }
+        this.accumulator.accept(buffer1, tensorArray);
       }
       delta.freeRef();
       if (null != buffer)

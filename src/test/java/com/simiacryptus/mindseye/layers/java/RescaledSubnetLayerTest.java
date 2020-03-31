@@ -29,13 +29,13 @@ public abstract class RescaledSubnetLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public Layer getLayer() {
-    return new RescaledSubnetLayer(2, new SigmoidActivationLayer());
+    return new RescaledSubnetLayer(2, new ImgBandBiasLayer(2));
   }
 
   @Nonnull
   @Override
   public int[][] getSmallDims() {
-    return new int[][]{{6, 6, 1}};
+    return new int[][]{{6, 6, 2}};
   }
 
   public static class Basic extends RescaledSubnetLayerTest {

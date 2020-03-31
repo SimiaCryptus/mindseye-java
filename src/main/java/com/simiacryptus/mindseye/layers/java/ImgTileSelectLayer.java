@@ -265,11 +265,7 @@ public class ImgTileSelectLayer extends LayerBase {
               return passback;
             }, error.addRef())).toArray(Tensor[]::new));
         DeltaSet<UUID> buffer1 = buffer == null ? null : buffer.addRef();
-        try {
-          this.accumulator.accept(buffer1, tensorArray);
-        } finally {
-          this.accumulator.freeRef();
-        }
+        this.accumulator.accept(buffer1, tensorArray);
       }
       error.freeRef();
       if (null != buffer)

@@ -155,11 +155,7 @@ public class MaxMetaLayer extends LayerBase {
         TensorArray tensorArray = new TensorArray(RefUtil.addRef(feedback));
         RefUtil.freeRef(feedback);
         DeltaSet<UUID> buffer1 = buffer == null ? null : buffer.addRef();
-        try {
-          this.accumulator.accept(buffer1, tensorArray);
-        } finally {
-          this.accumulator.freeRef();
-        }
+        this.accumulator.accept(buffer1, tensorArray);
       }
       data.freeRef();
       if (null != buffer)

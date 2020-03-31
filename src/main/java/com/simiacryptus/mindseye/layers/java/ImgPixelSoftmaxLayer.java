@@ -209,11 +209,7 @@ public class ImgPixelSoftmaxLayer extends LayerBase {
                 delta.addRef(), exps.addRef()))
             .toArray(Tensor[]::new));
         DeltaSet<UUID> buffer1 = buffer == null ? null : buffer.addRef();
-        try {
-          this.accumulator.accept(buffer1, passback);
-        } finally {
-          this.accumulator.freeRef();
-        }
+        this.accumulator.accept(buffer1, passback);
       }
       delta.freeRef();
       if (null != buffer)

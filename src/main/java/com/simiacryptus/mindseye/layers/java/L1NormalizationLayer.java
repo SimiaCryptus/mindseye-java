@@ -154,11 +154,7 @@ public class L1NormalizationLayer extends LayerBase {
         TensorArray tensorArray = new TensorArray(RefUtil.addRef(passbackArray));
         RefUtil.freeRef(passbackArray);
         DeltaSet<UUID> buffer1 = buffer == null ? null : buffer.addRef();
-        try {
-          this.accumulator.accept(buffer1, tensorArray);
-        } finally {
-          this.accumulator.freeRef();
-        }
+        this.accumulator.accept(buffer1, tensorArray);
       }
       outDelta.freeRef();
       if (null != buffer)

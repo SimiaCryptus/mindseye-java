@@ -26,19 +26,35 @@ import javax.annotation.Nonnull;
 
 public abstract class ImgReshapeLayerTest extends LayerTestBase {
 
-  @Nonnull
-  @Override
-  public Layer getLayer() {
-    return new ImgReshapeLayer(2, 2, false);
+  public static class Expand extends ImgReshapeLayerTest {
+
+    @Nonnull
+    @Override
+    public Layer getLayer() {
+      return new ImgReshapeLayer(2, 2, true);
+    }
+
+    @Nonnull
+    @Override
+    public int[][] getSmallDims() {
+      return new int[][]{{2, 2, 4}};
+    }
+
   }
 
-  @Nonnull
-  @Override
-  public int[][] getSmallDims() {
-    return new int[][]{{8, 8, 1}};
-  }
+  public static class Contract extends ImgReshapeLayerTest {
 
-  public static class Basic extends ImgReshapeLayerTest {
+    @Nonnull
+    @Override
+    public Layer getLayer() {
+      return new ImgReshapeLayer(2, 2, false);
+    }
+
+    @Nonnull
+    @Override
+    public int[][] getSmallDims() {
+      return new int[][]{{8, 8, 1}};
+    }
 
   }
 
