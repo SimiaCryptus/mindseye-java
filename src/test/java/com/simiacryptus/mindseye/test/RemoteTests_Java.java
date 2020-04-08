@@ -22,7 +22,6 @@ package com.simiacryptus.mindseye.test;
 import com.simiacryptus.aws.exe.EC2NodeSettings;
 import com.simiacryptus.aws.exe.EC2NotebookRunner;
 import com.simiacryptus.util.test.MacroTestRunner;
-import com.simiacryptus.util.test.MacroTestRunner.Isolation;
 
 public class RemoteTests_Java {
 
@@ -34,7 +33,7 @@ public class RemoteTests_Java {
         log -> {
           new MacroTestRunner()
               .setChildJvmOptions("-Xmx8g -ea")
-              .runAll(log,"com.simiacryptus.mindseye.layers");
+              .runAll(log, "com.simiacryptus.mindseye.layers");
         }
     );
   }
