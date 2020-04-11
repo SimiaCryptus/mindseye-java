@@ -68,10 +68,17 @@ public class BuildAndRelease extends NotebookReportBase {
       return setVersion(sub, buildDirectory, newVersion, "MINDSEYE-SNAPSHOT");
     });
     commands(log, timeout, buildDirectory,
-        new String[] { bash, maven, "clean", "package", "-fae", "-Prelease", "-DskipTests"},
+        new String[] { bash, maven, "clean", "package", "install",
+            "-fae",
+            //"-Prelease",
+            "-DskipTests"},
         new String[] { bash, maven, "site:site", "-fae", "-Prelease", "-DskipTests"},
-        new String[] { bash, maven, "site:deploy", "-fae", "-Prelease", "-DskipTests"},
-        new String[] { bash, maven, "deploy", "-fae", "-Prelease", "-DskipTests"}
+        new String[] { bash, maven,
+            //"-s", "/mnt/c/Users/andre/.m2/settings.xml",
+            "site:deploy",
+            "-fae", "-Prelease", "-DskipTests"
+        },
+        new String[] { bash, maven, "clean", "package", "deploy", "-fae", "-Prelease", "-DskipTests"}
     );
     log.subreport("Revert Version Changes", sub->{
       revert(sub, buildDirectory, previousData);

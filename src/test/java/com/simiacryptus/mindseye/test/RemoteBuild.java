@@ -28,7 +28,7 @@ public class RemoteBuild {
 
   public static void main(String[] args) {
     EC2NotebookRunner.launch(
-        EC2NodeSettings.M5_XL,
+        EC2NodeSettings.M5_L,
         EC2NodeSettings.AMI_BUILD,
         " -Xmx8g -DTEST_REPO=./runner/",
         log -> {
