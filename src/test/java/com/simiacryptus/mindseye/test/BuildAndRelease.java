@@ -67,14 +67,34 @@ public class BuildAndRelease extends NotebookReportBase {
     HashMap<File, String> previousData = log.subreport("Updating Version to " + newVersion, sub->{
       return setVersion(sub, buildDirectory, newVersion, "MINDSEYE-SNAPSHOT");
     });
-    commands(log, timeout, buildDirectory,
+//    commands(log, timeout, buildDirectory,
+//        new String[] { bash, maven, "clean", "package", "install",
+//            "-fae",
+//            //"-Prelease",
+//            "-DskipTests"}
+//    );
+    commands(log, timeout, buildDirectory + "/mvn-parents",
         new String[] { bash, maven, "clean", "package", "install",
             "-fae",
             //"-Prelease",
-            "-DskipTests"},
+            "-DskipTests"}
+    );
+    commands(log, timeout, buildDirectory + "/third-party/aws-s3-maven",
+        new String[] { bash, maven, "clean", "package", "install",
+            "-fae",
+            //"-Prelease",
+            "-DskipTests"}
+    );
+//    commands(log, timeout, buildDirectory,
+//        new String[] { bash, maven, "clean", "package", "install",
+//            "-fae",
+//            //"-Prelease",
+//            "-DskipTests"}
+//        );
+    commands(log, timeout, buildDirectory + "/java-reference-counter/autocoder",
         new String[] { bash, maven, "site:site", "-fae", "-Prelease", "-DskipTests"},
         new String[] { bash, maven,
-            //"-s", "/mnt/c/Users/andre/.m2/settings.xml",
+            "-s", "/mnt/c/Users/andre/.m2/settings.xml",
             "site:deploy",
             "-fae", "-Prelease", "-DskipTests"
         },
