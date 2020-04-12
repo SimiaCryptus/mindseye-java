@@ -30,7 +30,7 @@
 
     <artifactId>mindseye-java</artifactId>
     <description>Pure Java Neural Networks Components</description>
-    <url>https://simiacryptus.github.io/${github.project}/</url>
+
     <scm>
         <url>https://github.com/SimiaCryptus/mindseye-java/</url>
         <connection>scm:git:git@github.com:SimiaCryptus/mindseye-java.git</connection>
