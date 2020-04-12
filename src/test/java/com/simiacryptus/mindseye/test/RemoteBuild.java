@@ -35,10 +35,10 @@ public class RemoteBuild {
           BuildAndRelease.build(
               log,
               TimeUnit.MINUTES.toMillis(60),
-              null,
+              "/bin/bash",
               "/usr/bin/git",
               "/home/ec2-user/apache-maven-3.6.3/bin/mvn",
-              "/home/ec2-user/all-projects"
+              "/home/ec2-user/code", true
           );
         }
     );
