@@ -124,12 +124,6 @@ public class BuildAndRelease extends NotebookReportBase {
               new String[]{bash, "rm", "-rf", buildDirectory + "/" + mainProject},
               new String[]{git, "clone", "git@github.com:SimiaCryptus/" + mainProject + ".git"}
           );
-//          commands(sub, timeout, mainBuildDirectory,
-//              new String[]{bash, "./gitall.sh", "reset", "--hard"},
-//              new String[]{bash, "./gitall.sh", "clean", "-fdx"},
-//              new String[]{bash, git, "reset", "--hard"},
-//              new String[]{bash, git, "clean", "-fdx"}
-//          );
           commands(sub, timeout, mainBuildDirectory,
               new String[]{bash, git, "pull", "origin", "master"},
               new String[]{git, "submodule", "update", "--init"}
@@ -150,10 +144,28 @@ public class BuildAndRelease extends NotebookReportBase {
           new String[]{bash, maven, "clean", "package", "install", "-fae", "-DskipTests"}
       );
       log.h1("Validating Software Integrity");
+      for(String dir : Arrays.asList(
+          mainBuildDirectory + "/util",
+          mainBuildDirectory + "/mindseye",
+          mainBuildDirectory + "/misc",
+          mainBuildDirectory + "/deepartist"
+      )) {
+        log.h2(dir);
+        commands(log, timeout, mainBuildDirectory,
+            new String[]{bash, maven, "clean", "com.simiacryptus:refcount-autocoder:verify", "-fae", "-DskipTests"}
+        );
+      }
+      String profile = "-Prelease";
+      log.h1("Building Site");
       commands(log, timeout, mainBuildDirectory,
-          new String[]{bash, maven, "clean", "com.simiacryptus:refcount-autocoder:verify", "-fae", "-DskipTests"}
+          new String[]{bash, maven, "site:site", "-fae", profile, "-DskipTests"},
+          new String[]{bash, maven, "site:stage", "-fae", profile, "-DskipTests"},
+          new String[]{bash, maven, "site:deploy", "-fae", profile, "-DskipTests"}
       );
-      buildAndDeploy(log, timeout, bash, maven, mainBuildDirectory);
+      log.h1("Deploy Software");
+      commands(log, timeout, mainBuildDirectory,
+          new String[]{bash, maven, "clean", "package", "deploy", "-fae", profile, "-DskipTests"}
+      );
       log.subreport("Revert Version Changes", sub -> {
         revert(sub, mainBuildDirectory, previousData);
         return null;
@@ -168,19 +180,6 @@ public class BuildAndRelease extends NotebookReportBase {
         }
       }
     }
-  }
-
-  public static void buildAndDeploy(NotebookOutput log, long timeout, String bash, String maven, String buildDirectory) {
-    log.h1("Building Site");
-    commands(log, timeout, buildDirectory,
-        new String[]{bash, maven, "site:site", "-fae", "-Prelease", "-DskipTests"},
-        new String[]{bash, maven, "site:stage", "-fae", "-Prelease", "-DskipTests"},
-        new String[]{bash, maven, "site:deploy", "-fae", "-Prelease", "-DskipTests"}
-    );
-    log.h1("Deploy Software");
-    commands(log, timeout, buildDirectory,
-        new String[]{bash, maven, "clean", "package", "deploy", "-fae", "-Prelease", "-DskipTests"}
-    );
   }
 
   public static void revert(NotebookOutput log, String buildDirectory, HashMap<File, String> previousData) {
