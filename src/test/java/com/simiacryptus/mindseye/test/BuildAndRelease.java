@@ -23,6 +23,7 @@ import com.simiacryptus.aws.Tendril;
 import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.util.test.NotebookReportBase;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.IOFileFilter;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
@@ -30,6 +31,7 @@ import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -47,7 +49,7 @@ public class BuildAndRelease extends NotebookReportBase {
   }
 
   @Test
-  public void main() {
+  public void localBuild() {
     //String buildDirectory = "/mnt/h/SimiaCryptus/all-projects";
     build(
         getLog(),
@@ -55,9 +57,60 @@ public class BuildAndRelease extends NotebookReportBase {
         "C:\\Windows\\System32\\bash.exe",
         "git",
         "/mnt/c/Users/andre/Downloads/apache-maven-3.6.3-bin/apache-maven-3.6.3/bin/mvn",
-        "H:\\SimiaCryptus\\all-projects", false
+        "H:\\SimiaCryptus", false
     );
   }
+
+  @Test
+  public void standardSiteXML() {
+    Collection<File> pomFiles = FileUtils.listFiles(new File("H:\\SimiaCryptus\\all-projects"), new IOFileFilter() {
+      @Override
+      public boolean accept(File file) {
+        return "pom.xml".equals(file.getName());
+      }
+
+      @Override
+      public boolean accept(File dir, String name) {
+        return "pom.xml".equals(name);
+      }
+    }, new IOFileFilter() {
+      @Override
+      public boolean accept(File file) {
+        return true;
+      }
+
+      @Override
+      public boolean accept(File dir, String name) {
+        return true;
+      }
+    });
+    File modelSiteXml = new File("src/site/site.xml");
+    pomFiles.forEach(pomFile -> {
+      if (pomFile.toPath().resolve("../src").toFile().exists()) {
+        File siteXml = pomFile.toPath().resolve("../src/site/site.xml").normalize().toFile();
+        if (siteXml.exists()) {
+          System.out.println(siteXml.getAbsolutePath() + " already exists");
+        } else {
+          try {
+            FileUtils.copyFile(modelSiteXml, siteXml);
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
+        }
+        try {
+          //String data = FileUtils.readFileToString(siteXml, "UTF-8");
+          String data = FileUtils.readFileToString(modelSiteXml, "UTF-8");
+          String name = pomFile.toPath().getParent().normalize().toAbsolutePath().toFile().getName();
+          data = data.replaceAll("<project name=\".*\">", "<project name=\"" + name + "\">");
+          data = data.replaceAll("<projectId>.*</projectId>", "<projectId>SimiaCryptus/" + name + "</projectId>");
+          FileUtils.writeStringToFile(siteXml, data, "UTF-8");
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
+    });
+  }
+
 
   public static void build(NotebookOutput log, long timeout, String bash, String git, String maven, String buildDirectory, boolean clean) {
     long endTime = System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(50);
@@ -78,7 +131,7 @@ public class BuildAndRelease extends NotebookReportBase {
 //              new String[]{bash, git, "clean", "-fdx"}
 //          );
           commands(sub, timeout, mainBuildDirectory,
-//              new String[]{bash, git, "pull", "origin", "master"},
+              new String[]{bash, git, "pull", "origin", "master"},
               new String[]{git, "submodule", "update", "--init"}
           );
           return null;
@@ -96,23 +149,17 @@ public class BuildAndRelease extends NotebookReportBase {
       commands(log, timeout, mainBuildDirectory,
           new String[]{bash, maven, "clean", "package", "install", "-fae", "-DskipTests"}
       );
-      log.h1("Building Site");
+      log.h1("Validating Software Integrity");
       commands(log, timeout, mainBuildDirectory,
-          new String[]{bash, maven, "site:site", "-fae", "-Prelease", "-DskipTests"},
-          new String[]{bash, maven,
-              //"-s", "/mnt/c/Users/andre/.m2/settings.xml",
-              "site:deploy", "-fae", "-Prelease", "-DskipTests"
-          });
-      log.h1("Deploy Software");
-      commands(log, timeout, mainBuildDirectory,
-          new String[]{bash, maven, "clean", "package", "deploy", "-fae", "-Prelease", "-DskipTests"}
+          new String[]{bash, maven, "clean", "com.simiacryptus:refcount-autocoder:verify", "-fae", "-DskipTests"}
       );
+      buildAndDeploy(log, timeout, bash, maven, mainBuildDirectory);
       log.subreport("Revert Version Changes", sub -> {
         revert(sub, mainBuildDirectory, previousData);
         return null;
       });
     } finally {
-      while (System.currentTimeMillis() < endTime) {
+      while (clean && System.currentTimeMillis() < endTime) {
         try {
           System.out.println("Waiting for total run time of 50 minutes...");
           Thread.sleep(TimeUnit.MINUTES.toMillis(1));
@@ -121,6 +168,18 @@ public class BuildAndRelease extends NotebookReportBase {
         }
       }
     }
+  }
+
+  public static void buildAndDeploy(NotebookOutput log, long timeout, String bash, String maven, String buildDirectory) {
+    log.h1("Building Site");
+    commands(log, timeout, buildDirectory,
+        new String[]{bash, maven, "site:stage", "site:site", "-fae", "-Prelease", "-DskipTests"},
+        new String[]{bash, maven, "site:deploy", "-fae", "-Prelease", "-DskipTests"}
+    );
+    log.h1("Deploy Software");
+    commands(log, timeout, buildDirectory,
+        new String[]{bash, maven, "clean", "package", "deploy", "-fae", "-Prelease", "-DskipTests"}
+    );
   }
 
   public static void revert(NotebookOutput log, String buildDirectory, HashMap<File, String> previousData) {
