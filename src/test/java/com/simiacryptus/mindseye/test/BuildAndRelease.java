@@ -173,7 +173,8 @@ public class BuildAndRelease extends NotebookReportBase {
   public static void buildAndDeploy(NotebookOutput log, long timeout, String bash, String maven, String buildDirectory) {
     log.h1("Building Site");
     commands(log, timeout, buildDirectory,
-        new String[]{bash, maven, "site:stage", "site:site", "-fae", "-Prelease", "-DskipTests"},
+        new String[]{bash, maven, "site:site", "-fae", "-Prelease", "-DskipTests"},
+        new String[]{bash, maven, "site:stage", "-fae", "-Prelease", "-DskipTests"},
         new String[]{bash, maven, "site:deploy", "-fae", "-Prelease", "-DskipTests"}
     );
     log.h1("Deploy Software");
