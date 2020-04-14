@@ -34,20 +34,38 @@ import java.util.UUID;
 import java.util.function.IntFunction;
 import java.util.function.IntToDoubleFunction;
 
+/**
+ * The type Max image band layer.
+ */
 @SuppressWarnings("serial")
 public class MaxImageBandLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(MaxImageBandLayer.class);
 
+  /**
+   * Instantiates a new Max image band layer.
+   */
   public MaxImageBandLayer() {
     super();
   }
 
+  /**
+   * Instantiates a new Max image band layer.
+   *
+   * @param id the id
+   */
   protected MaxImageBandLayer(@Nonnull final JsonObject id) {
     super(id);
   }
 
+  /**
+   * From json max image band layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the max image band layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static MaxImageBandLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -122,10 +140,25 @@ public class MaxImageBandLayer extends LayerBase {
         }, inputData)).toArray(Tensor[]::new));
   }
 
+  /**
+   * The type Calc regions parameter.
+   */
   public static class CalcRegionsParameter {
+    /**
+     * The Input dims.
+     */
     public final int[] inputDims;
+    /**
+     * The Kernel dims.
+     */
     public final int[] kernelDims;
 
+    /**
+     * Instantiates a new Calc regions parameter.
+     *
+     * @param inputDims  the input dims
+     * @param kernelDims the kernel dims
+     */
     public CalcRegionsParameter(final int[] inputDims, final int[] kernelDims) {
       this.inputDims = inputDims;
       this.kernelDims = kernelDims;
@@ -167,6 +200,15 @@ public class MaxImageBandLayer extends LayerBase {
     private Result.Accumulator accumulator;
     private boolean alive;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param inputData   the input data
+     * @param inputDims   the input dims
+     * @param maxCoords   the max coords
+     * @param accumulator the accumulator
+     * @param alive       the alive
+     */
     public Accumulator(TensorList inputData, int[] inputDims, Coordinate[][] maxCoords, Result.Accumulator accumulator, boolean alive) {
       this.inputData = inputData;
       this.inputDims = inputDims;

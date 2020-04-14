@@ -24,8 +24,16 @@ import com.simiacryptus.aws.exe.EC2NotebookRunner;
 
 import java.util.concurrent.TimeUnit;
 
-public class RemoteBuild {
+/**
+ * The type Remote build.
+ */
+public class RemoteReleaseBuild {
 
+  /**
+   * The entry point of application.
+   *
+   * @param args the input arguments
+   */
   public static void main(String[] args) {
     EC2NotebookRunner.launch(
         EC2NodeSettings.M5_L,
@@ -38,7 +46,11 @@ public class RemoteBuild {
               "/bin/bash",
               "/usr/bin/git",
               "/home/ec2-user/apache-maven-3.6.3/bin/mvn",
-              "/home/ec2-user/code", true
+              "/home/ec2-user/code",
+              true,
+              true,
+              true,
+              false
           );
         }
     );

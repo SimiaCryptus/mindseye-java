@@ -25,6 +25,9 @@ import org.junit.jupiter.api.Disabled;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The type Normalization meta layer test.
+ */
 public abstract class NormalizationMetaLayerTest extends MetaLayerTestBase {
 
   @Nonnull
@@ -57,6 +60,9 @@ public abstract class NormalizationMetaLayerTest extends MetaLayerTestBase {
     return new MeanSqLossLayer();
   }
 
+  /**
+   * The type Basic.
+   */
   public static class Basic extends NormalizationMetaLayerTest {
 
   }

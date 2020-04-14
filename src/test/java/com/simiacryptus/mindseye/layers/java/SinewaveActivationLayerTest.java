@@ -24,7 +24,13 @@ import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The type Sinewave activation layer test.
+ */
 public abstract class SinewaveActivationLayerTest extends ActivationLayerTestBase {
+  /**
+   * Instantiates a new Sinewave activation layer test.
+   */
   public SinewaveActivationLayerTest() {
     super(new SinewaveActivationLayer());
   }
@@ -35,6 +41,9 @@ public abstract class SinewaveActivationLayerTest extends ActivationLayerTestBas
     return new MeanSqLossLayer();
   }
 
+  /**
+   * The type Basic.
+   */
   public static class Basic extends SinewaveActivationLayerTest {
 
   }

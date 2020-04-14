@@ -34,6 +34,9 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
 
+/**
+ * The type Sum meta layer.
+ */
 @SuppressWarnings("serial")
 public class SumMetaLayer extends LayerBase {
 
@@ -43,9 +46,18 @@ public class SumMetaLayer extends LayerBase {
   private Tensor lastResult;
   private int minBatches = 1;
 
+  /**
+   * Instantiates a new Sum meta layer.
+   */
   public SumMetaLayer() {
   }
 
+  /**
+   * Instantiates a new Sum meta layer.
+   *
+   * @param json      the json
+   * @param resources the resources
+   */
   protected SumMetaLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> resources) {
     super(json);
     if (null != lastResult)
@@ -54,14 +66,31 @@ public class SumMetaLayer extends LayerBase {
     minBatches = json.get("minBatches").getAsInt();
   }
 
+  /**
+   * Gets min batches.
+   *
+   * @return the min batches
+   */
   public int getMinBatches() {
     return minBatches;
   }
 
+  /**
+   * Sets min batches.
+   *
+   * @param minBatches the min batches
+   */
   public void setMinBatches(int minBatches) {
     this.minBatches = minBatches;
   }
 
+  /**
+   * From json sum meta layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the sum meta layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static SumMetaLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -138,6 +167,13 @@ public class SumMetaLayer extends LayerBase {
     private Result.Accumulator accumulator;
     private boolean alive;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param itemCnt     the item cnt
+     * @param accumulator the accumulator
+     * @param alive       the alive
+     */
     public Accumulator(int itemCnt, Result.Accumulator accumulator, boolean alive) {
       this.itemCnt = itemCnt;
       this.accumulator = accumulator;

@@ -24,6 +24,9 @@ import com.simiacryptus.mindseye.test.LayerTestBase;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The type Tensor concat layer test.
+ */
 public abstract class TensorConcatLayerTest extends LayerTestBase {
 
   @Nonnull
@@ -38,6 +41,9 @@ public abstract class TensorConcatLayerTest extends LayerTestBase {
     return new int[][]{{8}, {6}};
   }
 
+  /**
+   * The type Basic.
+   */
   public static class Basic extends TensorConcatLayerTest {
 
   }

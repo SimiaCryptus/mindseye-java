@@ -25,8 +25,14 @@ import org.junit.jupiter.api.Disabled;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The type Cross dot meta layer test.
+ */
 public abstract class CrossDotMetaLayerTest extends LayerTestBase {
 
+  /**
+   * Instantiates a new Cross dot meta layer test.
+   */
   public CrossDotMetaLayerTest() {
   }
 
@@ -48,6 +54,9 @@ public abstract class CrossDotMetaLayerTest extends LayerTestBase {
     super.batchingTest();
   }
 
+  /**
+   * The type Basic.
+   */
   public static class Basic extends CrossDotMetaLayerTest {
 
   }

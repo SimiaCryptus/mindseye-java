@@ -37,19 +37,37 @@ import java.util.function.IntFunction;
 
 import static com.simiacryptus.mindseye.lang.Result.anyAlive;
 
+/**
+ * The type Product layer.
+ */
 @SuppressWarnings("serial")
 public class ProductLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(ProductLayer.class);
 
+  /**
+   * Instantiates a new Product layer.
+   */
   public ProductLayer() {
   }
 
+  /**
+   * Instantiates a new Product layer.
+   *
+   * @param id the id
+   */
   protected ProductLayer(@Nonnull final JsonObject id) {
     super(id);
   }
 
+  /**
+   * From json product layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the product layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static ProductLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -134,6 +152,12 @@ public class ProductLayer extends LayerBase {
     private final double[] sum_A;
     private final Result[] inObj;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param sum_A the sum a
+     * @param inObj the in obj
+     */
     public Accumulator(double[] sum_A, Result... inObj) {
       this.sum_A = sum_A;
       this.inObj = inObj;

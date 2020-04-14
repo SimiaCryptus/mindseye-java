@@ -26,6 +26,9 @@ import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The type Stochastic sampling subnet layer test.
+ */
 public abstract class StochasticSamplingSubnetLayerTest extends LayerTestBase {
 
   @Nonnull
@@ -47,6 +50,9 @@ public abstract class StochasticSamplingSubnetLayerTest extends LayerTestBase {
     return new int[][]{{6, 6, 1}};
   }
 
+  /**
+   * The type Basic.
+   */
   public static class Basic extends StochasticSamplingSubnetLayerTest {
 
   }

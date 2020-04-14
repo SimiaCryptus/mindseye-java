@@ -24,6 +24,9 @@ import com.simiacryptus.mindseye.test.LayerTestBase;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The type Img pixel gate layer test.
+ */
 public abstract class ImgPixelGateLayerTest extends LayerTestBase {
 
   @Nonnull
@@ -38,6 +41,9 @@ public abstract class ImgPixelGateLayerTest extends LayerTestBase {
     return new int[][]{{2, 2, 3}, {2, 2, 1}};
   }
 
+  /**
+   * The type Basic.
+   */
   public static class Basic extends ImgPixelGateLayerTest {
 
   }

@@ -25,36 +25,74 @@ import com.simiacryptus.mindseye.lang.DataSerializer;
 import javax.annotation.Nonnull;
 import java.util.Map;
 
+/**
+ * The type Bounded activation layer.
+ */
 @SuppressWarnings("serial")
 public class BoundedActivationLayer extends SimpleActivationLayer<BoundedActivationLayer> {
 
   private double maxValue = Double.POSITIVE_INFINITY;
   private double minValue = Double.NEGATIVE_INFINITY;
 
+  /**
+   * Instantiates a new Bounded activation layer.
+   */
   public BoundedActivationLayer() {
     super();
   }
 
+  /**
+   * Instantiates a new Bounded activation layer.
+   *
+   * @param id the id
+   */
   protected BoundedActivationLayer(@Nonnull final JsonObject id) {
     super(id);
   }
 
+  /**
+   * Gets max value.
+   *
+   * @return the max value
+   */
   public double getMaxValue() {
     return maxValue;
   }
 
+  /**
+   * Sets max value.
+   *
+   * @param maxValue the max value
+   */
   public void setMaxValue(double maxValue) {
     this.maxValue = maxValue;
   }
 
+  /**
+   * Gets min value.
+   *
+   * @return the min value
+   */
   public double getMinValue() {
     return minValue;
   }
 
+  /**
+   * Sets min value.
+   *
+   * @param minValue the min value
+   */
   public void setMinValue(double minValue) {
     this.minValue = minValue;
   }
 
+  /**
+   * From json bounded activation layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the bounded activation layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static BoundedActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {

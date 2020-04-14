@@ -25,27 +25,55 @@ import com.simiacryptus.mindseye.lang.DataSerializer;
 import javax.annotation.Nonnull;
 import java.util.Map;
 
+/**
+ * The type Sinewave activation layer.
+ */
 @SuppressWarnings("serial")
 public final class SinewaveActivationLayer extends SimpleActivationLayer<SinewaveActivationLayer> {
 
   private boolean balanced = true;
 
+  /**
+   * Instantiates a new Sinewave activation layer.
+   */
   public SinewaveActivationLayer() {
   }
 
+  /**
+   * Instantiates a new Sinewave activation layer.
+   *
+   * @param id the id
+   */
   protected SinewaveActivationLayer(@Nonnull final JsonObject id) {
     super(id);
     balanced = id.get("balanced").getAsBoolean();
   }
 
+  /**
+   * Is balanced boolean.
+   *
+   * @return the boolean
+   */
   public boolean isBalanced() {
     return balanced;
   }
 
+  /**
+   * Sets balanced.
+   *
+   * @param balanced the balanced
+   */
   public void setBalanced(boolean balanced) {
     this.balanced = balanced;
   }
 
+  /**
+   * From json sinewave activation layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the sinewave activation layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static SinewaveActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {

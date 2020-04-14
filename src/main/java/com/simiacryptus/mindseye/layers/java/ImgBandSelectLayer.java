@@ -36,16 +36,29 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
 
+/**
+ * The type Img band select layer.
+ */
 @SuppressWarnings("serial")
 public class ImgBandSelectLayer extends LayerBase {
 
   private final int[] bands;
 
+  /**
+   * Instantiates a new Img band select layer.
+   *
+   * @param bands the bands
+   */
   public ImgBandSelectLayer(final int... bands) {
     super();
     this.bands = bands;
   }
 
+  /**
+   * Instantiates a new Img band select layer.
+   *
+   * @param json the json
+   */
   protected ImgBandSelectLayer(@Nonnull final JsonObject json) {
     super(json);
     final JsonArray jsonArray = json.getAsJsonArray("bands");
@@ -55,6 +68,13 @@ public class ImgBandSelectLayer extends LayerBase {
     }
   }
 
+  /**
+   * From json img band select layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the img band select layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static ImgBandSelectLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -127,6 +147,14 @@ public class ImgBandSelectLayer extends LayerBase {
     private Result.Accumulator accumulator;
     private boolean alive;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param bands       the bands
+     * @param inputDims   the input dims
+     * @param accumulator the accumulator
+     * @param alive       the alive
+     */
     public Accumulator(int[] bands, int[] inputDims, Result.Accumulator accumulator, boolean alive) {
       this.inputDims = inputDims;
       this.bands = bands;

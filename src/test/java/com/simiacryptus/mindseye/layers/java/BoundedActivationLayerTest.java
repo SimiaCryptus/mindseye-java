@@ -24,7 +24,13 @@ import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The type Bounded activation layer test.
+ */
 public abstract class BoundedActivationLayerTest extends ActivationLayerTestBase {
+  /**
+   * Instantiates a new Bounded activation layer test.
+   */
   public BoundedActivationLayerTest() {
     super(new BoundedActivationLayer());
   }
@@ -35,6 +41,9 @@ public abstract class BoundedActivationLayerTest extends ActivationLayerTestBase
     return new MeanSqLossLayer();
   }
 
+  /**
+   * The type Basic.
+   */
   public static class Basic extends BoundedActivationLayerTest {
 
   }

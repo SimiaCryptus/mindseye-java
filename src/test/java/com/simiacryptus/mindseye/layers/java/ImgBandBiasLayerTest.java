@@ -24,6 +24,9 @@ import com.simiacryptus.mindseye.test.LayerTestBase;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The type Img band bias layer test.
+ */
 public abstract class ImgBandBiasLayerTest extends LayerTestBase {
 
   @Nonnull
@@ -42,6 +45,9 @@ public abstract class ImgBandBiasLayerTest extends LayerTestBase {
     return new int[][]{{2, 2, 3}};
   }
 
+  /**
+   * The type Basic.
+   */
   public static class Basic extends ImgBandBiasLayerTest {
 
   }

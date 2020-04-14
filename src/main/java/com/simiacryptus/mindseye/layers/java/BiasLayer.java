@@ -39,28 +39,53 @@ import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
 import java.util.function.IntToDoubleFunction;
 
+/**
+ * The type Bias layer.
+ */
 @SuppressWarnings("serial")
 public class BiasLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(BiasLayer.class);
+  /**
+   * The Bias.
+   */
   @Nullable
   public final Tensor bias;
 
+  /**
+   * Instantiates a new Bias layer.
+   */
   protected BiasLayer() {
     super();
     bias = null;
   }
 
+  /**
+   * Instantiates a new Bias layer.
+   *
+   * @param dims the dims
+   */
   public BiasLayer(final int... dims) {
     bias = new Tensor(dims);
   }
 
+  /**
+   * Instantiates a new Bias layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   */
   protected BiasLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json);
     bias = Tensor.fromJson(json.get("bias"), rs);
   }
 
+  /**
+   * Sets weights.
+   *
+   * @param f the f
+   */
   public void setWeights(@Nonnull IntToDoubleFunction f) {
     assert this.bias != null;
     double[] bias = this.bias.getData();
@@ -69,6 +94,11 @@ public class BiasLayer extends LayerBase {
     }
   }
 
+  /**
+   * Sets weights log.
+   *
+   * @param value the value
+   */
   public void setWeightsLog(double value) {
     assert this.bias != null;
     double[] bias = this.bias.getData();
@@ -77,6 +107,13 @@ public class BiasLayer extends LayerBase {
     }
   }
 
+  /**
+   * From json bias layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the bias layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static BiasLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -84,6 +121,12 @@ public class BiasLayer extends LayerBase {
   }
 
 
+  /**
+   * Add double [ ].
+   *
+   * @param input the input
+   * @return the double [ ]
+   */
   public double[] add(@Nonnull final double[] input) {
     final double[] array = RecycleBin.DOUBLES.obtain(input.length);
     assert this.bias != null;
@@ -100,6 +143,11 @@ public class BiasLayer extends LayerBase {
     return array;
   }
 
+  /**
+   * Add weights.
+   *
+   * @param f the f
+   */
   public void addWeights(@Nonnull DoubleSupplier f) {
     assert this.bias != null;
     Util.add(f, this.bias.getData());
@@ -118,6 +166,12 @@ public class BiasLayer extends LayerBase {
     return new Result(data, accumulator, alive || !isFrozen());
   }
 
+  /**
+   * First tensor list.
+   *
+   * @param inObj the in obj
+   * @return the tensor list
+   */
   @NotNull
   public TensorList first(@Nonnull Result[] inObj) {
     try {
@@ -140,6 +194,11 @@ public class BiasLayer extends LayerBase {
     return json;
   }
 
+  /**
+   * Set.
+   *
+   * @param ds the ds
+   */
   public void set(@Nonnull double[] ds) {
     assert this.bias != null;
     double[] bias = this.bias.getData();
@@ -155,6 +214,11 @@ public class BiasLayer extends LayerBase {
     return RefArrays.asList(bias.getData());
   }
 
+  /**
+   * Set.
+   *
+   * @param tensor the tensor
+   */
   public void set(@Nonnull Tensor tensor) {
     assert this.bias != null;
     double[] bias = this.bias.getData();
@@ -199,6 +263,15 @@ public class BiasLayer extends LayerBase {
     private Result.Accumulator accumulator;
     private boolean alive;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param bias        the bias
+     * @param frozen      the frozen
+     * @param id          the id
+     * @param accumulator the accumulator
+     * @param alive       the alive
+     */
     public Accumulator(Tensor bias, boolean frozen, UUID id, Result.Accumulator accumulator, boolean alive) {
       this.frozen = frozen;
       this.bias = bias;

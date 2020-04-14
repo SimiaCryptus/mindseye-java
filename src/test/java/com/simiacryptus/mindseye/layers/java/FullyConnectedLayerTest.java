@@ -28,6 +28,9 @@ import org.junit.jupiter.api.AfterEach;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+/**
+ * The type Fully connected layer test.
+ */
 public abstract class FullyConnectedLayerTest extends LayerTestBase {
 
   @Nonnull
@@ -36,6 +39,12 @@ public abstract class FullyConnectedLayerTest extends LayerTestBase {
   private final int inputs;
   private final int outputs;
 
+  /**
+   * Instantiates a new Fully connected layer test.
+   *
+   * @param inputs  the inputs
+   * @param outputs the outputs
+   */
   protected FullyConnectedLayerTest(int inputs, int outputs) {
     FullyConnectedLayer temp_19_0001 = new FullyConnectedLayer(new int[]{inputs}, new int[]{outputs});
     fullyConnectedLayer = temp_19_0001.addRef();
@@ -62,6 +71,9 @@ public abstract class FullyConnectedLayerTest extends LayerTestBase {
     return new int[][]{{inputs}};
   }
 
+  /**
+   * Cleanup.
+   */
   @AfterEach
   @MustCall
   void cleanup() {
@@ -69,7 +81,13 @@ public abstract class FullyConnectedLayerTest extends LayerTestBase {
       fullyConnectedLayer.freeRef();
   }
 
+  /**
+   * The type Basic.
+   */
   public static class Basic extends FullyConnectedLayerTest {
+    /**
+     * Instantiates a new Basic.
+     */
     public Basic() {
       super(3, 3);
     }

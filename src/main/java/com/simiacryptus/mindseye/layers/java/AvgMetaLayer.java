@@ -36,18 +36,33 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.ToDoubleFunction;
 
+/**
+ * The type Avg meta layer.
+ */
 @SuppressWarnings("serial")
 public class AvgMetaLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(AvgMetaLayer.class);
+  /**
+   * The Last result.
+   */
   @Nullable
   public Tensor lastResult;
   private int minBatchCount = 1;
 
+  /**
+   * Instantiates a new Avg meta layer.
+   */
   public AvgMetaLayer() {
   }
 
+  /**
+   * Instantiates a new Avg meta layer.
+   *
+   * @param json      the json
+   * @param resources the resources
+   */
   protected AvgMetaLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> resources) {
     super(json);
     if (null != lastResult)
@@ -56,14 +71,31 @@ public class AvgMetaLayer extends LayerBase {
     minBatchCount = json.get("minBatchCount").getAsInt();
   }
 
+  /**
+   * Gets min batch count.
+   *
+   * @return the min batch count
+   */
   public int getMinBatchCount() {
     return minBatchCount;
   }
 
+  /**
+   * Sets min batch count.
+   *
+   * @param minBatchCount the min batch count
+   */
   public void setMinBatchCount(int minBatchCount) {
     this.minBatchCount = minBatchCount;
   }
 
+  /**
+   * From json avg meta layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the avg meta layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static AvgMetaLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -88,6 +120,14 @@ public class AvgMetaLayer extends LayerBase {
     return new Result(data, accumulator, alive);
   }
 
+  /**
+   * Fwd tensor.
+   *
+   * @param inputData the input data
+   * @param itemCnt   the item cnt
+   * @param passback  the passback
+   * @return the tensor
+   */
   @org.jetbrains.annotations.Nullable
   public Tensor fwd(TensorList inputData, int itemCnt, AtomicBoolean passback) {
     try {
@@ -115,6 +155,9 @@ public class AvgMetaLayer extends LayerBase {
     }
   }
 
+  /**
+   * Clear last result.
+   */
   @RefIgnore
   public void clearLastResult() {
     if (null != lastResult) {
@@ -163,6 +206,15 @@ public class AvgMetaLayer extends LayerBase {
     private boolean alive;
     private boolean active;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param tensor      the tensor
+     * @param itemCnt     the item cnt
+     * @param accumulator the accumulator
+     * @param alive       the alive
+     * @param active      the active
+     */
     public Accumulator(Tensor tensor, int itemCnt, Result.Accumulator accumulator, boolean alive, boolean active) {
       this.tensor = tensor;
       this.itemCnt = itemCnt;

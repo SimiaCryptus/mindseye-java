@@ -24,10 +24,18 @@ import com.simiacryptus.mindseye.test.LayerTestBase;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The type Bias layer test.
+ */
 public abstract class BiasLayerTest extends LayerTestBase {
 
   private final int dimension;
 
+  /**
+   * Instantiates a new Bias layer test.
+   *
+   * @param dimension the dimension
+   */
   public BiasLayerTest(int dimension) {
     this.dimension = dimension;
   }
@@ -48,15 +56,27 @@ public abstract class BiasLayerTest extends LayerTestBase {
     return new int[][]{{dimension}};
   }
 
+  /**
+   * The type Basic.
+   */
   public static class Basic extends BiasLayerTest {
+    /**
+     * Instantiates a new Basic.
+     */
     public Basic() {
       super(5);
     }
 
   }
 
+  /**
+   * The type Reducing.
+   */
   public static class Reducing extends BiasLayerTest {
 
+    /**
+     * Instantiates a new Reducing.
+     */
     public Reducing() {
       super(5);
     }

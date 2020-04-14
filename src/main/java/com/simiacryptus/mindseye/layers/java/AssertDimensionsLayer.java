@@ -31,16 +31,29 @@ import com.simiacryptus.ref.wrappers.RefList;
 import javax.annotation.Nonnull;
 import java.util.Map;
 
+/**
+ * The type Assert dimensions layer.
+ */
 @SuppressWarnings("serial")
 public class AssertDimensionsLayer extends LayerBase {
 
   private final int[] dims;
 
+  /**
+   * Instantiates a new Assert dimensions layer.
+   *
+   * @param dims the dims
+   */
   public AssertDimensionsLayer(final int... dims) {
     super();
     this.dims = dims;
   }
 
+  /**
+   * Instantiates a new Assert dimensions layer.
+   *
+   * @param json the json
+   */
   protected AssertDimensionsLayer(@Nonnull final JsonObject json) {
     super(json);
     final JsonArray dimsJson = json.get("dims").getAsJsonArray();
@@ -52,6 +65,13 @@ public class AssertDimensionsLayer extends LayerBase {
     return super.getChildren();
   }
 
+  /**
+   * From json assert dimensions layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the assert dimensions layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static AssertDimensionsLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {

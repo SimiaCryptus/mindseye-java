@@ -25,7 +25,13 @@ import org.junit.jupiter.api.Disabled;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The type Bias meta layer test.
+ */
 public abstract class BiasMetaLayerTest extends LayerTestBase {
+  /**
+   * Instantiates a new Bias meta layer test.
+   */
   public BiasMetaLayerTest() {
   }
 
@@ -47,6 +53,9 @@ public abstract class BiasMetaLayerTest extends LayerTestBase {
     super.batchingTest();
   }
 
+  /**
+   * The type Basic.
+   */
   public static class Basic extends BiasMetaLayerTest {
 
   }

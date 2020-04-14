@@ -35,17 +35,30 @@ import javax.annotation.Nullable;
 import java.util.UUID;
 import java.util.function.IntFunction;
 
+/**
+ * The type Simple activation layer.
+ *
+ * @param <T> the type parameter
+ */
 @SuppressWarnings("serial")
 public abstract class SimpleActivationLayer<T extends SimpleActivationLayer<T>> extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(SigmoidActivationLayer.class);
 
+  /**
+   * Instantiates a new Simple activation layer.
+   */
   public SimpleActivationLayer() {
     super();
     this.frozen = true;
   }
 
+  /**
+   * Instantiates a new Simple activation layer.
+   *
+   * @param id the id
+   */
   protected SimpleActivationLayer(@Nonnull final JsonObject id) {
     super(id);
   }
@@ -88,6 +101,12 @@ public abstract class SimpleActivationLayer<T extends SimpleActivationLayer<T>> 
     return (SimpleActivationLayer<T>) super.addRef();
   }
 
+  /**
+   * Eval.
+   *
+   * @param x       the x
+   * @param results the results
+   */
   protected abstract void eval(final double x, double[] results);
 
   @NotNull
@@ -119,6 +138,14 @@ public abstract class SimpleActivationLayer<T extends SimpleActivationLayer<T>> 
     private final Tensor[] inputGradientA;
     private Result.Accumulator accumulator;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param inObj0Alive    the in obj 0 alive
+     * @param itemCnt        the item cnt
+     * @param inputGradientA the input gradient a
+     * @param accumulator    the accumulator
+     */
     public Accumulator(boolean inObj0Alive, int itemCnt, Tensor[] inputGradientA, Result.Accumulator accumulator) {
       this.inObj0Alive = inObj0Alive;
       this.itemCnt = itemCnt;

@@ -37,20 +37,41 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.IntFunction;
 
+/**
+ * The type L 1 normalization layer.
+ */
 @SuppressWarnings("serial")
 public class L1NormalizationLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(L1NormalizationLayer.class);
+  /**
+   * The Max input.
+   */
   double maxInput = 50;
 
+  /**
+   * Instantiates a new L 1 normalization layer.
+   */
   public L1NormalizationLayer() {
   }
 
+  /**
+   * Instantiates a new L 1 normalization layer.
+   *
+   * @param id the id
+   */
   protected L1NormalizationLayer(@Nonnull final JsonObject id) {
     super(id);
   }
 
+  /**
+   * From json l 1 normalization layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the l 1 normalization layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static L1NormalizationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -116,6 +137,13 @@ public class L1NormalizationLayer extends LayerBase {
     private Result.Accumulator accumulator;
     private boolean alive;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param inData      the in data
+     * @param accumulator the accumulator
+     * @param alive       the alive
+     */
     public Accumulator(TensorList inData, Result.Accumulator accumulator, boolean alive) {
       this.inData = inData;
       this.accumulator = accumulator;

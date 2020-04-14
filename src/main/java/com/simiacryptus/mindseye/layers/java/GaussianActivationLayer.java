@@ -25,6 +25,9 @@ import com.simiacryptus.mindseye.lang.DataSerializer;
 import javax.annotation.Nonnull;
 import java.util.Map;
 
+/**
+ * The type Gaussian activation layer.
+ */
 @SuppressWarnings("serial")
 public final class GaussianActivationLayer extends SimpleActivationLayer<GaussianActivationLayer> {
 
@@ -35,17 +38,35 @@ public final class GaussianActivationLayer extends SimpleActivationLayer<Gaussia
   private final double mean;
   private final double stddev;
 
+  /**
+   * Instantiates a new Gaussian activation layer.
+   *
+   * @param mean   the mean
+   * @param stddev the stddev
+   */
   public GaussianActivationLayer(final double mean, final double stddev) {
     this.mean = mean;
     this.stddev = stddev;
   }
 
+  /**
+   * Instantiates a new Gaussian activation layer.
+   *
+   * @param id the id
+   */
   protected GaussianActivationLayer(@Nonnull final JsonObject id) {
     super(id);
     mean = id.get("mean").getAsDouble();
     stddev = id.get("stddev").getAsDouble();
   }
 
+  /**
+   * From json gaussian activation layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the gaussian activation layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static GaussianActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {

@@ -25,16 +25,34 @@ import com.simiacryptus.mindseye.lang.DataSerializer;
 import javax.annotation.Nonnull;
 import java.util.Map;
 
+/**
+ * The type Log activation layer.
+ */
 @SuppressWarnings("serial")
 public final class LogActivationLayer extends SimpleActivationLayer<LogActivationLayer> {
 
+  /**
+   * Instantiates a new Log activation layer.
+   */
   public LogActivationLayer() {
   }
 
+  /**
+   * Instantiates a new Log activation layer.
+   *
+   * @param id the id
+   */
   protected LogActivationLayer(@Nonnull final JsonObject id) {
     super(id);
   }
 
+  /**
+   * From json log activation layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the log activation layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static LogActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {

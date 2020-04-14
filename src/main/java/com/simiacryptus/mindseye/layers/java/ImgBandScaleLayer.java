@@ -41,6 +41,9 @@ import java.util.UUID;
 import java.util.function.DoubleSupplier;
 import java.util.function.IntToDoubleFunction;
 
+/**
+ * The type Img band scale layer.
+ */
 @SuppressWarnings("serial")
 public class ImgBandScaleLayer extends LayerBase {
 
@@ -49,21 +52,39 @@ public class ImgBandScaleLayer extends LayerBase {
   @Nullable
   private final double[] weights;
 
+  /**
+   * Instantiates a new Img band scale layer.
+   */
   protected ImgBandScaleLayer() {
     super();
     weights = null;
   }
 
+  /**
+   * Instantiates a new Img band scale layer.
+   *
+   * @param bands the bands
+   */
   public ImgBandScaleLayer(@Nullable final double... bands) {
     super();
     weights = Arrays.copyOf(bands, bands.length);
   }
 
+  /**
+   * Instantiates a new Img band scale layer.
+   *
+   * @param json the json
+   */
   protected ImgBandScaleLayer(@Nonnull final JsonObject json) {
     super(json);
     weights = JsonUtil.getDoubleArray(json.getAsJsonArray("bias"));
   }
 
+  /**
+   * Get weights double [ ].
+   *
+   * @return the double [ ]
+   */
   @Nullable
   public double[] getWeights() {
     assert weights != null;
@@ -73,6 +94,11 @@ public class ImgBandScaleLayer extends LayerBase {
     return weights;
   }
 
+  /**
+   * Sets weights.
+   *
+   * @param f the f
+   */
   public void setWeights(@Nonnull IntToDoubleFunction f) {
     @Nullable final double[] bias = getWeights();
     assert bias != null;
@@ -82,12 +108,24 @@ public class ImgBandScaleLayer extends LayerBase {
     assert RefArrays.stream(bias).allMatch(Double::isFinite);
   }
 
+  /**
+   * From json img band scale layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the img band scale layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static ImgBandScaleLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ImgBandScaleLayer(json);
   }
 
+  /**
+   * Add weights.
+   *
+   * @param f the f
+   */
   public void addWeights(@Nonnull DoubleSupplier f) {
     Util.add(f, getWeights());
   }
@@ -101,6 +139,12 @@ public class ImgBandScaleLayer extends LayerBase {
     return result;
   }
 
+  /**
+   * Eval result.
+   *
+   * @param input the input
+   * @return the result
+   */
   @Nonnull
   public Result eval(@Nonnull final Result input) {
     @Nullable final double[] weights = getWeights();
@@ -120,6 +164,11 @@ public class ImgBandScaleLayer extends LayerBase {
     return json;
   }
 
+  /**
+   * Set.
+   *
+   * @param ds the ds
+   */
   public void set(@Nonnull double[] ds) {
     @Nullable final double[] bias = getWeights();
     for (int i = 0; i < ds.length; i++) {
@@ -178,6 +227,16 @@ public class ImgBandScaleLayer extends LayerBase {
     private Result.Accumulator accumulator;
     private boolean alive;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param inData      the in data
+     * @param weights     the weights
+     * @param id          the id
+     * @param frozen      the frozen
+     * @param accumulator the accumulator
+     * @param alive       the alive
+     */
     public Accumulator(TensorList inData, double[] weights, UUID id, boolean frozen, Result.Accumulator accumulator, boolean alive) {
       this.inData = inData;
       this.weights = weights;

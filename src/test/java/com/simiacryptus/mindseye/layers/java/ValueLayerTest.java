@@ -26,7 +26,13 @@ import com.simiacryptus.mindseye.test.LayerTestBase;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The type Value layer test.
+ */
 public class ValueLayerTest {
+  /**
+   * The type Normal.
+   */
   public static class Normal extends LayerTestBase {
 
     @Nonnull

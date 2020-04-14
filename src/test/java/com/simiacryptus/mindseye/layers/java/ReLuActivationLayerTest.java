@@ -24,7 +24,13 @@ import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The type Re lu activation layer test.
+ */
 public abstract class ReLuActivationLayerTest extends ActivationLayerTestBase {
+  /**
+   * Instantiates a new Re lu activation layer test.
+   */
   public ReLuActivationLayerTest() {
     super(new ReLuActivationLayer());
   }
@@ -35,6 +41,9 @@ public abstract class ReLuActivationLayerTest extends ActivationLayerTestBase {
     return new MeanSqLossLayer();
   }
 
+  /**
+   * The type Basic.
+   */
   public static class Basic extends ReLuActivationLayerTest {
 
   }

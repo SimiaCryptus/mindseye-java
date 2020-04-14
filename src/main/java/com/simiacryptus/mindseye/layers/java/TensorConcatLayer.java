@@ -38,6 +38,9 @@ import java.util.UUID;
 
 import static com.simiacryptus.mindseye.lang.Result.anyAlive;
 
+/**
+ * The type Tensor concat layer.
+ */
 @SuppressWarnings("serial")
 public class TensorConcatLayer extends LayerBase {
 
@@ -45,10 +48,18 @@ public class TensorConcatLayer extends LayerBase {
   private static final Logger log = LoggerFactory.getLogger(TensorConcatLayer.class);
   private int maxBands;
 
+  /**
+   * Instantiates a new Tensor concat layer.
+   */
   public TensorConcatLayer() {
     setMaxBands(0);
   }
 
+  /**
+   * Instantiates a new Tensor concat layer.
+   *
+   * @param json the json
+   */
   protected TensorConcatLayer(@Nonnull final JsonObject json) {
     super(json);
     JsonElement maxBands = json.get("maxBands");
@@ -56,14 +67,31 @@ public class TensorConcatLayer extends LayerBase {
       setMaxBands(maxBands.getAsInt());
   }
 
+  /**
+   * Gets max bands.
+   *
+   * @return the max bands
+   */
   public int getMaxBands() {
     return maxBands;
   }
 
+  /**
+   * Sets max bands.
+   *
+   * @param maxBands the max bands
+   */
   public void setMaxBands(int maxBands) {
     this.maxBands = maxBands;
   }
 
+  /**
+   * From json tensor concat layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the tensor concat layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static TensorConcatLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -154,6 +182,12 @@ public class TensorConcatLayer extends LayerBase {
     private final int numBatches;
     private final Result[] inObj;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param numBatches the num batches
+     * @param inObj      the in obj
+     */
     public Accumulator(int numBatches, Result... inObj) {
       this.numBatches = numBatches;
       this.inObj = inObj;

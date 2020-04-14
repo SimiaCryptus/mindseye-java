@@ -25,17 +25,35 @@ import com.simiacryptus.mindseye.lang.DataSerializer;
 import javax.annotation.Nonnull;
 import java.util.Map;
 
+/**
+ * The type Entropy layer.
+ */
 @SuppressWarnings("serial")
 public class EntropyLayer extends SimpleActivationLayer<EntropyLayer> {
 
+  /**
+   * Instantiates a new Entropy layer.
+   */
   public EntropyLayer() {
     super();
   }
 
+  /**
+   * Instantiates a new Entropy layer.
+   *
+   * @param id the id
+   */
   protected EntropyLayer(@Nonnull final JsonObject id) {
     super(id);
   }
 
+  /**
+   * From json entropy layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the entropy layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static EntropyLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {

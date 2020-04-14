@@ -36,20 +36,38 @@ import java.util.UUID;
 import java.util.function.IntToDoubleFunction;
 import java.util.function.ToDoubleFunction;
 
+/**
+ * The type Img pixel sum layer.
+ */
 @SuppressWarnings("serial")
 public class ImgPixelSumLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(ImgPixelSumLayer.class);
 
+  /**
+   * Instantiates a new Img pixel sum layer.
+   */
   public ImgPixelSumLayer() {
     super();
   }
 
+  /**
+   * Instantiates a new Img pixel sum layer.
+   *
+   * @param json the json
+   */
   protected ImgPixelSumLayer(@Nonnull final JsonObject json) {
     super(json);
   }
 
+  /**
+   * From json img pixel sum layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the img pixel sum layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static ImgPixelSumLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -65,6 +83,12 @@ public class ImgPixelSumLayer extends LayerBase {
     return result;
   }
 
+  /**
+   * Eval result.
+   *
+   * @param input the input
+   * @return the result
+   */
   @Nonnull
   public Result eval(@Nonnull final Result input) {
     final TensorList inputData = input.getData();
@@ -123,6 +147,13 @@ public class ImgPixelSumLayer extends LayerBase {
     private Result.Accumulator accumulator;
     private boolean alive;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param inputDims   the input dims
+     * @param accumulator the accumulator
+     * @param alive       the alive
+     */
     public Accumulator(int[] inputDims, Result.Accumulator accumulator, boolean alive) {
       this.inputDims = inputDims;
       this.accumulator = accumulator;

@@ -24,6 +24,9 @@ import com.simiacryptus.mindseye.test.LayerTestBase;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The type L 1 normalization layer test.
+ */
 public abstract class L1NormalizationLayerTest extends LayerTestBase {
 
   @Nonnull
@@ -43,6 +46,9 @@ public abstract class L1NormalizationLayerTest extends LayerTestBase {
     return super.random() * 100;
   }
 
+  /**
+   * The type Basic.
+   */
   public static class Basic extends L1NormalizationLayerTest {
 
   }

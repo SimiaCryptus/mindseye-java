@@ -36,19 +36,37 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 
+/**
+ * The type Scale meta layer.
+ */
 @SuppressWarnings("serial")
 public class ScaleMetaLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(ScaleMetaLayer.class);
 
+  /**
+   * Instantiates a new Scale meta layer.
+   */
   public ScaleMetaLayer() {
   }
 
+  /**
+   * Instantiates a new Scale meta layer.
+   *
+   * @param id the id
+   */
   protected ScaleMetaLayer(@Nonnull final JsonObject id) {
     super(id);
   }
 
+  /**
+   * From json scale meta layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the scale meta layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static ScaleMetaLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -120,6 +138,17 @@ public class ScaleMetaLayer extends LayerBase {
     private boolean alive1;
     private Result.Accumulator accumulator1;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param scale        the scale
+     * @param dimensions   the dimensions
+     * @param itemCnt      the item cnt
+     * @param accumulator0 the accumulator 0
+     * @param alive0       the alive 0
+     * @param alive1       the alive 1
+     * @param accumulator1 the accumulator 1
+     */
     public Accumulator(Tensor scale, int[] dimensions, int itemCnt, Result.Accumulator accumulator0, boolean alive0, boolean alive1, Result.Accumulator accumulator1) {
       this.scale = scale;
       this.dimensions = dimensions;

@@ -24,6 +24,9 @@ import com.simiacryptus.mindseye.test.LayerTestBase;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The type Avg pooling layer test.
+ */
 public abstract class AvgPoolingLayerTest extends LayerTestBase {
 
   @Nonnull
@@ -44,6 +47,9 @@ public abstract class AvgPoolingLayerTest extends LayerTestBase {
     return new int[][]{{8, 8, 1}};
   }
 
+  /**
+   * The type Basic.
+   */
   public static class Basic extends AvgPoolingLayerTest {
 
   }

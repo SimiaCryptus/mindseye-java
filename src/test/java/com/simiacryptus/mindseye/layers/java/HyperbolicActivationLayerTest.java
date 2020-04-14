@@ -29,7 +29,13 @@ import com.simiacryptus.ref.wrappers.RefHashMap;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+/**
+ * The type Hyperbolic activation layer test.
+ */
 public abstract class HyperbolicActivationLayerTest extends ActivationLayerTestBase {
+  /**
+   * Instantiates a new Hyperbolic activation layer test.
+   */
   public HyperbolicActivationLayerTest() {
     super(new HyperbolicActivationLayer());
   }
@@ -50,6 +56,9 @@ public abstract class HyperbolicActivationLayerTest extends ActivationLayerTestB
     return trainingTester;
   }
 
+  /**
+   * The type Basic.
+   */
   public static class Basic extends HyperbolicActivationLayerTest {
 
     @Nonnull

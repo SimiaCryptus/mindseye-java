@@ -25,7 +25,13 @@ import org.junit.jupiter.api.Disabled;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The type Sum meta layer test.
+ */
 public abstract class SumMetaLayerTest extends MetaLayerTestBase {
+  /**
+   * Instantiates a new Sum meta layer test.
+   */
   public SumMetaLayerTest() {
     super();
   }
@@ -64,6 +70,9 @@ public abstract class SumMetaLayerTest extends MetaLayerTestBase {
     return new MeanSqLossLayer();
   }
 
+  /**
+   * The type Basic.
+   */
   public static class Basic extends SumMetaLayerTest {
 
   }

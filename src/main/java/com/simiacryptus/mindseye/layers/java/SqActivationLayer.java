@@ -25,12 +25,23 @@ import com.simiacryptus.mindseye.lang.DataSerializer;
 import javax.annotation.Nonnull;
 import java.util.Map;
 
+/**
+ * The type Sq activation layer.
+ */
 @SuppressWarnings("serial")
 public final class SqActivationLayer extends SimpleActivationLayer<SqActivationLayer> {
 
+  /**
+   * Instantiates a new Sq activation layer.
+   */
   public SqActivationLayer() {
   }
 
+  /**
+   * Instantiates a new Sq activation layer.
+   *
+   * @param id the id
+   */
   protected SqActivationLayer(@Nonnull final JsonObject id) {
     super(id);
   }
@@ -40,6 +51,13 @@ public final class SqActivationLayer extends SimpleActivationLayer<SqActivationL
     return true;
   }
 
+  /**
+   * From json sq activation layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the sq activation layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static SqActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {

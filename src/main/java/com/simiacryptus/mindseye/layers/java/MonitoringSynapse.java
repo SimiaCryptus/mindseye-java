@@ -35,6 +35,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * The type Monitoring synapse.
+ */
 @SuppressWarnings("serial")
 public final class MonitoringSynapse extends LayerBase implements MonitoredItem {
 
@@ -43,10 +46,18 @@ public final class MonitoringSynapse extends LayerBase implements MonitoredItem 
   private int totalBatches = 0;
   private int totalItems = 0;
 
+  /**
+   * Instantiates a new Monitoring synapse.
+   */
   public MonitoringSynapse() {
     super();
   }
 
+  /**
+   * Instantiates a new Monitoring synapse.
+   *
+   * @param id the id
+   */
   protected MonitoringSynapse(@Nonnull final JsonObject id) {
     super(id);
   }
@@ -62,6 +73,13 @@ public final class MonitoringSynapse extends LayerBase implements MonitoredItem 
     return map;
   }
 
+  /**
+   * From json monitoring synapse.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the monitoring synapse
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static MonitoringSynapse fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -73,12 +91,24 @@ public final class MonitoringSynapse extends LayerBase implements MonitoredItem 
     return obj;
   }
 
+  /**
+   * Add to monitoring synapse.
+   *
+   * @param obj the obj
+   * @return the monitoring synapse
+   */
   @Nonnull
   public MonitoringSynapse addTo(@Nonnull final MonitoredObject obj) {
     addTo(obj, getName());
     return this.addRef();
   }
 
+  /**
+   * Add to.
+   *
+   * @param obj  the obj
+   * @param name the name
+   */
   public void addTo(@Nonnull MonitoredObject obj, String name) {
     setName(name);
     obj.addObj(getName(), this.addRef());
@@ -136,6 +166,11 @@ public final class MonitoringSynapse extends LayerBase implements MonitoredItem 
 
     private Result.Accumulator accumulator;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param accumulator the accumulator
+     */
     public Accumulator(Result.Accumulator accumulator) {
       this.accumulator = accumulator;
     }

@@ -35,19 +35,37 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.IntFunction;
 
+/**
+ * The type Bias meta layer.
+ */
 @SuppressWarnings("serial")
 public class BiasMetaLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(BiasMetaLayer.class);
 
+  /**
+   * Instantiates a new Bias meta layer.
+   */
   public BiasMetaLayer() {
   }
 
+  /**
+   * Instantiates a new Bias meta layer.
+   *
+   * @param id the id
+   */
   protected BiasMetaLayer(@Nonnull final JsonObject id) {
     super(id);
   }
 
+  /**
+   * From json bias meta layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the bias meta layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static BiasMetaLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -121,6 +139,16 @@ public class BiasMetaLayer extends LayerBase {
     private Result.Accumulator accumulator0;
     private boolean alive0;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param tensor0      the tensor 0
+     * @param itemCnt      the item cnt
+     * @param accumulator0 the accumulator 0
+     * @param alive0       the alive 0
+     * @param accumulator1 the accumulator 1
+     * @param alive1       the alive 1
+     */
     public Accumulator(Tensor tensor0, int itemCnt, Result.Accumulator accumulator0, boolean alive0, Result.Accumulator accumulator1, boolean alive1) {
       this.tensor0 = tensor0;
       this.itemCnt = itemCnt;

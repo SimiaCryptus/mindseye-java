@@ -37,36 +37,72 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.function.IntFunction;
 
+/**
+ * The type Dropout noise layer.
+ */
 @SuppressWarnings("serial")
 public class DropoutNoiseLayer extends LayerBase implements StochasticComponent {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(DropoutNoiseLayer.class);
+  /**
+   * The Seed.
+   */
   long seed = StochasticComponent.random.get().nextLong();
   private double value;
 
+  /**
+   * Instantiates a new Dropout noise layer.
+   */
   public DropoutNoiseLayer() {
     this(0.5);
   }
 
+  /**
+   * Instantiates a new Dropout noise layer.
+   *
+   * @param value the value
+   */
   public DropoutNoiseLayer(final double value) {
     super();
     setValue(value);
   }
 
+  /**
+   * Instantiates a new Dropout noise layer.
+   *
+   * @param json the json
+   */
   protected DropoutNoiseLayer(@Nonnull final JsonObject json) {
     super(json);
     value = json.get("value").getAsDouble();
   }
 
+  /**
+   * Gets value.
+   *
+   * @return the value
+   */
   public double getValue() {
     return value;
   }
 
+  /**
+   * Sets value.
+   *
+   * @param value the value
+   */
   public void setValue(double value) {
     this.value = value;
   }
 
+  /**
+   * From json dropout noise layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the dropout noise layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static DropoutNoiseLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -161,6 +197,13 @@ public class DropoutNoiseLayer extends LayerBase implements StochasticComponent 
     private Result.Accumulator accumulator;
     private boolean alive;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param mask        the mask
+     * @param accumulator the accumulator
+     * @param alive       the alive
+     */
     public Accumulator(Tensor[] mask, Result.Accumulator accumulator, boolean alive) {
       this.mask = mask;
       this.accumulator = accumulator;

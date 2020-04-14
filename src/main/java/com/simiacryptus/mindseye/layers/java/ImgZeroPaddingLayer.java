@@ -30,24 +30,45 @@ import com.simiacryptus.ref.wrappers.RefList;
 import javax.annotation.Nonnull;
 import java.util.Map;
 
+/**
+ * The type Img zero padding layer.
+ */
 @SuppressWarnings("serial")
 public class ImgZeroPaddingLayer extends LayerBase {
 
   private final int sizeX;
   private final int sizeY;
 
+  /**
+   * Instantiates a new Img zero padding layer.
+   *
+   * @param sizeX the size x
+   * @param sizeY the size y
+   */
   public ImgZeroPaddingLayer(final int sizeX, final int sizeY) {
     super();
     this.sizeX = sizeX;
     this.sizeY = sizeY;
   }
 
+  /**
+   * Instantiates a new Img zero padding layer.
+   *
+   * @param json the json
+   */
   protected ImgZeroPaddingLayer(@Nonnull final JsonObject json) {
     super(json);
     sizeX = json.getAsJsonPrimitive("sizeX").getAsInt();
     sizeY = json.getAsJsonPrimitive("sizeY").getAsInt();
   }
 
+  /**
+   * From json img zero padding layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the img zero padding layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static ImgZeroPaddingLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {

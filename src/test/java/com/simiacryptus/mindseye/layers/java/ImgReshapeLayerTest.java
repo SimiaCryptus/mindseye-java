@@ -24,8 +24,14 @@ import com.simiacryptus.mindseye.test.LayerTestBase;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The type Img reshape layer test.
+ */
 public abstract class ImgReshapeLayerTest extends LayerTestBase {
 
+  /**
+   * The type Expand.
+   */
   public static class Expand extends ImgReshapeLayerTest {
 
     @Nonnull
@@ -42,6 +48,9 @@ public abstract class ImgReshapeLayerTest extends LayerTestBase {
 
   }
 
+  /**
+   * The type Contract.
+   */
   public static class Contract extends ImgReshapeLayerTest {
 
     @Nonnull

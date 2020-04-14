@@ -24,11 +24,20 @@ import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The type Abs activation layer test.
+ */
 public abstract class AbsActivationLayerTest extends ActivationLayerTestBase {
+  /**
+   * Instantiates a new Abs activation layer test.
+   */
   public AbsActivationLayerTest() {
     super(new AbsActivationLayer());
   }
 
+  /**
+   * The type Basic.
+   */
   public static class Basic extends AbsActivationLayerTest {
 
     @Nonnull

@@ -28,6 +28,9 @@ import org.junit.jupiter.api.AfterEach;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+/**
+ * The type Sub batch layer test.
+ */
 public class SubBatchLayerTest extends LayerTestBase {
 
   @Nullable
@@ -53,6 +56,9 @@ public class SubBatchLayerTest extends LayerTestBase {
     return new int[][]{{5}};
   }
 
+  /**
+   * Cleanup.
+   */
   @AfterEach
   @MustCall
   public void cleanup() {

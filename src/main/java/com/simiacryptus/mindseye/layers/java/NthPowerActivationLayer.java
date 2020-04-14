@@ -34,31 +34,64 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.IntFunction;
 
+/**
+ * The type Nth power activation layer.
+ */
 @SuppressWarnings("serial")
 public final class NthPowerActivationLayer extends LayerBase {
 
   private double power = 1.0;
 
+  /**
+   * Instantiates a new Nth power activation layer.
+   */
   public NthPowerActivationLayer() {
   }
 
+  /**
+   * Instantiates a new Nth power activation layer.
+   *
+   * @param id the id
+   */
   protected NthPowerActivationLayer(@Nonnull final JsonObject id) {
     super(id);
     power = id.get("power").getAsDouble();
   }
 
+  /**
+   * Instantiates a new Nth power activation layer.
+   *
+   * @param power the power
+   */
   public NthPowerActivationLayer(double power) {
     this.power = power;
   }
 
+  /**
+   * Gets power.
+   *
+   * @return the power
+   */
   public double getPower() {
     return power;
   }
 
+  /**
+   * Sets power.
+   *
+   * @param power the power
+   */
   public void setPower(double power) {
     this.power = power;
   }
 
+  /**
+   * From json nth power activation layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the nth power activation layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static NthPowerActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -202,6 +235,14 @@ public final class NthPowerActivationLayer extends LayerBase {
     private Result.Accumulator accumulator;
     private boolean alive;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param inputGradientA the input gradient a
+     * @param itemCnt        the item cnt
+     * @param accumulator    the accumulator
+     * @param alive          the alive
+     */
     public Accumulator(Tensor[] inputGradientA, int itemCnt, Result.Accumulator accumulator, boolean alive) {
       this.inputGradientA = inputGradientA;
       this.itemCnt = itemCnt;

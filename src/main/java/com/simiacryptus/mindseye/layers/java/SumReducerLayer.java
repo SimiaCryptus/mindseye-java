@@ -38,19 +38,37 @@ import java.util.function.IntToDoubleFunction;
 
 import static com.simiacryptus.mindseye.lang.Result.anyAlive;
 
+/**
+ * The type Sum reducer layer.
+ */
 @SuppressWarnings("serial")
 public class SumReducerLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(SumReducerLayer.class);
 
+  /**
+   * Instantiates a new Sum reducer layer.
+   */
   public SumReducerLayer() {
   }
 
+  /**
+   * Instantiates a new Sum reducer layer.
+   *
+   * @param id the id
+   */
   protected SumReducerLayer(@Nonnull final JsonObject id) {
     super(id);
   }
 
+  /**
+   * From json sum reducer layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the sum reducer layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static SumReducerLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -118,6 +136,11 @@ public class SumReducerLayer extends LayerBase {
 
     private final Result[] inObj;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param inObj the in obj
+     */
     public Accumulator(Result... inObj) {
       this.inObj = inObj;
     }

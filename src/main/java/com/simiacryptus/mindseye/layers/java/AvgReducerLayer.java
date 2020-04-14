@@ -35,19 +35,37 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.IntFunction;
 
+/**
+ * The type Avg reducer layer.
+ */
 @SuppressWarnings("serial")
 public class AvgReducerLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(SumReducerLayer.class);
 
+  /**
+   * Instantiates a new Avg reducer layer.
+   */
   public AvgReducerLayer() {
   }
 
+  /**
+   * Instantiates a new Avg reducer layer.
+   *
+   * @param id the id
+   */
   protected AvgReducerLayer(@Nonnull final JsonObject id) {
     super(id);
   }
 
+  /**
+   * From json avg reducer layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the avg reducer layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static AvgReducerLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -116,6 +134,11 @@ public class AvgReducerLayer extends LayerBase {
 
     private final Result[] inObj;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param inObj the in obj
+     */
     public Accumulator(Result... inObj) {
       this.inObj = inObj;
     }

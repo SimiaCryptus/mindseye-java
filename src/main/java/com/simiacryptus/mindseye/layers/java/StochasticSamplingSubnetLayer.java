@@ -41,6 +41,9 @@ import java.util.Random;
 import java.util.function.IntFunction;
 import java.util.function.LongFunction;
 
+/**
+ * The type Stochastic sampling subnet layer.
+ */
 @SuppressWarnings("serial")
 public class StochasticSamplingSubnetLayer extends LayerBase implements StochasticComponent {
 
@@ -52,12 +55,24 @@ public class StochasticSamplingSubnetLayer extends LayerBase implements Stochast
   private final Layer subnetwork;
   private long seed = RefSystem.nanoTime();
 
+  /**
+   * Instantiates a new Stochastic sampling subnet layer.
+   *
+   * @param subnetwork the subnetwork
+   * @param samples    the samples
+   */
   public StochasticSamplingSubnetLayer(@Nullable final Layer subnetwork, final int samples) {
     super();
     this.samples = samples;
     this.subnetwork = subnetwork;
   }
 
+  /**
+   * Instantiates a new Stochastic sampling subnet layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   */
   protected StochasticSamplingSubnetLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json);
     samples = json.getAsJsonPrimitive("samples").getAsInt();
@@ -66,6 +81,11 @@ public class StochasticSamplingSubnetLayer extends LayerBase implements Stochast
     this.subnetwork = Layer.fromJson(subnetwork, rs);
   }
 
+  /**
+   * Get seeds long [ ].
+   *
+   * @return the long [ ]
+   */
   public long[] getSeeds() {
     Random random = new Random(seed);
     return RefIntStream.range(0, this.samples).mapToLong(i -> random.nextLong()).toArray();
@@ -77,12 +97,25 @@ public class StochasticSamplingSubnetLayer extends LayerBase implements Stochast
     subnetwork.setFrozen(frozen);
   }
 
+  /**
+   * From json stochastic sampling subnet layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the stochastic sampling subnet layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static StochasticSamplingSubnetLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new StochasticSamplingSubnetLayer(json, rs);
   }
 
+  /**
+   * Average result.
+   *
+   * @param samples the samples
+   * @return the result
+   */
   @Nullable
   public static Result average(@Nonnull final Result[] samples) {
     PipelineNetwork gateNetwork = new PipelineNetwork(samples.length);
@@ -117,6 +150,11 @@ public class StochasticSamplingSubnetLayer extends LayerBase implements Stochast
         }, counting)).toArray(Result[]::new));
   }
 
+  /**
+   * Shuffle subnet.
+   *
+   * @param seed the seed
+   */
   public void shuffleSubnet(long seed) {
     if (subnetwork instanceof DAGNetwork) {
       ((DAGNetwork) subnetwork).visitNodes(node -> {

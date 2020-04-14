@@ -36,29 +36,56 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.IntFunction;
 
+/**
+ * The type Avg pooling layer.
+ */
 @SuppressWarnings("serial")
 public class AvgPoolingLayer extends LayerBase {
 
+  /**
+   * The constant indexMapCache.
+   */
   public static final RefConcurrentHashMap<IndexMapKey, RefMap<Coordinate, RefList<int[]>>> indexMapCache = new RefConcurrentHashMap<>();
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(AvgPoolingLayer.class);
   private int[] kernelDims;
 
+  /**
+   * Instantiates a new Avg pooling layer.
+   */
   protected AvgPoolingLayer() {
     super();
   }
 
+  /**
+   * Instantiates a new Avg pooling layer.
+   *
+   * @param kernelDims the kernel dims
+   */
   public AvgPoolingLayer(@Nonnull final int... kernelDims) {
 
     this.kernelDims = RefArrays.copyOf(kernelDims, kernelDims.length);
   }
 
+  /**
+   * Instantiates a new Avg pooling layer.
+   *
+   * @param id         the id
+   * @param kernelDims the kernel dims
+   */
   protected AvgPoolingLayer(@Nonnull final JsonObject id, @Nonnull final int... kernelDims) {
     super(id);
     this.kernelDims = RefArrays.copyOf(kernelDims, kernelDims.length);
   }
 
+  /**
+   * From json avg pooling layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the avg pooling layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static AvgPoolingLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -178,16 +205,38 @@ public class AvgPoolingLayer extends LayerBase {
         .toArray(Tensor[]::new));
   }
 
+  /**
+   * The type Index map key.
+   */
   public static final class IndexMapKey {
+    /**
+     * The Kernel.
+     */
     final int[] kernel;
+    /**
+     * The Output.
+     */
     final int[] output;
 
+    /**
+     * Instantiates a new Index map key.
+     *
+     * @param kernel the kernel
+     * @param output the output
+     */
     public IndexMapKey(final int[] kernel, final int[] output) {
       super();
       this.kernel = kernel;
       this.output = output;
     }
 
+    /**
+     * Instantiates a new Index map key.
+     *
+     * @param kernel the kernel
+     * @param input  the input
+     * @param output the output
+     */
     public IndexMapKey(@Nonnull final Tensor kernel, @Nullable final Tensor input, @Nonnull final Tensor output) {
       super();
       if (null != input)
@@ -231,6 +280,15 @@ public class AvgPoolingLayer extends LayerBase {
     private Result.Accumulator accumulator;
     private boolean alive;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param coordMap    the coord map
+     * @param inputDims   the input dims
+     * @param kernelSize  the kernel size
+     * @param accumulator the accumulator
+     * @param alive       the alive
+     */
     public Accumulator(RefMap<Coordinate, RefList<int[]>> coordMap, int[] inputDims, int kernelSize, Result.Accumulator accumulator, boolean alive) {
       this.coordMap = coordMap;
       this.inputDims = inputDims;

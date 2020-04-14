@@ -35,24 +35,44 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
 
+/**
+ * The type Img crop layer.
+ */
 @SuppressWarnings("serial")
 public class ImgCropLayer extends LayerBase {
 
   private final int sizeX;
   private final int sizeY;
 
+  /**
+   * Instantiates a new Img crop layer.
+   *
+   * @param sizeX the size x
+   * @param sizeY the size y
+   */
   public ImgCropLayer(final int sizeX, final int sizeY) {
     super();
     this.sizeX = sizeX;
     this.sizeY = sizeY;
   }
 
+  /**
+   * Instantiates a new Img crop layer.
+   *
+   * @param json the json
+   */
   protected ImgCropLayer(@Nonnull final JsonObject json) {
     super(json);
     sizeX = json.getAsJsonPrimitive("sizeX").getAsInt();
     sizeY = json.getAsJsonPrimitive("sizeY").getAsInt();
   }
 
+  /**
+   * Copy.
+   *
+   * @param inputData  the input data
+   * @param outputData the output data
+   */
   public static void copy(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData) {
     @Nonnull final int[] inDim = inputData.getDimensions();
     @Nonnull final int[] outDim = outputData.getDimensions();
@@ -85,6 +105,13 @@ public class ImgCropLayer extends LayerBase {
     }, outputData, inputData));
   }
 
+  /**
+   * From json img crop layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the img crop layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static ImgCropLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -152,6 +179,13 @@ public class ImgCropLayer extends LayerBase {
     private Result.Accumulator accumulator;
     private boolean alive;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param inputDims   the input dims
+     * @param accumulator the accumulator
+     * @param alive       the alive
+     */
     public Accumulator(int[] inputDims, Result.Accumulator accumulator, boolean alive) {
       this.inputDims = inputDims;
       this.accumulator = accumulator;

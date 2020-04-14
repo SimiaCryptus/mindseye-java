@@ -25,8 +25,14 @@ import org.junit.jupiter.api.Disabled;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The type Scale meta layer test.
+ */
 public abstract class ScaleMetaLayerTest extends LayerTestBase {
 
+  /**
+   * Instantiates a new Scale meta layer test.
+   */
   public ScaleMetaLayerTest() {
   }
 
@@ -48,6 +54,9 @@ public abstract class ScaleMetaLayerTest extends LayerTestBase {
     super.batchingTest();
   }
 
+  /**
+   * The type Basic.
+   */
   public static class Basic extends ScaleMetaLayerTest {
 
   }

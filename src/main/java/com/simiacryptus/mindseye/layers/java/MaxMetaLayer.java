@@ -36,19 +36,37 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
 
+/**
+ * The type Max meta layer.
+ */
 @SuppressWarnings("serial")
 public class MaxMetaLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(MaxMetaLayer.class);
 
+  /**
+   * Instantiates a new Max meta layer.
+   */
   public MaxMetaLayer() {
   }
 
+  /**
+   * Instantiates a new Max meta layer.
+   *
+   * @param id the id
+   */
   protected MaxMetaLayer(@Nonnull final JsonObject id) {
     super(id);
   }
 
+  /**
+   * From json max meta layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the max meta layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static MaxMetaLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -131,6 +149,15 @@ public class MaxMetaLayer extends LayerBase {
     private Result.Accumulator accumulator;
     private boolean alive;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param input0Tensor the input 0 tensor
+     * @param itemCnt      the item cnt
+     * @param indicies     the indicies
+     * @param accumulator  the accumulator
+     * @param alive        the alive
+     */
     public Accumulator(Tensor input0Tensor, int itemCnt, int[] indicies, Result.Accumulator accumulator, boolean alive) {
       this.input0Tensor = input0Tensor;
       this.itemCnt = itemCnt;

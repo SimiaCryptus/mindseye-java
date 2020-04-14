@@ -32,19 +32,37 @@ import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * The type Cross dot meta layer.
+ */
 @SuppressWarnings("serial")
 public class CrossDotMetaLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(CrossDotMetaLayer.class);
 
+  /**
+   * Instantiates a new Cross dot meta layer.
+   */
   public CrossDotMetaLayer() {
   }
 
+  /**
+   * Instantiates a new Cross dot meta layer.
+   *
+   * @param id the id
+   */
   protected CrossDotMetaLayer(@Nonnull final JsonObject id) {
     super(id);
   }
 
+  /**
+   * From json cross dot meta layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the cross dot meta layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static CrossDotMetaLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -114,6 +132,15 @@ public class CrossDotMetaLayer extends LayerBase {
     private Result.Accumulator accumulator;
     private boolean alive;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param indata      the indata
+     * @param itemCnt     the item cnt
+     * @param dim         the dim
+     * @param accumulator the accumulator
+     * @param alive       the alive
+     */
     public Accumulator(TensorList indata, int itemCnt, int dim, Result.Accumulator accumulator, boolean alive) {
       this.indata = indata;
       this.itemCnt = itemCnt;

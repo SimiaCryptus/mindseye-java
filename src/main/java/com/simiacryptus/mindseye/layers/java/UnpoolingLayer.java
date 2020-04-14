@@ -33,24 +33,45 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.IntFunction;
 
+/**
+ * The type Unpooling layer.
+ */
 @SuppressWarnings("serial")
 public class UnpoolingLayer extends LayerBase {
 
   private final int sizeX;
   private final int sizeY;
 
+  /**
+   * Instantiates a new Unpooling layer.
+   *
+   * @param sizeX the size x
+   * @param sizeY the size y
+   */
   public UnpoolingLayer(final int sizeX, final int sizeY) {
     super();
     this.sizeX = sizeX;
     this.sizeY = sizeY;
   }
 
+  /**
+   * Instantiates a new Unpooling layer.
+   *
+   * @param json the json
+   */
   protected UnpoolingLayer(@Nonnull final JsonObject json) {
     super(json);
     sizeX = json.getAsJsonPrimitive("sizeX").getAsInt();
     sizeY = json.getAsJsonPrimitive("sizeY").getAsInt();
   }
 
+  /**
+   * Copy condense tensor.
+   *
+   * @param inputData  the input data
+   * @param outputData the output data
+   * @return the tensor
+   */
   @Nonnull
   public static Tensor copyCondense(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData) {
     @Nonnull final int[] inDim = inputData.getDimensions();
@@ -85,6 +106,13 @@ public class UnpoolingLayer extends LayerBase {
     return outputData;
   }
 
+  /**
+   * Copy expand tensor.
+   *
+   * @param inputData  the input data
+   * @param outputData the output data
+   * @return the tensor
+   */
   @Nonnull
   public static Tensor copyExpand(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData) {
     @Nonnull final int[] inDim = inputData.getDimensions();
@@ -117,6 +145,13 @@ public class UnpoolingLayer extends LayerBase {
     return outputData;
   }
 
+  /**
+   * From json unpooling layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the unpooling layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static UnpoolingLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -188,6 +223,13 @@ public class UnpoolingLayer extends LayerBase {
     private Result.Accumulator accumulator;
     private boolean alive;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param inputDims   the input dims
+     * @param accumulator the accumulator
+     * @param alive       the alive
+     */
     public Accumulator(int[] inputDims, Result.Accumulator accumulator, boolean alive) {
       this.inputDims = inputDims;
       this.accumulator = accumulator;

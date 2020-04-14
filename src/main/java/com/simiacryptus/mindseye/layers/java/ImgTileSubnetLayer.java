@@ -32,6 +32,9 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * The type Img tile subnet layer.
+ */
 @SuppressWarnings("serial")
 public class ImgTileSubnetLayer extends WrapperLayer {
 
@@ -40,6 +43,15 @@ public class ImgTileSubnetLayer extends WrapperLayer {
   private final int strideX;
   private final int strideY;
 
+  /**
+   * Instantiates a new Img tile subnet layer.
+   *
+   * @param subnetwork the subnetwork
+   * @param width      the width
+   * @param height     the height
+   * @param strideX    the stride x
+   * @param strideY    the stride y
+   */
   public ImgTileSubnetLayer(final Layer subnetwork, final int width, final int height, final int strideX,
                             final int strideY) {
     super(subnetwork);
@@ -49,10 +61,23 @@ public class ImgTileSubnetLayer extends WrapperLayer {
     this.strideY = strideY;
   }
 
+  /**
+   * Instantiates a new Img tile subnet layer.
+   *
+   * @param subnetwork the subnetwork
+   * @param width      the width
+   * @param height     the height
+   */
   public ImgTileSubnetLayer(final Layer subnetwork, final int width, final int height) {
     this(subnetwork, width, height, width, height);
   }
 
+  /**
+   * Instantiates a new Img tile subnet layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   */
   protected ImgTileSubnetLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json, rs);
     height = json.getAsJsonPrimitive("height").getAsInt();
@@ -62,6 +87,13 @@ public class ImgTileSubnetLayer extends WrapperLayer {
     JsonObject subnetwork = json.getAsJsonObject("subnetwork");
   }
 
+  /**
+   * From json img tile subnet layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the img tile subnet layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static ImgTileSubnetLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -155,6 +187,16 @@ public class ImgTileSubnetLayer extends WrapperLayer {
     private final int cols;
     private Result.Accumulator accumulator;
 
+    /**
+     * Instantiates a new Tile accumulator.
+     *
+     * @param passback    the passback
+     * @param finalIndex  the final index
+     * @param passbacks   the passbacks
+     * @param rows        the rows
+     * @param cols        the cols
+     * @param accumulator the accumulator
+     */
     public TileAccumulator(RefArrayList<TensorList> passback, int finalIndex, AtomicInteger passbacks, int rows, int cols, Result.Accumulator accumulator) {
       this.passback = passback;
       this.finalIndex = finalIndex;

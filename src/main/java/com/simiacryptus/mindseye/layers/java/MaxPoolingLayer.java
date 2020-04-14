@@ -39,6 +39,9 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.*;
 
+/**
+ * The type Max pooling layer.
+ */
 @SuppressWarnings("serial")
 public class MaxPoolingLayer extends LayerBase {
 
@@ -48,20 +51,41 @@ public class MaxPoolingLayer extends LayerBase {
   private static final Logger log = LoggerFactory.getLogger(MaxPoolingLayer.class);
   private int[] kernelDims;
 
+  /**
+   * Instantiates a new Max pooling layer.
+   */
   protected MaxPoolingLayer() {
     super();
   }
 
+  /**
+   * Instantiates a new Max pooling layer.
+   *
+   * @param kernelDims the kernel dims
+   */
   public MaxPoolingLayer(@Nonnull final int... kernelDims) {
 
     this.kernelDims = RefArrays.copyOf(kernelDims, kernelDims.length);
   }
 
+  /**
+   * Instantiates a new Max pooling layer.
+   *
+   * @param id         the id
+   * @param kernelDims the kernel dims
+   */
   protected MaxPoolingLayer(@Nonnull final JsonObject id, @Nonnull final int... kernelDims) {
     super(id);
     this.kernelDims = RefArrays.copyOf(kernelDims, kernelDims.length);
   }
 
+  /**
+   * From json max pooling layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the max pooling layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static MaxPoolingLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -177,10 +201,25 @@ public class MaxPoolingLayer extends LayerBase {
     }).toArray(Tensor[]::new));
   }
 
+  /**
+   * The type Calc regions parameter.
+   */
   public static class CalcRegionsParameter {
+    /**
+     * The Input dims.
+     */
     public final int[] inputDims;
+    /**
+     * The Kernel dims.
+     */
     public final int[] kernelDims;
 
+    /**
+     * Instantiates a new Calc regions parameter.
+     *
+     * @param inputDims  the input dims
+     * @param kernelDims the kernel dims
+     */
     public CalcRegionsParameter(final int[] inputDims, final int[] kernelDims) {
       this.inputDims = inputDims;
       this.kernelDims = kernelDims;
@@ -221,6 +260,14 @@ public class MaxPoolingLayer extends LayerBase {
     private Result.Accumulator accumulator;
     private boolean alive;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param inputDims    the input dims
+     * @param gradientMapA the gradient map a
+     * @param accumulator  the accumulator
+     * @param alive        the alive
+     */
     public Accumulator(int[] inputDims, int[][] gradientMapA, Result.Accumulator accumulator, boolean alive) {
       this.inputDims = inputDims;
       this.gradientMapA = gradientMapA;

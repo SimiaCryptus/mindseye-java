@@ -36,6 +36,9 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.IntFunction;
 
+/**
+ * The type Linear activation layer.
+ */
 @SuppressWarnings("serial")
 public class LinearActivationLayer extends LayerBase {
 
@@ -44,6 +47,9 @@ public class LinearActivationLayer extends LayerBase {
   @Nullable
   private final Tensor weights;
 
+  /**
+   * Instantiates a new Linear activation layer.
+   */
   public LinearActivationLayer() {
     super();
     weights = new Tensor(2);
@@ -51,16 +57,32 @@ public class LinearActivationLayer extends LayerBase {
     weights.set(1, 0.);
   }
 
+  /**
+   * Instantiates a new Linear activation layer.
+   *
+   * @param json      the json
+   * @param resources the resources
+   */
   protected LinearActivationLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> resources) {
     super(json);
     weights = Tensor.fromJson(json.get("weights"), resources);
   }
 
+  /**
+   * Gets bias.
+   *
+   * @return the bias
+   */
   public double getBias() {
     assert weights != null;
     return weights.get(1);
   }
 
+  /**
+   * Sets bias.
+   *
+   * @param bias the bias
+   */
   public void setBias(double bias) {
     if (!Double.isFinite(bias))
       throw new IllegalArgumentException();
@@ -82,11 +104,21 @@ public class LinearActivationLayer extends LayerBase {
     }
   }
 
+  /**
+   * Gets scale.
+   *
+   * @return the scale
+   */
   public double getScale() {
     assert weights != null;
     return weights.get(0);
   }
 
+  /**
+   * Sets scale.
+   *
+   * @param scale the scale
+   */
   public void setScale(double scale) {
     if (!Double.isFinite(scale))
       throw new IllegalArgumentException();
@@ -94,6 +126,13 @@ public class LinearActivationLayer extends LayerBase {
     weights.set(0, scale);
   }
 
+  /**
+   * From json linear activation layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the linear activation layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static LinearActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -169,6 +208,16 @@ public class LinearActivationLayer extends LayerBase {
     private Result.Accumulator accumulator;
     private boolean alive;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param inData      the in data
+     * @param weights     the weights
+     * @param id          the id
+     * @param frozen      the frozen
+     * @param accumulator the accumulator
+     * @param alive       the alive
+     */
     public Accumulator(TensorList inData, Tensor weights, UUID id, boolean frozen, Result.Accumulator accumulator, boolean alive) {
       this.inData = inData;
       this.weights = weights;

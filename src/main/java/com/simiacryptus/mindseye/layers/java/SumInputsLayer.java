@@ -37,22 +37,46 @@ import java.util.function.IntFunction;
 
 import static com.simiacryptus.mindseye.lang.Result.anyAlive;
 
+/**
+ * The type Sum inputs layer.
+ */
 @SuppressWarnings("serial")
 public class SumInputsLayer extends LayerBase {
 
+  /**
+   * Instantiates a new Sum inputs layer.
+   */
   public SumInputsLayer() {
   }
 
+  /**
+   * Instantiates a new Sum inputs layer.
+   *
+   * @param id the id
+   */
   protected SumInputsLayer(@Nonnull final JsonObject id) {
     super(id);
   }
 
+  /**
+   * From json sum inputs layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the sum inputs layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static SumInputsLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new SumInputsLayer(json);
   }
 
+  /**
+   * Combine pipeline network.
+   *
+   * @param networks the networks
+   * @return the pipeline network
+   */
   public static PipelineNetwork combine(@Nullable PipelineNetwork... networks) {
     return PipelineNetwork.combine(new SumInputsLayer(), networks);
   }
@@ -121,6 +145,11 @@ public class SumInputsLayer extends LayerBase {
 
     private final Result[] inObj;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param inObj the in obj
+     */
     public Accumulator(Result... inObj) {
       this.inObj = inObj;
     }

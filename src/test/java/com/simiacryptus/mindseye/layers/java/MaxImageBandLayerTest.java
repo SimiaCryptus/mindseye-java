@@ -24,6 +24,9 @@ import com.simiacryptus.mindseye.test.LayerTestBase;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The type Max image band layer test.
+ */
 public abstract class MaxImageBandLayerTest extends LayerTestBase {
 
   @Nonnull
@@ -38,6 +41,9 @@ public abstract class MaxImageBandLayerTest extends LayerTestBase {
     return new int[][]{{2, 2, 3}};
   }
 
+  /**
+   * The type Basic.
+   */
   public static class Basic extends MaxImageBandLayerTest {
 
   }

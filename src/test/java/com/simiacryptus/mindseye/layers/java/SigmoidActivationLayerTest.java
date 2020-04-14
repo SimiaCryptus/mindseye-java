@@ -24,7 +24,13 @@ import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The type Sigmoid activation layer test.
+ */
 public abstract class SigmoidActivationLayerTest extends ActivationLayerTestBase {
+  /**
+   * Instantiates a new Sigmoid activation layer test.
+   */
   public SigmoidActivationLayerTest() {
     super(new SigmoidActivationLayer());
   }
@@ -35,6 +41,9 @@ public abstract class SigmoidActivationLayerTest extends ActivationLayerTestBase
     return new MeanSqLossLayer();
   }
 
+  /**
+   * The type Basic.
+   */
   public static class Basic extends SigmoidActivationLayerTest {
 
   }

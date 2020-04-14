@@ -24,6 +24,9 @@ import com.simiacryptus.mindseye.test.LayerTestBase;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The type Mean sq loss layer test.
+ */
 public abstract class MeanSqLossLayerTest extends LayerTestBase {
 
   @Nonnull
@@ -38,6 +41,9 @@ public abstract class MeanSqLossLayerTest extends LayerTestBase {
     return new int[][]{{8, 8, 1}, {8, 8, 1}};
   }
 
+  /**
+   * The type Basic.
+   */
   public static class Basic extends MeanSqLossLayerTest {
 
   }

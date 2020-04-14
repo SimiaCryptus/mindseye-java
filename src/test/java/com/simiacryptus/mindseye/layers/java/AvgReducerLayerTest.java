@@ -24,6 +24,9 @@ import com.simiacryptus.mindseye.test.LayerTestBase;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The type Avg reducer layer test.
+ */
 public abstract class AvgReducerLayerTest extends LayerTestBase {
 
   @Nonnull
@@ -44,6 +47,9 @@ public abstract class AvgReducerLayerTest extends LayerTestBase {
     return new int[][]{{3}};
   }
 
+  /**
+   * The type Basic.
+   */
   public static class Basic extends AvgMetaLayerTest {
 
   }

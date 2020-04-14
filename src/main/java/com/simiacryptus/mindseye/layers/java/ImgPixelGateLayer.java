@@ -36,20 +36,38 @@ import java.util.UUID;
 import java.util.function.IntFunction;
 import java.util.function.ToDoubleFunction;
 
+/**
+ * The type Img pixel gate layer.
+ */
 @SuppressWarnings("serial")
 public class ImgPixelGateLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(ImgPixelGateLayer.class);
 
+  /**
+   * Instantiates a new Img pixel gate layer.
+   */
   public ImgPixelGateLayer() {
     super();
   }
 
+  /**
+   * Instantiates a new Img pixel gate layer.
+   *
+   * @param json the json
+   */
   protected ImgPixelGateLayer(@Nonnull final JsonObject json) {
     super(json);
   }
 
+  /**
+   * From json img pixel gate layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the img pixel gate layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static ImgPixelGateLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -65,6 +83,13 @@ public class ImgPixelGateLayer extends LayerBase {
     return result;
   }
 
+  /**
+   * Eval result.
+   *
+   * @param input the input
+   * @param gate  the gate
+   * @return the result
+   */
   @Nonnull
   public Result eval(@Nonnull final Result input, @Nonnull final Result gate) {
     final TensorList inputData = input.getData();
@@ -130,6 +155,17 @@ public class ImgPixelGateLayer extends LayerBase {
     private Result.Accumulator gateAccumulator;
     private boolean gateAlive;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param gateData         the gate data
+     * @param inputData        the input data
+     * @param inputDims        the input dims
+     * @param inputAccumulator the input accumulator
+     * @param inputAlive       the input alive
+     * @param gateAccumulator  the gate accumulator
+     * @param gateAlive        the gate alive
+     */
     public Accumulator(TensorList gateData, TensorList inputData, int[] inputDims, Result.Accumulator inputAccumulator, boolean inputAlive, Result.Accumulator gateAccumulator, boolean gateAlive) {
       this.gateData = gateData;
       this.inputData = inputData;

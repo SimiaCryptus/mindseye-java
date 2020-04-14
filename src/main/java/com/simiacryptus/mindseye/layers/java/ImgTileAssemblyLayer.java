@@ -37,6 +37,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
 
+/**
+ * The type Img tile assembly layer.
+ */
 @SuppressWarnings("serial")
 public class ImgTileAssemblyLayer extends LayerBase {
 
@@ -47,12 +50,23 @@ public class ImgTileAssemblyLayer extends LayerBase {
   private int offsetX = 0;
   private int offsetY = 0;
 
+  /**
+   * Instantiates a new Img tile assembly layer.
+   *
+   * @param columns the columns
+   * @param rows    the rows
+   */
   public ImgTileAssemblyLayer(final int columns, final int rows) {
     super();
     this.columns = columns;
     this.rows = rows;
   }
 
+  /**
+   * Instantiates a new Img tile assembly layer.
+   *
+   * @param json the json
+   */
   protected ImgTileAssemblyLayer(@Nonnull final JsonObject json) {
     super(json);
     columns = getInt(json, "columns", 1);
@@ -63,38 +77,91 @@ public class ImgTileAssemblyLayer extends LayerBase {
     setOffsetY(getInt(json, "offsetY", 0));
   }
 
+  /**
+   * Gets offset x.
+   *
+   * @return the offset x
+   */
   public int getOffsetX() {
     return offsetX;
   }
 
+  /**
+   * Sets offset x.
+   *
+   * @param offsetX the offset x
+   */
   public void setOffsetX(int offsetX) {
     this.offsetX = offsetX;
   }
 
+  /**
+   * Gets offset y.
+   *
+   * @return the offset y
+   */
   public int getOffsetY() {
     return offsetY;
   }
 
+  /**
+   * Sets offset y.
+   *
+   * @param offsetY the offset y
+   */
   public void setOffsetY(int offsetY) {
     this.offsetY = offsetY;
   }
 
+  /**
+   * Gets padding x.
+   *
+   * @return the padding x
+   */
   public int getPaddingX() {
     return paddingX;
   }
 
+  /**
+   * Sets padding x.
+   *
+   * @param paddingX the padding x
+   */
   public void setPaddingX(int paddingX) {
     this.paddingX = paddingX;
   }
 
+  /**
+   * Gets padding y.
+   *
+   * @return the padding y
+   */
   public int getPaddingY() {
     return paddingY;
   }
 
+  /**
+   * Sets padding y.
+   *
+   * @param paddingY the padding y
+   */
   public void setPaddingY(int paddingY) {
     this.paddingY = paddingY;
   }
 
+  /**
+   * Copy.
+   *
+   * @param inputData  the input data
+   * @param outputData the output data
+   * @param offsetX    the offset x
+   * @param offsetY    the offset y
+   * @param paddingX   the padding x
+   * @param paddingY   the padding y
+   * @param toroidal   the toroidal
+   * @param rowF       the row f
+   * @param colF       the col f
+   */
   public static void copy(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData, final int offsetX,
                           final int offsetY, final int paddingX, final int paddingY, final boolean toroidal, final double rowF,
                           final double colF) {
@@ -156,6 +223,13 @@ public class ImgTileAssemblyLayer extends LayerBase {
     }, outputData, inputData));
   }
 
+  /**
+   * From json img tile assembly layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the img tile assembly layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static ImgTileAssemblyLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -284,6 +358,17 @@ public class ImgTileAssemblyLayer extends LayerBase {
     private int offsetY;
     private int rows;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param columns  the columns
+     * @param offsetX  the offset x
+     * @param offsetY  the offset y
+     * @param rows     the rows
+     * @param paddingX the padding x
+     * @param paddingY the padding y
+     * @param inObj    the in obj
+     */
     public Accumulator(int columns, int offsetX, int offsetY, int rows, int paddingX, int paddingY, Result... inObj) {
       this.inObj = inObj;
       this.paddingX = paddingX;

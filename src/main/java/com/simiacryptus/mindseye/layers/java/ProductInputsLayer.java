@@ -36,16 +36,34 @@ import java.util.function.IntFunction;
 
 import static com.simiacryptus.mindseye.lang.Result.anyAlive;
 
+/**
+ * The type Product inputs layer.
+ */
 @SuppressWarnings("serial")
 public class ProductInputsLayer extends LayerBase {
 
+  /**
+   * Instantiates a new Product inputs layer.
+   */
   public ProductInputsLayer() {
   }
 
+  /**
+   * Instantiates a new Product inputs layer.
+   *
+   * @param id the id
+   */
   protected ProductInputsLayer(@Nonnull final JsonObject id) {
     super(id);
   }
 
+  /**
+   * From json product inputs layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the product inputs layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static ProductInputsLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -124,6 +142,11 @@ public class ProductInputsLayer extends LayerBase {
 
     private final Result[] inObj;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param inObj the in obj
+     */
     public Accumulator(Result... inObj) {
       this.inObj = inObj;
     }

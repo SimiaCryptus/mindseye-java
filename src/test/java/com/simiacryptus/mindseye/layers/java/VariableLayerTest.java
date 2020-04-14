@@ -24,6 +24,9 @@ import com.simiacryptus.mindseye.test.LayerTestBase;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The type Variable layer test.
+ */
 public abstract class VariableLayerTest extends LayerTestBase {
 
   @Nonnull
@@ -41,6 +44,9 @@ public abstract class VariableLayerTest extends LayerTestBase {
     return new int[][]{{3}};
   }
 
+  /**
+   * The type Basic.
+   */
   public static class Basic extends VariableLayerTest {
 
   }

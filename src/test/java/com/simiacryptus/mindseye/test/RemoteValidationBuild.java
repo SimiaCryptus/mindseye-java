@@ -21,12 +21,13 @@ package com.simiacryptus.mindseye.test;
 
 import com.simiacryptus.aws.exe.EC2NodeSettings;
 import com.simiacryptus.aws.exe.EC2NotebookRunner;
-import com.simiacryptus.util.test.MacroTestRunner;
+
+import java.util.concurrent.TimeUnit;
 
 /**
- * The type Remote tests java.
+ * The type Remote build.
  */
-public class RemoteTests_Java {
+public class RemoteValidationBuild {
 
   /**
    * The entry point of application.
@@ -35,13 +36,22 @@ public class RemoteTests_Java {
    */
   public static void main(String[] args) {
     EC2NotebookRunner.launch(
-        EC2NodeSettings.M5_XL,
-        EC2NodeSettings.AMI_AMAZON_LINUX,
+        EC2NodeSettings.M5_L,
+        EC2NodeSettings.AMI_AMAZON_DEEP_LEARNING,
         " -Xmx8g -DTEST_REPO=./runner/",
         log -> {
-          new MacroTestRunner()
-              .setChildJvmOptions("-Xmx8g -ea")
-              .runAll(log, "com.simiacryptus.mindseye.layers");
+          BuildAndRelease.build(
+              log,
+              TimeUnit.MINUTES.toMillis(240),
+              "/bin/bash",
+              "/usr/bin/git",
+              null,
+              "/home/ec2-user/code",
+              true,
+              true,
+              true,
+              true
+          );
         }
     );
   }

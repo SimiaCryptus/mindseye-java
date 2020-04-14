@@ -28,21 +28,40 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nonnull;
 import java.util.Map;
 
+/**
+ * The type Auto entropy layer.
+ */
 @SuppressWarnings("serial")
 public class AutoEntropyLayer extends PipelineNetwork {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(AutoEntropyLayer.class);
 
+  /**
+   * Instantiates a new Auto entropy layer.
+   */
   public AutoEntropyLayer() {
     super(1);
     RefUtil.freeRef(add(new EntropyLossLayer(), getInput(0), getInput(0)));
   }
 
+  /**
+   * Instantiates a new Auto entropy layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   */
   protected AutoEntropyLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json, rs);
   }
 
+  /**
+   * From json auto entropy layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the auto entropy layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static AutoEntropyLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {

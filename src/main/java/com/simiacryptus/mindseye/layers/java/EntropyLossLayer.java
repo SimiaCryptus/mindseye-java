@@ -36,19 +36,37 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.IntFunction;
 
+/**
+ * The type Entropy loss layer.
+ */
 @SuppressWarnings("serial")
 public class EntropyLossLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(EntropyLossLayer.class);
 
+  /**
+   * Instantiates a new Entropy loss layer.
+   */
   public EntropyLossLayer() {
   }
 
+  /**
+   * Instantiates a new Entropy loss layer.
+   *
+   * @param id the id
+   */
   protected EntropyLossLayer(@Nonnull final JsonObject id) {
     super(id);
   }
 
+  /**
+   * From json entropy loss layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the entropy loss layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static EntropyLossLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -157,6 +175,18 @@ public class EntropyLossLayer extends LayerBase {
     private boolean alive0;
     private boolean alive1;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param indata       the indata
+     * @param gradient     the gradient
+     * @param max_prob     the max prob
+     * @param zero_tol     the zero tol
+     * @param accumulator0 the accumulator 0
+     * @param alive0       the alive 0
+     * @param accumulator1 the accumulator 1
+     * @param alive1       the alive 1
+     */
     public Accumulator(TensorList indata, RefArrayList<Tensor> gradient, double max_prob, double zero_tol, Result.Accumulator accumulator0, boolean alive0, Result.Accumulator accumulator1, boolean alive1) {
       this.indata = indata;
       this.gradient = gradient;

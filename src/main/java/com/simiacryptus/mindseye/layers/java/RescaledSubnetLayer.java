@@ -36,6 +36,9 @@ import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.function.IntFunction;
 
+/**
+ * The type Rescaled subnet layer.
+ */
 @SuppressWarnings("serial")
 public class RescaledSubnetLayer extends LayerBase {
 
@@ -43,18 +46,37 @@ public class RescaledSubnetLayer extends LayerBase {
   @Nullable
   private final Layer subnetwork;
 
+  /**
+   * Instantiates a new Rescaled subnet layer.
+   *
+   * @param scale      the scale
+   * @param subnetwork the subnetwork
+   */
   public RescaledSubnetLayer(final int scale, @Nullable final Layer subnetwork) {
     super();
     this.scale = scale;
     this.subnetwork = subnetwork;
   }
 
+  /**
+   * Instantiates a new Rescaled subnet layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   */
   protected RescaledSubnetLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json);
     scale = json.getAsJsonPrimitive("scale").getAsInt();
     this.subnetwork = Layer.fromJson(json.getAsJsonObject("inner"), rs);
   }
 
+  /**
+   * From json rescaled subnet layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the rescaled subnet layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static RescaledSubnetLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {

@@ -26,8 +26,14 @@ import org.junit.jupiter.api.Disabled;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The type Logging wrapper layer test.
+ */
 public abstract class LoggingWrapperLayerTest extends LayerTestBase {
 
+  /**
+   * Instantiates a new Logging wrapper layer test.
+   */
   public LoggingWrapperLayerTest() {
   }
 
@@ -49,6 +55,9 @@ public abstract class LoggingWrapperLayerTest extends LayerTestBase {
     super.batchingTest();
   }
 
+  /**
+   * The type Basic.
+   */
   public static class Basic extends LoggingWrapperLayerTest {
 
   }

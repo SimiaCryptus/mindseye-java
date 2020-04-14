@@ -25,7 +25,13 @@ import com.simiacryptus.mindseye.test.unit.SingleDerivativeTester;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The type Log activation layer test.
+ */
 public abstract class LogActivationLayerTest extends ActivationLayerTestBase {
+  /**
+   * Instantiates a new Log activation layer test.
+   */
   public LogActivationLayerTest() {
     super(new LogActivationLayer());
   }
@@ -35,6 +41,9 @@ public abstract class LogActivationLayerTest extends ActivationLayerTestBase {
     return new SingleDerivativeTester(1e-2, 1e-8);
   }
 
+  /**
+   * The type Basic.
+   */
   public static class Basic extends LogActivationLayerTest {
 
     @Nonnull

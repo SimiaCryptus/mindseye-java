@@ -24,6 +24,9 @@ import com.simiacryptus.mindseye.test.LayerTestBase;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The type Rescaled subnet layer test.
+ */
 public abstract class RescaledSubnetLayerTest extends LayerTestBase {
 
   @Nonnull
@@ -38,6 +41,9 @@ public abstract class RescaledSubnetLayerTest extends LayerTestBase {
     return new int[][]{{6, 6, 2}};
   }
 
+  /**
+   * The type Basic.
+   */
   public static class Basic extends RescaledSubnetLayerTest {
 
   }

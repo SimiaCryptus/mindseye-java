@@ -34,6 +34,9 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
 
+/**
+ * The type Img tile select layer.
+ */
 @SuppressWarnings("serial")
 public class ImgTileSelectLayer extends LayerBase {
 
@@ -43,10 +46,27 @@ public class ImgTileSelectLayer extends LayerBase {
   private final int positionX;
   private final int positionY;
 
+  /**
+   * Instantiates a new Img tile select layer.
+   *
+   * @param sizeX     the size x
+   * @param sizeY     the size y
+   * @param positionX the position x
+   * @param positionY the position y
+   */
   public ImgTileSelectLayer(final int sizeX, final int sizeY, final int positionX, final int positionY) {
     this(sizeX, sizeY, positionX, positionY, false);
   }
 
+  /**
+   * Instantiates a new Img tile select layer.
+   *
+   * @param sizeX     the size x
+   * @param sizeY     the size y
+   * @param positionX the position x
+   * @param positionY the position y
+   * @param toroidal  the toroidal
+   */
   public ImgTileSelectLayer(final int sizeX, final int sizeY, final int positionX, final int positionY,
                             final boolean toroidal) {
     super();
@@ -57,6 +77,11 @@ public class ImgTileSelectLayer extends LayerBase {
     this.toroidal = toroidal;
   }
 
+  /**
+   * Instantiates a new Img tile select layer.
+   *
+   * @param json the json
+   */
   protected ImgTileSelectLayer(@Nonnull final JsonObject json) {
     super(json);
     sizeX = json.getAsJsonPrimitive("sizeX").getAsInt();
@@ -67,6 +92,15 @@ public class ImgTileSelectLayer extends LayerBase {
     this.toroidal = null != toroidal && toroidal.getAsBoolean();
   }
 
+  /**
+   * Copy.
+   *
+   * @param inputData  the input data
+   * @param outputData the output data
+   * @param posX       the pos x
+   * @param posY       the pos y
+   * @param toroidal   the toroidal
+   */
   public static void copy(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData, final int posX,
                           final int posY, final boolean toroidal) {
     @Nonnull final int[] inDim = inputData.getDimensions();
@@ -104,12 +138,32 @@ public class ImgTileSelectLayer extends LayerBase {
     }, outputData, inputData));
   }
 
+  /**
+   * From json img tile select layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the img tile select layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static ImgTileSelectLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ImgTileSelectLayer(json);
   }
 
+  /**
+   * To tiles tensor [ ].
+   *
+   * @param log     the log
+   * @param canvas  the canvas
+   * @param width   the width
+   * @param height  the height
+   * @param strideX the stride x
+   * @param strideY the stride y
+   * @param offsetX the offset x
+   * @param offsetY the offset y
+   * @return the tensor [ ]
+   */
   @Nonnull
   public static Tensor[] toTiles(@Nonnull final NotebookOutput log, @Nonnull final Tensor canvas, final int width, final int height,
                                  final int strideX, final int strideY, final int offsetX, final int offsetY) {
@@ -140,6 +194,19 @@ public class ImgTileSelectLayer extends LayerBase {
     return tiles;
   }
 
+  /**
+   * Tile selectors img tile select layer [ ].
+   *
+   * @param log     the log
+   * @param canvas  the canvas
+   * @param width   the width
+   * @param height  the height
+   * @param strideX the stride x
+   * @param strideY the stride y
+   * @param offsetX the offset x
+   * @param offsetY the offset y
+   * @return the img tile select layer [ ]
+   */
   @Nonnull
   public static ImgTileSelectLayer[] tileSelectors(@Nonnull final NotebookOutput log, @Nonnull final Tensor canvas, final int width,
                                                    final int height, final int strideX, final int strideY, final int offsetX, final int offsetY) {
@@ -182,6 +249,14 @@ public class ImgTileSelectLayer extends LayerBase {
     return new Result(data, accumulator, alive);
   }
 
+  /**
+   * Get view dimensions int [ ].
+   *
+   * @param sourceDimensions      the source dimensions
+   * @param destinationDimensions the destination dimensions
+   * @param offset                the offset
+   * @return the int [ ]
+   */
   @Nonnull
   public int[] getViewDimensions(int[] sourceDimensions, int[] destinationDimensions, int[] offset) {
     @Nonnull final int[] viewDim = new int[3];
@@ -242,6 +317,16 @@ public class ImgTileSelectLayer extends LayerBase {
     private Result.Accumulator accumulator;
     private boolean alive;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param positionX   the position x
+     * @param positionY   the position y
+     * @param toroidal    the toroidal
+     * @param inputDims   the input dims
+     * @param accumulator the accumulator
+     * @param alive       the alive
+     */
     public Accumulator(int positionX, int positionY, boolean toroidal, int[] inputDims, Result.Accumulator accumulator, boolean alive) {
       this.inputDims = inputDims;
       this.positionX = positionX;

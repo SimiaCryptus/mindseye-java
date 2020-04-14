@@ -31,22 +31,48 @@ import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * The type Cross difference layer.
+ */
 @SuppressWarnings("serial")
 public class CrossDifferenceLayer extends LayerBase {
 
+  /**
+   * Instantiates a new Cross difference layer.
+   */
   public CrossDifferenceLayer() {
   }
 
+  /**
+   * Instantiates a new Cross difference layer.
+   *
+   * @param id the id
+   */
   protected CrossDifferenceLayer(@Nonnull final JsonObject id) {
     super(id);
   }
 
+  /**
+   * From json cross difference layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the cross difference layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static CrossDifferenceLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new CrossDifferenceLayer(json);
   }
 
+  /**
+   * Index int.
+   *
+   * @param x   the x
+   * @param y   the y
+   * @param max the max
+   * @return the int
+   */
   public static int index(final int x, final int y, final int max) {
     return max * (max - 1) / 2 - (max - x) * (max - x - 1) / 2 + y - x - 1;
   }
@@ -114,6 +140,12 @@ public class CrossDifferenceLayer extends LayerBase {
     private boolean alive;
     private Result.Accumulator accumulator;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param accumulator the accumulator
+     * @param alive       the alive
+     */
     public Accumulator(Result.Accumulator accumulator, boolean alive) {
       this.alive = alive;
       this.accumulator = accumulator;

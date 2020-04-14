@@ -42,18 +42,30 @@ import java.util.UUID;
 import java.util.function.*;
 import java.util.stream.Stream;
 
+/**
+ * The type Fully connected layer.
+ */
 @SuppressWarnings("serial")
 public class FullyConnectedLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(FullyConnectedLayer.class);
+  /**
+   * The Input dims.
+   */
   @Nullable
   public final int[] inputDims;
+  /**
+   * The Output dims.
+   */
   @Nullable
   public final int[] outputDims;
   @Nullable
   private final Tensor weights;
 
+  /**
+   * Instantiates a new Fully connected layer.
+   */
   protected FullyConnectedLayer() {
     super();
     outputDims = null;
@@ -61,6 +73,12 @@ public class FullyConnectedLayer extends LayerBase {
     inputDims = null;
   }
 
+  /**
+   * Instantiates a new Fully connected layer.
+   *
+   * @param inputDims  the input dims
+   * @param outputDims the output dims
+   */
   public FullyConnectedLayer(@Nonnull final int[] inputDims, @Nonnull final int[] outputDims) {
     final int inputs = Tensor.length(inputDims);
     this.inputDims = RefArrays.copyOf(inputDims, inputDims.length);
@@ -74,6 +92,12 @@ public class FullyConnectedLayer extends LayerBase {
     });
   }
 
+  /**
+   * Instantiates a new Fully connected layer.
+   *
+   * @param json      the json
+   * @param resources the resources
+   */
   protected FullyConnectedLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> resources) {
     super(json);
     outputDims = JsonUtil.getIntArray(json.getAsJsonArray("outputDims"));
@@ -81,6 +105,11 @@ public class FullyConnectedLayer extends LayerBase {
     weights = Tensor.fromJson(json.get("weights"), resources);
   }
 
+  /**
+   * Gets transpose.
+   *
+   * @return the transpose
+   */
   @Nonnull
   public Layer getTranspose() {
     throw new RuntimeException("Not Implemented");
@@ -88,12 +117,19 @@ public class FullyConnectedLayer extends LayerBase {
 
   /**
    * The Weights.
+   *
+   * @return the weights
    */
   @Nullable
   public Tensor getWeights() {
     return weights == null ? null : weights.addRef();
   }
 
+  /**
+   * Sets by coord.
+   *
+   * @param f the f
+   */
   public void setByCoord(@Nonnull ToDoubleFunction<Coordinate> f) {
     Tensor weights = getWeights();
     assert weights != null;
@@ -103,6 +139,11 @@ public class FullyConnectedLayer extends LayerBase {
     weights.freeRef();
   }
 
+  /**
+   * Sets by coord.
+   *
+   * @param f the f
+   */
   public void setByCoord(@Nonnull final ToDoubleBiFunction<Coordinate, Coordinate> f) {
     assert inputDims != null;
     Tensor temp_15_0011 = new Tensor(inputDims);
@@ -120,6 +161,11 @@ public class FullyConnectedLayer extends LayerBase {
     temp_15_0011.freeRef();
   }
 
+  /**
+   * Sets weights log.
+   *
+   * @param value the value
+   */
   public void setWeightsLog(double value) {
     Tensor temp_15_0016 = getWeights();
     assert temp_15_0016 != null;
@@ -131,6 +177,13 @@ public class FullyConnectedLayer extends LayerBase {
     temp_15_0016.freeRef();
   }
 
+  /**
+   * Cross multiply.
+   *
+   * @param rows   the rows
+   * @param cols   the cols
+   * @param matrix the matrix
+   */
   public static void crossMultiply(@Nonnull final double[] rows, @Nonnull final double[] cols, final double[] matrix) {
     int i = 0;
     for (final double c : cols) {
@@ -140,6 +193,13 @@ public class FullyConnectedLayer extends LayerBase {
     }
   }
 
+  /**
+   * Cross multiply t.
+   *
+   * @param rows   the rows
+   * @param cols   the cols
+   * @param matrix the matrix
+   */
   public static void crossMultiplyT(@Nonnull final double[] rows, @Nonnull final double[] cols, final double[] matrix) {
     int i = 0;
     for (final double r : rows) {
@@ -149,17 +209,38 @@ public class FullyConnectedLayer extends LayerBase {
     }
   }
 
+  /**
+   * From json fully connected layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the fully connected layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static FullyConnectedLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new FullyConnectedLayer(json, rs);
   }
 
+  /**
+   * Multiply.
+   *
+   * @param matrix the matrix
+   * @param in     the in
+   * @param out    the out
+   */
   public static void multiply(final double[] matrix, @Nonnull final double[] in, @Nonnull final double[] out) {
     @Nonnull final DoubleMatrix matrixObj = new DoubleMatrix(out.length, in.length, matrix);
     matrixObj.mmuli(new DoubleMatrix(in.length, 1, in), new DoubleMatrix(out.length, 1, out));
   }
 
+  /**
+   * Multiply t.
+   *
+   * @param matrix the matrix
+   * @param in     the in
+   * @param out    the out
+   */
   public static void multiplyT(final double[] matrix, @Nonnull final double[] in, @Nonnull final double[] out) {
     @Nonnull
     DoubleMatrix doubleMatrix = new DoubleMatrix(in.length, out.length, matrix);
@@ -168,6 +249,12 @@ public class FullyConnectedLayer extends LayerBase {
     RecycleBin.DOUBLES.recycle(matrixObj.data, matrixObj.data.length);
   }
 
+  /**
+   * Transpose double matrix.
+   *
+   * @param doubleMatrix the double matrix
+   * @return the double matrix
+   */
   @Nonnull
   public static DoubleMatrix transpose(@Nonnull final DoubleMatrix doubleMatrix) {
     @Nonnull final DoubleMatrix result = new DoubleMatrix(doubleMatrix.columns, doubleMatrix.rows,
@@ -216,6 +303,11 @@ public class FullyConnectedLayer extends LayerBase {
     return json;
   }
 
+  /**
+   * Set.
+   *
+   * @param f the f
+   */
   public void set(@Nonnull DoubleSupplier f) {
     Tensor weights = getWeights();
     assert weights != null;
@@ -223,6 +315,11 @@ public class FullyConnectedLayer extends LayerBase {
     weights.freeRef();
   }
 
+  /**
+   * Set.
+   *
+   * @param f the f
+   */
   public void set(@Nonnull IntToDoubleFunction f) {
     Tensor weights = getWeights();
     assert weights != null;
@@ -230,6 +327,13 @@ public class FullyConnectedLayer extends LayerBase {
     weights.freeRef();
   }
 
+  /**
+   * Init spacial.
+   *
+   * @param radius    the radius
+   * @param stiffness the stiffness
+   * @param peak      the peak
+   */
   public void initSpacial(final double radius, final double stiffness, final double peak) {
     setByCoord((@Nonnull final Coordinate in, @Nonnull final Coordinate out) -> {
       final double[] doubleCoords = RefIntStream.range(0, in.getCoords().length).mapToDouble(d -> {
@@ -245,6 +349,11 @@ public class FullyConnectedLayer extends LayerBase {
     });
   }
 
+  /**
+   * Set.
+   *
+   * @param data the data
+   */
   public void set(double[] data) {
     Tensor weights = getWeights();
     assert weights != null;
@@ -252,6 +361,11 @@ public class FullyConnectedLayer extends LayerBase {
     weights.freeRef();
   }
 
+  /**
+   * Set.
+   *
+   * @param data the data
+   */
   public void set(@Nonnull Tensor data) {
     Tensor weights = getWeights();
     assert weights != null;
@@ -259,6 +373,11 @@ public class FullyConnectedLayer extends LayerBase {
     weights.freeRef();
   }
 
+  /**
+   * Scale.
+   *
+   * @param value the value
+   */
   public void scale(double value) {
     Tensor weights = getWeights();
     assert weights != null;
@@ -276,6 +395,11 @@ public class FullyConnectedLayer extends LayerBase {
     return temp_15_0025;
   }
 
+  /**
+   * Randomize.
+   *
+   * @param amplitude the amplitude
+   */
   public void randomize(double amplitude) {
     Tensor weights = getWeights();
     assert weights != null;
@@ -327,6 +451,18 @@ public class FullyConnectedLayer extends LayerBase {
     private Result.Accumulator accumulator;
     private boolean alive;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param indata      the indata
+     * @param inputDims   the input dims
+     * @param outputDims  the output dims
+     * @param frozen      the frozen
+     * @param id          the id
+     * @param weights     the weights
+     * @param accumulator the accumulator
+     * @param alive       the alive
+     */
     public Accumulator(TensorList indata, int[] inputDims, int[] outputDims, boolean frozen, UUID id, Tensor weights, Result.Accumulator accumulator, boolean alive) {
       this.indata = indata;
       this.frozen = frozen;

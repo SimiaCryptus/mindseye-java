@@ -24,8 +24,14 @@ import com.simiacryptus.mindseye.layers.MetaLayerTestBase;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The type Auto entropy layer test.
+ */
 public abstract class AutoEntropyLayerTest extends MetaLayerTestBase {
 
+  /**
+   * Instantiates a new Auto entropy layer test.
+   */
   public AutoEntropyLayerTest() {
     super();
     //validateDifferentials = false;
@@ -49,6 +55,9 @@ public abstract class AutoEntropyLayerTest extends MetaLayerTestBase {
     return new int[][]{{3}};
   }
 
+  /**
+   * The type Basic.
+   */
   public static class Basic extends AutoEntropyLayerTest {
 
     @Nonnull

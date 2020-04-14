@@ -34,20 +34,38 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.IntFunction;
 
+/**
+ * The type Img pixel softmax layer.
+ */
 @SuppressWarnings("serial")
 public class ImgPixelSoftmaxLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(ImgPixelSoftmaxLayer.class);
 
+  /**
+   * Instantiates a new Img pixel softmax layer.
+   */
   public ImgPixelSoftmaxLayer() {
     super();
   }
 
+  /**
+   * Instantiates a new Img pixel softmax layer.
+   *
+   * @param json the json
+   */
   protected ImgPixelSoftmaxLayer(@Nonnull final JsonObject json) {
     super(json);
   }
 
+  /**
+   * From json img pixel softmax layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the img pixel softmax layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static ImgPixelSoftmaxLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -63,6 +81,12 @@ public class ImgPixelSoftmaxLayer extends LayerBase {
     return result;
   }
 
+  /**
+   * Eval result.
+   *
+   * @param input the input
+   * @return the result
+   */
   @Nonnull
   public Result eval(@Nonnull final Result input) {
     final TensorList inputData = input.getData();
@@ -157,6 +181,19 @@ public class ImgPixelSoftmaxLayer extends LayerBase {
     private Result.Accumulator accumulator;
     private boolean alive;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param sums        the sums
+     * @param inputData   the input data
+     * @param exps        the exps
+     * @param width       the width
+     * @param height      the height
+     * @param inputBands  the input bands
+     * @param inputDims   the input dims
+     * @param accumulator the accumulator
+     * @param alive       the alive
+     */
     public Accumulator(TensorArray sums, TensorList inputData, TensorArray exps, int width, int height, int inputBands, int[] inputDims, Result.Accumulator accumulator, boolean alive) {
       this.sums = sums;
       this.inputData = inputData;

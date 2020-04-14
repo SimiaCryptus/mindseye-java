@@ -27,6 +27,9 @@ import org.junit.jupiter.api.AfterEach;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The type Fully connected reference layer test.
+ */
 public abstract class FullyConnectedReferenceLayerTest extends LayerTestBase {
   @Nonnull
   private final int[] outputDims;
@@ -35,6 +38,12 @@ public abstract class FullyConnectedReferenceLayerTest extends LayerTestBase {
   @RefIgnore
   private final FullyConnectedReferenceLayer layer;
 
+  /**
+   * Instantiates a new Fully connected reference layer test.
+   *
+   * @param inputDims  the input dims
+   * @param outputDims the output dims
+   */
   public FullyConnectedReferenceLayerTest(int[] inputDims, @Nonnull int[] outputDims) {
     this.outputDims = outputDims;
     this.inputDims = inputDims;
@@ -59,6 +68,9 @@ public abstract class FullyConnectedReferenceLayerTest extends LayerTestBase {
     return new int[][]{inputDims};
   }
 
+  /**
+   * Cleanup.
+   */
   @AfterEach
   @MustCall
   void cleanup() {
@@ -66,14 +78,26 @@ public abstract class FullyConnectedReferenceLayerTest extends LayerTestBase {
       layer.freeRef();
   }
 
+  /**
+   * The type Basic.
+   */
   public static class Basic extends FullyConnectedReferenceLayerTest {
+    /**
+     * Instantiates a new Basic.
+     */
     public Basic() {
       super(new int[]{2}, new int[]{2});
     }
 
   }
 
+  /**
+   * The type Image.
+   */
   public static class Image extends FullyConnectedReferenceLayerTest {
+    /**
+     * Instantiates a new Image.
+     */
     public Image() {
       super(new int[]{3, 3, 3}, new int[]{2, 2, 4});
     }

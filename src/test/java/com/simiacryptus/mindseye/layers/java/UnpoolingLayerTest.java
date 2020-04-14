@@ -24,6 +24,9 @@ import com.simiacryptus.mindseye.test.LayerTestBase;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The type Unpooling layer test.
+ */
 public abstract class UnpoolingLayerTest extends LayerTestBase {
 
   @Nonnull
@@ -38,6 +41,9 @@ public abstract class UnpoolingLayerTest extends LayerTestBase {
     return new int[][]{{4, 4, 2}};
   }
 
+  /**
+   * The type Basic.
+   */
   public static class Basic extends UnpoolingLayerTest {
 
   }

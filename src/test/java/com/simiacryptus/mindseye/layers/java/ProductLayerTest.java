@@ -24,6 +24,9 @@ import com.simiacryptus.mindseye.test.LayerTestBase;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The type Product layer test.
+ */
 public abstract class ProductLayerTest extends LayerTestBase {
 
   @Nonnull
@@ -38,6 +41,9 @@ public abstract class ProductLayerTest extends LayerTestBase {
     return new int[][]{{3}, {3}};
   }
 
+  /**
+   * The type Basic.
+   */
   public static class Basic extends ProductLayerTest {
 
   }

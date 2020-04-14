@@ -37,20 +37,41 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.IntFunction;
 
+/**
+ * The type Softmax layer.
+ */
 @SuppressWarnings("serial")
 public class SoftmaxLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(SoftmaxLayer.class);
+  /**
+   * The Max input.
+   */
   double maxInput = 50;
 
+  /**
+   * Instantiates a new Softmax layer.
+   */
   public SoftmaxLayer() {
   }
 
+  /**
+   * Instantiates a new Softmax layer.
+   *
+   * @param id the id
+   */
   protected SoftmaxLayer(@Nonnull final JsonObject id) {
     super(id);
   }
 
+  /**
+   * From json softmax layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the softmax layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static SoftmaxLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -140,6 +161,15 @@ public class SoftmaxLayer extends LayerBase {
     private final double[] sumA;
     private Result.Accumulator accumulator;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param alive       the alive
+     * @param itemCnt     the item cnt
+     * @param expA        the exp a
+     * @param sumA        the sum a
+     * @param accumulator the accumulator
+     */
     public Accumulator(boolean alive, int itemCnt, Tensor[] expA, double[] sumA, Result.Accumulator accumulator) {
       this.alive = alive;
       this.itemCnt = itemCnt;

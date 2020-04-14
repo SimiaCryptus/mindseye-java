@@ -33,9 +33,15 @@ import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * The type Reshape layer.
+ */
 @SuppressWarnings("serial")
 public class ReshapeLayer extends LayerBase {
   private static final Logger log = LoggerFactory.getLogger(ReshapeLayer.class);
+  /**
+   * The Output dims.
+   */
   @Nullable
   public final int[] outputDims;
 
@@ -43,15 +49,32 @@ public class ReshapeLayer extends LayerBase {
     outputDims = null;
   }
 
+  /**
+   * Instantiates a new Reshape layer.
+   *
+   * @param outputDims the output dims
+   */
   public ReshapeLayer(@Nonnull final int... outputDims) {
     this.outputDims = RefArrays.copyOf(outputDims, outputDims.length);
   }
 
+  /**
+   * Instantiates a new Reshape layer.
+   *
+   * @param json the json
+   */
   protected ReshapeLayer(@Nonnull final JsonObject json) {
     super(json);
     outputDims = JsonUtil.getIntArray(json.getAsJsonArray("outputDims"));
   }
 
+  /**
+   * From json reshape layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the reshape layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static ReshapeLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -106,6 +129,12 @@ public class ReshapeLayer extends LayerBase {
     private final int[] inputDims;
     private Result.Accumulator accumulator;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param inputDims   the input dims
+     * @param accumulator the accumulator
+     */
     public Accumulator(int[] inputDims, Result.Accumulator accumulator) {
       this.inputDims = inputDims;
       this.accumulator = accumulator;

@@ -34,6 +34,9 @@ import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * The type Target value layer.
+ */
 @SuppressWarnings("serial")
 public class TargetValueLayer extends DAGNetwork {
 
@@ -44,12 +47,23 @@ public class TargetValueLayer extends DAGNetwork {
   @Nullable
   private final DAGNode target;
 
+  /**
+   * Instantiates a new Target value layer.
+   *
+   * @param values the values
+   */
   public TargetValueLayer(final double... values) {
     super(1);
     target = add(new ValueLayer(new Tensor(values)));
     head = add(new MeanSqLossLayer(), getInput(0), target.addRef());
   }
 
+  /**
+   * Instantiates a new Target value layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   */
   protected TargetValueLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json, rs);
     head = getNodeById(UUID.fromString(json.getAsJsonPrimitive("head").getAsString()));
@@ -61,6 +75,11 @@ public class TargetValueLayer extends DAGNetwork {
     return head == null ? null : head.addRef();
   }
 
+  /**
+   * Sets target.
+   *
+   * @param value the value
+   */
   public void setTarget(double[] value) {
     assert target != null;
     ValueLayer valueLayer = target.<ValueLayer>getLayer();
@@ -69,6 +88,13 @@ public class TargetValueLayer extends DAGNetwork {
     valueLayer.freeRef();
   }
 
+  /**
+   * From json layer.
+   *
+   * @param inner the inner
+   * @param rs    the rs
+   * @return the layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static Layer fromJson(@Nonnull final JsonObject inner, Map<CharSequence, byte[]> rs) {

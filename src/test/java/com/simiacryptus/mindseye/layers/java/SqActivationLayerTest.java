@@ -24,7 +24,13 @@ import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The type Sq activation layer test.
+ */
 public abstract class SqActivationLayerTest extends ActivationLayerTestBase {
+  /**
+   * Instantiates a new Sq activation layer test.
+   */
   public SqActivationLayerTest() {
     super(new SqActivationLayer());
   }
@@ -35,6 +41,9 @@ public abstract class SqActivationLayerTest extends ActivationLayerTestBase {
     return new MeanSqLossLayer();
   }
 
+  /**
+   * The type Basic.
+   */
   public static class Basic extends SqActivationLayerTest {
 
   }

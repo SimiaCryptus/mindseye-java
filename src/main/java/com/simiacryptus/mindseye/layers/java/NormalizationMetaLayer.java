@@ -28,12 +28,18 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nonnull;
 import java.util.Map;
 
+/**
+ * The type Normalization meta layer.
+ */
 @SuppressWarnings("serial")
 public class NormalizationMetaLayer extends PipelineNetwork {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(NormalizationMetaLayer.class);
 
+  /**
+   * Instantiates a new Normalization meta layer.
+   */
   public NormalizationMetaLayer() {
     super(1);
     RefUtil.freeRef(add(new SqActivationLayer()));
@@ -45,10 +51,23 @@ public class NormalizationMetaLayer extends PipelineNetwork {
     RefUtil.freeRef(add(new ProductInputsLayer(), getHead(), getInput(0)));
   }
 
+  /**
+   * Instantiates a new Normalization meta layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   */
   protected NormalizationMetaLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json, rs);
   }
 
+  /**
+   * From json normalization meta layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the normalization meta layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static NormalizationMetaLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {

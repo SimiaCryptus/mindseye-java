@@ -36,6 +36,9 @@ import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+/**
+ * The type Build and release.
+ */
 public class BuildAndRelease extends NotebookReportBase {
 
   @Override
@@ -48,6 +51,9 @@ public class BuildAndRelease extends NotebookReportBase {
     return BuildAndRelease.class;
   }
 
+  /**
+   * Local build.
+   */
   @Test
   public void localBuild() {
     //String buildDirectory = "/mnt/h/SimiaCryptus/all-projects";
@@ -57,10 +63,13 @@ public class BuildAndRelease extends NotebookReportBase {
         "C:\\Windows\\System32\\bash.exe",
         "git",
         "/mnt/c/Users/andre/Downloads/apache-maven-3.6.3-bin/apache-maven-3.6.3/bin/mvn",
-        "H:\\SimiaCryptus", false
+        "H:\\SimiaCryptus", false, true, true, false
     );
   }
 
+  /**
+   * Standard site xml.
+   */
   @Test
   public void standardSiteXML() {
     Collection<File> pomFiles = FileUtils.listFiles(new File("H:\\SimiaCryptus\\all-projects"), new IOFileFilter() {
@@ -112,20 +121,47 @@ public class BuildAndRelease extends NotebookReportBase {
   }
 
 
-  public static void build(NotebookOutput log, long timeout, String bash, String git, String maven, String buildDirectory, boolean clean) {
+  /**
+   * Build.
+   *
+   * @param log            the log
+   * @param timeout        the timeout
+   * @param bash           the bash
+   * @param git            the git
+   * @param maven          the maven
+   * @param buildDirectory the build directory
+   * @param clean          the clean
+   * @param release
+   * @param site
+   * @param installTools
+   */
+  public static void build(NotebookOutput log, long timeout, String bash, String git, String maven, String buildDirectory, boolean clean, boolean release, boolean site, boolean installTools) {
     long endTime = System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(50);
     try {
+      if(installTools) {
+        log.subreport("Tooling Setup", sub -> {
+          commands(sub, timeout, buildDirectory,
+              new String[]{bash, "-c", "sudo yum update"},
+              new String[]{bash, "-c", "sudo yum install git default-jdk"},
+              new String[]{bash, "-c", "rm -rf apache-maven-3.6.3*"},
+              new String[]{bash, "-c", "wget http://apache.mirrors.hoobly.com/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz"},
+              new String[]{bash, "-c", "tar -xzvf apache-maven-3.6.3-bin.tar.gz"}
+          );
+          return null;
+        });
+        maven = buildDirectory + "/apache-maven-3.6.3/bin/mvn/";
+      }
       String mainProject = "all-projects";
       String mainBuildDirectory = buildDirectory + "/" + mainProject;
       if (clean) {
         log.subreport("Git Checkout", sub -> {
           new File(buildDirectory).mkdirs();
           commands(sub, timeout, buildDirectory,
-              new String[]{bash, "rm", "-rf", buildDirectory + "/" + mainProject},
-              new String[]{git, "clone", "git@github.com:SimiaCryptus/" + mainProject + ".git"}
+              new String[]{bash, "-c rm -rf " + buildDirectory + "/" + mainProject},
+              new String[]{git, "clone", "https://github.com/SimiaCryptus/" + mainProject + ".git"}
           );
           commands(sub, timeout, mainBuildDirectory,
-              new String[]{bash, git, "pull", "origin", "master"},
+              new String[]{git, "pull", "origin", "master"},
               new String[]{git, "submodule", "update", "--init"}
           );
           return null;
@@ -151,21 +187,25 @@ public class BuildAndRelease extends NotebookReportBase {
           mainBuildDirectory + "/deepartist"
       )) {
         log.h2(dir);
-        commands(log, timeout, mainBuildDirectory,
+        run(log, timeout, dir,
             new String[]{bash, maven, "clean", "com.simiacryptus:refcount-autocoder:verify", "-fae", "-DskipTests"}
         );
       }
-      String profile = "-Prelease";
-      log.h1("Building Site");
-      commands(log, timeout, mainBuildDirectory,
-          new String[]{bash, maven, "site:site", "-fae", profile, "-DskipTests"},
-          new String[]{bash, maven, "site:stage", "-fae", profile, "-DskipTests"},
-          new String[]{bash, maven, "site:deploy", "-fae", profile, "-DskipTests"}
-      );
-      log.h1("Deploy Software");
-      commands(log, timeout, mainBuildDirectory,
-          new String[]{bash, maven, "clean", "package", "deploy", "-fae", profile, "-DskipTests"}
-      );
+      String profile = release ?"-Prelease":null;
+      if(site) {
+        log.h1("Building Site");
+        commands(log, timeout, mainBuildDirectory,
+            new String[]{bash, maven, "site:site", "-fae", profile, "-DskipTests"},
+            new String[]{bash, maven, "site:stage", "-fae", profile, "-DskipTests"},
+            new String[]{bash, maven, "site:deploy", "-fae", profile, "-DskipTests"}
+        );
+      }
+      if(release) {
+        log.h1("Deploy Software");
+        commands(log, timeout, mainBuildDirectory,
+            new String[]{bash, maven, "clean", "package", "deploy", "-fae", profile, "-DskipTests"}
+        );
+      }
       log.subreport("Revert Version Changes", sub -> {
         revert(sub, mainBuildDirectory, previousData);
         return null;
@@ -182,6 +222,13 @@ public class BuildAndRelease extends NotebookReportBase {
     }
   }
 
+  /**
+   * Revert.
+   *
+   * @param log            the log
+   * @param buildDirectory the build directory
+   * @param previousData   the previous data
+   */
   public static void revert(NotebookOutput log, String buildDirectory, HashMap<File, String> previousData) {
     for (File file : FileUtils.listFiles(new File(buildDirectory), new String[]{"xml"}, true)) {
       if (file.getName().equals("pom.xml")) {
@@ -199,6 +246,15 @@ public class BuildAndRelease extends NotebookReportBase {
     }
   }
 
+  /**
+   * Sets version.
+   *
+   * @param log            the log
+   * @param buildDirectory the build directory
+   * @param newVersion     the new version
+   * @param oldVersion     the old version
+   * @return the version
+   */
   @NotNull
   public static HashMap<File, String> setVersion(NotebookOutput log, String buildDirectory, final String newVersion, final String oldVersion) {
     HashMap<File, String> previousData = new HashMap<>();
@@ -220,22 +276,52 @@ public class BuildAndRelease extends NotebookReportBase {
     return previousData;
   }
 
+  /**
+   * Commands.
+   *
+   * @param log            the log
+   * @param timeout        the timeout
+   * @param buildDirectory the build directory
+   * @param commands       the commands
+   */
   public static void commands(NotebookOutput log, long timeout, String buildDirectory, String[]... commands) {
+    new File(buildDirectory).mkdirs();
     for (String[] command : commands) {
       log.h2(Arrays.stream(command).filter(x -> x != null).map(x -> x.toString()).reduce((a, b) -> a + " " + b).get());
-      try {
-        ProcessBuilder processBuilder = new ProcessBuilder();
-        processBuilder.command(Arrays.stream(command).filter(x -> x != null).collect(Collectors.toList()));
-        processBuilder.directory(new File(buildDirectory));
-        log.eval(() -> {
-          return run(processBuilder, timeout).exitValue();
-        });
-      } catch (Throwable e) {
-        e.printStackTrace();
-      }
+      run(log, timeout, buildDirectory, command);
     }
   }
 
+  /**
+   * Run.
+   *
+   * @param log            the log
+   * @param timeout        the timeout
+   * @param buildDirectory the build directory
+   * @param command        the command
+   */
+  public static void run(NotebookOutput log, long timeout, String buildDirectory, String[] command) {
+    try {
+      ProcessBuilder processBuilder = new ProcessBuilder();
+      processBuilder.command(Arrays.stream(command).filter(x -> x != null).collect(Collectors.toList()));
+      processBuilder.directory(new File(buildDirectory));
+      log.eval(() -> {
+        return run(processBuilder, timeout).exitValue();
+      });
+    } catch (Throwable e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
+   * Run process.
+   *
+   * @param processBuilder the process builder
+   * @param timeout        the timeout
+   * @return the process
+   * @throws IOException          the io exception
+   * @throws InterruptedException the interrupted exception
+   */
   public static Process run(ProcessBuilder processBuilder, long timeout) throws IOException, InterruptedException {
     Process process = processBuilder.start();
     try {

@@ -25,6 +25,9 @@ import com.simiacryptus.mindseye.test.unit.TrainingTester;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The type Product inputs layer test.
+ */
 public abstract class ProductInputsLayerTest extends LayerTestBase {
   @Nonnull
   @Override
@@ -39,6 +42,9 @@ public abstract class ProductInputsLayerTest extends LayerTestBase {
     return trainingTester;
   }
 
+  /**
+   * The type N 1 test.
+   */
   public static class N1Test extends ProductInputsLayerTest {
 
     @Nonnull
@@ -49,6 +55,9 @@ public abstract class ProductInputsLayerTest extends LayerTestBase {
 
   }
 
+  /**
+   * The type Nnn test.
+   */
   public static class NNNTest extends ProductInputsLayerTest {
 
     @Nonnull
@@ -59,6 +68,9 @@ public abstract class ProductInputsLayerTest extends LayerTestBase {
 
   }
 
+  /**
+   * The type Nn test.
+   */
   public static class NNTest extends ProductInputsLayerTest {
 
     @Nonnull

@@ -36,6 +36,9 @@ import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * The type Img concat layer.
+ */
 @SuppressWarnings("serial")
 public class ImgConcatLayer extends LayerBase {
 
@@ -43,10 +46,18 @@ public class ImgConcatLayer extends LayerBase {
   private static final Logger log = LoggerFactory.getLogger(ImgConcatLayer.class);
   private int maxBands;
 
+  /**
+   * Instantiates a new Img concat layer.
+   */
   public ImgConcatLayer() {
     setMaxBands(0);
   }
 
+  /**
+   * Instantiates a new Img concat layer.
+   *
+   * @param json the json
+   */
   protected ImgConcatLayer(@Nonnull final JsonObject json) {
     super(json);
     JsonElement maxBands = json.get("maxBands");
@@ -54,14 +65,31 @@ public class ImgConcatLayer extends LayerBase {
       setMaxBands(maxBands.getAsInt());
   }
 
+  /**
+   * Gets max bands.
+   *
+   * @return the max bands
+   */
   public int getMaxBands() {
     return maxBands;
   }
 
+  /**
+   * Sets max bands.
+   *
+   * @param maxBands the max bands
+   */
   public void setMaxBands(int maxBands) {
     this.maxBands = maxBands;
   }
 
+  /**
+   * From json img concat layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the img concat layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static ImgConcatLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -179,6 +207,12 @@ public class ImgConcatLayer extends LayerBase {
     private final int numBatches;
     private final Result[] inObj;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param numBatches the num batches
+     * @param inObj      the in obj
+     */
     public Accumulator(int numBatches, Result... inObj) {
       this.numBatches = numBatches;
       this.inObj = inObj;

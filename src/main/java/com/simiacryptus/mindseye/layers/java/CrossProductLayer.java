@@ -33,22 +33,48 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.IntFunction;
 
+/**
+ * The type Cross product layer.
+ */
 @SuppressWarnings("serial")
 public class CrossProductLayer extends LayerBase {
 
+  /**
+   * Instantiates a new Cross product layer.
+   */
   public CrossProductLayer() {
   }
 
+  /**
+   * Instantiates a new Cross product layer.
+   *
+   * @param id the id
+   */
   protected CrossProductLayer(@Nonnull final JsonObject id) {
     super(id);
   }
 
+  /**
+   * From json cross product layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the cross product layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static CrossProductLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new CrossProductLayer(json);
   }
 
+  /**
+   * Index int.
+   *
+   * @param x   the x
+   * @param y   the y
+   * @param max the max
+   * @return the int
+   */
   public static int index(final int x, final int y, final int max) {
     return max * (max - 1) / 2 - (max - x) * (max - x - 1) / 2 + y - x - 1;
   }
@@ -120,6 +146,13 @@ public class CrossProductLayer extends LayerBase {
     private Result.Accumulator accumulator;
     private boolean alive;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param indata      the indata
+     * @param accumulator the accumulator
+     * @param alive       the alive
+     */
     public Accumulator(TensorList indata, Result.Accumulator accumulator, boolean alive) {
       this.indata = indata;
       this.accumulator = accumulator;

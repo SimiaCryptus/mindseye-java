@@ -33,13 +33,27 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.IntFunction;
 
+/**
+ * The type Sub batch layer.
+ */
 @SuppressWarnings("serial")
 public class SubBatchLayer extends WrapperLayer {
 
+  /**
+   * Instantiates a new Sub batch layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   */
   protected SubBatchLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json, rs);
   }
 
+  /**
+   * Instantiates a new Sub batch layer.
+   *
+   * @param inner the inner
+   */
   public SubBatchLayer(final Layer inner) {
     super(inner);
   }
@@ -49,12 +63,26 @@ public class SubBatchLayer extends WrapperLayer {
     return super.getChildren();
   }
 
+  /**
+   * From json sub batch layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the sub batch layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static SubBatchLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new SubBatchLayer(json, rs);
   }
 
+  /**
+   * Wrap sub batch layer.
+   *
+   * @param <T>   the type parameter
+   * @param layer the layer
+   * @return the sub batch layer
+   */
   @Nonnull
   public static <T extends Layer> SubBatchLayer wrap(@Nullable T layer) {
     return new SubBatchLayer(layer);
@@ -117,6 +145,12 @@ public class SubBatchLayer extends WrapperLayer {
     private final Tensor[] tensors;
     private final int batchIndex;
 
+    /**
+     * Instantiates a new Sub accumulator.
+     *
+     * @param tensors    the tensors
+     * @param batchIndex the batch index
+     */
     public SubAccumulator(Tensor[] tensors, int batchIndex) {
       this.tensors = tensors;
       this.batchIndex = batchIndex;
@@ -143,6 +177,13 @@ public class SubBatchLayer extends WrapperLayer {
     private final Tensor[][] passbackBuffer;
     private final Result[] inputs;
 
+    /**
+     * Instantiates a new Main accumulator.
+     *
+     * @param batchResults   the batch results
+     * @param passbackBuffer the passback buffer
+     * @param inputs         the inputs
+     */
     public MainAccumulator(Result[] batchResults, Tensor[][] passbackBuffer, Result... inputs) {
       this.batchResults = batchResults;
       this.passbackBuffer = passbackBuffer;

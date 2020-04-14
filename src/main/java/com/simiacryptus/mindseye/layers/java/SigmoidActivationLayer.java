@@ -25,6 +25,9 @@ import com.simiacryptus.mindseye.lang.DataSerializer;
 import javax.annotation.Nonnull;
 import java.util.Map;
 
+/**
+ * The type Sigmoid activation layer.
+ */
 @SuppressWarnings("serial")
 public final class SigmoidActivationLayer extends SimpleActivationLayer<SigmoidActivationLayer> {
 
@@ -34,22 +37,47 @@ public final class SigmoidActivationLayer extends SimpleActivationLayer<SigmoidA
   private static final double MIN_F = Math.exp(SigmoidActivationLayer.MIN_X);
   private boolean balanced = true;
 
+  /**
+   * Instantiates a new Sigmoid activation layer.
+   */
   public SigmoidActivationLayer() {
   }
 
+  /**
+   * Instantiates a new Sigmoid activation layer.
+   *
+   * @param id the id
+   */
   protected SigmoidActivationLayer(@Nonnull final JsonObject id) {
     super(id);
     balanced = id.get("balanced").getAsBoolean();
   }
 
+  /**
+   * Is balanced boolean.
+   *
+   * @return the boolean
+   */
   public boolean isBalanced() {
     return balanced;
   }
 
+  /**
+   * Sets balanced.
+   *
+   * @param balanced the balanced
+   */
   public void setBalanced(boolean balanced) {
     this.balanced = balanced;
   }
 
+  /**
+   * From json sigmoid activation layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the sigmoid activation layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static SigmoidActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {

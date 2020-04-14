@@ -33,6 +33,9 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.IntFunction;
 
+/**
+ * The type Img reshape layer.
+ */
 @SuppressWarnings("serial")
 public class ImgReshapeLayer extends LayerBase {
 
@@ -40,6 +43,13 @@ public class ImgReshapeLayer extends LayerBase {
   private final int kernelSizeX;
   private final int kernelSizeY;
 
+  /**
+   * Instantiates a new Img reshape layer.
+   *
+   * @param kernelSizeX the kernel size x
+   * @param kernelSizeY the kernel size y
+   * @param expand      the expand
+   */
   public ImgReshapeLayer(final int kernelSizeX, final int kernelSizeY, final boolean expand) {
     super();
     this.kernelSizeX = kernelSizeX;
@@ -47,6 +57,11 @@ public class ImgReshapeLayer extends LayerBase {
     this.expand = expand;
   }
 
+  /**
+   * Instantiates a new Img reshape layer.
+   *
+   * @param json the json
+   */
   protected ImgReshapeLayer(@Nonnull final JsonObject json) {
     super(json);
     kernelSizeX = json.getAsJsonPrimitive("kernelSizeX").getAsInt();
@@ -54,6 +69,13 @@ public class ImgReshapeLayer extends LayerBase {
     expand = json.getAsJsonPrimitive("expandPlasma").getAsBoolean();
   }
 
+  /**
+   * Copy condense tensor.
+   *
+   * @param inputData  the input data
+   * @param outputData the output data
+   * @return the tensor
+   */
   @Nonnull
   public static Tensor copyCondense(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData) {
     @Nonnull final int[] inDim = inputData.getDimensions();
@@ -84,6 +106,13 @@ public class ImgReshapeLayer extends LayerBase {
     return outputData;
   }
 
+  /**
+   * Copy expand tensor.
+   *
+   * @param inputData  the input data
+   * @param outputData the output data
+   * @return the tensor
+   */
   @Nonnull
   public static Tensor copyExpand(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData) {
     @Nonnull final int[] inDim = inputData.getDimensions();
@@ -113,6 +142,13 @@ public class ImgReshapeLayer extends LayerBase {
     return outputData;
   }
 
+  /**
+   * From json img reshape layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the img reshape layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static ImgReshapeLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -139,6 +175,12 @@ public class ImgReshapeLayer extends LayerBase {
     return new Result(data, accumulator, alive);
   }
 
+  /**
+   * Gets output dims.
+   *
+   * @param inputDims the input dims
+   * @return the output dims
+   */
   @NotNull
   public Tensor getOutputDims(int[] inputDims) {
     if (expand) {
@@ -197,6 +239,14 @@ public class ImgReshapeLayer extends LayerBase {
     private Result.Accumulator accumulator;
     private boolean alive;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param expand      the expand
+     * @param inputDims   the input dims
+     * @param accumulator the accumulator
+     * @param alive       the alive
+     */
     public Accumulator(boolean expand, int[] inputDims, Result.Accumulator accumulator, boolean alive) {
       this.inputDims = inputDims;
       this.expand = expand;

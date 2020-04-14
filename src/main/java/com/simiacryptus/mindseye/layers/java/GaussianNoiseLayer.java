@@ -38,9 +38,15 @@ import java.util.UUID;
 import java.util.function.IntFunction;
 import java.util.function.IntToDoubleFunction;
 
+/**
+ * The type Gaussian noise layer.
+ */
 @SuppressWarnings("serial")
 public class GaussianNoiseLayer extends LayerBase implements StochasticComponent {
 
+  /**
+   * The constant random.
+   */
   public static final ThreadLocal<Random> random = new ThreadLocal<Random>() {
     @Nonnull
     @Override
@@ -53,25 +59,50 @@ public class GaussianNoiseLayer extends LayerBase implements StochasticComponent
   private long seed = GaussianNoiseLayer.random.get().nextLong();
   private double value;
 
+  /**
+   * Instantiates a new Gaussian noise layer.
+   */
   public GaussianNoiseLayer() {
     super();
     setValue(1.0);
   }
 
+  /**
+   * Instantiates a new Gaussian noise layer.
+   *
+   * @param json the json
+   */
   protected GaussianNoiseLayer(@Nonnull final JsonObject json) {
     super(json);
     value = json.get("value").getAsDouble();
     seed = json.get("seed").getAsLong();
   }
 
+  /**
+   * Gets value.
+   *
+   * @return the value
+   */
   public double getValue() {
     return value;
   }
 
+  /**
+   * Sets value.
+   *
+   * @param value the value
+   */
   public void setValue(double value) {
     this.value = value;
   }
 
+  /**
+   * From json gaussian noise layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the gaussian noise layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static GaussianNoiseLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -102,6 +133,9 @@ public class GaussianNoiseLayer extends LayerBase implements StochasticComponent
     return json;
   }
 
+  /**
+   * Shuffle.
+   */
   public void shuffle() {
     shuffle(GaussianNoiseLayer.random.get().nextLong());
   }
@@ -156,6 +190,13 @@ public class GaussianNoiseLayer extends LayerBase implements StochasticComponent
     private Result.Accumulator accumulator;
     private boolean alive;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param dimensions  the dimensions
+     * @param accumulator the accumulator
+     * @param alive       the alive
+     */
     public Accumulator(int[] dimensions, Result.Accumulator accumulator, boolean alive) {
       this.dimensions = dimensions;
       this.accumulator = accumulator;

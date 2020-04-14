@@ -25,6 +25,9 @@ import com.simiacryptus.mindseye.test.LayerTestBase;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The type Monitoring wrapper test.
+ */
 public abstract class MonitoringWrapperTest extends LayerTestBase {
 
   @Nonnull
@@ -39,6 +42,9 @@ public abstract class MonitoringWrapperTest extends LayerTestBase {
     return new int[][]{{3}};
   }
 
+  /**
+   * The type Basic.
+   */
   public static class Basic extends MonitoringWrapperTest {
 
   }

@@ -38,18 +38,33 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.*;
 
+/**
+ * The type Fully connected reference layer.
+ */
 @SuppressWarnings("serial")
 public class FullyConnectedReferenceLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(FullyConnectedReferenceLayer.class);
+  /**
+   * The Input dims.
+   */
   @Nullable
   public final int[] inputDims;
+  /**
+   * The Output dims.
+   */
   @Nullable
   public final int[] outputDims;
+  /**
+   * The Weights.
+   */
   @Nullable
   public final Tensor weights;
 
+  /**
+   * Instantiates a new Fully connected reference layer.
+   */
   protected FullyConnectedReferenceLayer() {
     super();
     outputDims = null;
@@ -57,6 +72,12 @@ public class FullyConnectedReferenceLayer extends LayerBase {
     inputDims = null;
   }
 
+  /**
+   * Instantiates a new Fully connected reference layer.
+   *
+   * @param inputDims  the input dims
+   * @param outputDims the output dims
+   */
   public FullyConnectedReferenceLayer(@Nonnull final int[] inputDims, @Nonnull final int[] outputDims) {
     this.inputDims = RefArrays.copyOf(inputDims, inputDims.length);
     this.outputDims = RefArrays.copyOf(outputDims, outputDims.length);
@@ -70,6 +91,12 @@ public class FullyConnectedReferenceLayer extends LayerBase {
     });
   }
 
+  /**
+   * Instantiates a new Fully connected reference layer.
+   *
+   * @param json      the json
+   * @param resources the resources
+   */
   protected FullyConnectedReferenceLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> resources) {
     super(json);
     outputDims = JsonUtil.getIntArray(json.getAsJsonArray("outputDims"));
@@ -77,11 +104,21 @@ public class FullyConnectedReferenceLayer extends LayerBase {
     weights = Tensor.fromJson(json.get("weights"), resources);
   }
 
+  /**
+   * Gets weights.
+   *
+   * @return the weights
+   */
   @Nullable
   public Tensor getWeights() {
     return weights == null ? null : weights.addRef();
   }
 
+  /**
+   * Sets by coord.
+   *
+   * @param f the f
+   */
   public void setByCoord(@Nonnull ToDoubleFunction<Coordinate> f) {
     assert weights != null;
     weights.coordStream(true).forEach(c -> {
@@ -89,6 +126,11 @@ public class FullyConnectedReferenceLayer extends LayerBase {
     });
   }
 
+  /**
+   * Sets by coord.
+   *
+   * @param f the f
+   */
   public void setByCoord(@Nonnull ToDoubleBiFunction<Coordinate, Coordinate> f) {
     assert inputDims != null;
     Tensor temp_02_0008 = new Tensor(inputDims);
@@ -104,6 +146,11 @@ public class FullyConnectedReferenceLayer extends LayerBase {
     temp_02_0008.freeRef();
   }
 
+  /**
+   * Sets weights log.
+   *
+   * @param value the value
+   */
   public void setWeightsLog(double value) {
     assert weights != null;
     weights.coordStream(false).forEach(c -> {
@@ -111,6 +158,13 @@ public class FullyConnectedReferenceLayer extends LayerBase {
     });
   }
 
+  /**
+   * From json fully connected reference layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the fully connected reference layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static FullyConnectedReferenceLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -149,21 +203,41 @@ public class FullyConnectedReferenceLayer extends LayerBase {
     return json;
   }
 
+  /**
+   * Set.
+   *
+   * @param f the f
+   */
   public void set(@Nonnull final DoubleSupplier f) {
     assert weights != null;
     RefArrays.parallelSetAll(weights.getData(), i -> f.getAsDouble());
   }
 
+  /**
+   * Set.
+   *
+   * @param f the f
+   */
   public void set(@Nonnull IntToDoubleFunction f) {
     assert weights != null;
     weights.set(f);
   }
 
+  /**
+   * Set.
+   *
+   * @param data the data
+   */
   public void set(double[] data) {
     assert weights != null;
     weights.set(data);
   }
 
+  /**
+   * Set.
+   *
+   * @param data the data
+   */
   public void set(@Nonnull Tensor data) {
     assert weights != null;
     weights.set(data);
@@ -223,6 +297,17 @@ public class FullyConnectedReferenceLayer extends LayerBase {
     private Result.Accumulator accumulator;
     private boolean alive;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param indata      the indata
+     * @param weights     the weights
+     * @param id          the id
+     * @param inputDims   the input dims
+     * @param frozen      the frozen
+     * @param accumulator the accumulator
+     * @param alive       the alive
+     */
     public Accumulator(TensorList indata, Tensor weights, UUID id, int[] inputDims, boolean frozen, Result.Accumulator accumulator, boolean alive) {
       this.indata = indata;
       this.weights = weights;

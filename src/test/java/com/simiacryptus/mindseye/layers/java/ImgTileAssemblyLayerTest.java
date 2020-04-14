@@ -25,8 +25,14 @@ import org.junit.jupiter.api.Disabled;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The type Img tile assembly layer test.
+ */
 public abstract class ImgTileAssemblyLayerTest extends LayerTestBase {
 
+  /**
+   * Instantiates a new Img tile assembly layer test.
+   */
   public ImgTileAssemblyLayerTest() {
   }
 
@@ -48,6 +54,9 @@ public abstract class ImgTileAssemblyLayerTest extends LayerTestBase {
     super.batchingTest();
   }
 
+  /**
+   * The type Basic.
+   */
   public static class Basic extends ImgTileAssemblyLayerTest {
 
   }

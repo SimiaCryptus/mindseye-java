@@ -25,7 +25,13 @@ import com.simiacryptus.mindseye.test.unit.SingleDerivativeTester;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The type Entropy layer test.
+ */
 public abstract class EntropyLayerTest extends ActivationLayerTestBase {
+  /**
+   * Instantiates a new Entropy layer test.
+   */
   public EntropyLayerTest() {
     super(new EntropyLayer());
   }
@@ -35,6 +41,9 @@ public abstract class EntropyLayerTest extends ActivationLayerTestBase {
     return new SingleDerivativeTester(1e-2, 1e-5);
   }
 
+  /**
+   * The type Basic.
+   */
   public static class Basic extends EntropyLayerTest {
 
     @Nonnull

@@ -37,6 +37,9 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 
+/**
+ * The type Max dropout noise layer.
+ */
 @SuppressWarnings("serial")
 public class MaxDropoutNoiseLayer extends LayerBase {
 
@@ -46,20 +49,40 @@ public class MaxDropoutNoiseLayer extends LayerBase {
   private final int[] kernelSize;
   private final Function<IntArray, RefList<RefList<Coordinate>>> getCellMap_cached = Util.cache(this::getCellMap);
 
+  /**
+   * Instantiates a new Max dropout noise layer.
+   */
   public MaxDropoutNoiseLayer() {
     this(2, 2);
   }
 
+  /**
+   * Instantiates a new Max dropout noise layer.
+   *
+   * @param dims the dims
+   */
   public MaxDropoutNoiseLayer(@Nullable final int... dims) {
     super();
     kernelSize = dims;
   }
 
+  /**
+   * Instantiates a new Max dropout noise layer.
+   *
+   * @param json the json
+   */
   protected MaxDropoutNoiseLayer(@Nonnull final JsonObject json) {
     super(json);
     kernelSize = JsonUtil.getIntArray(json.getAsJsonArray("kernelSize"));
   }
 
+  /**
+   * From json max dropout noise layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the max dropout noise layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static MaxDropoutNoiseLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -181,6 +204,14 @@ public class MaxDropoutNoiseLayer extends LayerBase {
     private Result.Accumulator accumulator;
     private boolean alive;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param mask        the mask
+     * @param data0       the data 0
+     * @param accumulator the accumulator
+     * @param alive       the alive
+     */
     public Accumulator(Tensor[] mask, TensorList data0, Result.Accumulator accumulator, boolean alive) {
       this.mask = mask;
       this.data0 = data0;

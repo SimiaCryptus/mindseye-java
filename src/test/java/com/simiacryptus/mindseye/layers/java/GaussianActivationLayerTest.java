@@ -24,11 +24,20 @@ import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The type Gaussian activation layer test.
+ */
 public abstract class GaussianActivationLayerTest extends ActivationLayerTestBase {
+  /**
+   * Instantiates a new Gaussian activation layer test.
+   */
   public GaussianActivationLayerTest() {
     super(new GaussianActivationLayer(0, 1));
   }
 
+  /**
+   * The type Basic.
+   */
   public static class Basic extends GaussianActivationLayerTest {
 
     @Nonnull

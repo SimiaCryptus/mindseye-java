@@ -25,9 +25,18 @@ import com.simiacryptus.mindseye.test.unit.SingleDerivativeTester;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The type Nth power activation layer test.
+ */
 public class NthPowerActivationLayerTest {
 
+  /**
+   * The type Inv power test.
+   */
   public static class InvPowerTest extends ActivationLayerTestBase {
+    /**
+     * Instantiates a new Inv power test.
+     */
     public InvPowerTest() {
       super(new NthPowerActivationLayer(-1));
     }
@@ -52,7 +61,13 @@ public class NthPowerActivationLayerTest {
     }
   }
 
+  /**
+   * The type Inv sqrt power test.
+   */
   public static class InvSqrtPowerTest extends ActivationLayerTestBase {
+    /**
+     * Instantiates a new Inv sqrt power test.
+     */
     public InvSqrtPowerTest() {
       super(new NthPowerActivationLayer(-0.5));
     }
@@ -77,7 +92,13 @@ public class NthPowerActivationLayerTest {
     }
   }
 
+  /**
+   * The type Nth power test.
+   */
   public static class NthPowerTest extends ActivationLayerTestBase {
+    /**
+     * Instantiates a new Nth power test.
+     */
     public NthPowerTest() {
       super(new NthPowerActivationLayer(Math.PI));
     }
@@ -101,7 +122,13 @@ public class NthPowerActivationLayerTest {
   //    }
   //  }
 
+  /**
+   * The type Square power test.
+   */
   public static class SquarePowerTest extends ActivationLayerTestBase {
+    /**
+     * Instantiates a new Square power test.
+     */
     public SquarePowerTest() {
       super(new NthPowerActivationLayer(2));
     }
@@ -113,7 +140,13 @@ public class NthPowerActivationLayerTest {
     }
   }
 
+  /**
+   * The type Zero power test.
+   */
   public static class ZeroPowerTest extends ActivationLayerTestBase {
+    /**
+     * Instantiates a new Zero power test.
+     */
     public ZeroPowerTest() {
       super(new NthPowerActivationLayer(0));
     }

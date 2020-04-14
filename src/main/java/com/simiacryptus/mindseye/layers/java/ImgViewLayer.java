@@ -39,6 +39,9 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
 
+/**
+ * The type Img view layer.
+ */
 @SuppressWarnings("serial")
 public class ImgViewLayer extends LayerBase {
 
@@ -53,18 +56,48 @@ public class ImgViewLayer extends LayerBase {
   private int[] channelSelector;
   private double rotationRadians;
 
+  /**
+   * Instantiates a new Img view layer.
+   *
+   * @param sizeX the size x
+   * @param sizeY the size y
+   */
   public ImgViewLayer(final int sizeX, final int sizeY) {
     this(sizeX, sizeY, false);
   }
 
+  /**
+   * Instantiates a new Img view layer.
+   *
+   * @param sizeX the size x
+   * @param sizeY the size y
+   * @param wrap  the wrap
+   */
   public ImgViewLayer(final int sizeX, final int sizeY, boolean wrap) {
     this(sizeX, sizeY, 0, 0, wrap);
   }
 
+  /**
+   * Instantiates a new Img view layer.
+   *
+   * @param sizeX   the size x
+   * @param sizeY   the size y
+   * @param offsetX the offset x
+   * @param offsetY the offset y
+   */
   public ImgViewLayer(final int sizeX, final int sizeY, final int offsetX, final int offsetY) {
     this(sizeX, sizeY, offsetX, offsetY, false);
   }
 
+  /**
+   * Instantiates a new Img view layer.
+   *
+   * @param sizeX   the size x
+   * @param sizeY   the size y
+   * @param offsetX the offset x
+   * @param offsetY the offset y
+   * @param wrap    the wrap
+   */
   public ImgViewLayer(final int sizeX, final int sizeY, final int offsetX, final int offsetY, final boolean wrap) {
     super();
     this.setSizeX(sizeX);
@@ -74,6 +107,11 @@ public class ImgViewLayer extends LayerBase {
     this.setWrap(wrap);
   }
 
+  /**
+   * Instantiates a new Img view layer.
+   *
+   * @param json the json
+   */
   protected ImgViewLayer(@Nonnull final JsonObject json) {
     super(json);
     setSizeX(json.getAsJsonPrimitive("sizeX").getAsInt());
@@ -97,86 +135,193 @@ public class ImgViewLayer extends LayerBase {
     this.setWrap(null != toroidal && toroidal.getAsBoolean());
   }
 
+  /**
+   * Get channel selector int [ ].
+   *
+   * @return the int [ ]
+   */
   public int[] getChannelSelector() {
     return channelSelector;
   }
 
+  /**
+   * Sets channel selector.
+   *
+   * @param channelSelector the channel selector
+   */
   public void setChannelSelector(int[] channelSelector) {
     this.channelSelector = channelSelector;
   }
 
+  /**
+   * Gets negative bias.
+   *
+   * @return the negative bias
+   */
   public double getNegativeBias() {
     return negativeBias;
   }
 
+  /**
+   * Sets negative bias.
+   *
+   * @param negativeBias the negative bias
+   */
   public void setNegativeBias(double negativeBias) {
     this.negativeBias = negativeBias;
   }
 
+  /**
+   * Gets offset x.
+   *
+   * @return the offset x
+   */
   public int getOffsetX() {
     return offsetX;
   }
 
+  /**
+   * Sets offset x.
+   *
+   * @param offsetX the offset x
+   */
   public void setOffsetX(int offsetX) {
     this.offsetX = offsetX;
   }
 
+  /**
+   * Gets offset y.
+   *
+   * @return the offset y
+   */
   public int getOffsetY() {
     return offsetY;
   }
 
+  /**
+   * Sets offset y.
+   *
+   * @param offsetY the offset y
+   */
   public void setOffsetY(int offsetY) {
     this.offsetY = offsetY;
   }
 
+  /**
+   * Gets rotation center x.
+   *
+   * @return the rotation center x
+   */
   public int getRotationCenterX() {
     return rotationCenterX;
   }
 
+  /**
+   * Sets rotation center x.
+   *
+   * @param rotationCenterX the rotation center x
+   */
   public void setRotationCenterX(int rotationCenterX) {
     this.rotationCenterX = rotationCenterX;
   }
 
+  /**
+   * Gets rotation center y.
+   *
+   * @return the rotation center y
+   */
   public int getRotationCenterY() {
     return rotationCenterY;
   }
 
+  /**
+   * Sets rotation center y.
+   *
+   * @param rotationCenterY the rotation center y
+   */
   public void setRotationCenterY(int rotationCenterY) {
     this.rotationCenterY = rotationCenterY;
   }
 
+  /**
+   * Gets rotation radians.
+   *
+   * @return the rotation radians
+   */
   public double getRotationRadians() {
     return rotationRadians;
   }
 
+  /**
+   * Sets rotation radians.
+   *
+   * @param rotationRadians the rotation radians
+   */
   public void setRotationRadians(double rotationRadians) {
     this.rotationRadians = rotationRadians;
   }
 
+  /**
+   * Gets size x.
+   *
+   * @return the size x
+   */
   public int getSizeX() {
     return sizeX;
   }
 
+  /**
+   * Sets size x.
+   *
+   * @param sizeX the size x
+   */
   public void setSizeX(int sizeX) {
     this.sizeX = sizeX;
   }
 
+  /**
+   * Gets size y.
+   *
+   * @return the size y
+   */
   public int getSizeY() {
     return sizeY;
   }
 
+  /**
+   * Sets size y.
+   *
+   * @param sizeY the size y
+   */
   public void setSizeY(int sizeY) {
     this.sizeY = sizeY;
   }
 
+  /**
+   * Is wrap boolean.
+   *
+   * @return the boolean
+   */
   public boolean isWrap() {
     return wrap;
   }
 
+  /**
+   * Sets wrap.
+   *
+   * @param wrap the wrap
+   */
   public void setWrap(boolean wrap) {
     this.wrap = wrap;
   }
 
+  /**
+   * From json img view layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the img view layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static ImgViewLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -253,6 +398,14 @@ public class ImgViewLayer extends LayerBase {
     return new Result(data, accumulator, alive);
   }
 
+  /**
+   * Get view dimensions int [ ].
+   *
+   * @param sourceDimensions      the source dimensions
+   * @param destinationDimensions the destination dimensions
+   * @param offset                the offset
+   * @return the int [ ]
+   */
   @Nonnull
   public int[] getViewDimensions(int[] sourceDimensions, int[] destinationDimensions, int[] offset) {
     @Nonnull final int[] viewDim = new int[3];
@@ -302,6 +455,12 @@ public class ImgViewLayer extends LayerBase {
     return (ImgViewLayer) super.addRef();
   }
 
+  /**
+   * Fwd.
+   *
+   * @param inputData  the input data
+   * @param outputData the output data
+   */
   protected void fwd(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData) {
     int[] inputDims = inputData.getDimensions();
     @Nonnull final int[] inDim = inputDims;
@@ -329,6 +488,12 @@ public class ImgViewLayer extends LayerBase {
     }, inputData, outputData));
   }
 
+  /**
+   * Bck.
+   *
+   * @param outputDelta the output delta
+   * @param inputDelta  the input delta
+   */
   protected void bck(@Nonnull final Tensor outputDelta, @Nonnull final Tensor inputDelta) {
     int[] outDeltaDims = outputDelta.getDimensions();
     @Nonnull final int[] inputDeltaDims = inputDelta.getDimensions();
@@ -356,6 +521,12 @@ public class ImgViewLayer extends LayerBase {
     }, inputDelta, outputDelta));
   }
 
+  /**
+   * Coordinate mapping double [ ].
+   *
+   * @param xy the xy
+   * @return the double [ ]
+   */
   @Nonnull
   protected double[] coordinateMapping(@Nonnull double... xy) {
     xy[0] += offsetX;
@@ -390,6 +561,14 @@ public class ImgViewLayer extends LayerBase {
     private Result.Accumulator accumulator;
     private boolean alive;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param imgViewLayer the img view layer
+     * @param inputDims    the input dims
+     * @param accumulator  the accumulator
+     * @param alive        the alive
+     */
     public Accumulator(ImgViewLayer imgViewLayer, int[] inputDims, Result.Accumulator accumulator, boolean alive) {
       this.inputDims = inputDims;
       this.imgViewLayer = imgViewLayer;

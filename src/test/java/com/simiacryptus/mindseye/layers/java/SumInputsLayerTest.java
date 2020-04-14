@@ -27,7 +27,13 @@ import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The type Sum inputs layer test.
+ */
 public class SumInputsLayerTest {
+  /**
+   * The type N 1 test.
+   */
   public static class N1Test extends LayerTestBase {
 
     @Nonnull
@@ -50,6 +56,9 @@ public class SumInputsLayerTest {
 
   }
 
+  /**
+   * The type Nn test.
+   */
   public static class NNTest extends LayerTestBase {
 
     @Nonnull
@@ -72,8 +81,14 @@ public class SumInputsLayerTest {
 
   }
 
+  /**
+   * The type One plus one.
+   */
   public static class OnePlusOne extends LayerTestBase {
 
+    /**
+     * Instantiates a new One plus one.
+     */
     public OnePlusOne() {
       super();
     }

@@ -24,6 +24,9 @@ import com.simiacryptus.mindseye.test.LayerTestBase;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The type Img tile subnet layer test.
+ */
 public abstract class ImgTileSubnetLayerTest extends LayerTestBase {
 
   @Nonnull
@@ -32,6 +35,9 @@ public abstract class ImgTileSubnetLayerTest extends LayerTestBase {
     return new int[][]{{6, 6, 1}};
   }
 
+  /**
+   * The type Basic.
+   */
   public static class Basic extends ImgTileSubnetLayerTest {
 
     @Nonnull
@@ -44,6 +50,9 @@ public abstract class ImgTileSubnetLayerTest extends LayerTestBase {
 
   }
 
+  /**
+   * The type Overlapping.
+   */
   public static class Overlapping extends ImgTileSubnetLayerTest {
 
     @Nonnull

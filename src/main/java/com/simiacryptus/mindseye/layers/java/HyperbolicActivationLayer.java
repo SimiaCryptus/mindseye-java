@@ -35,6 +35,9 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.IntFunction;
 
+/**
+ * The type Hyperbolic activation layer.
+ */
 @SuppressWarnings("serial")
 public class HyperbolicActivationLayer extends LayerBase {
 
@@ -44,6 +47,9 @@ public class HyperbolicActivationLayer extends LayerBase {
   private final Tensor weights;
   private int negativeMode = 1;
 
+  /**
+   * Instantiates a new Hyperbolic activation layer.
+   */
   public HyperbolicActivationLayer() {
     super();
     weights = new Tensor(2);
@@ -51,28 +57,56 @@ public class HyperbolicActivationLayer extends LayerBase {
     weights.set(1, 1.);
   }
 
+  /**
+   * Instantiates a new Hyperbolic activation layer.
+   *
+   * @param json      the json
+   * @param resources the resources
+   */
   protected HyperbolicActivationLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> resources) {
     super(json);
     weights = Tensor.fromJson(json.get("weights"), resources);
     negativeMode = json.getAsJsonPrimitive("negativeMode").getAsInt();
   }
 
+  /**
+   * Gets scale l.
+   *
+   * @return the scale l
+   */
   public double getScaleL() {
     assert weights != null;
     return 1 / weights.get(1);
   }
 
+  /**
+   * Gets scale r.
+   *
+   * @return the scale r
+   */
   public double getScaleR() {
     assert weights != null;
     return 1 / weights.get(0);
   }
 
+  /**
+   * Sets scale.
+   *
+   * @param scale the scale
+   */
   public void setScale(double scale) {
     assert weights != null;
     weights.set(0, 1 / scale);
     weights.set(1, 1 / scale);
   }
 
+  /**
+   * From json hyperbolic activation layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the hyperbolic activation layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static HyperbolicActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -104,14 +138,23 @@ public class HyperbolicActivationLayer extends LayerBase {
     return json;
   }
 
+  /**
+   * Sets mode asymetric.
+   */
   public void setModeAsymetric() {
     negativeMode = 0;
   }
 
+  /**
+   * Sets mode even.
+   */
   public void setModeEven() {
     negativeMode = 1;
   }
 
+  /**
+   * Sets mode odd.
+   */
   public void setModeOdd() {
     negativeMode = -1;
   }
@@ -163,6 +206,17 @@ public class HyperbolicActivationLayer extends LayerBase {
     private Result.Accumulator accumulator;
     private boolean alive;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param negativeMode the negative mode
+     * @param weights      the weights
+     * @param id           the id
+     * @param frozen       the frozen
+     * @param accumulator  the accumulator
+     * @param alive        the alive
+     * @param data         the data
+     */
     public Accumulator(int negativeMode, Tensor weights, UUID id, boolean frozen, Result.Accumulator accumulator, boolean alive, @NotNull TensorList data) {
       this.indata = data;
       assert weights != null;

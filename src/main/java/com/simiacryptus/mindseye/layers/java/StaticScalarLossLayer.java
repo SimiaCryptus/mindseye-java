@@ -35,6 +35,9 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.IntFunction;
 
+/**
+ * The type Static scalar loss layer.
+ */
 @SuppressWarnings("serial")
 public class StaticScalarLossLayer extends LayerBase {
 
@@ -42,21 +45,46 @@ public class StaticScalarLossLayer extends LayerBase {
   private static final Logger log = LoggerFactory.getLogger(StaticScalarLossLayer.class);
   private double target = 0.0;
 
+  /**
+   * Instantiates a new Static scalar loss layer.
+   */
   public StaticScalarLossLayer() {
   }
 
+  /**
+   * Instantiates a new Static scalar loss layer.
+   *
+   * @param id the id
+   */
   protected StaticScalarLossLayer(@Nonnull final JsonObject id) {
     super(id);
   }
 
+  /**
+   * Gets target.
+   *
+   * @return the target
+   */
   public double getTarget() {
     return target;
   }
 
+  /**
+   * Sets target.
+   *
+   * @param target the target
+   */
   public void setTarget(double target) {
     this.target = target;
   }
 
+  /**
+   * From json static scalar loss layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the static scalar loss layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static StaticScalarLossLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -122,6 +150,14 @@ public class StaticScalarLossLayer extends LayerBase {
     private Result.Accumulator accumulator;
     private boolean alive;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param target      the target
+     * @param accumulator the accumulator
+     * @param alive       the alive
+     * @param indata      the indata
+     */
     public Accumulator(double target, Result.Accumulator accumulator, boolean alive, @NotNull TensorList indata) {
       this.indata = indata;
       this.target = target;

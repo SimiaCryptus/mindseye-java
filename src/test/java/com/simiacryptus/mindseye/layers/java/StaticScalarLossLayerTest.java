@@ -25,8 +25,14 @@ import org.junit.jupiter.api.Disabled;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The type Static scalar loss layer test.
+ */
 public abstract class StaticScalarLossLayerTest extends LayerTestBase {
 
+  /**
+   * Instantiates a new Static scalar loss layer test.
+   */
   public StaticScalarLossLayerTest() {
   }
 
@@ -48,6 +54,9 @@ public abstract class StaticScalarLossLayerTest extends LayerTestBase {
     super.batchingTest();
   }
 
+  /**
+   * The type Basic.
+   */
   public static class Basic extends StaticScalarLossLayerTest {
 
   }

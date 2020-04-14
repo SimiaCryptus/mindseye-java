@@ -39,9 +39,15 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
+/**
+ * The type Binary noise layer.
+ */
 @SuppressWarnings("serial")
 public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
 
+  /**
+   * The constant random.
+   */
   public static final ThreadLocal<Random> random = new ThreadLocal<Random>() {
     @Nonnull
     @Override
@@ -51,20 +57,36 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
   };
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(BinaryNoiseLayer.class);
+  /**
+   * The Mask list.
+   */
   @Nonnull
   final RefList<Tensor> maskList = new RefArrayList<>();
   private double value;
   private long seed = RefSystem.nanoTime();
 
+  /**
+   * Instantiates a new Binary noise layer.
+   */
   public BinaryNoiseLayer() {
     this(0.5);
   }
 
+  /**
+   * Instantiates a new Binary noise layer.
+   *
+   * @param value the value
+   */
   public BinaryNoiseLayer(final double value) {
     super();
     setValue(value);
   }
 
+  /**
+   * Instantiates a new Binary noise layer.
+   *
+   * @param json the json
+   */
   protected BinaryNoiseLayer(@Nonnull final JsonObject json) {
     super(json);
     value = json.get("value").getAsDouble();
@@ -73,21 +95,44 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
     //    this.enabled = enabled == null || enabled.getAsBoolean();
   }
 
+  /**
+   * Gets value.
+   *
+   * @return the value
+   */
   public double getValue() {
     return value;
   }
 
+  /**
+   * Sets value.
+   *
+   * @param value the value
+   */
   public void setValue(final double value) {
     this.value = value;
     shuffle(StochasticComponent.random.get().nextLong());
   }
 
+  /**
+   * From json binary noise layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the binary noise layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static BinaryNoiseLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new BinaryNoiseLayer(json);
   }
 
+  /**
+   * Mask layer layer.
+   *
+   * @param density the density
+   * @return the layer
+   */
   @Nonnull
   public static Layer maskLayer(double density) {
     PipelineNetwork subnet = new PipelineNetwork(1);
@@ -113,6 +158,9 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
     return new Result(data, accumulator, alive);
   }
 
+  /**
+   * Clear.
+   */
   public void clear() {
     final RefList<Tensor> maskList = this.maskList.addRef();
     synchronized (maskList) {
@@ -189,6 +237,11 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
 
     private Result.Accumulator accumulator;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param accumulator the accumulator
+     */
     public Accumulator(Result.Accumulator accumulator) {
       this.accumulator = accumulator;
     }

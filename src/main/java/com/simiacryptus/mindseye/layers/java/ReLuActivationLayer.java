@@ -37,6 +37,9 @@ import java.util.UUID;
 import java.util.function.DoubleSupplier;
 import java.util.function.IntFunction;
 
+/**
+ * The type Re lu activation layer.
+ */
 @SuppressWarnings("serial")
 public class ReLuActivationLayer extends LayerBase {
 
@@ -45,6 +48,9 @@ public class ReLuActivationLayer extends LayerBase {
   @Nullable
   private final Tensor weights;
 
+  /**
+   * Instantiates a new Re lu activation layer.
+   */
   public ReLuActivationLayer() {
     super();
     weights = new Tensor(1);
@@ -52,31 +58,64 @@ public class ReLuActivationLayer extends LayerBase {
     this.frozen = true;
   }
 
+  /**
+   * Instantiates a new Re lu activation layer.
+   *
+   * @param json      the json
+   * @param resources the resources
+   */
   protected ReLuActivationLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> resources) {
     super(json);
     weights = Tensor.fromJson(json.get("weights"), resources);
   }
 
+  /**
+   * Gets mobility.
+   *
+   * @return the mobility
+   */
   protected double getMobility() {
     return 1;
   }
 
+  /**
+   * Sets weight.
+   *
+   * @param data the data
+   */
   public void setWeight(double data) {
     assert weights != null;
     weights.set(0, data);
   }
 
+  /**
+   * Sets weights.
+   *
+   * @param f the f
+   */
   public void setWeights(@Nonnull DoubleSupplier f) {
     assert weights != null;
     RefArrays.parallelSetAll(weights.getData(), i -> f.getAsDouble());
   }
 
+  /**
+   * From json re lu activation layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the re lu activation layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static ReLuActivationLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ReLuActivationLayer(json, rs);
   }
 
+  /**
+   * Add weights.
+   *
+   * @param f the f
+   */
   public void addWeights(@Nonnull DoubleSupplier f) {
     assert weights != null;
     Util.add(f, weights.getData());
@@ -154,6 +193,16 @@ public class ReLuActivationLayer extends LayerBase {
     private boolean frozen;
     private Result.Accumulator accumulator;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param indata      the indata
+     * @param inputAlive  the input alive
+     * @param weights     the weights
+     * @param id          the id
+     * @param frozen      the frozen
+     * @param accumulator the accumulator
+     */
     public Accumulator(TensorList indata, boolean inputAlive, Tensor weights, UUID id, boolean frozen, Result.Accumulator accumulator) {
       this.indata = indata;
       this.inputAlive = inputAlive;

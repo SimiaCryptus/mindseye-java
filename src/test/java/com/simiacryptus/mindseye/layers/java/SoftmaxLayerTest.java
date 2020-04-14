@@ -24,6 +24,9 @@ import com.simiacryptus.mindseye.test.LayerTestBase;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The type Softmax layer test.
+ */
 public abstract class SoftmaxLayerTest extends LayerTestBase {
 
   @Nonnull
@@ -38,6 +41,9 @@ public abstract class SoftmaxLayerTest extends LayerTestBase {
     return new int[][]{{4}};
   }
 
+  /**
+   * The type Basic.
+   */
   public static class Basic extends SoftmaxLayerTest {
 
   }

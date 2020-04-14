@@ -41,6 +41,9 @@ import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
 import java.util.function.IntToDoubleFunction;
 
+/**
+ * The type Img band bias layer.
+ */
 @SuppressWarnings("serial")
 public class ImgBandBiasLayer extends LayerBase {
 
@@ -49,21 +52,39 @@ public class ImgBandBiasLayer extends LayerBase {
   @Nullable
   private final double[] bias;
 
+  /**
+   * Instantiates a new Img band bias layer.
+   */
   protected ImgBandBiasLayer() {
     super();
     bias = null;
   }
 
+  /**
+   * Instantiates a new Img band bias layer.
+   *
+   * @param bands the bands
+   */
   public ImgBandBiasLayer(final int bands) {
     super();
     bias = new double[bands];
   }
 
+  /**
+   * Instantiates a new Img band bias layer.
+   *
+   * @param json the json
+   */
   protected ImgBandBiasLayer(@Nonnull final JsonObject json) {
     super(json);
     bias = JsonUtil.getDoubleArray(json.getAsJsonArray("bias"));
   }
 
+  /**
+   * Get bias double [ ].
+   *
+   * @return the double [ ]
+   */
   @Nullable
   public double[] getBias() {
     assert bias != null;
@@ -73,6 +94,11 @@ public class ImgBandBiasLayer extends LayerBase {
     return bias;
   }
 
+  /**
+   * Sets weights.
+   *
+   * @param f the f
+   */
   public void setWeights(@Nonnull IntToDoubleFunction f) {
     @Nullable final double[] bias = getBias();
     assert bias != null;
@@ -82,6 +108,11 @@ public class ImgBandBiasLayer extends LayerBase {
     assert RefArrays.stream(bias).allMatch(Double::isFinite);
   }
 
+  /**
+   * Sets weights log.
+   *
+   * @param value the value
+   */
   public void setWeightsLog(double value) {
     assert bias != null;
     for (int i = 0; i < bias.length; i++) {
@@ -89,12 +120,25 @@ public class ImgBandBiasLayer extends LayerBase {
     }
   }
 
+  /**
+   * From json img band bias layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the img band bias layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static ImgBandBiasLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ImgBandBiasLayer(json);
   }
 
+  /**
+   * Add double [ ].
+   *
+   * @param input the input
+   * @return the double [ ]
+   */
   @Nonnull
   public double[] add(@Nonnull final double[] input) {
     assert RefArrays.stream(input).allMatch(Double::isFinite);
@@ -111,6 +155,11 @@ public class ImgBandBiasLayer extends LayerBase {
     return array;
   }
 
+  /**
+   * Add weights.
+   *
+   * @param f the f
+   */
   public void addWeights(@Nonnull DoubleSupplier f) {
     Util.add(f, getBias());
   }
@@ -124,6 +173,12 @@ public class ImgBandBiasLayer extends LayerBase {
     return result;
   }
 
+  /**
+   * Eval result.
+   *
+   * @param input the input
+   * @return the result
+   */
   @Nonnull
   public Result eval(@Nonnull final Result input) {
     @Nullable final double[] bias = getBias();
@@ -142,6 +197,11 @@ public class ImgBandBiasLayer extends LayerBase {
     return json;
   }
 
+  /**
+   * Set.
+   *
+   * @param ds the ds
+   */
   public void set(@Nonnull double[] ds) {
     @Nullable final double[] bias = getBias();
     for (int i = 0; i < ds.length; i++) {
@@ -158,6 +218,11 @@ public class ImgBandBiasLayer extends LayerBase {
     return RefArrays.asList(getBias());
   }
 
+  /**
+   * Set.
+   *
+   * @param tensor the tensor
+   */
   public void set(@Nonnull Tensor tensor) {
     set(tensor.getData());
     tensor.freeRef();
@@ -205,6 +270,15 @@ public class ImgBandBiasLayer extends LayerBase {
     private Result.Accumulator accumulator;
     private boolean alive;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param bias        the bias
+     * @param id          the id
+     * @param frozen      the frozen
+     * @param accumulator the accumulator
+     * @param alive       the alive
+     */
     public Accumulator(double[] bias, UUID id, boolean frozen, Result.Accumulator accumulator, boolean alive) {
       this.bias = bias;
       this.id = id;

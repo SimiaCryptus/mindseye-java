@@ -31,17 +31,36 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.IntFunction;
 
+/**
+ * The type Photo unpooling layer.
+ */
 @SuppressWarnings("serial")
 public class PhotoUnpoolingLayer extends LayerBase {
 
+  /**
+   * Instantiates a new Photo unpooling layer.
+   */
   public PhotoUnpoolingLayer() {
     super();
   }
 
+  /**
+   * Instantiates a new Photo unpooling layer.
+   *
+   * @param json the json
+   */
   protected PhotoUnpoolingLayer(@Nonnull final JsonObject json) {
     super(json);
   }
 
+  /**
+   * Copy condense tensor.
+   *
+   * @param inputData     the input data
+   * @param outputData    the output data
+   * @param referenceData the reference data
+   * @return the tensor
+   */
   @Nonnull
   public static Tensor copyCondense(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData,
                                     @Nonnull Tensor referenceData) {
@@ -86,6 +105,14 @@ public class PhotoUnpoolingLayer extends LayerBase {
     return outputData;
   }
 
+  /**
+   * Copy expand tensor.
+   *
+   * @param inputData     the input data
+   * @param outputData    the output data
+   * @param referenceData the reference data
+   * @return the tensor
+   */
   @Nonnull
   public static Tensor copyExpand(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData,
                                   @Nonnull Tensor referenceData) {
@@ -128,6 +155,13 @@ public class PhotoUnpoolingLayer extends LayerBase {
     return outputData;
   }
 
+  /**
+   * From json photo unpooling layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the photo unpooling layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static PhotoUnpoolingLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -198,6 +232,14 @@ public class PhotoUnpoolingLayer extends LayerBase {
     private Result.Accumulator accumulator;
     private boolean alive;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param referencebatch the referencebatch
+     * @param inputDims      the input dims
+     * @param accumulator    the accumulator
+     * @param alive          the alive
+     */
     public Accumulator(TensorList referencebatch, int[] inputDims, Result.Accumulator accumulator, boolean alive) {
       this.referencebatch = referencebatch;
       this.inputDims = inputDims;

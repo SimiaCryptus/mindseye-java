@@ -31,6 +31,9 @@ import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * The type Sign reducer layer.
+ */
 @SuppressWarnings("serial")
 public class SignReducerLayer extends DAGNetwork {
 
@@ -39,6 +42,9 @@ public class SignReducerLayer extends DAGNetwork {
   @Nullable
   private final DAGNode head;
 
+  /**
+   * Instantiates a new Sign reducer layer.
+   */
   public SignReducerLayer() {
     super(1);
     final DAGNode avgInput = add(new AvgReducerLayer(), getInput(0));
@@ -63,6 +69,12 @@ public class SignReducerLayer extends DAGNetwork {
     avgInput.freeRef();
   }
 
+  /**
+   * Instantiates a new Sign reducer layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   */
   protected SignReducerLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json, rs);
     head = getNodeById(UUID.fromString(json.getAsJsonPrimitive("head").getAsString()));
@@ -73,6 +85,13 @@ public class SignReducerLayer extends DAGNetwork {
     return head == null ? null : head.addRef();
   }
 
+  /**
+   * From json layer.
+   *
+   * @param inner the inner
+   * @param rs    the rs
+   * @return the layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static Layer fromJson(@Nonnull final JsonObject inner, Map<CharSequence, byte[]> rs) {

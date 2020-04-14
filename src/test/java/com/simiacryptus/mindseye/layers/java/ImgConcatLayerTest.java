@@ -24,6 +24,9 @@ import com.simiacryptus.mindseye.test.LayerTestBase;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The type Img concat layer test.
+ */
 public abstract class ImgConcatLayerTest extends LayerTestBase {
 
   @Nonnull
@@ -38,6 +41,9 @@ public abstract class ImgConcatLayerTest extends LayerTestBase {
     return new int[][]{{8, 8, 1}, {8, 8, 1}};
   }
 
+  /**
+   * The type Basic.
+   */
   public static class Basic extends ImgConcatLayerTest {
 
   }

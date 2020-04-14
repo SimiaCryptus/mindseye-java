@@ -27,13 +27,27 @@ import com.simiacryptus.ref.wrappers.RefList;
 import javax.annotation.Nonnull;
 import java.util.Map;
 
+/**
+ * The type Variable layer.
+ */
 @SuppressWarnings("serial")
 public class VariableLayer extends WrapperLayer {
 
+  /**
+   * Instantiates a new Variable layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   */
   protected VariableLayer(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json, rs);
   }
 
+  /**
+   * Instantiates a new Variable layer.
+   *
+   * @param inner the inner
+   */
   public VariableLayer(final Layer inner) {
     super(inner);
   }
@@ -43,6 +57,13 @@ public class VariableLayer extends WrapperLayer {
     return super.getChildren();
   }
 
+  /**
+   * From json variable layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the variable layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static VariableLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {

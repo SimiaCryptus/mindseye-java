@@ -34,19 +34,37 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.IntFunction;
 
+/**
+ * The type Mean sq loss layer.
+ */
 @SuppressWarnings("serial")
 public class MeanSqLossLayer extends LayerBase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(MeanSqLossLayer.class);
 
+  /**
+   * Instantiates a new Mean sq loss layer.
+   */
   public MeanSqLossLayer() {
   }
 
+  /**
+   * Instantiates a new Mean sq loss layer.
+   *
+   * @param id the id
+   */
   protected MeanSqLossLayer(@Nonnull final JsonObject id) {
     super(id);
   }
 
+  /**
+   * From json mean sq loss layer.
+   *
+   * @param json the json
+   * @param rs   the rs
+   * @return the mean sq loss layer
+   */
   @Nonnull
   @SuppressWarnings("unused")
   public static MeanSqLossLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
@@ -146,6 +164,17 @@ public class MeanSqLossLayer extends LayerBase {
     private boolean alive0;
     private boolean alive1;
 
+    /**
+     * Instantiates a new Accumulator.
+     *
+     * @param diffs        the diffs
+     * @param leftLength   the left length
+     * @param rightLength  the right length
+     * @param accumulator0 the accumulator 0
+     * @param accumulator1 the accumulator 1
+     * @param alive0       the alive 0
+     * @param alive1       the alive 1
+     */
     public Accumulator(Tensor[] diffs, int leftLength, int rightLength, Result.Accumulator accumulator0, Result.Accumulator accumulator1, boolean alive0, boolean alive1) {
       this.diffs = diffs;
       this.leftLength = leftLength;

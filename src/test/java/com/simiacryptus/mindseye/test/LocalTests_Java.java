@@ -25,6 +25,9 @@ import org.junit.jupiter.api.Test;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The type Local tests java.
+ */
 public class LocalTests_Java extends NotebookReportBase {
 
   @Override
@@ -37,6 +40,9 @@ public class LocalTests_Java extends NotebookReportBase {
     return MacroTestRunner.class;
   }
 
+  /**
+   * Main.
+   */
   @Test
   public void main() {
     new MacroTestRunner().runAll(getLog(),

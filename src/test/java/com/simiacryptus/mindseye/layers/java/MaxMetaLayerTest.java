@@ -24,6 +24,9 @@ import com.simiacryptus.mindseye.layers.MetaLayerTestBase;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The type Max meta layer test.
+ */
 public abstract class MaxMetaLayerTest extends MetaLayerTestBase {
 
   @Nonnull
@@ -50,6 +53,9 @@ public abstract class MaxMetaLayerTest extends MetaLayerTestBase {
     return new MeanSqLossLayer();
   }
 
+  /**
+   * The type Basic.
+   */
   public static class Basic extends MaxMetaLayerTest {
 
   }

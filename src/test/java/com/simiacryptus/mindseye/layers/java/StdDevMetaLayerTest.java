@@ -24,7 +24,13 @@ import com.simiacryptus.mindseye.layers.MetaLayerTestBase;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The type Std dev meta layer test.
+ */
 public abstract class StdDevMetaLayerTest extends MetaLayerTestBase {
+  /**
+   * Instantiates a new Std dev meta layer test.
+   */
   public StdDevMetaLayerTest() {
     super();
     //validateDifferentials = false;
@@ -54,6 +60,9 @@ public abstract class StdDevMetaLayerTest extends MetaLayerTestBase {
     return new MeanSqLossLayer();
   }
 
+  /**
+   * The type Basic.
+   */
   public static class Basic extends StdDevMetaLayerTest {
 
   }
