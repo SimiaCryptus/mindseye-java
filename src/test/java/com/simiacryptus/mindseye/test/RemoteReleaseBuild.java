@@ -50,7 +50,9 @@ public class RemoteReleaseBuild {
               true,
               true,
               true,
-              false
+              false,
+              "2.0.1",
+              "code.simiacrypt.us/release"
           );
         }
     );

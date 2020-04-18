@@ -51,10 +51,27 @@ public class LinearActivationLayer extends LayerBase {
    * Instantiates a new Linear activation layer.
    */
   public LinearActivationLayer() {
+    this(1.);
+  }
+
+  /**
+   * Instantiates a new Linear activation layer.
+   * @param scale
+   */
+  public LinearActivationLayer(double scale) {
+    this(scale, 0.);
+  }
+
+  /**
+   * Instantiates a new Linear activation layer.
+   * @param scale
+   * @param bias
+   */
+  public LinearActivationLayer(double scale, double bias) {
     super();
     weights = new Tensor(2);
-    weights.set(0, 1.);
-    weights.set(1, 0.);
+    weights.set(0, scale);
+    weights.set(1, bias);
   }
 
   /**

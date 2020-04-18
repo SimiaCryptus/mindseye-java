@@ -63,7 +63,9 @@ public class BuildAndRelease extends NotebookReportBase {
         "C:\\Windows\\System32\\bash.exe",
         "git",
         "/mnt/c/Users/andre/Downloads/apache-maven-3.6.3-bin/apache-maven-3.6.3/bin/mvn",
-        "H:\\SimiaCryptus", false, true, true, false
+        "H:\\SimiaCryptus", false, false, false, false,
+        "2.0.0",
+        "code.simiacrypt.us/release"
     );
   }
 
@@ -134,24 +136,28 @@ public class BuildAndRelease extends NotebookReportBase {
    * @param release
    * @param site
    * @param installTools
+   * @param newVersion
+   * @param siteHome
    */
-  public static void build(NotebookOutput log, long timeout, String bash, String git, String maven, String buildDirectory, boolean clean, boolean release, boolean site, boolean installTools) {
-    long endTime = System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(50);
+  public static void build(NotebookOutput log, long timeout, String bash, String git, String maven, String buildDirectory, boolean clean, boolean release, boolean site, boolean installTools, String newVersion, String siteHome) {
+    String mainProject = "all-projects";
+    long endTime = System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(15);
     try {
       if(installTools) {
         log.subreport("Tooling Setup", sub -> {
           commands(sub, timeout, buildDirectory,
-              new String[]{bash, "-c", "sudo yum update"},
-              new String[]{bash, "-c", "sudo yum install git default-jdk"},
+              //new String[]{bash, "-c", "sudo yum update"},
+              //new String[]{bash, "-c", "sudo yum install git default-jdk"},
+              new String[]{bash, "-c", "java -version"},
+              new String[]{bash, "-c", "javac -version"},
               new String[]{bash, "-c", "rm -rf apache-maven-3.6.3*"},
               new String[]{bash, "-c", "wget http://apache.mirrors.hoobly.com/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz"},
               new String[]{bash, "-c", "tar -xzvf apache-maven-3.6.3-bin.tar.gz"}
           );
           return null;
         });
-        maven = buildDirectory + "/apache-maven-3.6.3/bin/mvn/";
+        maven = buildDirectory + "/apache-maven-3.6.3/bin/mvn";
       }
-      String mainProject = "all-projects";
       String mainBuildDirectory = buildDirectory + "/" + mainProject;
       if (clean) {
         log.subreport("Git Checkout", sub -> {
@@ -167,9 +173,8 @@ public class BuildAndRelease extends NotebookReportBase {
           return null;
         });
       }
-      String newVersion = "2.0.0";
       HashMap<File, String> previousData = log.subreport("Updating Version to " + newVersion, sub -> {
-        return setVersion(sub, mainBuildDirectory, newVersion, "MINDSEYE-SNAPSHOT");
+        return setVersion(sub, mainBuildDirectory, newVersion, "MINDSEYE-SNAPSHOT", siteHome);
       });
       log.h1("Building Build Tools");
       commands(log, timeout, mainBuildDirectory + "/third-party/aws-s3-maven",
@@ -253,16 +258,19 @@ public class BuildAndRelease extends NotebookReportBase {
    * @param buildDirectory the build directory
    * @param newVersion     the new version
    * @param oldVersion     the old version
+   * @param siteHome
    * @return the version
    */
   @NotNull
-  public static HashMap<File, String> setVersion(NotebookOutput log, String buildDirectory, final String newVersion, final String oldVersion) {
+  public static HashMap<File, String> setVersion(NotebookOutput log, String buildDirectory, final String newVersion, final String oldVersion, String siteHome) {
     HashMap<File, String> previousData = new HashMap<>();
     for (File file : FileUtils.listFiles(new File(buildDirectory), new String[]{"xml"}, true)) {
       if (file.getName().equals("pom.xml")) {
         try {
           String originalData = FileUtils.readFileToString(file, "UTF-8");
-          String newData = originalData.replaceAll("<version>" + oldVersion + "</version>", "<version>" + newVersion + "</version>");
+          String newData = originalData
+              .replaceAll("<version>" + oldVersion + "</version>", "<version>" + newVersion + "</version>")
+              .replaceAll("code.simiacrypt.us/release", siteHome);
           if (!newData.equals(originalData)) {
             previousData.put(file.getAbsoluteFile(), originalData);
             log.p("Modified " + file.getAbsolutePath());

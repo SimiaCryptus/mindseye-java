@@ -49,8 +49,10 @@ public class RemoteValidationBuild {
               "/home/ec2-user/code",
               true,
               true,
+              false,
               true,
-              true
+              "2.0.1",
+              "code.simiacrypt.us/release"
           );
         }
     );
