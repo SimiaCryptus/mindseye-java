@@ -48,7 +48,7 @@ public class RemoteValidationBuild {
               null,
               "/home/ec2-user/code",
               true,
-              true,
+              false,
               false,
               true,
               "2.0.1",

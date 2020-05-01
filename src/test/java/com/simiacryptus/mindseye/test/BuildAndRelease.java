@@ -21,25 +21,49 @@ package com.simiacryptus.mindseye.test;
 
 import com.simiacryptus.aws.Tendril;
 import com.simiacryptus.notebook.NotebookOutput;
+import com.simiacryptus.util.Util;
 import com.simiacryptus.util.test.NotebookReportBase;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import javax.annotation.Nonnull;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
+import java.io.UnsupportedEncodingException;
+import java.nio.file.FileVisitOption;
+import java.nio.file.Files;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * The type Build and release.
  */
 public class BuildAndRelease extends NotebookReportBase {
+
+  private final static XPath xPath = XPathFactory.newInstance().newXPath();
 
   @Override
   public @Nonnull ReportType getReportType() {
@@ -51,77 +75,79 @@ public class BuildAndRelease extends NotebookReportBase {
     return BuildAndRelease.class;
   }
 
-  /**
-   * Local build.
-   */
-  @Test
-  public void localBuild() {
-    //String buildDirectory = "/mnt/h/SimiaCryptus/all-projects";
-    build(
-        getLog(),
-        TimeUnit.HOURS.toMillis(6),
-        "C:\\Windows\\System32\\bash.exe",
-        "git",
-        "/mnt/c/Users/andre/Downloads/apache-maven-3.6.3-bin/apache-maven-3.6.3/bin/mvn",
-        "H:\\SimiaCryptus", false, false, false, false,
-        "2.0.0",
-        "code.simiacrypt.us/release"
-    );
-  }
-
-  /**
-   * Standard site xml.
-   */
-  @Test
-  public void standardSiteXML() {
-    Collection<File> pomFiles = FileUtils.listFiles(new File("H:\\SimiaCryptus\\all-projects"), new IOFileFilter() {
-      @Override
-      public boolean accept(File file) {
-        return "pom.xml".equals(file.getName());
-      }
-
-      @Override
-      public boolean accept(File dir, String name) {
-        return "pom.xml".equals(name);
-      }
-    }, new IOFileFilter() {
-      @Override
-      public boolean accept(File file) {
-        return true;
-      }
-
-      @Override
-      public boolean accept(File dir, String name) {
-        return true;
-      }
-    });
-    File modelSiteXml = new File("src/site/site.xml");
-    pomFiles.forEach(pomFile -> {
-      if (pomFile.toPath().resolve("../src").toFile().exists()) {
-        File siteXml = pomFile.toPath().resolve("../src/site/site.xml").normalize().toFile();
-        if (siteXml.exists()) {
-          System.out.println(siteXml.getAbsolutePath() + " already exists");
-        } else {
-          try {
-            FileUtils.copyFile(modelSiteXml, siteXml);
-          } catch (IOException e) {
-            e.printStackTrace();
-          }
-        }
+  public static void updatePOMs(File root, BiConsumer<File, Document> fn) {
+    try {
+      List<File> poms = Files.walk(root.toPath(), FileVisitOption.FOLLOW_LINKS)
+          .filter(x -> x.getFileName().toString().equals("pom.xml"))
+          .map(x -> x.toFile())
+          .collect(Collectors.toList());
+      poms.forEach(pomFile -> {
         try {
-          //String data = FileUtils.readFileToString(siteXml, "UTF-8");
-          String data = FileUtils.readFileToString(modelSiteXml, "UTF-8");
-          String name = pomFile.toPath().getParent().normalize().toAbsolutePath().toFile().getName();
-          data = data.replaceAll("<project name=\".*\">", "<project name=\"" + name + "\">");
-          data = data.replaceAll("<projectId>.*</projectId>", "<projectId>SimiaCryptus/" + name + "</projectId>");
-          FileUtils.writeStringToFile(siteXml, data, "UTF-8");
-        } catch (IOException e) {
+          System.out.println("Editing " + pomFile.getAbsolutePath());
+          Document xmlDoc = open(pomFile);
+          backup(pomFile);
+          fn.accept(pomFile, xmlDoc);
+          write(pomFile, xmlDoc);
+        } catch (Throwable e) {
           e.printStackTrace();
         }
-      }
-    });
+      });
+    } catch (Throwable e) {
+      throw Util.throwException(e);
+    }
   }
 
+  public static Document open(File pomFile) throws SAXException, IOException, ParserConfigurationException {
+    return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(pomFile);
+  }
+
+  public static void backup(File pomFile) throws IOException {
+    FileUtils.copyFile(pomFile, new File(pomFile.toString() + ".bak"));
+  }
+
+  public static void edit(String version, Document xmlDoc) throws XPathExpressionException {
+    XPath xPath = XPathFactory.newInstance().newXPath();
+    Node artifactId = (Node) xPath.evaluate("/project/artifactId", xmlDoc, XPathConstants.NODE);
+    String projectName = artifactId.getTextContent();
+    System.out.println("Project " + projectName);
+    String targetUrl = "http://code.simiacrypt.us/release/" + version + "/" + projectName;
+    Node url = (Node) xPath.compile("/project/url").evaluate(xmlDoc, XPathConstants.NODE);
+    if (null == url) {
+      System.out.println("No URL");
+      Node element = getOrCreate(artifactId.getParentNode(), "url");
+      element.setTextContent(targetUrl);
+      Node parentNode = artifactId.getParentNode();
+      parentNode.appendChild(element);
+      //parentNode.insertBefore(project, element);
+    } else {
+      System.out.println("URL changed from " + url.getTextContent());
+      url.setTextContent(targetUrl);
+    }
+  }
+
+  public static void write(File pomFile, Document xmlDoc) throws TransformerException {
+    Transformer transformer = TransformerFactory.newInstance().newTransformer();
+    transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+    transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+    transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+
+    DOMSource domSource = new DOMSource(xmlDoc);
+    StreamResult sr = new StreamResult(pomFile);
+    transformer.transform(domSource, sr);
+  }
+
+  public static String toString(Node xmlDoc) throws TransformerException, UnsupportedEncodingException {
+    Transformer transformer = TransformerFactory.newInstance().newTransformer();
+    transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+    transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+    transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+
+    DOMSource domSource = new DOMSource(xmlDoc);
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    StreamResult sr = new StreamResult(out);
+    transformer.transform(domSource, sr);
+    return out.toString("UTF-8");
+  }
 
   /**
    * Build.
@@ -143,7 +169,7 @@ public class BuildAndRelease extends NotebookReportBase {
     String mainProject = "all-projects";
     long endTime = System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(15);
     try {
-      if(installTools) {
+      if (installTools) {
         log.subreport("Tooling Setup", sub -> {
           commands(sub, timeout, buildDirectory,
               //new String[]{bash, "-c", "sudo yum update"},
@@ -185,7 +211,7 @@ public class BuildAndRelease extends NotebookReportBase {
           new String[]{bash, maven, "clean", "package", "install", "-fae", "-DskipTests"}
       );
       log.h1("Validating Software Integrity");
-      for(String dir : Arrays.asList(
+      for (String dir : Arrays.asList(
           mainBuildDirectory + "/util",
           mainBuildDirectory + "/mindseye",
           mainBuildDirectory + "/misc",
@@ -196,8 +222,8 @@ public class BuildAndRelease extends NotebookReportBase {
             new String[]{bash, maven, "clean", "com.simiacryptus:refcount-autocoder:verify", "-fae", "-DskipTests"}
         );
       }
-      String profile = release ?"-Prelease":null;
-      if(site) {
+      String profile = release ? "-Prelease" : null;
+      if (site) {
         log.h1("Building Site");
         commands(log, timeout, mainBuildDirectory,
             new String[]{bash, maven, "site:site", "-fae", profile, "-DskipTests"},
@@ -205,10 +231,15 @@ public class BuildAndRelease extends NotebookReportBase {
             new String[]{bash, maven, "site:deploy", "-fae", profile, "-DskipTests"}
         );
       }
-      if(release) {
+      if (release) {
         log.h1("Deploy Software");
         commands(log, timeout, mainBuildDirectory,
             new String[]{bash, maven, "clean", "package", "deploy", "-fae", profile, "-DskipTests"}
+        );
+      } else {
+        log.h1("Build and Install Software");
+        commands(log, timeout, mainBuildDirectory,
+            new String[]{bash, maven, "clean", "package", "install", "-fae", profile, "-DskipTests"}
         );
       }
       log.subreport("Revert Version Changes", sub -> {
@@ -346,4 +377,205 @@ public class BuildAndRelease extends NotebookReportBase {
     }
   }
 
+  /**
+   * Local build.
+   */
+  @Test
+  public void localBuild() {
+    //String buildDirectory = "/mnt/h/SimiaCryptus/all-projects";
+    build(
+        getLog(),
+        TimeUnit.HOURS.toMillis(6),
+        "C:\\Windows\\System32\\bash.exe",
+        "git",
+        "/mnt/c/Users/andre/Downloads/apache-maven-3.6.3-bin/apache-maven-3.6.3/bin/mvn",
+        "H:\\SimiaCryptus", false, false, false, false,
+        "2.0.0",
+        "code.simiacrypt.us/release"
+    );
+  }
+
+  /**
+   * Update POMs.
+   */
+  @Test
+  public void updatePOMs() {
+    List<Node> versionedDeps = new ArrayList<>();
+    updatePOMs(new File(new File("H:\\SimiaCryptus"), "all-projects"), (File pomFile, Document document) -> {
+      try {
+        if (pomFile.getAbsolutePath().contains("third-party")) return;
+        Node artifactId = (Node) xPath.evaluate("/project/artifactId", document, XPathConstants.NODE);
+        System.out.println("Project " + artifactId.getTextContent());
+
+        {
+          String targetUrl = "http://code.simiacrypt.us/release/${project.version}/" + artifactId.getTextContent();
+          Node url = (Node) xPath.compile("/project/url").evaluate(document, XPathConstants.NODE);
+          if (null == url) {
+            System.out.println("No URL");
+            Node element = getOrCreate(artifactId.getParentNode(), "url");
+            element.setTextContent(targetUrl);
+            artifactId.getParentNode().appendChild(element);
+            //parentNode.insertBefore(project, element);
+          } else {
+            System.out.println("URL changed from " + url.getTextContent());
+            url.setTextContent(targetUrl);
+          }
+        }
+
+        {
+          String targetUrl = "s3://code.simiacrypt.us/release/${project.version}/" + artifactId.getTextContent();
+          Node url = (Node) xPath.compile("/project/distributionManagement/site/url").evaluate(document, XPathConstants.NODE);
+          if (null == url) {
+            System.out.println("No URL");
+            getOrCreate(artifactId.getParentNode(), "distributionManagement", "site", "url").setTextContent(targetUrl);
+            //parentNode.insertBefore(project, element);
+          } else {
+            System.out.println("URL changed from " + url.getTextContent());
+            url.setTextContent(targetUrl);
+          }
+        }
+
+        {
+          Node dependencies = getOrCreate(artifactId.getParentNode(), "dependencyManagement", "dependencies");
+          if (dependencies.getChildNodes().getLength() == 0) {
+            Element dependency = dependencies.getOwnerDocument().createElement("dependency");
+            dependencies.appendChild(dependency);
+            getOrCreate(dependency, "groupId").setTextContent("com.simiacryptus");
+            getOrCreate(dependency, "artifactId").setTextContent("bom");
+            getOrCreate(dependency, "version").setTextContent("${project.version}");
+            getOrCreate(dependency, "type").setTextContent("pom");
+            getOrCreate(dependency, "scope").setTextContent("import");
+          }
+        }
+
+        {
+          Node dependencies = get(artifactId.getParentNode(), "dependencies");
+          if (null != dependencies) {
+            NodeList childNodes = dependencies.getChildNodes();
+            versionedDeps.addAll(IntStream.range(0, childNodes.getLength()).mapToObj(i -> {
+              Node dependency = childNodes.item(i);
+              Node versionNode = get(dependency, "version");
+              if (null != versionNode) {
+                versionNode.getParentNode().removeChild(versionNode);
+                return dependency;
+              } else {
+                return null;
+              }
+            }).filter(x -> x != null).collect(Collectors.toList()));
+          }
+        }
+      } catch (Throwable e) {
+        e.printStackTrace();
+      }
+    });
+    try {
+      Document bom = open(new File("H:\\SimiaCryptus\\all-projects\\mvn-parents\\bom\\pom.xml"));
+      Node bom_dependencies = (Node) xPath.evaluate("/project/dependencyManagement/dependencies", bom, XPathConstants.NODE);
+      NodeList nodes = bom_dependencies.getChildNodes();
+      for (int i = 0; i < nodes.getLength(); i++) {
+        Node item = nodes.item(i);
+        versionedDeps.add(item);
+        bom_dependencies.removeChild(item);
+      }
+      versionedDeps.stream()
+          .collect(Collectors.groupingBy(node -> String.format("%s:%s", getText(node, "groupId"), getText(node, "artifactId"))))
+          .values().stream()
+          .filter(x -> !x.isEmpty())
+          .map(x -> x.get(0))
+          .sorted(Comparator.comparing(node -> String.format("%s:%s", getText(node, "groupId"), getText(node, "artifactId"))))
+          .map(x->bom_dependencies.getOwnerDocument().adoptNode(x))
+          .collect(Collectors.toList())
+          .forEach(bom_dependencies::appendChild);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public String getText(Node x1, String groupId) {
+    Node node = get(x1, groupId);
+    if (null == node) return "";
+    return node.getTextContent();
+  }
+
+  public static Node getOrCreate(Node node, String... names) {
+    String name = names[0];
+    NodeList childNodes = node.getChildNodes();
+    for (int i = 0; i < childNodes.getLength(); i++) {
+      Node item = childNodes.item(i);
+      if (item.getNodeName().equals(name)) {
+        if (names.length > 1) return getOrCreate(item, Arrays.copyOfRange(names, 1, names.length));
+        return item;
+      }
+    }
+    Element element = node.getOwnerDocument().createElement(name);
+    node.appendChild(element);
+    if (names.length > 1) return getOrCreate(element, Arrays.copyOfRange(names, 1, names.length));
+    return element;
+  }
+
+  public static Node get(Node node, String... names) {
+    String name = names[0];
+    NodeList childNodes = node.getChildNodes();
+    for (int i = 0; i < childNodes.getLength(); i++) {
+      Node item = childNodes.item(i);
+      if (item.getNodeName().equals(name)) {
+        if (names.length > 1) return get(item, Arrays.copyOfRange(names, 1, names.length));
+        return item;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Standard site xml.
+   */
+  @Test
+  public void standardSiteXML() {
+    Collection<File> pomFiles = FileUtils.listFiles(new File("H:\\SimiaCryptus\\all-projects"), new IOFileFilter() {
+      @Override
+      public boolean accept(File file) {
+        return "pom.xml".equals(file.getName());
+      }
+
+      @Override
+      public boolean accept(File dir, String name) {
+        return "pom.xml".equals(name);
+      }
+    }, new IOFileFilter() {
+      @Override
+      public boolean accept(File file) {
+        return true;
+      }
+
+      @Override
+      public boolean accept(File dir, String name) {
+        return true;
+      }
+    });
+    File modelSiteXml = new File("src/site/site.xml");
+    pomFiles.forEach(pomFile -> {
+      if (pomFile.toPath().resolve("../src").toFile().exists()) {
+        File siteXml = pomFile.toPath().resolve("../src/site/site.xml").normalize().toFile();
+        if (siteXml.exists()) {
+          System.out.println(siteXml.getAbsolutePath() + " already exists");
+        } else {
+          try {
+            FileUtils.copyFile(modelSiteXml, siteXml);
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
+        }
+        try {
+          //String data = FileUtils.readFileToString(siteXml, "UTF-8");
+          String data = FileUtils.readFileToString(modelSiteXml, "UTF-8");
+          String name = pomFile.toPath().getParent().normalize().toAbsolutePath().toFile().getName();
+          data = data.replaceAll("<project name=\".*\">", "<project name=\"" + name + "\">");
+          data = data.replaceAll("<projectId>.*</projectId>", "<projectId>SimiaCryptus/" + name + "</projectId>");
+          FileUtils.writeStringToFile(siteXml, data, "UTF-8");
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
+    });
+  }
 }
