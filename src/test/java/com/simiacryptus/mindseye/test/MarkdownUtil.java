@@ -21,6 +21,7 @@ package com.simiacryptus.mindseye.test;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.util.test.NotebookReportBase;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
@@ -84,7 +85,9 @@ public class MarkdownUtil {
         } else {
           HashMap<String, String> imageElements = allImageElements(data);
           if(!imageElements.isEmpty()) {
-            headerJson.addProperty("thumbnail", imageElements.entrySet().iterator().next().getValue());
+            Map.Entry<String, String> next = imageElements.entrySet().iterator().next();
+            headerJson.addProperty("thumbnail", next.getValue());
+            RefUtil.freeRef(next);
             writeHeader = true;
             logger.info(String.format("Setting thumbnail for %s", mdFile.getName()));
           }
