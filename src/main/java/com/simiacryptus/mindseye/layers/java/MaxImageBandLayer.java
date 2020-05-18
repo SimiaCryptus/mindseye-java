@@ -32,7 +32,6 @@ import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.IntFunction;
-import java.util.function.IntToDoubleFunction;
 
 /**
  * The type Max image band layer.
@@ -130,7 +129,7 @@ public class MaxImageBandLayer extends LayerBase {
         .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
           Tensor inTensor = inputData.get(dataIndex);
           final RefDoubleStream doubleStream = RefIntStream.range(0, inputDim)
-              .mapToDouble(RefUtil.wrapInterface((IntToDoubleFunction) band -> {
+              .mapToDouble(RefUtil.wrapInterface(band -> {
                 final int[] maxCoord = maxCoords[dataIndex][band].getCoords();
                 return inTensor.get(maxCoord[0], maxCoord[1], band);
               }, inTensor));

@@ -20,7 +20,7 @@
 package com.simiacryptus.mindseye.test;
 
 import com.simiacryptus.util.test.MacroTestRunner;
-import com.simiacryptus.util.test.NotebookReportBase;
+import com.simiacryptus.util.test.NotebookTestBase;
 import org.junit.jupiter.api.Test;
 
 import javax.annotation.Nonnull;
@@ -28,7 +28,7 @@ import javax.annotation.Nonnull;
 /**
  * The type Local tests java.
  */
-public class LocalTests_Java extends NotebookReportBase {
+public class LocalTests_Java extends NotebookTestBase {
 
   @Override
   public @Nonnull ReportType getReportType() {

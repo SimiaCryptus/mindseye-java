@@ -34,7 +34,6 @@ import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.IntFunction;
-import java.util.function.IntToDoubleFunction;
 
 import static com.simiacryptus.mindseye.lang.Result.anyAlive;
 
@@ -114,7 +113,7 @@ public class SumReducerLayer extends LayerBase {
   @NotNull
   private TensorArray fwd(@Nonnull Result[] inObj, int length) {
     return new TensorArray(RefIntStream.range(0, length).parallel()
-        .mapToDouble(RefUtil.wrapInterface((IntToDoubleFunction) dataIndex -> {
+        .mapToDouble(RefUtil.wrapInterface(dataIndex -> {
           double sum = 0;
           for (@Nonnull final Result element : inObj) {
             TensorList data = element.getData();

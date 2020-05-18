@@ -57,7 +57,7 @@ public class LinearActivationLayer extends LayerBase {
   /**
    * Instantiates a new Linear activation layer.
    *
-   * @param scale
+   * @param scale the scale
    */
   public LinearActivationLayer(double scale) {
     this(scale, 0.);
@@ -66,8 +66,8 @@ public class LinearActivationLayer extends LayerBase {
   /**
    * Instantiates a new Linear activation layer.
    *
-   * @param scale
-   * @param bias
+   * @param scale the scale
+   * @param bias  the bias
    */
   public LinearActivationLayer(double scale, double bias) {
     super();

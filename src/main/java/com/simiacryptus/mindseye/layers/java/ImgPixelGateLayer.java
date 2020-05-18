@@ -34,7 +34,6 @@ import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.IntFunction;
-import java.util.function.ToDoubleFunction;
 
 /**
  * The type Img pixel gate layer.
@@ -135,7 +134,7 @@ public class ImgPixelGateLayer extends LayerBase {
           Tensor inputTensor = inputData.get(i);
           Tensor gateTensor = gateData.get(gateData.length() == 1 ? 0 : i);
           Tensor outputTensor = new Tensor(inputDims[0], inputDims[1], inputDims[2]);
-          outputTensor.setByCoord(RefUtil.wrapInterface((ToDoubleFunction<Coordinate>) c -> {
+          outputTensor.setByCoord(RefUtil.wrapInterface(c -> {
             int[] coords = c.getCoords();
             return inputTensor.get(coords[0], coords[1], coords[2])
                 * gateTensor.get(coords[0], coords[1], 0);

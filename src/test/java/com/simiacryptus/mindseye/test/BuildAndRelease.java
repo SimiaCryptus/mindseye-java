@@ -22,7 +22,7 @@ package com.simiacryptus.mindseye.test;
 import com.simiacryptus.aws.Tendril;
 import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.util.Util;
-import com.simiacryptus.util.test.NotebookReportBase;
+import com.simiacryptus.util.test.NotebookTestBase;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.jetbrains.annotations.NotNull;
@@ -61,7 +61,7 @@ import java.util.stream.IntStream;
 /**
  * The type Build and release.
  */
-public class BuildAndRelease extends NotebookReportBase {
+public class BuildAndRelease extends NotebookTestBase {
 
   private final static XPath xPath = XPathFactory.newInstance().newXPath();
 
@@ -75,6 +75,12 @@ public class BuildAndRelease extends NotebookReportBase {
     return BuildAndRelease.class;
   }
 
+  /**
+   * Update po ms.
+   *
+   * @param root the root
+   * @param fn   the fn
+   */
   public static void updatePOMs(File root, BiConsumer<File, Document> fn) {
     try {
       List<File> poms = Files.walk(root.toPath(), FileVisitOption.FOLLOW_LINKS)
@@ -97,14 +103,36 @@ public class BuildAndRelease extends NotebookReportBase {
     }
   }
 
+  /**
+   * Open document.
+   *
+   * @param pomFile the pom file
+   * @return the document
+   * @throws SAXException                 the sax exception
+   * @throws IOException                  the io exception
+   * @throws ParserConfigurationException the parser configuration exception
+   */
   public static Document open(File pomFile) throws SAXException, IOException, ParserConfigurationException {
     return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(pomFile);
   }
 
+  /**
+   * Backup.
+   *
+   * @param pomFile the pom file
+   * @throws IOException the io exception
+   */
   public static void backup(File pomFile) throws IOException {
     FileUtils.copyFile(pomFile, new File(pomFile.toString() + ".bak"));
   }
 
+  /**
+   * Edit.
+   *
+   * @param version the version
+   * @param xmlDoc  the xml doc
+   * @throws XPathExpressionException the x path expression exception
+   */
   public static void edit(String version, Document xmlDoc) throws XPathExpressionException {
     XPath xPath = XPathFactory.newInstance().newXPath();
     Node artifactId = (Node) xPath.evaluate("/project/artifactId", xmlDoc, XPathConstants.NODE);
@@ -125,6 +153,13 @@ public class BuildAndRelease extends NotebookReportBase {
     }
   }
 
+  /**
+   * Write.
+   *
+   * @param pomFile the pom file
+   * @param xmlDoc  the xml doc
+   * @throws TransformerException the transformer exception
+   */
   public static void write(File pomFile, Document xmlDoc) throws TransformerException {
     Transformer transformer = TransformerFactory.newInstance().newTransformer();
     transformer.setOutputProperty(OutputKeys.INDENT, "yes");
@@ -136,6 +171,14 @@ public class BuildAndRelease extends NotebookReportBase {
     transformer.transform(domSource, sr);
   }
 
+  /**
+   * To string string.
+   *
+   * @param xmlDoc the xml doc
+   * @return the string
+   * @throws TransformerException         the transformer exception
+   * @throws UnsupportedEncodingException the unsupported encoding exception
+   */
   public static String toString(Node xmlDoc) throws TransformerException, UnsupportedEncodingException {
     Transformer transformer = TransformerFactory.newInstance().newTransformer();
     transformer.setOutputProperty(OutputKeys.INDENT, "yes");
@@ -159,11 +202,11 @@ public class BuildAndRelease extends NotebookReportBase {
    * @param maven          the maven
    * @param buildDirectory the build directory
    * @param clean          the clean
-   * @param release
-   * @param site
-   * @param installTools
-   * @param newVersion
-   * @param siteHome
+   * @param release        the release
+   * @param site           the site
+   * @param installTools   the install tools
+   * @param newVersion     the new version
+   * @param siteHome       the site home
    */
   public static void build(NotebookOutput log, long timeout, String bash, String git, String maven, String buildDirectory, boolean clean, boolean release, boolean site, boolean installTools, String newVersion, String siteHome) {
     String mainProject = "all-projects";
@@ -289,7 +332,7 @@ public class BuildAndRelease extends NotebookReportBase {
    * @param buildDirectory the build directory
    * @param newVersion     the new version
    * @param oldVersion     the old version
-   * @param siteHome
+   * @param siteHome       the site home
    * @return the version
    */
   @NotNull
@@ -375,6 +418,49 @@ public class BuildAndRelease extends NotebookReportBase {
         process.destroy();
       }
     }
+  }
+
+  /**
+   * Gets or create.
+   *
+   * @param node  the node
+   * @param names the names
+   * @return the or create
+   */
+  public static Node getOrCreate(Node node, String... names) {
+    String name = names[0];
+    NodeList childNodes = node.getChildNodes();
+    for (int i = 0; i < childNodes.getLength(); i++) {
+      Node item = childNodes.item(i);
+      if (item.getNodeName().equals(name)) {
+        if (names.length > 1) return getOrCreate(item, Arrays.copyOfRange(names, 1, names.length));
+        return item;
+      }
+    }
+    Element element = node.getOwnerDocument().createElement(name);
+    node.appendChild(element);
+    if (names.length > 1) return getOrCreate(element, Arrays.copyOfRange(names, 1, names.length));
+    return element;
+  }
+
+  /**
+   * Get node.
+   *
+   * @param node  the node
+   * @param names the names
+   * @return the node
+   */
+  public static Node get(Node node, String... names) {
+    String name = names[0];
+    NodeList childNodes = node.getChildNodes();
+    for (int i = 0; i < childNodes.getLength(); i++) {
+      Node item = childNodes.item(i);
+      if (item.getNodeName().equals(name)) {
+        if (names.length > 1) return get(item, Arrays.copyOfRange(names, 1, names.length));
+        return item;
+      }
+    }
+    return null;
   }
 
   /**
@@ -483,7 +569,7 @@ public class BuildAndRelease extends NotebookReportBase {
           .filter(x -> !x.isEmpty())
           .map(x -> x.get(0))
           .sorted(Comparator.comparing(node -> String.format("%s:%s", getText(node, "groupId"), getText(node, "artifactId"))))
-          .map(x->bom_dependencies.getOwnerDocument().adoptNode(x))
+          .map(x -> bom_dependencies.getOwnerDocument().adoptNode(x))
           .collect(Collectors.toList())
           .forEach(bom_dependencies::appendChild);
     } catch (Exception e) {
@@ -491,39 +577,17 @@ public class BuildAndRelease extends NotebookReportBase {
     }
   }
 
+  /**
+   * Gets text.
+   *
+   * @param x1      the x 1
+   * @param groupId the group id
+   * @return the text
+   */
   public String getText(Node x1, String groupId) {
     Node node = get(x1, groupId);
     if (null == node) return "";
     return node.getTextContent();
-  }
-
-  public static Node getOrCreate(Node node, String... names) {
-    String name = names[0];
-    NodeList childNodes = node.getChildNodes();
-    for (int i = 0; i < childNodes.getLength(); i++) {
-      Node item = childNodes.item(i);
-      if (item.getNodeName().equals(name)) {
-        if (names.length > 1) return getOrCreate(item, Arrays.copyOfRange(names, 1, names.length));
-        return item;
-      }
-    }
-    Element element = node.getOwnerDocument().createElement(name);
-    node.appendChild(element);
-    if (names.length > 1) return getOrCreate(element, Arrays.copyOfRange(names, 1, names.length));
-    return element;
-  }
-
-  public static Node get(Node node, String... names) {
-    String name = names[0];
-    NodeList childNodes = node.getChildNodes();
-    for (int i = 0; i < childNodes.getLength(); i++) {
-      Node item = childNodes.item(i);
-      if (item.getNodeName().equals(name)) {
-        if (names.length > 1) return get(item, Arrays.copyOfRange(names, 1, names.length));
-        return item;
-      }
-    }
-    return null;
   }
 
   /**

@@ -22,7 +22,6 @@ package com.simiacryptus.mindseye.test;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.simiacryptus.ref.lang.RefUtil;
-import com.simiacryptus.util.test.NotebookReportBase;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -46,9 +45,18 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * The type Markdown util.
+ */
 public class MarkdownUtil {
+  /**
+   * The constant logger.
+   */
   protected static final Logger logger = LoggerFactory.getLogger(MarkdownUtil.class);
 
+  /**
+   * Fix hugo markdown.
+   */
   @Test
   public void fixHugoMarkdown() {
     Collection<File> mdFiles = FileUtils.listFiles(new File("H:\\SimiaCryptus\\scalaJS\\blog.simiacryptus.com\\content\\posts"),
@@ -80,11 +88,11 @@ public class MarkdownUtil {
         data = replaceAll(data, downloadAll(imageDir, data), mdFile.toPath().getParent());
         JsonObject headerJson = getHeaderJson(data);
         boolean writeHeader = false;
-        if(headerJson.has("thumbnail")) {
+        if (headerJson.has("thumbnail")) {
           logger.info(mdFile.getName() + " has a thumbnail");
         } else {
           HashMap<String, String> imageElements = allImageElements(data);
-          if(!imageElements.isEmpty()) {
+          if (!imageElements.isEmpty()) {
             Map.Entry<String, String> next = imageElements.entrySet().iterator().next();
             headerJson.addProperty("thumbnail", next.getValue());
             RefUtil.freeRef(next);
@@ -92,12 +100,12 @@ public class MarkdownUtil {
             logger.info(String.format("Setting thumbnail for %s", mdFile.getName()));
           }
         }
-        if(!headerJson.has("comments")) {
+        if (!headerJson.has("comments")) {
           headerJson.addProperty("comments", true);
           writeHeader = true;
           logger.info(String.format("Enable comments for %s", mdFile.getName()));
         }
-        if(writeHeader) data = setHeaderJson(data, headerJson);
+        if (writeHeader) data = setHeaderJson(data, headerJson);
         FileUtils.writeStringToFile(mdFile, data, "UTF-8");
       } catch (Throwable e) {
         e.printStackTrace();
@@ -105,6 +113,14 @@ public class MarkdownUtil {
     });
   }
 
+  /**
+   * Replace all string.
+   *
+   * @param data      the data
+   * @param downloads the downloads
+   * @param base      the base
+   * @return the string
+   */
   @Nullable
   public String replaceAll(String data, HashMap<String, File> downloads, Path base) {
     for (Map.Entry<String, File> e : downloads.entrySet()) {
@@ -118,6 +134,13 @@ public class MarkdownUtil {
     return data;
   }
 
+  /**
+   * Download all hash map.
+   *
+   * @param imageDir the image dir
+   * @param data     the data
+   * @return the hash map
+   */
   @NotNull
   public HashMap<String, File> downloadAll(File imageDir, String data) {
     Pattern compile = Pattern.compile("\\!\\[(.*)\\]\\((.*)\\)");
@@ -127,7 +150,7 @@ public class MarkdownUtil {
       String url = matcher.group(2);
       try {
         File localFile = download(url, imageDir);
-        if(null != localFile) downloads.put(url, localFile);
+        if (null != localFile) downloads.put(url, localFile);
       } catch (Throwable e) {
         e.printStackTrace();
       }
@@ -135,6 +158,12 @@ public class MarkdownUtil {
     return downloads;
   }
 
+  /**
+   * All image elements hash map.
+   *
+   * @param data the data
+   * @return the hash map
+   */
   @NotNull
   public HashMap<String, String> allImageElements(String data) {
     Pattern compile = Pattern.compile("\\!\\[(.*)\\]\\((.*)\\)");
@@ -148,22 +177,43 @@ public class MarkdownUtil {
     return images;
   }
 
+  /**
+   * Gets header json.
+   *
+   * @param data the data
+   * @return the header json
+   */
   public JsonObject getHeaderJson(String data) {
     Pattern compile = Pattern.compile("^\\{.*?\\}\\s*\r?\n", Pattern.DOTALL);
     Matcher matcher = compile.matcher(data);
-    if(!matcher.find()) return new JsonObject();
+    if (!matcher.find()) return new JsonObject();
     String trim = matcher.group(0).trim();
     return new GsonBuilder().setLenient().create().fromJson(trim, JsonObject.class);
   }
 
+  /**
+   * Sets header json.
+   *
+   * @param data      the data
+   * @param newHeader the new header
+   * @return the header json
+   */
   public String setHeaderJson(String data, JsonObject newHeader) {
     Pattern compile = Pattern.compile("^(\\{.*\\})\n", Pattern.DOTALL);
     Matcher matcher = compile.matcher(data);
     String headerStr = new GsonBuilder().setLenient().setPrettyPrinting().create().toJson(newHeader);
-    if(!matcher.find()) return headerStr + "\n" + data;
+    if (!matcher.find()) return headerStr + "\n" + data;
     return matcher.replaceFirst(headerStr + "\n");
   }
 
+  /**
+   * Download file.
+   *
+   * @param url      the url
+   * @param imageDir the image dir
+   * @return the file
+   * @throws IOException the io exception
+   */
   @Nullable
   public File download(String url, File imageDir) throws IOException {
     File file;
@@ -180,7 +230,7 @@ public class MarkdownUtil {
         extension = "gif";
       } else {
         extension = split[split.length - 1];
-        if(extension.length() > 4) {
+        if (extension.length() > 4) {
           logger.warn("Unknown type of " + split[split.length - 1] + " (assuming gif)");
           extension = "gif";
         }

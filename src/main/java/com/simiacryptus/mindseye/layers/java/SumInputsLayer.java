@@ -32,7 +32,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntFunction;
 
 import static com.simiacryptus.mindseye.lang.Result.anyAlive;
@@ -128,7 +127,7 @@ public class SumInputsLayer extends LayerBase {
             Tensor tensor = null;
             if (right.length() == 1) {
               RefUtil.freeRef(tensor);
-              tensor = left.mapParallel(RefUtil.wrapInterface((DoubleUnaryOperator) v -> v + right.get(0),
+              tensor = left.mapParallel(RefUtil.wrapInterface(v -> v + right.get(0),
                   right.addRef()));
             } else {
               RefUtil.freeRef(tensor);

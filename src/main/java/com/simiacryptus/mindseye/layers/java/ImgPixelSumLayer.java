@@ -33,8 +33,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.IntToDoubleFunction;
-import java.util.function.ToDoubleFunction;
 
 /**
  * The type Img pixel sum layer.
@@ -129,8 +127,8 @@ public class ImgPixelSumLayer extends LayerBase {
   private TensorArray fwd(TensorList inputData, int[] inputDims) {
     TensorArray tensorArray = new TensorArray(inputData.stream().map(tensor -> {
       Tensor outputTensor = new Tensor(inputDims[0], inputDims[1], 1);
-      outputTensor.setByCoord(RefUtil.wrapInterface((ToDoubleFunction<Coordinate>) c -> {
-        return RefIntStream.range(0, inputDims[2]).mapToDouble(RefUtil.wrapInterface((IntToDoubleFunction) i -> {
+      outputTensor.setByCoord(RefUtil.wrapInterface(c -> {
+        return RefIntStream.range(0, inputDims[2]).mapToDouble(RefUtil.wrapInterface(i -> {
           int[] coords = c.getCoords();
           return tensor.get(coords[0], coords[1], i);
         }, tensor == null ? null : tensor.addRef())).sum();
