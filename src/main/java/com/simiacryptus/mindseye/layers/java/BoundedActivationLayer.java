@@ -37,7 +37,7 @@ public class BoundedActivationLayer extends SimpleActivationLayer<BoundedActivat
   /**
    * Instantiates a new Bounded activation layer.
    */
-  public BoundedActivationLayer() {
+   public BoundedActivationLayer() {
     super();
   }
 

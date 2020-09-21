@@ -238,15 +238,14 @@ public class ImgTileSelectLayer extends LayerBase {
     final Result input = inObj[0].addRef();
     RefUtil.freeRef(inObj);
     final TensorList batch = input.getData();
+    boolean alive = input.isAlive();
     @Nonnull final int[] inputDims = batch.getDimensions();
     assert 3 == inputDims.length;
     @Nonnull final int[] dimOut = getViewDimensions(inputDims, new int[]{sizeX, sizeY, inputDims[2]},
         new int[]{positionX, positionY, 0});
-    boolean alive = input.isAlive();
-    Result.Accumulator accumulator = new Accumulator(positionX, positionY, toroidal, inputDims, input.getAccumulator(), input.isAlive());
+    Result.Accumulator accumulator = new Accumulator(positionX, positionY, toroidal, inputDims, input.getAccumulator(), alive);
     input.freeRef();
-    TensorArray data = fwd(batch, dimOut);
-    return new Result(data, accumulator, alive);
+    return new Result(fwd(batch, dimOut), accumulator, alive);
   }
 
   /**

@@ -1,6 +1,6 @@
+*.hprof
 .idea/
 logs/
 mindseye-java.iml
 reports/
 target/
-*.hprof
