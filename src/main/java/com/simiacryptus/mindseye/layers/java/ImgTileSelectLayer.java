@@ -182,9 +182,7 @@ public class ImgTileSelectLayer extends LayerBase {
         int positionY = row * strideY + offsetY;
         ImgTileSelectLayer tileSelectLayer = new ImgTileSelectLayer(width, height, positionX, positionY,
             offsetX < 0 || offsetY < 0);
-        Result temp_14_0005 = tileSelectLayer.eval(canvas.addRef());
-        assert temp_14_0005 != null;
-        TensorList temp_14_0006 = Result.getData(temp_14_0005);
+        TensorList temp_14_0006 = Result.getData(tileSelectLayer.eval(canvas.addRef()));
         RefUtil.set(tiles, index++, temp_14_0006.get(0));
         temp_14_0006.freeRef();
         tileSelectLayer.freeRef();

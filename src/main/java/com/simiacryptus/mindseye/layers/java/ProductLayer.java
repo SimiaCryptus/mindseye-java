@@ -79,17 +79,17 @@ public class ProductLayer extends LayerBase {
   public Result eval(@Nonnull final Result... inObj) {
     final Result in0 = inObj[0].addRef();
     assert RefArrays.stream(RefUtil.addRef(inObj)).mapToInt(x -> {
-      TensorList temp_49_0005 = x.getData();
-      int temp_49_0001 = temp_49_0005.length();
-      temp_49_0005.freeRef();
+      TensorList tensorList = x.getData();
+      int length = tensorList.length();
+      tensorList.freeRef();
       x.freeRef();
-      return temp_49_0001;
+      return length;
     }).distinct().count() == 1 : RefArrays.toString(RefArrays.stream(RefUtil.addRef(inObj)).mapToInt(x -> {
-      TensorList temp_49_0006 = x.getData();
-      int temp_49_0002 = temp_49_0006.length();
-      temp_49_0006.freeRef();
+      TensorList data = x.getData();
+      int length = data.length();
+      data.freeRef();
       x.freeRef();
-      return temp_49_0002;
+      return length;
     }).toArray());
     TensorList data0 = in0.getData();
     int length0 = data0.length();

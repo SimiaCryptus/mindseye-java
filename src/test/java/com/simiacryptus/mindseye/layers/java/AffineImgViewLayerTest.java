@@ -28,12 +28,12 @@ import javax.annotation.Nonnull;
 /**
  * The type Img view layer test.
  */
-public abstract class ImgViewLayerTest extends LayerTestBase {
+public abstract class AffineImgViewLayerTest extends LayerTestBase {
 
   /**
    * Instantiates a new Img view layer test.
    */
-  public ImgViewLayerTest() {
+  public AffineImgViewLayerTest() {
   }
 
   @Nonnull
@@ -51,12 +51,12 @@ public abstract class ImgViewLayerTest extends LayerTestBase {
   /**
    * The type Basic.
    */
-  public static class Basic extends ImgViewLayerTest {
+  public static class Basic extends AffineImgViewLayerTest {
 
     @Nonnull
     @Override
     public Layer getLayer() {
-      return new ImgViewLayer(3, 2, 2, 3);
+      return new AffineImgViewLayer(3, 2, 2, 3);
     }
 
   }
@@ -64,12 +64,12 @@ public abstract class ImgViewLayerTest extends LayerTestBase {
   /**
    * The type Rotated.
    */
-  public static class Rotated extends ImgViewLayerTest {
+  public static class Rotated extends AffineImgViewLayerTest {
 
     @Nonnull
     @Override
     public Layer getLayer() {
-      ImgViewLayer imgViewLayer = new ImgViewLayer(3, 2, 2, 3);
+      AffineImgViewLayer imgViewLayer = new AffineImgViewLayer(3, 2, 2, 3);
       imgViewLayer.setRotationRadians(Math.PI / 2);
       return imgViewLayer;
     }
@@ -79,12 +79,12 @@ public abstract class ImgViewLayerTest extends LayerTestBase {
   /**
    * The type Rotated channels.
    */
-  public static class RotatedChannels extends ImgViewLayerTest {
+  public static class RotatedChannels extends AffineImgViewLayerTest {
 
     @Nonnull
     @Override
     public Layer getLayer() {
-      ImgViewLayer imgViewLayer = new ImgViewLayer(3, 2, 2, 3);
+      AffineImgViewLayer imgViewLayer = new AffineImgViewLayer(3, 2, 2, 3);
       imgViewLayer.setRotationRadians(Math.PI / 2);
       imgViewLayer.setChannelSelector(new int[]{2, -1});
       return imgViewLayer;
