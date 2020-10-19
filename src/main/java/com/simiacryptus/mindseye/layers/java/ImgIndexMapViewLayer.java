@@ -1,6 +1,6 @@
 package com.simiacryptus.mindseye.layers.java;
 
-import com.simiacryptus.math.PoincareDisk;
+import com.simiacryptus.math.Raster;
 
 import javax.annotation.Nonnull;
 
@@ -9,7 +9,7 @@ public class ImgIndexMapViewLayer extends ImgViewLayerBase {
     private final int sizeX;
     private final int sizeY;
 
-    public ImgIndexMapViewLayer(PoincareDisk.Raster raster, int[] pixelMap) {
+    public ImgIndexMapViewLayer(Raster raster, int[] pixelMap) {
         this.sizeX = raster.sizeX;
         this.sizeY = raster.sizeY;
         this.pixelMap = pixelMap;
@@ -17,7 +17,7 @@ public class ImgIndexMapViewLayer extends ImgViewLayerBase {
 
     @Override
     protected @Nonnull double[] coordinateMapping(@Nonnull double... xy) {
-        final PoincareDisk.Raster raster = new PoincareDisk.Raster(sizeX, sizeY);
+        final Raster raster = new Raster(sizeX, sizeY);
         int[] ints = {(int) xy[0], (int) xy[1]};
         int i = raster.toIndex(ints);
         int j = pixelMap[i];
