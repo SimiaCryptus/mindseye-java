@@ -1,8 +1,10 @@
 package com.simiacryptus.mindseye.layers.java;
 
+import com.simiacryptus.math.Point;
 import com.simiacryptus.math.Raster;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 
 public class ImgIndexMapViewLayer extends ImgViewLayerBase {
     private final int[] pixelMap;
@@ -13,16 +15,17 @@ public class ImgIndexMapViewLayer extends ImgViewLayerBase {
         this.sizeX = raster.sizeX;
         this.sizeY = raster.sizeY;
         this.pixelMap = pixelMap;
+        assert Arrays.stream(this.pixelMap).allMatch(x -> x >= -1);
+        assert Arrays.stream(this.pixelMap).allMatch(x -> x < sizeX * sizeY);
     }
 
     @Override
-    protected @Nonnull double[] coordinateMapping(@Nonnull double... xy) {
+    protected Point coordinateMapping(@Nonnull Point xy) {
         final Raster raster = new Raster(sizeX, sizeY);
-        int[] ints = {(int) xy[0], (int) xy[1]};
-        int i = raster.toIndex(ints);
+        int i = raster.toIndex((int) xy.x, (int) xy.y);
         int j = pixelMap[i];
-        if (j < 0) return new double[]{0.0, 0.0};
-        raster.fromIndex(j, ints);
-        return new double[]{ints[0], ints[1]};
+        if (j < 0) return new Point(0.0, 0.0);
+        int[] dest = raster.fromIndex(j);
+        return new Point(dest[0], dest[1]);
     }
 }

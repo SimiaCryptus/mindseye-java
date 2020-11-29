@@ -1,106 +1,50 @@
 package com.simiacryptus.math;
 
-import org.apache.commons.math3.analysis.UnivariateFunction;
-import org.apache.commons.math3.exception.TooManyEvaluationsException;
-import org.apache.commons.math3.optim.MaxEval;
-import org.apache.commons.math3.optim.nonlinear.scalar.GoalType;
-import org.apache.commons.math3.optim.univariate.BrentOptimizer;
-import org.apache.commons.math3.optim.univariate.SearchInterval;
-import org.apache.commons.math3.optim.univariate.UnivariateObjectiveFunction;
-import org.apache.commons.math3.optim.univariate.UnivariatePointValuePair;
 import org.apache.commons.math3.util.FastMath;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Circle {
-    public static final Circle UNIT_CIRCLE = new Circle(new double[]{0, 0}, 1);
-    public final double centerX;
-    public final double centerY;
+    public static final Circle UNIT_CIRCLE = new Circle(new Point(0, 0), 1);
+    public final Point center;
     public final double radius;
 
-    public Circle(double[] centerXY) {
-        this(centerXY, FastMath.sqrt((centerXY[0] * centerXY[0] + centerXY[1] * centerXY[1]) - 1));
-    }
-
-    public Circle(double[] centerXY, double radius) {
-        this.centerX = centerXY[0];
-        this.centerY = centerXY[1];
+    public Circle(Point center, double radius) {
+        this.center = center;
         this.radius = radius;
     }
 
-    public double[] inverse(double[] pt) {
-        double dx = pt[0] - centerX;
-        double dy = pt[1] - centerY;
-        double r = PoincareDisk.rms(new double[]{dx, dy});
-        return new double[]{centerX + dx / (r*r), centerY + dy / (r*r)};
+    public Point inverse(Point pt) {
+        double dx = pt.x - center.x;
+        double dy = pt.y - center.y;
+        double r = new Point(dx, dy).sumSq();
+        return new Point(center.x + dx / (r), center.y + dy / (r));
     }
 
-    public static PoincareCircle intersecting(double[] xy1, double[] xy2) {
-        if(PoincareDisk.rms(xy1) > PoincareDisk.rms(xy2)) {
-            return PoincareCircle.intersecting(xy1, xy2, UNIT_CIRCLE.inverse(xy2));
-        } else {
-            return PoincareCircle.intersecting(xy1, xy2, UNIT_CIRCLE.inverse(xy1));
-        }
+    public static Circle intersecting(Point pt1, Point pt2, Point pt3) {
+        if (Math.min(Geometry.dist(pt1, pt2), Geometry.dist(pt3, pt2)) < 1e-8) return new Circle(pt1, 0);
+        double x1 = pt1.x;
+        double y1 = pt1.y;
+        double x2 = pt2.x;
+        double y2 = pt2.y;
+        double x3 = pt3.x;
+        double y3 = pt3.y;
+        double a = x1 * (y2 - y3) - y1 * (x2 - x3) + x2 * y3 - x3 * y2;
+        double b = (x1 * x1 + y1 * y1) * (y3 - y2) + (x2 * x2 + y2 * y2) * (y1 - y3) + (x3 * x3 + y3 * y3) * (y2 - y1);
+        double c = (x1 * x1 + y1 * y1) * (x2 - x3) + (x2 * x2 + y2 * y2) * (x3 - x1) + (x3 * x3 + y3 * y3) * (x1 - x2);
+        double d = (x1 * x1 + y1 * y1) * (x3 * y2 - x2 * y3) + (x2 * x2 + y2 * y2) * (x1 * y3 - x3 * y1) + (x3 * x3 + y3 * y3) * (x2 * y1 - x1 * y2);
+        double r = FastMath.sqrt((b * b + c * c - 4 * a * d) / (4 * a * a));
+        return new Circle(new Point(-b / (2 * a), -c / (2 * a)), r);
     }
 
-    @NotNull
-    double[] cycle_theta_bounds(double[] subject, double[] theta_bounds) {
-        double theta = theta(subject);
-        if (theta < theta_bounds[0]) {
-            theta_bounds = new double[]{
-                    theta_bounds[0] - FastMath.PI * 2,
-                    theta_bounds[1] - FastMath.PI * 2
-            };
-        } else if (theta > theta_bounds[1]) {
-            theta_bounds = new double[]{
-                    theta_bounds[0] + FastMath.PI * 2,
-                    theta_bounds[1] + FastMath.PI * 2
-            };
-        }
-        assert !(theta_bounds[0] >= theta_bounds[1]);
-        return theta_bounds;
-    }
-
-    @NotNull
-    public double[] theta_bounds(Circle circle) {
-        List<double[]> infinities = circle.intersect(this);
-        assert 2 == infinities.size();
-        double[] theta_bounds = infinities.stream().mapToDouble(this::theta).sorted().toArray();
-        synchronized (theta_bounds) {
-            while (theta_bounds[0] > theta_bounds[1]) {
-                theta_bounds = infinities.stream().mapToDouble(this::theta).sorted().toArray();
-            }
-        }
-        if (theta_bounds[1] - theta_bounds[0] > FastMath.PI) {
-            theta_bounds = new double[]{
-                    theta_bounds[1] - FastMath.PI * 2,
-                    theta_bounds[0]
-            };
-            if (theta_bounds[0] < 2 * FastMath.PI) {
-                theta_bounds = new double[]{
-                        theta_bounds[0] + FastMath.PI * 2,
-                        theta_bounds[1] + FastMath.PI * 2
-                };
-            }
-        }
-        return theta_bounds;
-    }
-
-    public boolean intersects(double[] xy) {
-        return euclideanDistFromCircle(xy) < PoincareDisk.SPACIAL_CHECKS;
-    }
-
-    public List<double[]> intersect(Circle right) {
-        double x0 = centerX;
-        double y0 = centerY;
+    public List<Point> intersect(Circle right) {
+        double x0 = center.x;
+        double y0 = center.y;
         double r0 = radius;
-        double x1 = right.centerX;
-        double y1 = right.centerY;
+        double x1 = right.center.x;
+        double y1 = right.center.y;
         double r1 = right.radius;
         double d = FastMath.sqrt((x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0));
         double a = (r0 * r0 - r1 * r1 + d * d) / (2 * d);
@@ -108,66 +52,69 @@ public class Circle {
         double x2 = x0 + a * (x1 - x0) / d;
         double y2 = y0 + a * (y1 - y0) / d;
         return Stream.of(
-                new double[]{
+                new Point(
                         x2 + h * (y1 - y0) / d,
                         y2 - h * (x1 - x0) / d
-                }, new double[]{
+                ), new Point(
                         x2 - h * (y1 - y0) / d,
                         y2 + h * (x1 - x0) / d
-                }).collect(Collectors.toList());
+                )).collect(Collectors.toList());
     }
 
-    boolean isPerpendicular(Circle circle) {
-        return circle != null && FastMath.abs((FastMath.PI / 2) - angle(circle)) < PoincareDisk.SPACIAL_CHECKS;
+    public Point theta(double theta) {
+        return new Point(
+                center.x - FastMath.sin(theta) * radius,
+                center.y + FastMath.cos(theta) * radius
+        );
     }
 
-    public double[] theta(double optimal) {
-        double[] xy = new double[2];
-        theta(optimal, xy);
-        return xy;
+    public double theta(Point xy) {
+        return -FastMath.atan2((xy.x - center.x), (xy.y - center.y));
     }
 
-    public double theta(double[] xy) {
-        return -FastMath.atan2((xy[0] - centerX), (xy[1] - centerY));
-    }
-
-    public void theta(double theta, double[] returnValue) {
-        returnValue[0] = centerX - FastMath.sin(theta) * radius;
-        returnValue[1] = centerY + FastMath.cos(theta) * radius;
-    }
-
-    public boolean within(double[] xy) {
+    public boolean within(Point xy) {
         double v = euclideanDistFromCenter(xy);
         return v <= radius;
     }
 
-    public double euclideanDistFromCenter(double[] xy) {
-        return PoincareDisk.rms(new double[]{xy[0] - centerX, xy[1] - centerY});
+    public double euclideanDistFromCenter(Point xy) {
+        return Geometry.rms(xy.x - center.x, xy.y - center.y);
     }
 
-    public double euclideanDistFromCircle(double[] xy) {
-        return FastMath.abs(PoincareDisk.rms(new double[]{xy[0] - centerX, xy[1] - centerY}) - radius);
+    public double euclideanDistFromCircle(Point xy) {
+        return FastMath.abs(Geometry.rms(xy.x - center.x, xy.y - center.y) - radius);
     }
 
     public double angle(Circle right) {
-        double d = euclideanDistFromCenter(new double[]{right.centerX, right.centerY});
+        double d = euclideanDistFromCenter(new Point(right.center.x, right.center.y));
         if (d > radius + right.radius) {
             return Double.NaN;
         }
-
         return FastMath.PI - (FastMath.acos((radius * radius + right.radius * right.radius - d * d) / (2 * radius * right.radius)));
     }
 
     @Override
     public String toString() {
         return "Circle{" +
-                "centerX=" + centerX +
-                ", centerY=" + centerY +
+                "centerX=" + center.x +
+                ", centerY=" + center.y +
                 ", radius=" + radius +
                 '}';
     }
 
-    public PoincareCircle poincare() {
-        return new PoincareCircle(new double[]{centerX, centerY});
+    public PoincareCircle asPoincareCircle() {
+        Point center = this.center;
+        if (center.rms() < 1.0) {
+            center = center().scale(1.0 / center().rms());
+        }
+        while (center.rms() < 1.0) {
+            center = center().scale(1.0 + 1e-6);
+        }
+        return new PoincareCircle(new Point(center.x, center.y));
     }
+
+    public Point center() {
+        return new Point(center.x, center.y);
+    }
+
 }

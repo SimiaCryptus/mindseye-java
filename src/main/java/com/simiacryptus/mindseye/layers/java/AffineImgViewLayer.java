@@ -21,6 +21,7 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.simiacryptus.math.Point;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import org.apache.commons.math3.util.FastMath;
@@ -266,29 +267,27 @@ public class AffineImgViewLayer extends ImgViewLayerBase {
    * @return the double [ ]
    */
   @Override
-  @Nonnull
-  protected double[] coordinateMapping(@Nonnull double... xy) {
-    if(xy[0] < xMin || xy[0] >= xMax) return xy;
-    if(xy[1] < yMin || xy[1] >= yMax) return xy;
-    xy[0] += offsetX;
-    xy[1] += offsetY;
-    xy[0] -= rotationCenterX;
-    xy[1] -= rotationCenterY;
-    double x = xy[0];
-    double y = xy[1];
+  protected Point coordinateMapping(@Nonnull Point xy) {
+    double x = xy.x;
+    double y = xy.y;
+    if(x < xMin || x >= xMax) return xy;
+    if(y < yMin || y >= yMax) return xy;
     double dist = Math.sqrt(x*x+y*y);
-    if(dist < rMin || dist >= rMax) {
-      xy[0] += rotationCenterX - offsetX;
-      xy[1] += rotationCenterY - offsetY;
-      return xy;
+    if (dist >= rMin && dist < rMax) {
+      x += offsetX;
+      y += offsetY;
+      x -= rotationCenterX;
+      y -= rotationCenterY;
+      double sin = FastMath.sin(rotationRadians);
+      double cos = FastMath.cos(rotationRadians);
+      double x2 = x;
+      double y2 = y;
+      x = cos * x2 - sin * y2;
+      y = cos * y2 + sin * x2;
+      x += rotationCenterX;
+      y += rotationCenterY;
     }
-    double sin = FastMath.sin(rotationRadians);
-    double cos = FastMath.cos(rotationRadians);
-    xy[0] = cos * x - sin * y;
-    xy[1] = sin * x + cos * y;
-    xy[0] += rotationCenterX;
-    xy[1] += rotationCenterY;
-    return xy;
+    return new Point(x,y);
   }
 
   public int getxMax() {

@@ -19,8 +19,8 @@
 
 package com.simiacryptus.mindseye.layers.java;
 
+import com.simiacryptus.math.Point;
 import com.simiacryptus.math.*;
-import com.simiacryptus.math.Polygon;
 import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.mindseye.util.ImageUtil;
 import org.jetbrains.annotations.NotNull;
@@ -31,56 +31,77 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.function.UnaryOperator;
 
 import static com.simiacryptus.math.Circle.UNIT_CIRCLE;
 
 public class PoincareDiskTest {
+
     @Test
     public void test() throws IOException {
         //new PoincareGeometry.Circle()
         Circle circle;
         for (double theta = -3; theta < 3; theta += 0.5) {
-            double[] thetaTest = UNIT_CIRCLE.theta(theta);
-            System.out.printf("%s -> %s -> %s -> %s%n", theta, Arrays.toString(thetaTest), UNIT_CIRCLE.theta(thetaTest), Arrays.toString(UNIT_CIRCLE.theta(UNIT_CIRCLE.theta(thetaTest))));
+            Point thetaTest = UNIT_CIRCLE.theta(theta);
+            System.out.printf("%s -> %s -> %s -> %s%n", theta, thetaTest, UNIT_CIRCLE.theta(thetaTest), UNIT_CIRCLE.theta(UNIT_CIRCLE.theta(thetaTest)));
         }
-        circle = Circle.intersecting(new double[]{0, .25}, new double[]{.5, .5});
-        @NotNull double[] poincareGenCoords = circle.poincare().getPoincareGenCoords();
+        circle = PoincareCircle.intersecting(new Point(0, .25), new Point(.5, .5));
+        @NotNull Point poincareGenCoords = circle.asPoincareCircle().getPoincareGenCoords();
         System.out.println("Unit Angle: " + circle.angle(UNIT_CIRCLE));
-        System.out.printf("d1=%s %s%n", circle.euclideanDistFromCenter(new double[]{0, .25}), circle.euclideanDistFromCircle(new double[]{0, .25}));
-        System.out.printf("d2=%s %s%n", circle.euclideanDistFromCenter(new double[]{.5, .5}), circle.euclideanDistFromCircle(new double[]{.5, .5}));
+        System.out.printf("d1=%s %s%n", circle.euclideanDistFromCenter(new Point(0, .25)), circle.euclideanDistFromCircle(new Point(0, .25)));
+        System.out.printf("d2=%s %s%n", circle.euclideanDistFromCenter(new Point(.5, .5)), circle.euclideanDistFromCircle(new Point(.5, .5)));
 
-        Circle perp = circle.poincare().perpendicular(new double[]{0, .4}).edge;
-        System.out.println(perp.toString());
-        System.out.println("Unit Angle: " + perp.angle(UNIT_CIRCLE));
-        System.out.printf("angle=%s%n", perp.angle(circle));
-        System.out.printf("d1=%s %s%n", perp.euclideanDistFromCenter(new double[]{0, .4}), perp.euclideanDistFromCircle(new double[]{0, .4}));
-        System.out.printf("d2=%s %s%n", circle.euclideanDistFromCenter(new double[]{0, .4}), circle.euclideanDistFromCircle(new double[]{0, .4}));
-
-        double[] reflect = circle.poincare().reflect(new double[]{0, .4});
-        System.out.println(Arrays.toString(reflect));
-        System.out.printf("d1=%s %s%n", perp.euclideanDistFromCenter(reflect), perp.euclideanDistFromCircle(reflect));
-        System.out.printf("d2=%s %s%n", circle.euclideanDistFromCenter(reflect), circle.euclideanDistFromCircle(reflect));
     }
 
     @Test
     public void testPolygon() throws IOException {
-        Polygon polygon = Polygon.regularPolygon(6, 8);
-        System.out.println("Test Interior Angle: " + ((180 / Math.PI) * polygon.edges[0].angle(polygon.edges[1])));
-        System.out.println("Test Vertex Agreement: " + polygon.edges[0].euclideanDistFromCircle(polygon.vertices[0]));
-        System.out.println("Test Vertex Agreement: " + polygon.edges[0].euclideanDistFromCircle(polygon.vertices[1]));
-        System.out.println("Test Vertex Agreement: " + polygon.edges[1].euclideanDistFromCircle(polygon.vertices[1]));
+        HyperbolicPolygon polygon = HyperbolicPolygon.regularPolygon(3, 20);
         Raster raster = new Raster(800, 800);
-        int[] pixelMap = pixelMap(polygon, raster);
-        BufferedImage testImage = ImageUtil.resize(ImageUtil.getImage("file:///C:/Users/andre/code/all-projects/report/HyperbolicTexture/b3fab4e2-8609-41ab-9111-f9c96511aa0d/etc/image_f7653234f3c520a6.jpg"), raster.sizeX, raster.sizeY);
+        HyperbolicTiling tiling = new HyperbolicTiling(polygon).expand(4);
+        BufferedImage paint = raster.getImage();
+        int[] pixelMap = tiling.buildPixelMap(paint, raster);
+        show(paint);
+        BufferedImage testImage = ImageUtil.resize(ImageUtil.getImage("file:///C:/Users/andre/code/all-projects/report/HyperbolicTexture/8abdf685-f6ef-4b86-b7d4-b27f03bddd44/etc/image_277b19524a6e2d.jpg"), raster.sizeX, raster.sizeY);
         show(new ImgIndexMapViewLayer(raster, pixelMap).eval(Tensor.fromRGB(testImage)).getData().get(0).toRgbImage());
-
     }
 
-    private int[] pixelMap(Polygon polygon, Raster raster) throws IOException {
-        TilingResult tilingResult = raster.pixelMap(polygon, 3);
-        show(tilingResult.getPaint());
-        return tilingResult.getPixelMap();
+    @Test
+    public void finishImage() throws IOException {
+        BufferedImage image = ImageUtil.getImage("file:///C:/Users/andre/code/all-projects/report/HyperbolicTexture/bd074ae8-5e7d-48e2-a74f-a60aae1c474f/etc/image_8a5a91d97620a8e6.jpg");
+        HyperbolicPolygon polygon = HyperbolicPolygon.regularPolygon(4,6);
+        show(polygon.process_poincare(image, 2));
+//        int size = (int) (image.getWidth() * 1.5);
+//        image = ImageUtil.resize(image, size, size);
+        //show(polygon.process_poincare_zoom(image, 2, x->(2*x)/(1+x*x)));
+        //show(polygon.process_klien(image, 2, 1.0));
+    }
+
+    @Test
+    public void finishImages() throws IOException {
+        HyperbolicPolygon polygon = HyperbolicPolygon.regularPolygon(5,6);
+        int width = -1;
+        int superscaling = 2;
+        Raster raster = null;
+        int[] pixelMap = null;
+        for (File file : new File("C:\\Users\\andre\\Downloads\\hyperbolic_reprocess\\5_6").listFiles()) {
+            BufferedImage image = ImageIO.read(file);
+            if(width != image.getWidth()) {
+                width = image.getWidth();
+                raster = new Raster(width * superscaling, width * superscaling);
+                pixelMap = new HyperbolicTiling(polygon).expand(3).buildPixelMap(null, raster);
+            }
+            BufferedImage result = ImageUtil.resize(new ImgIndexMapViewLayer(raster, pixelMap).eval(Tensor.fromRGB(raster.resize(image))).getData().get(0).toRgbImage(), width, width);
+            ImageIO.write(result, "jpg", new File(file.getParentFile(), "resampled_" + file.getName()));
+        }
+    }
+
+    @Test
+    public void testKlien() throws IOException {
+        Raster raster = new Raster(1200, 1200);
+        UnaryOperator<Point> transform = new HyperbolicTiling(HyperbolicPolygon.regularPolygon(4, 6)).expand(3).klien();
+        BufferedImage testImage = ImageUtil.resize(ImageUtil.getImage("file:///C:/Users/andre/code/all-projects/report/HyperbolicTexture/8abdf685-f6ef-4b86-b7d4-b27f03bddd44/etc/image_277b19524a6e2d.jpg"), raster.sizeX, raster.sizeY);
+        show(raster.toLayer(transform).eval(Tensor.fromRGB(testImage)).getData().get(0).toRgbImage());
+
     }
 
     public static void show(BufferedImage image) throws IOException {

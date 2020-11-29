@@ -3,6 +3,7 @@ package com.simiacryptus.mindseye.layers.java;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import com.simiacryptus.math.Point;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.ref.lang.RefIgnore;
 import com.simiacryptus.ref.lang.RefUtil;
@@ -272,9 +273,9 @@ public abstract class ImgViewLayerBase extends LayerBase {
         assert inDim[2] == outDim[2] : RefArrays.toString(inDim) + "; " + RefArrays.toString(outDim);
         outputData.coordStream(true).forEach(RefUtil.wrapInterface((Consumer<? super Coordinate>) c -> {
             int[] coords = c.getCoords();
-            double[] xy = coordinateMapping(coords[0], coords[1]);
-            int x = (int) Math.round(xy[0]);
-            int y = (int) Math.round(xy[1]);
+            Point xy = coordinateMapping(new Point(coords[0], coords[1]));
+            int x = (int) Math.floor(xy.x);
+            int y = (int) Math.floor(xy.y);
             int channel;
             if (null != channelSelector)
                 channel = channelSelector[coords[2]];
@@ -308,9 +309,9 @@ public abstract class ImgViewLayerBase extends LayerBase {
             double value = outputDelta.get(c);
             if (value == 0.0) return;
             int[] outCoord = c.getCoords();
-            double[] inCoords = coordinateMapping(outCoord[0], outCoord[1]);
-            int x = (int) Math.round(inCoords[0]);
-            int y = (int) Math.round(inCoords[1]);
+            Point inCoords = coordinateMapping(new Point(outCoord[0], outCoord[1]));
+            int x = (int) Math.floor(inCoords.x);
+            int y = (int) Math.floor(inCoords.y);
             int channel;
             if (null != channelSelector)
                 channel = channelSelector[outCoord[2]];
@@ -333,8 +334,7 @@ public abstract class ImgViewLayerBase extends LayerBase {
         }, inputDelta, outputDelta));
     }
 
-    @Nonnull
-    protected abstract double[] coordinateMapping(@Nonnull double... xy);
+    protected abstract Point coordinateMapping(@Nonnull Point xy);
 
     private static class Accumulator extends Result.Accumulator {
 
