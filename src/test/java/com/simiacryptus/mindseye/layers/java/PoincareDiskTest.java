@@ -78,20 +78,46 @@ public class PoincareDiskTest {
 
     @Test
     public void finishImages() throws IOException {
-        HyperbolicPolygon polygon = HyperbolicPolygon.regularPolygon(5,6);
-        int width = -1;
-        int superscaling = 2;
-        Raster raster = null;
+        reprocess(new File("C:\\Users\\andre\\Downloads\\Hyperbolic AI Renders\\4"), HyperbolicPolygon.regularPolygon(4,6));
+        reprocess(new File("C:\\Users\\andre\\Downloads\\Hyperbolic AI Renders\\5"), HyperbolicPolygon.regularPolygon(5,6));
+        reprocess(new File("C:\\Users\\andre\\Downloads\\Hyperbolic AI Renders\\6"), HyperbolicPolygon.regularPolygon(6,8));
+    }
+
+    public void reprocess(File baseDir, HyperbolicPolygon polygon) throws IOException {
+        double superscaling = 2;
         int[] pixelMap = null;
-        for (File file : new File("C:\\Users\\andre\\Downloads\\hyperbolic_reprocess\\5_6").listFiles()) {
+        for (File file : baseDir.listFiles()) {
+            if(!file.getName().endsWith(".png")) continue;
+            System.out.println(file.getAbsolutePath());
             BufferedImage image = ImageIO.read(file);
+            Raster raster = null;
+            int width = -1;
             if(width != image.getWidth()) {
                 width = image.getWidth();
-                raster = new Raster(width * superscaling, width * superscaling);
+                int res = (int) (width * superscaling);
+                raster = new Raster(res, res);
                 pixelMap = new HyperbolicTiling(polygon).expand(3).buildPixelMap(null, raster);
             }
-            BufferedImage result = ImageUtil.resize(new ImgIndexMapViewLayer(raster, pixelMap).eval(Tensor.fromRGB(raster.resize(image))).getData().get(0).toRgbImage(), width, width);
-            ImageIO.write(result, "jpg", new File(file.getParentFile(), "resampled_" + file.getName()));
+            new File(file.getParentFile(),"out").mkdirs();
+            String[] name = file.getName().split("\\.");
+//            {
+//                BufferedImage resampled;
+//                resampled = ImageUtil.resize(new ImgIndexMapViewLayer(raster, pixelMap).eval(Tensor.fromRGB(raster.resize(image))).getData().get(0).toRgbImage(), width, width);
+//                ImageIO.write(resampled, "png", new File(file.getParentFile(), "out\\" + name[0] + "_resampled." + name[1]));
+//                image = resampled;
+//            }
+//            {
+//                BufferedImage img = ImageUtil.resize(raster.toLayer(new HyperbolicTiling(polygon).expand(3).klien()).eval(Tensor.fromRGB(raster.resize(image))).getData().get(0).toRgbImage(), width, width);
+//                ImageIO.write(img, "png", new File(file.getParentFile(), "out\\" + name[0] + "_klien." + name[1]));
+//            }
+//            {
+//                BufferedImage img = ImageUtil.resize(raster.setFilterCircle(false).toLayer(new HyperbolicTiling(polygon).expand(3).square()).eval(Tensor.fromRGB(raster.resize(image))).getData().get(0).toRgbImage(), width, width);
+//                ImageIO.write(img, "png", new File(file.getParentFile(), "out\\" + name[0] + "_square." + name[1]));
+//            }
+            {
+                BufferedImage img = ImageUtil.resize(raster.setFilterCircle(false).toLayer(new HyperbolicTiling(polygon).expand(3).square2()).eval(Tensor.fromRGB(raster.resize(image))).getData().get(0).toRgbImage(), width, width);
+                ImageIO.write(img, "png", new File(file.getParentFile(), "out\\" + name[0] + "_square2." + name[1]));
+            }
         }
     }
 
@@ -101,7 +127,14 @@ public class PoincareDiskTest {
         UnaryOperator<Point> transform = new HyperbolicTiling(HyperbolicPolygon.regularPolygon(4, 6)).expand(3).klien();
         BufferedImage testImage = ImageUtil.resize(ImageUtil.getImage("file:///C:/Users/andre/code/all-projects/report/HyperbolicTexture/8abdf685-f6ef-4b86-b7d4-b27f03bddd44/etc/image_277b19524a6e2d.jpg"), raster.sizeX, raster.sizeY);
         show(raster.toLayer(transform).eval(Tensor.fromRGB(testImage)).getData().get(0).toRgbImage());
+    }
 
+    @Test
+    public void testSquare() throws IOException {
+        Raster raster = new Raster(1200, 1200).setFilterCircle(false);
+        UnaryOperator<Point> transform = new HyperbolicTiling(HyperbolicPolygon.regularPolygon(4, 6)).expand(3).square();
+        BufferedImage testImage = ImageUtil.resize(ImageUtil.getImage("file:///C:/Users/andre/code/all-projects/report/HyperbolicTexture/8abdf685-f6ef-4b86-b7d4-b27f03bddd44/etc/image_277b19524a6e2d.jpg"), raster.sizeX, raster.sizeY);
+        show(raster.toLayer(transform).eval(Tensor.fromRGB(testImage)).getData().get(0).toRgbImage());
     }
 
     public static void show(BufferedImage image) throws IOException {

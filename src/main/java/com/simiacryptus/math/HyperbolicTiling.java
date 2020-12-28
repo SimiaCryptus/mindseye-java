@@ -30,8 +30,54 @@ public class HyperbolicTiling {
     public UnaryOperator<Point> klien() {
         return pt -> {
             if(pt != null) pt = pt.scale(1/(1+Math.sqrt(1-Math.pow(pt.rms(), 2))));
-            //if (pt != null) pt = pt.scale(2 / (1 + pt.sumSq()));
             if (pt != null) pt = transform(pt);
+            return pt;
+        };
+    }
+
+    public UnaryOperator<Point> square() {
+        return pt -> {
+            pt = square(pt);
+            if (pt == null) return null;
+            pt = transform(pt);
+            return pt;
+        };
+    }
+
+    @Nullable
+    public Point square(Point pt) {
+        if(pt == null) return null;
+        double max = Math.max(Math.abs(pt.x), Math.abs(pt.y));
+        double min = Math.min(Math.abs(pt.x), Math.abs(pt.y));
+        if (max > 0) pt = pt.scale(0.999 / Math.sqrt(1.0 + Math.pow((min / max), 2)));
+        return pt;
+    }
+
+    @Nullable
+    public Point invsquare(Point pt) {
+        if(pt == null) return null;
+        double max = Math.max(Math.abs(pt.x), Math.abs(pt.y));
+        double min = Math.min(Math.abs(pt.x), Math.abs(pt.y));
+        if (max > 0) pt = pt.scale(Math.sqrt(1.0 + Math.pow((min / max), 2)));
+        return pt;
+    }
+
+    public UnaryOperator<Point> bubble() {
+        return pt -> {
+            if (pt != null) pt = pt.scale(2 / (1 + pt.sumSq()));
+            if (pt != null) pt = transform(pt);
+            return pt;
+        };
+    }
+
+    public UnaryOperator<Point> square2() {
+        return pt -> {
+            if(pt == null) return null;
+            double max = Math.max(Math.abs(pt.x), Math.abs(pt.y));
+            double min = Math.min(Math.abs(pt.x), Math.abs(pt.y));
+            if (max > 0) pt = pt.scale(0.999 / Math.sqrt(1.0 + Math.pow((min / max), 2)));
+            if (pt != null) pt = pt.scale(2 / (1 + pt.sumSq()));
+            pt = transform(pt);
             return pt;
         };
     }
