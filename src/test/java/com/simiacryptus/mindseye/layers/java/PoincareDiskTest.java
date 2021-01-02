@@ -78,16 +78,14 @@ public class PoincareDiskTest {
 
     @Test
     public void finishImages() throws IOException {
-        reprocess(new File("C:\\Users\\andre\\Downloads\\Hyperbolic AI Renders\\4"), HyperbolicPolygon.regularPolygon(4,6));
-        reprocess(new File("C:\\Users\\andre\\Downloads\\Hyperbolic AI Renders\\5"), HyperbolicPolygon.regularPolygon(5,6));
-        reprocess(new File("C:\\Users\\andre\\Downloads\\Hyperbolic AI Renders\\6"), HyperbolicPolygon.regularPolygon(6,8));
+        reprocess(new File("C:\\Users\\andre\\Downloads\\hyperb_fix_12_29"), HyperbolicPolygon.regularPolygon(6,8));
     }
 
     public void reprocess(File baseDir, HyperbolicPolygon polygon) throws IOException {
         double superscaling = 2;
         int[] pixelMap = null;
         for (File file : baseDir.listFiles()) {
-            if(!file.getName().endsWith(".png")) continue;
+            if(!file.getName().endsWith(".jpg") && !file.getName().endsWith(".png")) continue;
             System.out.println(file.getAbsolutePath());
             BufferedImage image = ImageIO.read(file);
             Raster raster = null;
@@ -100,12 +98,12 @@ public class PoincareDiskTest {
             }
             new File(file.getParentFile(),"out").mkdirs();
             String[] name = file.getName().split("\\.");
-//            {
-//                BufferedImage resampled;
-//                resampled = ImageUtil.resize(new ImgIndexMapViewLayer(raster, pixelMap).eval(Tensor.fromRGB(raster.resize(image))).getData().get(0).toRgbImage(), width, width);
-//                ImageIO.write(resampled, "png", new File(file.getParentFile(), "out\\" + name[0] + "_resampled." + name[1]));
-//                image = resampled;
-//            }
+            {
+                BufferedImage resampled;
+                resampled = ImageUtil.resize(new ImgIndexMapViewLayer(raster, pixelMap).eval(Tensor.fromRGB(raster.resize(image))).getData().get(0).toRgbImage(), width, width);
+                ImageIO.write(resampled, "png", new File(file.getParentFile(), "out\\" + name[0] + "_resampled." + name[1]));
+                image = resampled;
+            }
 //            {
 //                BufferedImage img = ImageUtil.resize(raster.toLayer(new HyperbolicTiling(polygon).expand(3).klien()).eval(Tensor.fromRGB(raster.resize(image))).getData().get(0).toRgbImage(), width, width);
 //                ImageIO.write(img, "png", new File(file.getParentFile(), "out\\" + name[0] + "_klien." + name[1]));
@@ -114,10 +112,10 @@ public class PoincareDiskTest {
 //                BufferedImage img = ImageUtil.resize(raster.setFilterCircle(false).toLayer(new HyperbolicTiling(polygon).expand(3).square()).eval(Tensor.fromRGB(raster.resize(image))).getData().get(0).toRgbImage(), width, width);
 //                ImageIO.write(img, "png", new File(file.getParentFile(), "out\\" + name[0] + "_square." + name[1]));
 //            }
-            {
-                BufferedImage img = ImageUtil.resize(raster.setFilterCircle(false).toLayer(new HyperbolicTiling(polygon).expand(3).square2()).eval(Tensor.fromRGB(raster.resize(image))).getData().get(0).toRgbImage(), width, width);
-                ImageIO.write(img, "png", new File(file.getParentFile(), "out\\" + name[0] + "_square2." + name[1]));
-            }
+//            {
+//                BufferedImage img = ImageUtil.resize(raster.setFilterCircle(false).toLayer(new HyperbolicTiling(polygon).expand(3).square2()).eval(Tensor.fromRGB(raster.resize(image))).getData().get(0).toRgbImage(), width, width);
+//                ImageIO.write(img, "png", new File(file.getParentFile(), "out\\" + name[0] + "_square2." + name[1]));
+//            }
         }
     }
 
