@@ -294,53 +294,52 @@ public class AffineImgViewLayer extends ImgViewLayerBase {
     return xMax;
   }
 
-  public AffineImgViewLayer setxMax(int xMax) {
+  public void setxMax(int xMax) {
     this.xMax = xMax;
-    return this;
   }
 
   public int getxMin() {
     return xMin;
   }
 
-  public AffineImgViewLayer setxMin(int xMin) {
+  public void setxMin(int xMin) {
     this.xMin = xMin;
-    return this;
   }
 
   public int getyMax() {
     return yMax;
   }
 
-  public AffineImgViewLayer setyMax(int yMax) {
+  public void setyMax(int yMax) {
     this.yMax = yMax;
-    return this;
   }
 
   public int getyMin() {
     return yMin;
   }
 
-  public AffineImgViewLayer setyMin(int yMin) {
+  public void setyMin(int yMin) {
     this.yMin = yMin;
-    return this;
   }
 
   public int getrMax() {
     return rMax;
   }
 
-  public AffineImgViewLayer setrMax(int rMax) {
+  public void setrMax(int rMax) {
     this.rMax = rMax;
-    return this;
   }
 
   public int getrMin() {
     return rMin;
   }
 
-  public AffineImgViewLayer setrMin(int rMin) {
+  public void setrMin(int rMin) {
     this.rMin = rMin;
-    return this;
+  }
+
+  @Override
+  public void _free() {
+    super._free();
   }
 }

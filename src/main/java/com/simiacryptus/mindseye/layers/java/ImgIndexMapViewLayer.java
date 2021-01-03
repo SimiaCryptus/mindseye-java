@@ -28,4 +28,9 @@ public class ImgIndexMapViewLayer extends ImgViewLayerBase {
         int[] dest = raster.fromIndex(j);
         return new Point(dest[0], dest[1]);
     }
+
+    @Override
+    public void _free() {
+        super._free();
+    }
 }

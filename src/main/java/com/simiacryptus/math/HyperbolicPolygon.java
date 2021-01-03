@@ -1,6 +1,8 @@
 package com.simiacryptus.math;
 
+import com.simiacryptus.mindseye.lang.Result;
 import com.simiacryptus.mindseye.lang.Tensor;
+import com.simiacryptus.mindseye.lang.TensorList;
 import com.simiacryptus.mindseye.layers.java.ImgIndexMapViewLayer;
 import com.simiacryptus.mindseye.util.ImageUtil;
 import org.apache.commons.math3.util.FastMath;
@@ -122,7 +124,16 @@ public class HyperbolicPolygon {
         HyperbolicTiling tiling = new HyperbolicTiling(this).expand(3);
         BufferedImage paint = raster.getImage();
         int[] pixelMap = tiling.buildPixelMap(paint, raster);
-        return ImageUtil.resize(new ImgIndexMapViewLayer(raster, pixelMap).eval(Tensor.fromRGB(raster.resize(image))).getData().get(0).toRgbImage(), width, width);
+        ImgIndexMapViewLayer layer = new ImgIndexMapViewLayer(raster, pixelMap);
+        Result eval = layer.eval(Tensor.fromRGB(raster.resize(image)));
+        layer.freeRef();
+        TensorList tensorList = eval.getData();
+        eval.freeRef();
+        Tensor tensor = tensorList.get(0);
+        tensorList.freeRef();
+        BufferedImage source = tensor.toRgbImage();
+        tensor.freeRef();
+        return ImageUtil.resize(source, width, width);
     }
 
     @NotNull
@@ -134,7 +145,16 @@ public class HyperbolicPolygon {
             double r = point.rms();
             return tiling.transform(r == 0? point : point.scale(zoom.applyAsDouble(r) / r));
         });
-        return ImageUtil.resize(new ImgIndexMapViewLayer(raster, pixelMap).eval(Tensor.fromRGB(raster.resize(image))).getData().get(0).toRgbImage(), width, width);
+        ImgIndexMapViewLayer layer = new ImgIndexMapViewLayer(raster, pixelMap);
+        Result eval = layer.eval(Tensor.fromRGB(raster.resize(image)));
+        layer.freeRef();
+        TensorList tensorList = eval.getData();
+        eval.freeRef();
+        Tensor tensor = tensorList.get(0);
+        tensorList.freeRef();
+        BufferedImage source = tensor.toRgbImage();
+        tensor.freeRef();
+        return ImageUtil.resize(source, width, width);
     }
 
     @NotNull
@@ -143,6 +163,15 @@ public class HyperbolicPolygon {
         image = ImageUtil.resize(image, width, width);
         Raster raster = new Raster(width * supersample, width * supersample);
         UnaryOperator<Point> transform = new HyperbolicTiling(this).expand(3).klien();
-        return ImageUtil.resize(raster.toLayer(transform).eval(Tensor.fromRGB(raster.resize(image))).getData().get(0).toRgbImage(), width, width);
+        ImgIndexMapViewLayer layer = raster.toLayer(transform);
+        Result eval = layer.eval(Tensor.fromRGB(raster.resize(image)));
+        layer.freeRef();
+        TensorList tensorList = eval.getData();
+        eval.freeRef();
+        Tensor tensor = tensorList.get(0);
+        tensorList.freeRef();
+        BufferedImage source = tensor.toRgbImage();
+        tensor.freeRef();
+        return ImageUtil.resize(source, width, width);
     }
 }

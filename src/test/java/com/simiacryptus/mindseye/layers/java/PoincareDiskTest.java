@@ -21,7 +21,9 @@ package com.simiacryptus.mindseye.layers.java;
 
 import com.simiacryptus.math.Point;
 import com.simiacryptus.math.*;
+import com.simiacryptus.mindseye.lang.Result;
 import com.simiacryptus.mindseye.lang.Tensor;
+import com.simiacryptus.mindseye.lang.TensorList;
 import com.simiacryptus.mindseye.util.ImageUtil;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
@@ -62,7 +64,16 @@ public class PoincareDiskTest {
         int[] pixelMap = tiling.buildPixelMap(paint, raster);
         show(paint);
         BufferedImage testImage = ImageUtil.resize(ImageUtil.getImage("file:///C:/Users/andre/code/all-projects/report/HyperbolicTexture/8abdf685-f6ef-4b86-b7d4-b27f03bddd44/etc/image_277b19524a6e2d.jpg"), raster.sizeX, raster.sizeY);
-        show(new ImgIndexMapViewLayer(raster, pixelMap).eval(Tensor.fromRGB(testImage)).getData().get(0).toRgbImage());
+        ImgIndexMapViewLayer layer = new ImgIndexMapViewLayer(raster, pixelMap);
+        Result eval = layer.eval(Tensor.fromRGB(testImage));
+        layer.freeRef();
+        TensorList tensorList = eval.getData();
+        eval.freeRef();
+        Tensor tensor = tensorList.get(0);
+        tensorList.freeRef();
+        BufferedImage image = tensor.toRgbImage();
+        tensor.freeRef();
+        show(image);
     }
 
     @Test
@@ -100,7 +111,16 @@ public class PoincareDiskTest {
             String[] name = file.getName().split("\\.");
             {
                 BufferedImage resampled;
-                resampled = ImageUtil.resize(new ImgIndexMapViewLayer(raster, pixelMap).eval(Tensor.fromRGB(raster.resize(image))).getData().get(0).toRgbImage(), width, width);
+                ImgIndexMapViewLayer layer = new ImgIndexMapViewLayer(raster, pixelMap);
+                Result eval = layer.eval(Tensor.fromRGB(raster.resize(image)));
+                layer.freeRef();
+                TensorList tensorList = eval.getData();
+                eval.freeRef();
+                Tensor tensor = tensorList.get(0);
+                tensorList.freeRef();
+                BufferedImage source = tensor.toRgbImage();
+                tensor.freeRef();
+                resampled = ImageUtil.resize(source, width, width);
                 ImageIO.write(resampled, "png", new File(file.getParentFile(), "out\\" + name[0] + "_resampled." + name[1]));
                 image = resampled;
             }
@@ -124,7 +144,16 @@ public class PoincareDiskTest {
         Raster raster = new Raster(1200, 1200);
         UnaryOperator<Point> transform = new HyperbolicTiling(HyperbolicPolygon.regularPolygon(4, 6)).expand(3).klien();
         BufferedImage testImage = ImageUtil.resize(ImageUtil.getImage("file:///C:/Users/andre/code/all-projects/report/HyperbolicTexture/8abdf685-f6ef-4b86-b7d4-b27f03bddd44/etc/image_277b19524a6e2d.jpg"), raster.sizeX, raster.sizeY);
-        show(raster.toLayer(transform).eval(Tensor.fromRGB(testImage)).getData().get(0).toRgbImage());
+        ImgIndexMapViewLayer layer = raster.toLayer(transform);
+        Result eval = layer.eval(Tensor.fromRGB(testImage));
+        layer.freeRef();
+        TensorList tensorList = eval.getData();
+        eval.freeRef();
+        Tensor tensor = tensorList.get(0);
+        tensorList.freeRef();
+        BufferedImage image = tensor.toRgbImage();
+        tensor.freeRef();
+        show(image);
     }
 
     @Test
@@ -132,7 +161,16 @@ public class PoincareDiskTest {
         Raster raster = new Raster(1200, 1200).setFilterCircle(false);
         UnaryOperator<Point> transform = new HyperbolicTiling(HyperbolicPolygon.regularPolygon(4, 6)).expand(3).square();
         BufferedImage testImage = ImageUtil.resize(ImageUtil.getImage("file:///C:/Users/andre/code/all-projects/report/HyperbolicTexture/8abdf685-f6ef-4b86-b7d4-b27f03bddd44/etc/image_277b19524a6e2d.jpg"), raster.sizeX, raster.sizeY);
-        show(raster.toLayer(transform).eval(Tensor.fromRGB(testImage)).getData().get(0).toRgbImage());
+        ImgIndexMapViewLayer layer = raster.toLayer(transform);
+        Result eval = layer.eval(Tensor.fromRGB(testImage));
+        layer.freeRef();
+        TensorList tensorList = eval.getData();
+        eval.freeRef();
+        Tensor tensor = tensorList.get(0);
+        tensorList.freeRef();
+        BufferedImage image = tensor.toRgbImage();
+        tensor.freeRef();
+        show(image);
     }
 
     public static void show(BufferedImage image) throws IOException {
