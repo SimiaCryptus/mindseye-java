@@ -24,7 +24,11 @@ public class Point {
     }
 
     public Point add(Point r) {
-        return new Point(x * r.x, y * r.y);
+        return new Point(x + r.x, y + r.y);
+    }
+
+    public double dist(Point r) {
+        return r.scale(-1).add(this).rms();
     }
 
     public Point scale(double f) {
