@@ -19,6 +19,10 @@ public class Point {
         return Geometry.rms(this.x, this.y);
     }
 
+    public double theta() {
+        return Math.sin(scale(1.0/rms()).x);
+    }
+
     public double sumSq() {
         return Geometry.sumSq(this.x, this.y);
     }
@@ -33,5 +37,10 @@ public class Point {
 
     public Point scale(double f) {
         return new Point(x*f,y*f);
+    }
+    public Point rotate(double f) {
+        return new Point(
+                x*Math.cos(f) - y * Math.sin(f),
+                x*Math.sin(f) + y * Math.cos(f));
     }
 }

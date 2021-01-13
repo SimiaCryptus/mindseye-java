@@ -194,7 +194,6 @@ public class BuildAndRelease extends NotebookTestBase {
 
   /**
    * Build.
-   *
    * @param log            the log
    * @param timeout        the timeout
    * @param bash           the bash
@@ -205,10 +204,11 @@ public class BuildAndRelease extends NotebookTestBase {
    * @param release        the release
    * @param site           the site
    * @param installTools   the install tools
-   * @param newVersion     the new version
    * @param siteHome       the site home
+   * @param oldVersion
+   * @param newVersion     the new version
    */
-  public static void build(NotebookOutput log, long timeout, String bash, String git, String maven, String buildDirectory, boolean clean, boolean release, boolean site, boolean installTools, String newVersion, String siteHome) {
+  public static void build(NotebookOutput log, long timeout, String bash, String git, String maven, String buildDirectory, boolean clean, boolean release, boolean site, boolean installTools, String siteHome, String oldVersion, String newVersion) {
     String mainProject = "all-projects";
     long endTime = System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(15);
     try {
@@ -243,7 +243,7 @@ public class BuildAndRelease extends NotebookTestBase {
         });
       }
       HashMap<File, String> previousData = log.subreport("Updating Version to " + newVersion, sub -> {
-        return setVersion(sub, mainBuildDirectory, newVersion, "MINDSEYE-SNAPSHOT", siteHome);
+        return newVersion.equals(oldVersion) ? null : setVersion(sub, mainBuildDirectory, newVersion, oldVersion, siteHome);
       });
       log.h1("Building Build Tools");
       commands(log, timeout, mainBuildDirectory + "/third-party/aws-s3-maven",
@@ -285,7 +285,7 @@ public class BuildAndRelease extends NotebookTestBase {
             new String[]{bash, maven, "clean", "package", "install", "-fae", profile, "-DskipTests"}
         );
       }
-      log.subreport("Revert Version Changes", sub -> {
+      if(null != previousData) log.subreport("Revert Version Changes", sub -> {
         revert(sub, mainBuildDirectory, previousData);
         return null;
       });
@@ -475,9 +475,11 @@ public class BuildAndRelease extends NotebookTestBase {
         "C:\\Windows\\System32\\bash.exe",
         "git",
         "/mnt/c/Users/andre/Downloads/apache-maven-3.6.3-bin/apache-maven-3.6.3/bin/mvn",
-        "H:\\SimiaCryptus", false, false, false, false,
-        "2.0.0",
-        "code.simiacrypt.us/release"
+        "H:\\SimiaCryptus",
+        false, false, false, false,
+        "code.simiacrypt.us/release",
+        "MINDSEYE-SNAPSHOT",
+        "2.0.0"
     );
   }
 

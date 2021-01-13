@@ -51,8 +51,9 @@ public class RemoteReleaseBuild {
               true,
               true,
               false,
-              "2.0.1",
-              "code.simiacrypt.us/release"
+              "code.simiacrypt.us/release",
+              "MINDSEYE-SNAPSHOT",
+              "2.0.1"
           );
         }
     );

@@ -51,8 +51,9 @@ public class RemoteValidationBuild {
               false,
               true,
               true,
-              "2.0.1",
-              "code.simiacrypt.us/release"
+              "code.simiacrypt.us/release",
+              "2.1.0",
+              "2.1.0"
           );
         }
     );
