@@ -203,12 +203,15 @@ public class BuildAndRelease extends NotebookTestBase {
    * @param clean          the clean
    * @param release        the release
    * @param site           the site
+   * @param push
    * @param installTools   the install tools
    * @param siteHome       the site home
+   * @param branch
+   * @param merge
    * @param oldVersion
    * @param newVersion     the new version
    */
-  public static void build(NotebookOutput log, long timeout, String bash, String git, String maven, String buildDirectory, boolean clean, boolean release, boolean site, boolean installTools, String siteHome, String oldVersion, String newVersion) {
+  public static void build(NotebookOutput log, long timeout, String bash, String git, String maven, String buildDirectory, boolean clean, boolean release, boolean site, boolean push, boolean installTools, String siteHome, String branch, String merge, String oldVersion, String newVersion) {
     String mainProject = "all-projects";
     long endTime = System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(15);
     try {
@@ -236,15 +239,35 @@ public class BuildAndRelease extends NotebookTestBase {
               new String[]{git, "clone", "https://github.com/SimiaCryptus/" + mainProject + ".git"}
           );
           commands(sub, timeout, mainBuildDirectory,
-              new String[]{git, "pull", "origin", "master"},
+              new String[]{git, "fetch", "origin"},
+              new String[]{"gitall.sh", "fetch", "origin"},
+              new String[]{git, "checkout", branch},
+              new String[]{git, "pull", "origin", branch},
               new String[]{git, "submodule", "update", "--init"}
           );
+          if(null != merge && !merge.isEmpty()) {
+            commands(sub, timeout, mainBuildDirectory,
+                    new String[]{"gitall.sh", "merge", merge}
+            );
+          }
           return null;
         });
       }
       HashMap<File, String> previousData = log.subreport("Updating Version to " + newVersion, sub -> {
         return newVersion.equals(oldVersion) ? null : setVersion(sub, mainBuildDirectory, newVersion, oldVersion, siteHome);
       });
+      if(push) {
+        log.subreport("Git Push", sub -> {
+          commands(sub, timeout, mainBuildDirectory,
+                  new String[]{"commit.sh", "Release " + newVersion},
+                  new String[]{"gitall.sh", "tag", newVersion},
+                  new String[]{git, "push", newVersion},
+                  new String[]{"gitall.sh", "push", branch},
+                  new String[]{git, "push", branch}
+          );
+          return null;
+        });
+      }
       log.h1("Building Build Tools");
       commands(log, timeout, mainBuildDirectory + "/third-party/aws-s3-maven",
           new String[]{bash, maven, "clean", "package", "install", "-fae", "-DskipTests"}
@@ -476,8 +499,10 @@ public class BuildAndRelease extends NotebookTestBase {
         "git",
         "/mnt/c/Users/andre/Downloads/apache-maven-3.6.3-bin/apache-maven-3.6.3/bin/mvn",
         "H:\\SimiaCryptus",
-        false, false, false, false,
+        false, false, false, false, false,
         "code.simiacrypt.us/release",
+        "master",
+        "origin/develop",
         "MINDSEYE-SNAPSHOT",
         "2.0.0"
     );

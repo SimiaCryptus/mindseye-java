@@ -37,7 +37,7 @@ public class RemoteValidationBuild {
   public static void main(String[] args) {
     EC2NotebookRunner.launch(
         EC2NodeSettings.M5_L,
-        EC2NodeSettings.AMI_AMAZON_DEEP_LEARNING,
+        "ami-075ddd8fd620ecfae",
         " -Xmx8g -DTEST_REPO=./runner/",
         log -> {
           BuildAndRelease.build(
@@ -49,9 +49,11 @@ public class RemoteValidationBuild {
               "/home/ec2-user/code",
               true,
               false,
-              true,
-              true,
+                  true, false,
+                  true,
               "code.simiacrypt.us/release",
+              "master",
+              "origin/develop",
               "2.1.0",
               "2.1.0"
           );
