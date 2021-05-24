@@ -240,14 +240,14 @@ public class BuildAndRelease extends NotebookTestBase {
           );
           commands(sub, timeout, mainBuildDirectory,
               new String[]{git, "fetch", "origin"},
-              new String[]{"gitall.sh", "fetch", "origin"},
+              new String[]{"./gitall.sh", "fetch", "origin"},
               new String[]{git, "checkout", branch},
               new String[]{git, "pull", "origin", branch},
               new String[]{git, "submodule", "update", "--init"}
           );
           if(null != merge && !merge.isEmpty()) {
             commands(sub, timeout, mainBuildDirectory,
-                    new String[]{"gitall.sh", "merge", merge}
+                    new String[]{"./gitall.sh", "merge", merge}
             );
           }
           return null;
@@ -259,10 +259,10 @@ public class BuildAndRelease extends NotebookTestBase {
       if(push) {
         log.subreport("Git Push", sub -> {
           commands(sub, timeout, mainBuildDirectory,
-                  new String[]{"commit.sh", "Release " + newVersion},
-                  new String[]{"gitall.sh", "tag", newVersion},
+                  new String[]{"./commit.sh", "Release " + newVersion},
+                  new String[]{"./gitall.sh", "tag", newVersion},
                   new String[]{git, "push", newVersion},
-                  new String[]{"gitall.sh", "push", branch},
+                  new String[]{"./gitall.sh", "push", branch},
                   new String[]{git, "push", branch}
           );
           return null;
