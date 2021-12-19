@@ -77,7 +77,9 @@ public class SumInputsLayer extends LayerBase {
    * @return the pipeline network
    */
   public static PipelineNetwork combine(@Nullable PipelineNetwork... networks) {
-    return PipelineNetwork.combine(new SumInputsLayer(), networks);
+    PipelineNetwork network = PipelineNetwork.combine(new SumInputsLayer(), networks);
+    //network.watch();
+    return network;
   }
 
   @Nonnull
