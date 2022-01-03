@@ -131,9 +131,7 @@ public class HyperbolicPolygon {
         eval.freeRef();
         Tensor tensor = tensorList.get(0);
         tensorList.freeRef();
-        BufferedImage source = tensor.toRgbImage();
-        tensor.freeRef();
-        return ImageUtil.resize(source, width, width);
+        return ImageUtil.resize(Tensor.toRgbImage(tensor), width, width);
     }
 
     @NotNull
@@ -152,9 +150,7 @@ public class HyperbolicPolygon {
         eval.freeRef();
         Tensor tensor = tensorList.get(0);
         tensorList.freeRef();
-        BufferedImage source = tensor.toRgbImage();
-        tensor.freeRef();
-        return ImageUtil.resize(source, width, width);
+        return ImageUtil.resize(Tensor.toRgbImage(tensor), width, width);
     }
 
     @NotNull
@@ -170,8 +166,6 @@ public class HyperbolicPolygon {
         eval.freeRef();
         Tensor tensor = tensorList.get(0);
         tensorList.freeRef();
-        BufferedImage source = tensor.toRgbImage();
-        tensor.freeRef();
-        return ImageUtil.resize(source, width, width);
+        return ImageUtil.resize(Tensor.toRgbImage(tensor), width, width);
     }
 }

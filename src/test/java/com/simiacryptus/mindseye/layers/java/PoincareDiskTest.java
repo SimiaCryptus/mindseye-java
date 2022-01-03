@@ -71,9 +71,7 @@ public class PoincareDiskTest {
         eval.freeRef();
         Tensor tensor = tensorList.get(0);
         tensorList.freeRef();
-        BufferedImage image = tensor.toRgbImage();
-        tensor.freeRef();
-        show(image);
+        show(Tensor.toRgbImage(tensor));
     }
 
     @Test
@@ -118,9 +116,7 @@ public class PoincareDiskTest {
                 eval.freeRef();
                 Tensor tensor = tensorList.get(0);
                 tensorList.freeRef();
-                BufferedImage source = tensor.toRgbImage();
-                tensor.freeRef();
-                resampled = ImageUtil.resize(source, width, width);
+                resampled = ImageUtil.resize(Tensor.toRgbImage(tensor), width, width);
                 ImageIO.write(resampled, "png", new File(file.getParentFile(), "out\\" + name[0] + "_resampled." + name[1]));
                 image = resampled;
             }
@@ -151,9 +147,7 @@ public class PoincareDiskTest {
         eval.freeRef();
         Tensor tensor = tensorList.get(0);
         tensorList.freeRef();
-        BufferedImage image = tensor.toRgbImage();
-        tensor.freeRef();
-        show(image);
+        show(Tensor.toRgbImage(tensor));
     }
 
     @Test
@@ -168,9 +162,7 @@ public class PoincareDiskTest {
         eval.freeRef();
         Tensor tensor = tensorList.get(0);
         tensorList.freeRef();
-        BufferedImage image = tensor.toRgbImage();
-        tensor.freeRef();
-        show(image);
+        show(Tensor.toRgbImage(tensor));
     }
 
     public static void show(BufferedImage image) throws IOException {
