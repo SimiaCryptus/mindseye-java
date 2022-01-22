@@ -1,295 +1,875 @@
 {
-  "com.simiacryptus.mindseye.layers.java.AbsActivationLayer" : { },
-  "com.simiacryptus.mindseye.layers.java.AbsActivationLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.AbsActivationLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.AssertDimensionsLayer" : { },
-  "com.simiacryptus.mindseye.layers.java.AssertDimensionsLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.AssertDimensionsLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.AutoEntropyLayer" : { },
-  "com.simiacryptus.mindseye.layers.java.AutoEntropyLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.AutoEntropyLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.AvgMetaLayer" : { },
+  "com.simiacryptus.math.Circle" : { },
+  "com.simiacryptus.math.Geometry" : { },
+  "com.simiacryptus.math.HyperbolicPolygon" : { },
+  "com.simiacryptus.math.HyperbolicTiling" : { },
+  "com.simiacryptus.math.HyperbolicTiling.Tile" : { },
+  "com.simiacryptus.math.PoincareCircle" : { },
+  "com.simiacryptus.math.Point" : { },
+  "com.simiacryptus.math.Raster" : { },
+  "com.simiacryptus.math.SpacialTransform" : { },
+  "com.simiacryptus.mindseye.layers.java.AbsActivationLayer" : {
+    ":class" : "The type Abs activation layer."
+  },
+  "com.simiacryptus.mindseye.layers.java.AbsActivationLayerTest" : {
+    ":class" : "The type Abs activation layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.AbsActivationLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.AffineImgViewLayer" : {
+    ":class" : "The type Img view layer.",
+    "offsetX" : "Sets offset x.",
+    "offsetY" : "Sets offset y.",
+    "rotationCenterX" : "Sets rotation center x.",
+    "rotationCenterY" : "Sets rotation center y.",
+    "rotationRadians" : "Sets rotation radians."
+  },
+  "com.simiacryptus.mindseye.layers.java.AffineImgViewLayerTest" : {
+    ":class" : "The type Img view layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.AffineImgViewLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.AffineImgViewLayerTest.Rotated" : {
+    ":class" : "The type Rotated."
+  },
+  "com.simiacryptus.mindseye.layers.java.AffineImgViewLayerTest.RotatedChannels" : {
+    ":class" : "The type Rotated channels."
+  },
+  "com.simiacryptus.mindseye.layers.java.AssertDimensionsLayer" : {
+    ":class" : "The type Assert dimensions layer."
+  },
+  "com.simiacryptus.mindseye.layers.java.AssertDimensionsLayerTest" : {
+    ":class" : "The type Assert dimensions layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.AssertDimensionsLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.AutoEntropyLayer" : {
+    ":class" : "The type Auto entropy layer."
+  },
+  "com.simiacryptus.mindseye.layers.java.AutoEntropyLayerTest" : {
+    ":class" : "The type Auto entropy layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.AutoEntropyLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.AvgMetaLayer" : {
+    ":class" : "The type Avg meta layer.",
+    "lastResult" : "The Last result.",
+    "minBatchCount" : "Sets min batch count."
+  },
   "com.simiacryptus.mindseye.layers.java.AvgMetaLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.AvgMetaLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.AvgMetaLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.AvgPoolingLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.AvgMetaLayerTest" : {
+    ":class" : "The type Avg meta layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.AvgMetaLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.AvgPoolingLayer" : {
+    ":class" : "The type Avg pooling layer."
+  },
   "com.simiacryptus.mindseye.layers.java.AvgPoolingLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.AvgPoolingLayer.IndexMapKey" : { },
-  "com.simiacryptus.mindseye.layers.java.AvgPoolingLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.AvgPoolingLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.AvgReducerLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.AvgPoolingLayer.IndexMapKey" : {
+    ":class" : "The type Index map key."
+  },
+  "com.simiacryptus.mindseye.layers.java.AvgPoolingLayerTest" : {
+    ":class" : "The type Avg pooling layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.AvgPoolingLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.AvgReducerLayer" : {
+    ":class" : "The type Avg reducer layer."
+  },
   "com.simiacryptus.mindseye.layers.java.AvgReducerLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.AvgReducerLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.AvgReducerLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.BiasLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.AvgReducerLayerTest" : {
+    ":class" : "The type Avg reducer layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.AvgReducerLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.BiasLayer" : {
+    ":class" : "The type Bias layer.",
+    "weights" : "Sets weights.",
+    "weightsLog" : "Sets weights log."
+  },
   "com.simiacryptus.mindseye.layers.java.BiasLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.BiasLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.BiasLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.BiasLayerTest.Reducing" : { },
-  "com.simiacryptus.mindseye.layers.java.BiasMetaLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.BiasLayerTest" : {
+    ":class" : "The type Bias layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.BiasLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.BiasLayerTest.Reducing" : {
+    ":class" : "The type Reducing."
+  },
+  "com.simiacryptus.mindseye.layers.java.BiasMetaLayer" : {
+    ":class" : "The type Bias meta layer."
+  },
   "com.simiacryptus.mindseye.layers.java.BiasMetaLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.BiasMetaLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.BiasMetaLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.BinaryEntropyActivationLayer" : { },
-  "com.simiacryptus.mindseye.layers.java.BinaryEntropyActivationLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.BinaryNoiseLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.BiasMetaLayerTest" : {
+    ":class" : "The type Bias meta layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.BiasMetaLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.BinaryEntropyActivationLayer" : {
+    ":class" : "The type Binary entropy activation layer."
+  },
+  "com.simiacryptus.mindseye.layers.java.BinaryEntropyActivationLayerTest" : {
+    ":class" : "The type Binary entropy activation layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.BinaryNoiseLayer" : {
+    ":class" : "The type Binary noise layer.",
+    "value" : "Sets value."
+  },
   "com.simiacryptus.mindseye.layers.java.BinaryNoiseLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.BinaryNoiseLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.BinaryNoiseLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.BoundedActivationLayer" : { },
-  "com.simiacryptus.mindseye.layers.java.BoundedActivationLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.BoundedActivationLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.CrossDifferenceLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.BinaryNoiseLayerTest" : {
+    ":class" : "The type Binary noise layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.BinaryNoiseLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.BoundedActivationLayer" : {
+    ":class" : "The type Bounded activation layer.",
+    "maxValue" : "Sets max value.",
+    "minValue" : "Sets min value."
+  },
+  "com.simiacryptus.mindseye.layers.java.BoundedActivationLayerTest" : {
+    ":class" : "The type Bounded activation layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.BoundedActivationLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.CoordinateAssemblyLayer" : {
+    ":class" : "Converts a SINGLE input image Tensor into a TensorList of pixels, including coordinate and color values"
+  },
+  "com.simiacryptus.mindseye.layers.java.CoordinateAssemblyLayer.Accumulator" : { },
+  "com.simiacryptus.mindseye.layers.java.CoordinateAssemblyLayerTest" : {
+    ":class" : "The type Img band bias layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.CoordinateAssemblyLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.CoordinateDisassemblyLayer" : {
+    ":class" : "Converts a SINGLE input image Tensor into a TensorList of pixels, including coordinate and color values"
+  },
+  "com.simiacryptus.mindseye.layers.java.CoordinateDisassemblyLayer.Accumulator" : { },
+  "com.simiacryptus.mindseye.layers.java.CoordinateDisassemblyLayerTest" : {
+    ":class" : "The type Img band bias layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.CoordinateDisassemblyLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.CoordinateReassemblyLayerTest" : {
+    ":class" : "The type Img band bias layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.CoordinateReassemblyLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.CoordinateReassemblyLayerTest.IgnoreInputColors" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.CrossDifferenceLayer" : {
+    ":class" : "The type Cross difference layer."
+  },
   "com.simiacryptus.mindseye.layers.java.CrossDifferenceLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.CrossDifferenceLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.CrossDifferenceLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.CrossDotMetaLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.CrossDifferenceLayerTest" : {
+    ":class" : "The type Cross difference layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.CrossDifferenceLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.CrossDotMetaLayer" : {
+    ":class" : "The type Cross dot meta layer."
+  },
   "com.simiacryptus.mindseye.layers.java.CrossDotMetaLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.CrossDotMetaLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.CrossDotMetaLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.CrossProductLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.CrossDotMetaLayerTest" : {
+    ":class" : "The type Cross dot meta layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.CrossDotMetaLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.CrossProductLayer" : {
+    ":class" : "The type Cross product layer."
+  },
   "com.simiacryptus.mindseye.layers.java.CrossProductLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.CrossProductLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.CrossProductLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.DropoutNoiseLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.CrossProductLayerTest" : {
+    ":class" : "The type Cross product layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.CrossProductLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.DropoutNoiseLayer" : {
+    ":class" : "The type Dropout noise layer.",
+    "seed" : "The Seed.",
+    "value" : "Sets value."
+  },
   "com.simiacryptus.mindseye.layers.java.DropoutNoiseLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.DropoutNoiseLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.DropoutNoiseLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.EntropyLayer" : { },
-  "com.simiacryptus.mindseye.layers.java.EntropyLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.EntropyLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.EntropyLossLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.DropoutNoiseLayerTest" : {
+    ":class" : "The type Dropout noise layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.DropoutNoiseLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.EntropyLayer" : {
+    ":class" : "The type Entropy layer."
+  },
+  "com.simiacryptus.mindseye.layers.java.EntropyLayerTest" : {
+    ":class" : "The type Entropy layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.EntropyLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.EntropyLossLayer" : {
+    ":class" : "The type Entropy loss layer."
+  },
   "com.simiacryptus.mindseye.layers.java.EntropyLossLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.EntropyLossLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.EntropyLossLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.FullyConnectedLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.EntropyLossLayerTest" : {
+    ":class" : "The type Entropy loss layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.EntropyLossLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.FullyConnectedLayer" : {
+    ":class" : "The type Fully connected layer.",
+    "byCoord" : "Sets by coord.",
+    "weightsLog" : "Sets weights log."
+  },
   "com.simiacryptus.mindseye.layers.java.FullyConnectedLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.FullyConnectedLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.FullyConnectedLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.FullyConnectedReferenceLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.FullyConnectedLayerTest" : {
+    ":class" : "The type Fully connected layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.FullyConnectedLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.FullyConnectedReferenceLayer" : {
+    ":class" : "The type Fully connected reference layer.",
+    "byCoord" : "Sets by coord.",
+    "weightsLog" : "Sets weights log."
+  },
   "com.simiacryptus.mindseye.layers.java.FullyConnectedReferenceLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.FullyConnectedReferenceLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.FullyConnectedReferenceLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.FullyConnectedReferenceLayerTest.Image" : { },
-  "com.simiacryptus.mindseye.layers.java.GaussianActivationLayer" : { },
-  "com.simiacryptus.mindseye.layers.java.GaussianActivationLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.GaussianActivationLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.GaussianNoiseLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.FullyConnectedReferenceLayerTest" : {
+    ":class" : "The type Fully connected reference layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.FullyConnectedReferenceLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.FullyConnectedReferenceLayerTest.Image" : {
+    ":class" : "The type Image."
+  },
+  "com.simiacryptus.mindseye.layers.java.GaussianActivationLayer" : {
+    ":class" : "The type Gaussian activation layer."
+  },
+  "com.simiacryptus.mindseye.layers.java.GaussianActivationLayerTest" : {
+    ":class" : "The type Gaussian activation layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.GaussianActivationLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.GaussianNoiseLayer" : {
+    ":class" : "The type Gaussian noise layer.",
+    "value" : "Sets value."
+  },
   "com.simiacryptus.mindseye.layers.java.GaussianNoiseLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.GaussianNoiseLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.GaussianNoiseLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.HyperbolicActivationLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.GaussianNoiseLayerTest" : {
+    ":class" : "The type Gaussian noise layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.GaussianNoiseLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.HyperbolicActivationLayer" : {
+    ":class" : "The type Hyperbolic activation layer.",
+    "scale" : "Sets scale."
+  },
   "com.simiacryptus.mindseye.layers.java.HyperbolicActivationLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.HyperbolicActivationLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.HyperbolicActivationLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgBandBiasLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.HyperbolicActivationLayerTest" : {
+    ":class" : "The type Hyperbolic activation layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.HyperbolicActivationLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.ImgBandBiasLayer" : {
+    ":class" : "The type Img band bias layer.",
+    "weights" : "Sets weights.",
+    "weightsLog" : "Sets weights log."
+  },
   "com.simiacryptus.mindseye.layers.java.ImgBandBiasLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgBandBiasLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgBandBiasLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgBandScaleLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.ImgBandBiasLayerTest" : {
+    ":class" : "The type Img band bias layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.ImgBandBiasLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.ImgBandScaleLayer" : {
+    ":class" : "The type Img band scale layer.",
+    "weights" : "Sets weights."
+  },
   "com.simiacryptus.mindseye.layers.java.ImgBandScaleLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgBandScaleLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgBandScaleLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgBandSelectLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.ImgBandScaleLayerTest" : {
+    ":class" : "The type Img band scale layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.ImgBandScaleLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.ImgBandSelectLayer" : {
+    ":class" : "The type Img band select layer."
+  },
   "com.simiacryptus.mindseye.layers.java.ImgBandSelectLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgBandSelectLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgBandSelectLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgConcatLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.ImgBandSelectLayerTest" : {
+    ":class" : "The type Img band select layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.ImgBandSelectLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.ImgConcatLayer" : {
+    ":class" : "The type Img concat layer.",
+    "maxBands" : "Sets max bands."
+  },
   "com.simiacryptus.mindseye.layers.java.ImgConcatLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgConcatLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgConcatLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgCropLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.ImgConcatLayerTest" : {
+    ":class" : "The type Img concat layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.ImgConcatLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.ImgCropLayer" : {
+    ":class" : "The type Img crop layer."
+  },
   "com.simiacryptus.mindseye.layers.java.ImgCropLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgCropLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgCropLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgPixelGateLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.ImgCropLayerTest" : {
+    ":class" : "The type Img crop layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.ImgCropLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.ImgIndexMapViewLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.ImgPixelGateLayer" : {
+    ":class" : "The type Img pixel gate layer."
+  },
   "com.simiacryptus.mindseye.layers.java.ImgPixelGateLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgPixelGateLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgPixelGateLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgPixelSoftmaxLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.ImgPixelGateLayerTest" : {
+    ":class" : "The type Img pixel gate layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.ImgPixelGateLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.ImgPixelSoftmaxLayer" : {
+    ":class" : "The type Img pixel softmax layer."
+  },
   "com.simiacryptus.mindseye.layers.java.ImgPixelSoftmaxLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgPixelSoftmaxLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgPixelSoftmaxLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgPixelSumLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.ImgPixelSoftmaxLayerTest" : {
+    ":class" : "The type Img pixel softmax layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.ImgPixelSoftmaxLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.ImgPixelSumLayer" : {
+    ":class" : "The type Img pixel sum layer."
+  },
   "com.simiacryptus.mindseye.layers.java.ImgPixelSumLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgPixelSumLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgPixelSumLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgReshapeLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.ImgPixelSumLayerTest" : {
+    ":class" : "The type Img pixel sum layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.ImgPixelSumLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.ImgReshapeLayer" : {
+    ":class" : "The type Img reshape layer."
+  },
   "com.simiacryptus.mindseye.layers.java.ImgReshapeLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgReshapeLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgReshapeLayerTest.Contract" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgReshapeLayerTest.Expand" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgTileAssemblyLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.ImgReshapeLayerTest" : {
+    ":class" : "The type Img reshape layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.ImgReshapeLayerTest.Contract" : {
+    ":class" : "The type Contract."
+  },
+  "com.simiacryptus.mindseye.layers.java.ImgReshapeLayerTest.Expand" : {
+    ":class" : "The type Expand."
+  },
+  "com.simiacryptus.mindseye.layers.java.ImgTileAssemblyLayer" : {
+    ":class" : "The type Img tile assembly layer.",
+    "offsetX" : "Sets offset x.",
+    "offsetY" : "Sets offset y.",
+    "paddingX" : "Sets padding x.",
+    "paddingY" : "Sets padding y."
+  },
   "com.simiacryptus.mindseye.layers.java.ImgTileAssemblyLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgTileAssemblyLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgTileAssemblyLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgTileSelectLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.ImgTileAssemblyLayerTest" : {
+    ":class" : "The type Img tile assembly layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.ImgTileAssemblyLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.ImgTileSelectLayer" : {
+    ":class" : "The type Img tile select layer."
+  },
   "com.simiacryptus.mindseye.layers.java.ImgTileSelectLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgTileSelectLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgTileSelectLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgTileSubnetLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.ImgTileSelectLayerTest" : {
+    ":class" : "The type Img tile select layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.ImgTileSelectLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.ImgTileSubnetLayer" : {
+    ":class" : "The type Img tile subnet layer."
+  },
   "com.simiacryptus.mindseye.layers.java.ImgTileSubnetLayer.TileAccumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgTileSubnetLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgTileSubnetLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgTileSubnetLayerTest.Overlapping" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgViewLayer" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgViewLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgViewLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgViewLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgViewLayerTest.Rotated" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgViewLayerTest.RotatedChannels" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgZeroPaddingLayer" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgZeroPaddingLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.ImgZeroPaddingLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.L1NormalizationLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.ImgTileSubnetLayerTest" : {
+    ":class" : "The type Img tile subnet layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.ImgTileSubnetLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.ImgTileSubnetLayerTest.Overlapping" : {
+    ":class" : "The type Overlapping."
+  },
+  "com.simiacryptus.mindseye.layers.java.ImgViewLayerBase" : {
+    "channelSelector" : "Sets channel selector.",
+    "negativeBias" : "Sets negative bias.",
+    "sizeX" : "Sets size x.",
+    "sizeY" : "Sets size y.",
+    "wrap" : "Sets wrap."
+  },
+  "com.simiacryptus.mindseye.layers.java.ImgViewLayerBase.Accumulator" : { },
+  "com.simiacryptus.mindseye.layers.java.ImgZeroPaddingLayer" : {
+    ":class" : "The type Img zero padding layer."
+  },
+  "com.simiacryptus.mindseye.layers.java.ImgZeroPaddingLayerTest" : {
+    ":class" : "The type Img zero padding layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.ImgZeroPaddingLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.L1NormalizationLayer" : {
+    ":class" : "The type L 1 normalization layer.",
+    "maxInput" : "The Max input."
+  },
   "com.simiacryptus.mindseye.layers.java.L1NormalizationLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.L1NormalizationLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.L1NormalizationLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.LinearActivationLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.L1NormalizationLayerTest" : {
+    ":class" : "The type L 1 normalization layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.L1NormalizationLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.LinearActivationLayer" : {
+    ":class" : "The type Linear activation layer.",
+    "bias" : "Sets bias.",
+    "scale" : "Sets scale."
+  },
   "com.simiacryptus.mindseye.layers.java.LinearActivationLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.LinearActivationLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.LinearActivationLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.LogActivationLayer" : { },
-  "com.simiacryptus.mindseye.layers.java.LogActivationLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.LogActivationLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.LoggingWrapperLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.LoggingWrapperLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.MaxDropoutNoiseLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.LinearActivationLayerTest" : {
+    ":class" : "The type Linear activation layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.LinearActivationLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.LogActivationLayer" : {
+    ":class" : "The type Log activation layer."
+  },
+  "com.simiacryptus.mindseye.layers.java.LogActivationLayerTest" : {
+    ":class" : "The type Log activation layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.LogActivationLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.LoggingWrapperLayerTest" : {
+    ":class" : "The type Logging wrapper layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.LoggingWrapperLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.MaxDropoutNoiseLayer" : {
+    ":class" : "The type Max dropout noise layer."
+  },
   "com.simiacryptus.mindseye.layers.java.MaxDropoutNoiseLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.MaxDropoutNoiseLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.MaxDropoutNoiseLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.MaxImageBandLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.MaxDropoutNoiseLayerTest" : {
+    ":class" : "The type Max dropout noise layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.MaxDropoutNoiseLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.MaxImageBandLayer" : {
+    ":class" : "The type Max image band layer."
+  },
   "com.simiacryptus.mindseye.layers.java.MaxImageBandLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.MaxImageBandLayer.CalcRegionsParameter" : { },
-  "com.simiacryptus.mindseye.layers.java.MaxImageBandLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.MaxImageBandLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.MaxMetaLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.MaxImageBandLayer.CalcRegionsParameter" : {
+    ":class" : "The type Calc regions parameter."
+  },
+  "com.simiacryptus.mindseye.layers.java.MaxImageBandLayerTest" : {
+    ":class" : "The type Max image band layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.MaxImageBandLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.MaxMetaLayer" : {
+    ":class" : "The type Max meta layer."
+  },
   "com.simiacryptus.mindseye.layers.java.MaxMetaLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.MaxMetaLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.MaxMetaLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.MaxPoolingLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.MaxMetaLayerTest" : {
+    ":class" : "The type Max meta layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.MaxMetaLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.MaxPoolingLayer" : {
+    ":class" : "The type Max pooling layer."
+  },
   "com.simiacryptus.mindseye.layers.java.MaxPoolingLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.MaxPoolingLayer.CalcRegionsParameter" : { },
-  "com.simiacryptus.mindseye.layers.java.MaxPoolingLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.MaxPoolingLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.MeanSqLossLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.MaxPoolingLayer.CalcRegionsParameter" : {
+    ":class" : "The type Calc regions parameter."
+  },
+  "com.simiacryptus.mindseye.layers.java.MaxPoolingLayerTest" : {
+    ":class" : "The type Max pooling layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.MaxPoolingLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.MeanSqLossLayer" : {
+    ":class" : "The type Mean sq loss layer."
+  },
   "com.simiacryptus.mindseye.layers.java.MeanSqLossLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.MeanSqLossLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.MeanSqLossLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.MonitoringSynapse" : { },
+  "com.simiacryptus.mindseye.layers.java.MeanSqLossLayerTest" : {
+    ":class" : "The type Mean sq loss layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.MeanSqLossLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.MonitoringSynapse" : {
+    ":class" : "The type Monitoring synapse."
+  },
   "com.simiacryptus.mindseye.layers.java.MonitoringSynapse.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.MonitoringSynapseTest" : { },
-  "com.simiacryptus.mindseye.layers.java.MonitoringSynapseTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.MonitoringWrapperTest" : { },
-  "com.simiacryptus.mindseye.layers.java.MonitoringWrapperTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.NormalizationMetaLayer" : { },
-  "com.simiacryptus.mindseye.layers.java.NormalizationMetaLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.NormalizationMetaLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.NthPowerActivationLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.MonitoringSynapseTest" : {
+    ":class" : "The type Monitoring synapse test."
+  },
+  "com.simiacryptus.mindseye.layers.java.MonitoringSynapseTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.MonitoringWrapperTest" : {
+    ":class" : "The type Monitoring wrapper test."
+  },
+  "com.simiacryptus.mindseye.layers.java.MonitoringWrapperTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.NormalizationMetaLayer" : {
+    ":class" : "The type Normalization meta layer."
+  },
+  "com.simiacryptus.mindseye.layers.java.NormalizationMetaLayerTest" : {
+    ":class" : "The type Normalization meta layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.NormalizationMetaLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.NthPowerActivationLayer" : {
+    ":class" : "The type Nth power activation layer.",
+    "power" : "Sets power."
+  },
   "com.simiacryptus.mindseye.layers.java.NthPowerActivationLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.NthPowerActivationLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.NthPowerActivationLayerTest.InvPowerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.NthPowerActivationLayerTest.InvSqrtPowerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.NthPowerActivationLayerTest.NthPowerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.NthPowerActivationLayerTest.SquarePowerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.NthPowerActivationLayerTest.ZeroPowerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.PhotoUnpoolingLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.NthPowerActivationLayerTest" : {
+    ":class" : "The type Nth power activation layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.NthPowerActivationLayerTest.InvPowerTest" : {
+    ":class" : "The type Inv power test."
+  },
+  "com.simiacryptus.mindseye.layers.java.NthPowerActivationLayerTest.InvSqrtPowerTest" : {
+    ":class" : "The type Inv sqrt power test."
+  },
+  "com.simiacryptus.mindseye.layers.java.NthPowerActivationLayerTest.NthPowerTest" : {
+    ":class" : "The type Nth power test."
+  },
+  "com.simiacryptus.mindseye.layers.java.NthPowerActivationLayerTest.SquarePowerTest" : {
+    ":class" : "The type Square power test."
+  },
+  "com.simiacryptus.mindseye.layers.java.NthPowerActivationLayerTest.ZeroPowerTest" : {
+    ":class" : "The type Zero power test."
+  },
+  "com.simiacryptus.mindseye.layers.java.PhotoUnpoolingLayer" : {
+    ":class" : "The type Photo unpooling layer."
+  },
   "com.simiacryptus.mindseye.layers.java.PhotoUnpoolingLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.PhotoUnpoolingLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.PhotoUnpoolingLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.ProductInputsLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.PhotoUnpoolingLayerTest" : {
+    ":class" : "The type Photo unpooling layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.PhotoUnpoolingLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.PoincareDiskTest" : { },
+  "com.simiacryptus.mindseye.layers.java.ProductInputsLayer" : {
+    ":class" : "The type Product inputs layer."
+  },
   "com.simiacryptus.mindseye.layers.java.ProductInputsLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.ProductInputsLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.ProductInputsLayerTest.N1Test" : { },
-  "com.simiacryptus.mindseye.layers.java.ProductInputsLayerTest.NNNTest" : { },
-  "com.simiacryptus.mindseye.layers.java.ProductInputsLayerTest.NNTest" : { },
-  "com.simiacryptus.mindseye.layers.java.ProductLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.ProductInputsLayerTest" : {
+    ":class" : "The type Product inputs layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.ProductInputsLayerTest.N1Test" : {
+    ":class" : "The type N 1 test."
+  },
+  "com.simiacryptus.mindseye.layers.java.ProductInputsLayerTest.NNNTest" : {
+    ":class" : "The type Nnn test."
+  },
+  "com.simiacryptus.mindseye.layers.java.ProductInputsLayerTest.NNTest" : {
+    ":class" : "The type Nn test."
+  },
+  "com.simiacryptus.mindseye.layers.java.ProductLayer" : {
+    ":class" : "The type Product layer."
+  },
   "com.simiacryptus.mindseye.layers.java.ProductLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.ProductLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.ProductLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.ReLuActivationLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.ProductLayerTest" : {
+    ":class" : "The type Product layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.ProductLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.ReLuActivationLayer" : {
+    ":class" : "The type Re lu activation layer.",
+    "weight" : "Sets weight.",
+    "weights" : "Sets weights."
+  },
   "com.simiacryptus.mindseye.layers.java.ReLuActivationLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.ReLuActivationLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.ReLuActivationLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.RescaledSubnetLayer" : { },
-  "com.simiacryptus.mindseye.layers.java.RescaledSubnetLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.RescaledSubnetLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.ReshapeLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.ReLuActivationLayerTest" : {
+    ":class" : "The type Re lu activation layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.ReLuActivationLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.RescaledSubnetLayer" : {
+    ":class" : "The type Rescaled subnet layer."
+  },
+  "com.simiacryptus.mindseye.layers.java.RescaledSubnetLayerTest" : {
+    ":class" : "The type Rescaled subnet layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.RescaledSubnetLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.ReshapeLayer" : {
+    ":class" : "The type Reshape layer."
+  },
   "com.simiacryptus.mindseye.layers.java.ReshapeLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.ReshapeLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.ReshapeLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.ReshapeLayerTest.Basic1" : { },
-  "com.simiacryptus.mindseye.layers.java.ReshapeLayerTest.Big" : { },
-  "com.simiacryptus.mindseye.layers.java.ReshapeLayerTest.Big0" : { },
-  "com.simiacryptus.mindseye.layers.java.ReshapeLayerTest.Big1" : { },
-  "com.simiacryptus.mindseye.layers.java.ReshapeLayerTest.Big2" : { },
-  "com.simiacryptus.mindseye.layers.java.ScaleMetaLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.ReshapeLayerTest" : {
+    ":class" : "The type Reshape layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.ReshapeLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.ReshapeLayerTest.Basic1" : {
+    ":class" : "The type Basic 1."
+  },
+  "com.simiacryptus.mindseye.layers.java.ReshapeLayerTest.Big" : {
+    ":class" : "The type Big."
+  },
+  "com.simiacryptus.mindseye.layers.java.ReshapeLayerTest.Big0" : {
+    ":class" : "The type Big 0."
+  },
+  "com.simiacryptus.mindseye.layers.java.ReshapeLayerTest.Big1" : {
+    ":class" : "The type Big 1."
+  },
+  "com.simiacryptus.mindseye.layers.java.ReshapeLayerTest.Big2" : {
+    ":class" : "The type Big 2."
+  },
+  "com.simiacryptus.mindseye.layers.java.ScaleMetaLayer" : {
+    ":class" : "The type Scale meta layer."
+  },
   "com.simiacryptus.mindseye.layers.java.ScaleMetaLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.ScaleMetaLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.ScaleMetaLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.SigmoidActivationLayer" : { },
-  "com.simiacryptus.mindseye.layers.java.SigmoidActivationLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.SigmoidActivationLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.SignReducerLayer" : { },
-  "com.simiacryptus.mindseye.layers.java.SignReducerLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.SignReducerLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.SignReducerLayerTest.Normal" : { },
-  "com.simiacryptus.mindseye.layers.java.SimpleActivationLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.ScaleMetaLayerTest" : {
+    ":class" : "The type Scale meta layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.ScaleMetaLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.SigmoidActivationLayer" : {
+    ":class" : "The type Sigmoid activation layer.",
+    "balanced" : "Sets balanced."
+  },
+  "com.simiacryptus.mindseye.layers.java.SigmoidActivationLayerTest" : {
+    ":class" : "The type Sigmoid activation layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.SigmoidActivationLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.SignReducerLayer" : {
+    ":class" : "The type Sign reducer layer."
+  },
+  "com.simiacryptus.mindseye.layers.java.SignReducerLayerTest" : {
+    ":class" : "The type Sign reducer layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.SignReducerLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.SignReducerLayerTest.Normal" : {
+    ":class" : "The type Normal."
+  },
+  "com.simiacryptus.mindseye.layers.java.SimpleActivationLayer" : {
+    ":class" : "The type Simple activation layer."
+  },
   "com.simiacryptus.mindseye.layers.java.SimpleActivationLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.SinewaveActivationLayer" : { },
-  "com.simiacryptus.mindseye.layers.java.SinewaveActivationLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.SinewaveActivationLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.SoftmaxLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.SinewaveActivationLayer" : {
+    ":class" : "The type Sinewave activation layer.",
+    "balanced" : "Sets balanced."
+  },
+  "com.simiacryptus.mindseye.layers.java.SinewaveActivationLayerTest" : {
+    ":class" : "The type Sinewave activation layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.SinewaveActivationLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.SoftmaxLayer" : {
+    ":class" : "The type Softmax layer.",
+    "maxInput" : "The Max input."
+  },
   "com.simiacryptus.mindseye.layers.java.SoftmaxLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.SoftmaxLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.SoftmaxLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.SqActivationLayer" : { },
-  "com.simiacryptus.mindseye.layers.java.SqActivationLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.SqActivationLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.StaticScalarLossLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.SoftmaxLayerTest" : {
+    ":class" : "The type Softmax layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.SoftmaxLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.SqActivationLayer" : {
+    ":class" : "The type Sq activation layer."
+  },
+  "com.simiacryptus.mindseye.layers.java.SqActivationLayerTest" : {
+    ":class" : "The type Sq activation layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.SqActivationLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.StaticScalarLossLayer" : {
+    ":class" : "The type Static scalar loss layer.",
+    "target" : "Sets target."
+  },
   "com.simiacryptus.mindseye.layers.java.StaticScalarLossLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.StaticScalarLossLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.StaticScalarLossLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.StdDevMetaLayer" : { },
-  "com.simiacryptus.mindseye.layers.java.StdDevMetaLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.StdDevMetaLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.StochasticSamplingSubnetLayer" : { },
-  "com.simiacryptus.mindseye.layers.java.StochasticSamplingSubnetLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.StochasticSamplingSubnetLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.SubBatchLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.StaticScalarLossLayerTest" : {
+    ":class" : "The type Static scalar loss layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.StaticScalarLossLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.StdDevMetaLayer" : {
+    ":class" : "The type Std dev meta layer."
+  },
+  "com.simiacryptus.mindseye.layers.java.StdDevMetaLayerTest" : {
+    ":class" : "The type Std dev meta layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.StdDevMetaLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.StochasticSamplingSubnetLayer" : {
+    ":class" : "The type Stochastic sampling subnet layer."
+  },
+  "com.simiacryptus.mindseye.layers.java.StochasticSamplingSubnetLayerTest" : {
+    ":class" : "The type Stochastic sampling subnet layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.StochasticSamplingSubnetLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.SubBatchLayer" : {
+    ":class" : "The type Sub batch layer."
+  },
   "com.simiacryptus.mindseye.layers.java.SubBatchLayer.MainAccumulator" : { },
   "com.simiacryptus.mindseye.layers.java.SubBatchLayer.SubAccumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.SubBatchLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.SumInputsLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.SubBatchLayerTest" : {
+    ":class" : "The type Sub batch layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.SumInputsLayer" : {
+    ":class" : "The type Sum inputs layer."
+  },
   "com.simiacryptus.mindseye.layers.java.SumInputsLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.SumInputsLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.SumInputsLayerTest.N1Test" : { },
-  "com.simiacryptus.mindseye.layers.java.SumInputsLayerTest.NNTest" : { },
-  "com.simiacryptus.mindseye.layers.java.SumInputsLayerTest.OnePlusOne" : { },
-  "com.simiacryptus.mindseye.layers.java.SumMetaLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.SumInputsLayerTest" : {
+    ":class" : "The type Sum inputs layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.SumInputsLayerTest.N1Test" : {
+    ":class" : "The type N 1 test."
+  },
+  "com.simiacryptus.mindseye.layers.java.SumInputsLayerTest.NNTest" : {
+    ":class" : "The type Nn test."
+  },
+  "com.simiacryptus.mindseye.layers.java.SumInputsLayerTest.OnePlusOne" : {
+    ":class" : "The type One plus one."
+  },
+  "com.simiacryptus.mindseye.layers.java.SumMetaLayer" : {
+    ":class" : "The type Sum meta layer.",
+    "minBatches" : "Sets min batches."
+  },
   "com.simiacryptus.mindseye.layers.java.SumMetaLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.SumMetaLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.SumMetaLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.SumReducerLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.SumMetaLayerTest" : {
+    ":class" : "The type Sum meta layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.SumMetaLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.SumReducerLayer" : {
+    ":class" : "The type Sum reducer layer."
+  },
   "com.simiacryptus.mindseye.layers.java.SumReducerLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.SumReducerLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.SumReducerLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.TargetValueLayer" : { },
-  "com.simiacryptus.mindseye.layers.java.TargetValueLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.TargetValueLayerTest.Normal" : { },
-  "com.simiacryptus.mindseye.layers.java.TensorConcatLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.SumReducerLayerTest" : {
+    ":class" : "The type Sum reducer layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.SumReducerLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.TargetValueLayer" : {
+    ":class" : "The type Target value layer.",
+    "target" : "Sets target."
+  },
+  "com.simiacryptus.mindseye.layers.java.TargetValueLayerTest" : {
+    ":class" : "The type Target value layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.TargetValueLayerTest.Normal" : {
+    ":class" : "The type Normal."
+  },
+  "com.simiacryptus.mindseye.layers.java.TensorConcatLayer" : {
+    ":class" : "The type Tensor concat layer.",
+    "maxBands" : "Sets max bands."
+  },
   "com.simiacryptus.mindseye.layers.java.TensorConcatLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.TensorConcatLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.TensorConcatLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.UnpoolingLayer" : { },
+  "com.simiacryptus.mindseye.layers.java.TensorConcatLayerTest" : {
+    ":class" : "The type Tensor concat layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.TensorConcatLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.UnpoolingLayer" : {
+    ":class" : "The type Unpooling layer."
+  },
   "com.simiacryptus.mindseye.layers.java.UnpoolingLayer.Accumulator" : { },
-  "com.simiacryptus.mindseye.layers.java.UnpoolingLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.UnpoolingLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.layers.java.ValueLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.ValueLayerTest.Normal" : { },
-  "com.simiacryptus.mindseye.layers.java.VariableLayer" : { },
-  "com.simiacryptus.mindseye.layers.java.VariableLayerTest" : { },
-  "com.simiacryptus.mindseye.layers.java.VariableLayerTest.Basic" : { },
-  "com.simiacryptus.mindseye.test.LocalTests_Java" : { },
-  "com.simiacryptus.mindseye.test.RemoteTests_Java" : { }
+  "com.simiacryptus.mindseye.layers.java.UnpoolingLayerTest" : {
+    ":class" : "The type Unpooling layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.UnpoolingLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.layers.java.ValueLayerTest" : {
+    ":class" : "The type Value layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.ValueLayerTest.Normal" : {
+    ":class" : "The type Normal."
+  },
+  "com.simiacryptus.mindseye.layers.java.VariableLayer" : {
+    ":class" : "The type Variable layer."
+  },
+  "com.simiacryptus.mindseye.layers.java.VariableLayerTest" : {
+    ":class" : "The type Variable layer test."
+  },
+  "com.simiacryptus.mindseye.layers.java.VariableLayerTest.Basic" : {
+    ":class" : "The type Basic."
+  },
+  "com.simiacryptus.mindseye.test.BuildAndRelease" : {
+    ":class" : "The type Build and release."
+  },
+  "com.simiacryptus.mindseye.test.LocalTests_Java" : {
+    ":class" : "The type Local tests java."
+  },
+  "com.simiacryptus.mindseye.test.MarkdownUtil" : {
+    ":class" : "The type Markdown util."
+  },
+  "com.simiacryptus.mindseye.test.RemoteReleaseBuild" : {
+    ":class" : "The type Remote build."
+  },
+  "com.simiacryptus.mindseye.test.RemoteTests_Java" : {
+    ":class" : "The type Remote tests java."
+  },
+  "com.simiacryptus.mindseye.test.RemoteValidationBuild" : {
+    ":class" : "The type Remote build."
+  }
 }
