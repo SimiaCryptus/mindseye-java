@@ -189,7 +189,7 @@ public class CoordinateAssemblyLayer extends LayerBase {
         Tensor image = data.get(0);
         Tensor[] pixels = RefIntStream.range(0, dimensions[1]).mapToObj(x -> x).flatMap(y ->
             RefIntStream.range(0, dimensions[0]).mapToObj(x -> {
-              Tensor tensor = new Tensor((discardCoordinates ? 2 : 0) + dimensions[2]);
+              Tensor tensor = new Tensor(1, 1, (discardCoordinates ? 2 : 0) + dimensions[2]);
               try {
                 return tensor.mapIndex((v, i) -> {
                   if(discardCoordinates) {

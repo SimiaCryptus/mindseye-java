@@ -34,7 +34,8 @@ import java.util.UUID;
 import java.util.function.IntFunction;
 
 /**
- * The type Img reshape layer.
+ * Reshapes an Image by coding non-overlapping pixel regions to be stored as additional bands.
+ * At 2x2, for example, an image will be rearranged so the output is half width and half height, but 4x the color channels
  */
 @SuppressWarnings("serial")
 public class ImgReshapeLayer extends LayerBase {
@@ -66,7 +67,7 @@ public class ImgReshapeLayer extends LayerBase {
     super(json);
     kernelSizeX = json.getAsJsonPrimitive("kernelSizeX").getAsInt();
     kernelSizeY = json.getAsJsonPrimitive("kernelSizeY").getAsInt();
-    expand = json.getAsJsonPrimitive("expandPlasma").getAsBoolean();
+    expand = json.getAsJsonPrimitive("expand").getAsBoolean();
   }
 
   /**
@@ -198,7 +199,7 @@ public class ImgReshapeLayer extends LayerBase {
     @Nonnull final JsonObject json = super.getJsonStub();
     json.addProperty("kernelSizeX", kernelSizeX);
     json.addProperty("kernelSizeY", kernelSizeX);
-    json.addProperty("expandPlasma", expand);
+    json.addProperty("expand", expand);
     return json;
   }
 

@@ -377,7 +377,7 @@
     ":class" : "The type Basic."
   },
   "com.simiacryptus.mindseye.layers.java.ImgReshapeLayer" : {
-    ":class" : "The type Img reshape layer."
+    ":class" : "Reshapes an Image by coding non-overlapping pixel regions to be stored as additional bands. At 2x2, for example, an image will be rearranged so the output is half width and half height, but 4x the color channels"
   },
   "com.simiacryptus.mindseye.layers.java.ImgReshapeLayer.Accumulator" : { },
   "com.simiacryptus.mindseye.layers.java.ImgReshapeLayerTest" : {

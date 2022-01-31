@@ -87,7 +87,7 @@ public abstract class CoordinateReassemblyLayerTest extends LayerTestBase {
     public Layer getLayer() {
       PipelineNetwork network = new PipelineNetwork();
       network.add(new CoordinateDisassemblyLayer(false)).freeRef();
-      network.add(new FullyConnectedLayer(new int[] {2}, new int[] {3})).freeRef();
+      network.add(new FullyConnectedLayer(new int[] {1,1,2}, new int[] {1,1,3})).freeRef();
       network.add(new CoordinateAssemblyLayer(false), network.getHead(), network.getInput(0)).freeRef();
       return network;
     }

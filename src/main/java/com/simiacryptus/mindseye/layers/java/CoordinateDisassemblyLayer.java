@@ -60,7 +60,7 @@ public class CoordinateDisassemblyLayer extends LayerBase {
   /**
    * Instantiates a new Img band bias layer.
    */
-  protected CoordinateDisassemblyLayer(boolean outputColors) {
+  public CoordinateDisassemblyLayer(boolean outputColors) {
     super();
     this.outputColors = outputColors;
   }
@@ -73,11 +73,11 @@ public class CoordinateDisassemblyLayer extends LayerBase {
    */
   protected CoordinateDisassemblyLayer(@Nonnull final JsonObject json) {
     super(json);
-    minX = (json.getAsJsonPrimitive("minX")).getAsDouble();
-    minY = (json.getAsJsonPrimitive("minY")).getAsDouble();
-//    minZ = (json.getAsJsonPrimitive("minZ")).getAsDouble();
-    maxX = (json.getAsJsonPrimitive("maxX")).getAsDouble();
-    maxY = (json.getAsJsonPrimitive("maxY")).getAsDouble();
+    this.minX = (json.getAsJsonPrimitive("minX")).getAsDouble();
+    this.minY = (json.getAsJsonPrimitive("minY")).getAsDouble();
+    //    minZ = (json.getAsJsonPrimitive("minZ")).getAsDouble();
+    this.maxX = (json.getAsJsonPrimitive("maxX")).getAsDouble();
+    this.maxY = (json.getAsJsonPrimitive("maxY")).getAsDouble();
     outputColors = (json.getAsJsonPrimitive("outputColors")).getAsBoolean();
 //    maxZ = (json.getAsJsonPrimitive("maxZ")).getAsDouble();
   }
@@ -171,17 +171,20 @@ public class CoordinateDisassemblyLayer extends LayerBase {
       }
       Tensor[] pixels = RefIntStream.range(0, dimensions[1]).mapToObj(x -> x).flatMap(y ->
           RefIntStream.range(0, dimensions[0]).mapToObj(x -> {
-            Tensor tensor = new Tensor(outputColors ? (2 + dimensions[2]) : 2);
+            Tensor tensor = new Tensor(new int[] {1, 1, outputColors ? (2 + dimensions[2]) : 2});
             try {
-              return tensor.mapIndex((v, i) -> {
+              Tensor tensor1 = tensor.mapIndex((v, i) -> {
+                double v1;
                 if (i == 0) {
-                  return ((double) x / dimensions[0]) * (maxX - minX) + minX;
+                  v1 = ((double) x / dimensions[0]) * (getMaxX() - getMinX()) + getMinX();
                 } else if (i == 1) {
-                  return ((double) y / dimensions[1]) * (maxY - minY) + minY;
+                  v1 = ((double) y / dimensions[1]) * (getMaxY() - getMinY()) + getMinY();
                 } else {
-                  return outputColors ? image.get(x, y, i - 2) : 0;
+                  v1 = outputColors ? image.get(x, y, i - 2) : 0;
                 }
+                return v1;
               });
+              return tensor1;
             } finally {
               tensor.freeRef();
             }
@@ -190,6 +193,38 @@ public class CoordinateDisassemblyLayer extends LayerBase {
     } finally {
       image.freeRef();
     }
+  }
+
+  public double getMinX() {
+    return minX;
+  }
+
+  public void setMinX(double minX) {
+    this.minX = minX;
+  }
+
+  public double getMinY() {
+    return minY;
+  }
+
+  public void setMinY(double minY) {
+    this.minY = minY;
+  }
+
+  public double getMaxX() {
+    return maxX;
+  }
+
+  public void setMaxX(double maxX) {
+    this.maxX = maxX;
+  }
+
+  public double getMaxY() {
+    return maxY;
+  }
+
+  public void setMaxY(double maxY) {
+    this.maxY = maxY;
   }
 
   private static class Accumulator extends Result.Accumulator {
