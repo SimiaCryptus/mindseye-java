@@ -38,7 +38,11 @@ import java.util.UUID;
 import java.util.function.IntFunction;
 
 /**
- * The type Softmax layer.
+ * This class represents a softmax layer.
+ *
+ * @author John Doe
+ * @version 1.0
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class SoftmaxLayer extends LayerBase {
@@ -66,11 +70,12 @@ public class SoftmaxLayer extends LayerBase {
   }
 
   /**
-   * From json softmax layer.
+   * Creates a new {@link SoftmaxLayer} from a JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the softmax layer
+   * @param json the JSON object to use
+   * @param rs   the map of character sequences to byte arrays
+   * @return the new {@link SoftmaxLayer}
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -106,6 +111,11 @@ public class SoftmaxLayer extends LayerBase {
     return RefArrays.asList();
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();
@@ -153,6 +163,16 @@ public class SoftmaxLayer extends LayerBase {
     return new TensorArray(outputA);
   }
 
+  /**
+   * The Accumulator class represents an accumulator.
+   *
+   * @param alive       whether or not the accumulator is alive
+   * @param itemCnt     the number of items in the accumulator
+   * @param expA        the array of tensors in the accumulator
+   * @param sumA        the array of sums in the accumulator
+   * @param accumulator the accumulator result
+   * @docgenVersion 9
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private final boolean alive;
@@ -215,6 +235,11 @@ public class SoftmaxLayer extends LayerBase {
       }
     }
 
+    /**
+     * Frees resources.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

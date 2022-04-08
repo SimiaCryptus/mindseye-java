@@ -25,7 +25,9 @@ import com.simiacryptus.mindseye.test.LayerTestBase;
 import javax.annotation.Nonnull;
 
 /**
- * The type Img concat layer test.
+ * Test class for ImgConcatLayer
+ *
+ * @docgenVersion 9
  */
 public abstract class ImgConcatLayerTest extends LayerTestBase {
 
@@ -42,7 +44,9 @@ public abstract class ImgConcatLayerTest extends LayerTestBase {
   }
 
   /**
-   * The type Basic.
+   * The Basic class is a class that contains the most basic information.
+   *
+   * @docgenVersion 9
    */
   public static class Basic extends ImgConcatLayerTest {
 

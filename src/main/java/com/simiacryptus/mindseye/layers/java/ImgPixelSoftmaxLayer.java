@@ -35,7 +35,9 @@ import java.util.UUID;
 import java.util.function.IntFunction;
 
 /**
- * The type Img pixel softmax layer.
+ * This class is responsible for the softmax layer in the image pixel classification process.
+ *
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class ImgPixelSoftmaxLayer extends LayerBase {
@@ -60,11 +62,12 @@ public class ImgPixelSoftmaxLayer extends LayerBase {
   }
 
   /**
-   * From json img pixel softmax layer.
+   * Returns a new {@link ImgPixelSoftmaxLayer} from a JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the img pixel softmax layer
+   * @param json the JSON object to use
+   * @param rs   the map of character sequences to byte arrays
+   * @return a new {@link ImgPixelSoftmaxLayer}
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -82,10 +85,12 @@ public class ImgPixelSoftmaxLayer extends LayerBase {
   }
 
   /**
-   * Eval result.
+   * Evaluates the given input.
    *
-   * @param input the input
-   * @return the result
+   * @param input the input to evaluate
+   * @return the result of the evaluation
+   * @throws NullPointerException if the input is null
+   * @docgenVersion 9
    */
   @Nonnull
   public Result eval(@Nonnull final Result input) {
@@ -157,6 +162,11 @@ public class ImgPixelSoftmaxLayer extends LayerBase {
     return RefArrays.asList();
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();
@@ -169,6 +179,14 @@ public class ImgPixelSoftmaxLayer extends LayerBase {
     return (ImgPixelSoftmaxLayer) super.addRef();
   }
 
+  /**
+   * The Accumulator class is used to compute the sum of a set of input data tensors.
+   *
+   * @author John Doe
+   * @version 1.0
+   * @docgenVersion 9
+   * @since 1.0
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private final TensorArray sums;
@@ -253,6 +271,11 @@ public class ImgPixelSoftmaxLayer extends LayerBase {
         buffer.freeRef();
     }
 
+    /**
+     * Frees resources used by this object.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

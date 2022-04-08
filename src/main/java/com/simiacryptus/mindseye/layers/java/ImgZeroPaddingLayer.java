@@ -31,7 +31,12 @@ import javax.annotation.Nonnull;
 import java.util.Map;
 
 /**
- * The type Img zero padding layer.
+ * This class represents an image zero-padding layer, which is used to add
+ * zeros to the edges of an image.
+ *
+ * @param sizeX The width of the image.
+ * @param sizeY The height of the image.
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class ImgZeroPaddingLayer extends LayerBase {
@@ -63,11 +68,12 @@ public class ImgZeroPaddingLayer extends LayerBase {
   }
 
   /**
-   * From json img zero padding layer.
+   * Returns a new {@link ImgZeroPaddingLayer} from a JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the img zero padding layer
+   * @param json the JSON object to parse
+   * @param rs   the resources to load
+   * @return a new {@link ImgZeroPaddingLayer}
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -104,6 +110,11 @@ public class ImgZeroPaddingLayer extends LayerBase {
     return new RefArrayList<>();
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();

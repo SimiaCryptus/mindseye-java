@@ -40,7 +40,10 @@ import java.util.Random;
 import java.util.UUID;
 
 /**
- * The type Binary noise layer.
+ * This class creates a binary noise layer.
+ *
+ * @author Java
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
@@ -96,18 +99,20 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
   }
 
   /**
-   * Gets value.
+   * Returns the value of this object.
    *
-   * @return the value
+   * @return the value of this object
+   * @docgenVersion 9
    */
   public double getValue() {
     return value;
   }
 
   /**
-   * Sets value.
+   * Sets the value of this component to the specified value.
    *
-   * @param value the value
+   * @param value the new value of this component
+   * @docgenVersion 9
    */
   public void setValue(final double value) {
     this.value = value;
@@ -115,11 +120,12 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
   }
 
   /**
-   * From json binary noise layer.
+   * Creates a {@link BinaryNoiseLayer} from a JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the binary noise layer
+   * @param json the JSON object to create the layer from
+   * @param rs   the resources to use
+   * @return the created layer
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -128,10 +134,9 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
   }
 
   /**
-   * Mask layer layer.
-   *
-   * @param density the density
-   * @return the layer
+   * @param density
+   * @return
+   * @docgenVersion 9
    */
   @Nonnull
   public static Layer maskLayer(double density) {
@@ -159,7 +164,9 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
   }
 
   /**
-   * Clear.
+   * Clears the mask list.
+   *
+   * @docgenVersion 9
    */
   public void clear() {
     final RefList<Tensor> maskList = this.maskList.addRef();
@@ -197,6 +204,11 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
     return RefArrays.asList();
   }
 
+  /**
+   * Frees resources used by this object.
+   *
+   * @docgenVersion 9
+   */
   public void _free() {
     clear();
     maskList.freeRef();
@@ -233,6 +245,11 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
     return new TensorArray(maskList.stream().limit(length).toArray(Tensor[]::new));
   }
 
+  /**
+   * The Accumulator class is used to accumulate results.
+   *
+   * @docgenVersion 9
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private Result.Accumulator accumulator;
@@ -256,6 +273,11 @@ public class BinaryNoiseLayer extends LayerBase implements StochasticComponent {
       delta.freeRef();
     }
 
+    /**
+     * Frees resources used by this object.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

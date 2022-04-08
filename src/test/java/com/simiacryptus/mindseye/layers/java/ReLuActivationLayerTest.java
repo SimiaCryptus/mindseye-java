@@ -25,7 +25,9 @@ import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 import javax.annotation.Nonnull;
 
 /**
- * The type Re lu activation layer test.
+ * This class tests the ReLuActivationLayer class.
+ *
+ * @docgenVersion 9
  */
 public abstract class ReLuActivationLayerTest extends ActivationLayerTestBase {
   /**
@@ -42,7 +44,9 @@ public abstract class ReLuActivationLayerTest extends ActivationLayerTestBase {
   }
 
   /**
-   * The type Basic.
+   * The Basic class is a class that contains the most basic information.
+   *
+   * @docgenVersion 9
    */
   public static class Basic extends ReLuActivationLayerTest {
 

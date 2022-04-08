@@ -32,7 +32,9 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * The type Cross difference layer.
+ * This class represents a CrossDifferenceLayer.
+ *
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class CrossDifferenceLayer extends LayerBase {
@@ -53,11 +55,12 @@ public class CrossDifferenceLayer extends LayerBase {
   }
 
   /**
-   * From json cross difference layer.
+   * Creates a new {@link CrossDifferenceLayer} from the given JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the cross difference layer
+   * @param json the JSON object to create the layer from
+   * @param rs   the map of character sequences to byte arrays
+   * @return the new {@link CrossDifferenceLayer}
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -66,12 +69,13 @@ public class CrossDifferenceLayer extends LayerBase {
   }
 
   /**
-   * Index int.
+   * Returns the index of the given x and y coordinates in a list of all possible coordinates with a maximum value.
    *
-   * @param x   the x
-   * @param y   the y
-   * @param max the max
-   * @return the int
+   * @param x   the x coordinate
+   * @param y   the y coordinate
+   * @param max the maximum value
+   * @return the index of the given coordinates
+   * @docgenVersion 9
    */
   public static int index(final int x, final int y, final int max) {
     return max * (max - 1) / 2 - (max - x) * (max - x - 1) / 2 + y - x - 1;
@@ -99,6 +103,11 @@ public class CrossDifferenceLayer extends LayerBase {
     return RefArrays.asList();
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();
@@ -135,6 +144,13 @@ public class CrossDifferenceLayer extends LayerBase {
     return tensorArray;
   }
 
+  /**
+   * The Accumulator class represents an object that can be used to accumulate results.
+   *
+   * @author Your Name
+   * @version 1.0
+   * @docgenVersion 9
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private boolean alive;
@@ -178,6 +194,11 @@ public class CrossDifferenceLayer extends LayerBase {
         buffer.freeRef();
     }
 
+    /**
+     * Frees resources used by this object.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

@@ -37,7 +37,11 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * The type Img concat layer.
+ * Class ImgConcatLayer
+ * A class that concatenates images
+ *
+ * @author
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class ImgConcatLayer extends LayerBase {
@@ -66,29 +70,33 @@ public class ImgConcatLayer extends LayerBase {
   }
 
   /**
-   * Gets max bands.
+   * Returns the maximum number of bands.
    *
-   * @return the max bands
+   * @return the maximum number of bands
+   * @docgenVersion 9
    */
   public int getMaxBands() {
     return maxBands;
   }
 
   /**
-   * Sets max bands.
+   * Sets the maximum number of bands.
    *
-   * @param maxBands the max bands
+   * @param maxBands the maximum number of bands
+   * @docgenVersion 9
    */
   public void setMaxBands(int maxBands) {
     this.maxBands = maxBands;
   }
 
   /**
-   * From json img concat layer.
+   * Creates an ImgConcatLayer from a JsonObject.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the img concat layer
+   * @param json The JsonObject to create the layer from.
+   * @param rs   A map of character sequences to byte arrays.
+   * @return The created ImgConcatLayer
+   * @throws NullPointerException if json is null
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -164,6 +172,11 @@ public class ImgConcatLayer extends LayerBase {
     return RefArrays.asList();
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();
@@ -202,6 +215,13 @@ public class ImgConcatLayer extends LayerBase {
     return tensorArray;
   }
 
+  /**
+   * The Accumulator class is used to track the number of batches and results in an array.
+   *
+   * @param numBatches The number of batches in the array.
+   * @param inObj      The array of results.
+   * @docgenVersion 9
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private final int numBatches;
@@ -275,6 +295,11 @@ public class ImgConcatLayer extends LayerBase {
       RefUtil.freeRef(splitData);
     }
 
+    /**
+     * Frees resources used by this object.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

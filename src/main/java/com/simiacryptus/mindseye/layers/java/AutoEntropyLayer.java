@@ -29,7 +29,10 @@ import javax.annotation.Nonnull;
 import java.util.Map;
 
 /**
- * The type Auto entropy layer.
+ * The AutoEntropyLayer class is a utility class that is used to
+ * automatically calculate the entropy of a given data layer.
+ *
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class AutoEntropyLayer extends PipelineNetwork {
@@ -56,11 +59,12 @@ public class AutoEntropyLayer extends PipelineNetwork {
   }
 
   /**
-   * From json auto entropy layer.
+   * Creates an AutoEntropyLayer from a JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the auto entropy layer
+   * @param json the JSON object to create the layer from
+   * @param rs   the map of character sequences to byte arrays
+   * @return the AutoEntropyLayer created from the JSON object
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -68,6 +72,11 @@ public class AutoEntropyLayer extends PipelineNetwork {
     return new AutoEntropyLayer(json, rs);
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();

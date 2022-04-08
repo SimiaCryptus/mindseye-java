@@ -36,7 +36,11 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * The type Monitoring synapse.
+ * This class is responsible for monitoring the synapse.
+ * It keeps track of statistics for backpropagation and forward propagation,
+ * as well as the total number of batches and items.
+ *
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public final class MonitoringSynapse extends LayerBase implements MonitoredItem {
@@ -74,11 +78,12 @@ public final class MonitoringSynapse extends LayerBase implements MonitoredItem 
   }
 
   /**
-   * From json monitoring synapse.
+   * Creates a MonitoringSynapse from a JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the monitoring synapse
+   * @param json the JSON object to create the MonitoringSynapse from
+   * @param rs   a map containing the raw data
+   * @return the MonitoringSynapse
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -92,10 +97,12 @@ public final class MonitoringSynapse extends LayerBase implements MonitoredItem 
   }
 
   /**
-   * Add to monitoring synapse.
+   * Adds this MonitoringSynapse to the specified MonitoredObject.
    *
-   * @param obj the obj
-   * @return the monitoring synapse
+   * @param obj the MonitoredObject to add this MonitoringSynapse to
+   * @return this MonitoringSynapse
+   * @throws NullPointerException if obj is null
+   * @docgenVersion 9
    */
   @Nonnull
   public MonitoringSynapse addTo(@Nonnull final MonitoredObject obj) {
@@ -104,10 +111,11 @@ public final class MonitoringSynapse extends LayerBase implements MonitoredItem 
   }
 
   /**
-   * Add to.
+   * Adds this object to the specified monitored object with the specified name.
    *
-   * @param obj  the obj
-   * @param name the name
+   * @param obj  the monitored object to add this object to
+   * @param name the name to use for this object in the monitored object
+   * @docgenVersion 9
    */
   public void addTo(@Nonnull MonitoredObject obj, String name) {
     setName(name);
@@ -150,6 +158,11 @@ public final class MonitoringSynapse extends LayerBase implements MonitoredItem 
     return RefArrays.asList();
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();
@@ -162,6 +175,11 @@ public final class MonitoringSynapse extends LayerBase implements MonitoredItem 
     return (MonitoringSynapse) super.addRef();
   }
 
+  /**
+   * The Accumulator class is used to accumulate results.
+   *
+   * @docgenVersion 9
+   */
   private class Accumulator extends Result.Accumulator {
 
     private Result.Accumulator accumulator;
@@ -188,6 +206,11 @@ public final class MonitoringSynapse extends LayerBase implements MonitoredItem 
       data.freeRef();
     }
 
+    /**
+     * Frees resources used by this object.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

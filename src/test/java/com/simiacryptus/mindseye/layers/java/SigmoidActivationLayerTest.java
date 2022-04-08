@@ -25,7 +25,9 @@ import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 import javax.annotation.Nonnull;
 
 /**
- * The type Sigmoid activation layer test.
+ * Test class for the SigmoidActivationLayer class.
+ *
+ * @docgenVersion 9
  */
 public abstract class SigmoidActivationLayerTest extends ActivationLayerTestBase {
   /**
@@ -42,7 +44,9 @@ public abstract class SigmoidActivationLayerTest extends ActivationLayerTestBase
   }
 
   /**
-   * The type Basic.
+   * The Basic class is a class that contains basic information.
+   *
+   * @docgenVersion 9
    */
   public static class Basic extends SigmoidActivationLayerTest {
 

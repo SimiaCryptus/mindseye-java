@@ -25,7 +25,9 @@ import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 import javax.annotation.Nonnull;
 
 /**
- * The type Gaussian noise layer test.
+ * This class tests the GaussianNoiseLayer class.
+ *
+ * @docgenVersion 9
  */
 public abstract class GaussianNoiseLayerTest extends ActivationLayerTestBase {
   /**
@@ -36,7 +38,9 @@ public abstract class GaussianNoiseLayerTest extends ActivationLayerTestBase {
   }
 
   /**
-   * The type Basic.
+   * The Basic class is a class that contains basic information.
+   *
+   * @docgenVersion 9
    */
   public static class Basic extends GaussianNoiseLayerTest {
 

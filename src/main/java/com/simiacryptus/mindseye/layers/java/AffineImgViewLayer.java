@@ -31,7 +31,12 @@ import javax.annotation.Nonnull;
 import java.util.Map;
 
 /**
- * The type Img view layer.
+ * This class represents an AffineImgViewLayer.
+ *
+ * @author Some Author
+ * @version 1.0
+ * @docgenVersion 9
+ * @since 1.0
  */
 @SuppressWarnings("serial")
 public class AffineImgViewLayer extends ImgViewLayerBase {
@@ -120,114 +125,132 @@ public class AffineImgViewLayer extends ImgViewLayerBase {
     //channelSelector
   }
 
+  /**
+   * Returns the view dimensions of the input dimensions.
+   *
+   * @param inputDims the input dimensions
+   * @return the view dimensions
+   * @docgenVersion 9
+   */
   @Nonnull
   public int[] getViewDimensions(@Nonnull int @NotNull [] inputDims) {
     int[] destinationDimensions = new int[]{getSizeX(), getSizeY(), inputDims[2]};
     int[] offset = new int[]{getOffsetX(), getOffsetY(), 0};
     @Nonnull final int[] viewDim = new int[3];
     RefArrays.parallelSetAll(viewDim, i -> isWrap() ? destinationDimensions[i]
-            : Math.min(inputDims[i], destinationDimensions[i] + offset[i]) - Math.max(offset[i], 0));
+        : Math.min(inputDims[i], destinationDimensions[i] + offset[i]) - Math.max(offset[i], 0));
     if (null != channelSelector)
       viewDim[2] = channelSelector.length;
     return viewDim;
   }
 
   /**
-   * Gets offset x.
+   * Returns the offsetX.
    *
-   * @return the offset x
+   * @return the offsetX.
+   * @docgenVersion 9
    */
   public int getOffsetX() {
     return offsetX;
   }
 
   /**
-   * Sets offset x.
+   * Sets the x offset.
    *
-   * @param offsetX the offset x
+   * @param offsetX the x offset
+   * @docgenVersion 9
    */
   public void setOffsetX(int offsetX) {
     this.offsetX = offsetX;
   }
 
   /**
-   * Gets offset y.
+   * Returns the offset on the y-axis.
    *
-   * @return the offset y
+   * @return the offset on the y-axis
+   * @docgenVersion 9
    */
   public int getOffsetY() {
     return offsetY;
   }
 
   /**
-   * Sets offset y.
+   * Sets the offset on the y-axis.
    *
-   * @param offsetY the offset y
+   * @param offsetY the offset on the y-axis
+   * @docgenVersion 9
    */
   public void setOffsetY(int offsetY) {
     this.offsetY = offsetY;
   }
 
   /**
-   * Gets rotation center x.
+   * Returns the x-coordinate of the center of rotation.
    *
-   * @return the rotation center x
+   * @return the x-coordinate of the center of rotation
+   * @docgenVersion 9
    */
   public int getRotationCenterX() {
     return rotationCenterX;
   }
 
   /**
-   * Sets rotation center x.
+   * Sets the x-coordinate of the center of rotation.
    *
-   * @param rotationCenterX the rotation center x
+   * @param rotationCenterX the x-coordinate of the center of rotation
+   * @docgenVersion 9
    */
   public void setRotationCenterX(int rotationCenterX) {
     this.rotationCenterX = rotationCenterX;
   }
 
   /**
-   * Gets rotation center y.
+   * Returns the rotation center's y-coordinate.
    *
-   * @return the rotation center y
+   * @return the rotation center's y-coordinate
+   * @docgenVersion 9
    */
   public int getRotationCenterY() {
     return rotationCenterY;
   }
 
   /**
-   * Sets rotation center y.
+   * Sets the rotation center along the y-axis.
    *
-   * @param rotationCenterY the rotation center y
+   * @param rotationCenterY the new rotation center along the y-axis
+   * @docgenVersion 9
    */
   public void setRotationCenterY(int rotationCenterY) {
     this.rotationCenterY = rotationCenterY;
   }
 
   /**
-   * Gets rotation radians.
+   * Returns the rotation in radians.
    *
-   * @return the rotation radians
+   * @return the rotation in radians
+   * @docgenVersion 9
    */
   public double getRotationRadians() {
     return rotationRadians;
   }
 
   /**
-   * Sets rotation radians.
+   * Sets the rotation in radians.
    *
-   * @param rotationRadians the rotation radians
+   * @param rotationRadians the rotation in radians
+   * @docgenVersion 9
    */
   public void setRotationRadians(double rotationRadians) {
     this.rotationRadians = rotationRadians;
   }
 
   /**
-   * From json img view layer.
+   * Creates an AffineImgViewLayer from a JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the img view layer
+   * @param json The JSON object to create the AffineImgViewLayer from.
+   * @param rs   A map of character sequences to byte arrays.
+   * @return The newly created AffineImgViewLayer.
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -270,9 +293,9 @@ public class AffineImgViewLayer extends ImgViewLayerBase {
   protected Point coordinateMapping(@Nonnull Point xy) {
     double x = xy.x;
     double y = xy.y;
-    if(x < xMin || x >= xMax) return xy;
-    if(y < yMin || y >= yMax) return xy;
-    double dist = Math.sqrt(x*x+y*y);
+    if (x < xMin || x >= xMax) return xy;
+    if (y < yMin || y >= yMax) return xy;
+    double dist = Math.sqrt(x * x + y * y);
     if (dist >= rMin && dist < rMax) {
       x += offsetX;
       y += offsetY;
@@ -287,53 +310,125 @@ public class AffineImgViewLayer extends ImgViewLayerBase {
       x += rotationCenterX;
       y += rotationCenterY;
     }
-    return new Point(x,y);
+    return new Point(x, y);
   }
 
+  /**
+   * Returns the maximum x value of the graph.
+   *
+   * @return the maximum x value of the graph
+   * @docgenVersion 9
+   */
   public int getxMax() {
     return xMax;
   }
 
+  /**
+   * Sets the maximum x value
+   *
+   * @param xMax the maximum x value
+   * @docgenVersion 9
+   */
   public void setxMax(int xMax) {
     this.xMax = xMax;
   }
 
+  /**
+   * Returns the minimum x value of the rectangle.
+   *
+   * @return the minimum x value of the rectangle
+   * @docgenVersion 9
+   */
   public int getxMin() {
     return xMin;
   }
 
+  /**
+   * Sets the minimum x value.
+   *
+   * @param xMin the minimum x value
+   * @docgenVersion 9
+   */
   public void setxMin(int xMin) {
     this.xMin = xMin;
   }
 
+  /**
+   * Returns the maximum y value of the graph.
+   *
+   * @return the maximum y value of the graph
+   * @docgenVersion 9
+   */
   public int getyMax() {
     return yMax;
   }
 
+  /**
+   * Sets the maximum y value
+   *
+   * @param yMax the maximum y value
+   * @docgenVersion 9
+   */
   public void setyMax(int yMax) {
     this.yMax = yMax;
   }
 
+  /**
+   * Returns the minimum y value of the graph.
+   *
+   * @return the minimum y value of the graph
+   * @docgenVersion 9
+   */
   public int getyMin() {
     return yMin;
   }
 
+  /**
+   * Sets the minimum value of y.
+   *
+   * @param yMin the minimum value of y
+   * @docgenVersion 9
+   */
   public void setyMin(int yMin) {
     this.yMin = yMin;
   }
 
+  /**
+   * Returns the maximum radius of the shape.
+   *
+   * @return the maximum radius of the shape
+   * @docgenVersion 9
+   */
   public int getrMax() {
     return rMax;
   }
 
+  /**
+   * Sets the maximum radius of the shape.
+   *
+   * @param rMax the maximum radius of the shape
+   * @docgenVersion 9
+   */
   public void setrMax(int rMax) {
     this.rMax = rMax;
   }
 
+  /**
+   * Returns the minimum value of the range.
+   *
+   * @return the minimum value of the range
+   * @docgenVersion 9
+   */
   public int getrMin() {
     return rMin;
   }
 
+  /**
+   * Sets the minimum value for the range.
+   *
+   * @param rMin the minimum value for the range
+   * @docgenVersion 9
+   */
   public void setrMin(int rMin) {
     this.rMin = rMin;
   }

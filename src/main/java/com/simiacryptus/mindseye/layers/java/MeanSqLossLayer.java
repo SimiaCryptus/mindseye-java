@@ -35,7 +35,12 @@ import java.util.UUID;
 import java.util.function.IntFunction;
 
 /**
- * The type Mean sq loss layer.
+ * This class is a MeanSqLossLayer.
+ *
+ * @author John Doe
+ * @version 1.0
+ * @docgenVersion 9
+ * @since 1.0
  */
 @SuppressWarnings("serial")
 public class MeanSqLossLayer extends LayerBase {
@@ -59,11 +64,12 @@ public class MeanSqLossLayer extends LayerBase {
   }
 
   /**
-   * From json mean sq loss layer.
+   * Creates a {@link MeanSqLossLayer} from a JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the mean sq loss layer
+   * @param json the JSON object to use for creating the layer
+   * @param rs   a map of character sequences to byte arrays
+   * @return a new {@link MeanSqLossLayer}
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -115,6 +121,11 @@ public class MeanSqLossLayer extends LayerBase {
     return RefArrays.asList();
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();
@@ -154,6 +165,14 @@ public class MeanSqLossLayer extends LayerBase {
         ).toArray(Tensor[]::new));
   }
 
+  /**
+   * The Accumulator class is used to compute the gradient of a Tensor.
+   *
+   * @author Author Name
+   * @version 1.0
+   * @docgenVersion 9
+   * @since 1.0
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private final Tensor[] diffs;
@@ -238,6 +257,11 @@ public class MeanSqLossLayer extends LayerBase {
         buffer.freeRef();
     }
 
+    /**
+     * Frees resources.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

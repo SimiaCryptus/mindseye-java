@@ -25,14 +25,17 @@ import com.simiacryptus.aws.exe.EC2NotebookRunner;
 import java.util.concurrent.TimeUnit;
 
 /**
- * The type Remote build.
+ * This class is responsible for validating builds remotely.
+ *
+ * @docgenVersion 9
  */
 public class RemoteValidationBuild {
 
   /**
-   * The entry point of application.
+   * The main method for the program.
    *
-   * @param args the input arguments
+   * @param args the command line arguments
+   * @docgenVersion 9
    */
   public static void main(String[] args) {
     EC2NotebookRunner.launch(

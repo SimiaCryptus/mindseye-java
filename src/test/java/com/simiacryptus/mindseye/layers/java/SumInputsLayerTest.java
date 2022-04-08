@@ -28,11 +28,15 @@ import com.simiacryptus.ref.lang.RefUtil;
 import javax.annotation.Nonnull;
 
 /**
- * The type Sum inputs layer test.
+ * A test class for the SumInputsLayer class.
+ *
+ * @docgenVersion 9
  */
 public class SumInputsLayerTest {
   /**
-   * The type N 1 test.
+   * This is the N1Test class.
+   *
+   * @docgenVersion 9
    */
   public static class N1Test extends LayerTestBase {
 
@@ -57,7 +61,9 @@ public class SumInputsLayerTest {
   }
 
   /**
-   * The type Nn test.
+   * This class is a test for the neural network.
+   *
+   * @docgenVersion 9
    */
   public static class NNTest extends LayerTestBase {
 
@@ -82,7 +88,9 @@ public class SumInputsLayerTest {
   }
 
   /**
-   * The type One plus one.
+   * This class represents the concept of one plus one.
+   *
+   * @docgenVersion 9
    */
   public static class OnePlusOne extends LayerTestBase {
 

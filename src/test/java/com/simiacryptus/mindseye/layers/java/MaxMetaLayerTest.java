@@ -25,7 +25,9 @@ import com.simiacryptus.mindseye.layers.MetaLayerTestBase;
 import javax.annotation.Nonnull;
 
 /**
- * The type Max meta layer test.
+ * This class tests the MaxMetaLayer class.
+ *
+ * @docgenVersion 9
  */
 public abstract class MaxMetaLayerTest extends MetaLayerTestBase {
 
@@ -54,7 +56,9 @@ public abstract class MaxMetaLayerTest extends MetaLayerTestBase {
   }
 
   /**
-   * The type Basic.
+   * The Basic class is a class that contains basic information.
+   *
+   * @docgenVersion 9
    */
   public static class Basic extends MaxMetaLayerTest {
 

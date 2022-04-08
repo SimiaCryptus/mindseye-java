@@ -38,7 +38,12 @@ import java.util.function.DoubleSupplier;
 import java.util.function.IntFunction;
 
 /**
- * The type Re lu activation layer.
+ * This class represents a ReLuActivationLayer.
+ *
+ * @author AuthorName
+ * @version 1.0
+ * @docgenVersion 9
+ * @since 1.0
  */
 @SuppressWarnings("serial")
 public class ReLuActivationLayer extends LayerBase {
@@ -70,18 +75,20 @@ public class ReLuActivationLayer extends LayerBase {
   }
 
   /**
-   * Gets mobility.
+   * Returns the mobility of the player.
    *
-   * @return the mobility
+   * @return the mobility of the player
+   * @docgenVersion 9
    */
   protected double getMobility() {
     return 1;
   }
 
   /**
-   * Sets weight.
+   * Sets the weight of the data.
    *
-   * @param data the data
+   * @param data the weight to be set
+   * @docgenVersion 9
    */
   public void setWeight(double data) {
     assert weights != null;
@@ -89,9 +96,10 @@ public class ReLuActivationLayer extends LayerBase {
   }
 
   /**
-   * Sets weights.
+   * Sets the weights of this object using the given {@link DoubleSupplier}.
    *
-   * @param f the f
+   * @param f the {@link DoubleSupplier} to use for setting the weights
+   * @docgenVersion 9
    */
   public void setWeights(@Nonnull DoubleSupplier f) {
     assert weights != null;
@@ -99,11 +107,12 @@ public class ReLuActivationLayer extends LayerBase {
   }
 
   /**
-   * From json re lu activation layer.
+   * Returns a new ReLuActivationLayer from a JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the re lu activation layer
+   * @param json The JSON object to use.
+   * @param rs   A map of character sequences to byte arrays.
+   * @return A new ReLuActivationLayer.
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -112,9 +121,10 @@ public class ReLuActivationLayer extends LayerBase {
   }
 
   /**
-   * Add weights.
+   * Adds the given weights to this layer.
    *
-   * @param f the f
+   * @param f the weights to add
+   * @docgenVersion 9
    */
   public void addWeights(@Nonnull DoubleSupplier f) {
     assert weights != null;
@@ -151,6 +161,11 @@ public class ReLuActivationLayer extends LayerBase {
     return RefArrays.asList(weights.getData());
   }
 
+  /**
+   * Frees resources used by this object.
+   *
+   * @docgenVersion 9
+   */
   public void _free() {
     if (null != weights)
       weights.freeRef();
@@ -184,6 +199,17 @@ public class ReLuActivationLayer extends LayerBase {
         }, indata)).toArray(Tensor[]::new));
   }
 
+  /**
+   * The Accumulator class represents an accumulator, which is used to accumulate the results of a computation.
+   *
+   * @param indata      The input data to be accumulated.
+   * @param inputAlive  Whether the input is alive.
+   * @param weights     The weights to be used in the accumulation.
+   * @param id          The id of the accumulator.
+   * @param frozen      Whether the accumulator is frozen.
+   * @param accumulator The Result.Accumulator to be used in the accumulation.
+   * @docgenVersion 9
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private final TensorList indata;
@@ -268,6 +294,11 @@ public class ReLuActivationLayer extends LayerBase {
       }
     }
 
+    /**
+     * Frees resources used by this object.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

@@ -25,11 +25,15 @@ import com.simiacryptus.mindseye.test.LayerTestBase;
 import javax.annotation.Nonnull;
 
 /**
- * The type Target value layer test.
+ * Test class for the TargetValueLayer class.
+ *
+ * @docgenVersion 9
  */
 public class TargetValueLayerTest {
   /**
-   * The type Normal.
+   * This class represents a Normal object.
+   *
+   * @docgenVersion 9
    */
   public static class Normal extends LayerTestBase {
 

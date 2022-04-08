@@ -26,12 +26,16 @@ import com.simiacryptus.mindseye.test.unit.SingleDerivativeTester;
 import javax.annotation.Nonnull;
 
 /**
- * The type Nth power activation layer test.
+ * This class tests the NthPowerActivationLayer class.
+ *
+ * @docgenVersion 9
  */
 public class NthPowerActivationLayerTest {
 
   /**
-   * The type Inv power test.
+   * This class tests the InvPower class.
+   *
+   * @docgenVersion 9
    */
   public static class InvPowerTest extends ActivationLayerTestBase {
     /**
@@ -62,7 +66,9 @@ public class NthPowerActivationLayerTest {
   }
 
   /**
-   * The type Inv sqrt power test.
+   * This class tests the invSqrtPower method.
+   *
+   * @docgenVersion 9
    */
   public static class InvSqrtPowerTest extends ActivationLayerTestBase {
     /**
@@ -93,7 +99,9 @@ public class NthPowerActivationLayerTest {
   }
 
   /**
-   * The type Nth power test.
+   * This class tests the nthPower method in the NthPower class.
+   *
+   * @docgenVersion 9
    */
   public static class NthPowerTest extends ActivationLayerTestBase {
     /**
@@ -123,7 +131,9 @@ public class NthPowerActivationLayerTest {
   //  }
 
   /**
-   * The type Square power test.
+   * This class tests the functionality of the SquarePower class.
+   *
+   * @docgenVersion 9
    */
   public static class SquarePowerTest extends ActivationLayerTestBase {
     /**
@@ -141,7 +151,9 @@ public class NthPowerActivationLayerTest {
   }
 
   /**
-   * The type Zero power test.
+   * This class tests whether a number raised to the power of 0 is 1.
+   *
+   * @docgenVersion 9
    */
   public static class ZeroPowerTest extends ActivationLayerTestBase {
     /**

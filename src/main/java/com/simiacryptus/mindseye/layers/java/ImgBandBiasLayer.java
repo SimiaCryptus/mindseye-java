@@ -42,7 +42,11 @@ import java.util.function.DoubleSupplier;
 import java.util.function.IntToDoubleFunction;
 
 /**
- * The type Img band bias layer.
+ * Class ImgBandBiasLayer
+ *
+ * @author
+ * @version This class is used to ...
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class ImgBandBiasLayer extends LayerBase {
@@ -81,9 +85,10 @@ public class ImgBandBiasLayer extends LayerBase {
   }
 
   /**
-   * Get bias double [ ].
+   * Returns the bias, or null if the bias is not set.
    *
-   * @return the double [ ]
+   * @throws IllegalStateException if the bias is not set or if any of the bias values are not finite
+   * @docgenVersion 9
    */
   @Nullable
   public double[] getBias() {
@@ -95,9 +100,10 @@ public class ImgBandBiasLayer extends LayerBase {
   }
 
   /**
-   * Sets weights.
+   * Sets the weights of the bias.
    *
-   * @param f the f
+   * @param f the function to apply to the bias.
+   * @docgenVersion 9
    */
   public void setWeights(@Nonnull IntToDoubleFunction f) {
     @Nullable final double[] bias = getBias();
@@ -109,9 +115,10 @@ public class ImgBandBiasLayer extends LayerBase {
   }
 
   /**
-   * Sets weights log.
+   * Sets the weights of the logarithm.
    *
-   * @param value the value
+   * @param value the value to set the weights to
+   * @docgenVersion 9
    */
   public void setWeightsLog(double value) {
     assert bias != null;
@@ -121,11 +128,12 @@ public class ImgBandBiasLayer extends LayerBase {
   }
 
   /**
-   * From json img band bias layer.
+   * Creates a new {@link ImgBandBiasLayer} from the specified JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the img band bias layer
+   * @param json the JSON object to use
+   * @param rs   the map of resources to use
+   * @return the new {@link ImgBandBiasLayer}
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -134,10 +142,12 @@ public class ImgBandBiasLayer extends LayerBase {
   }
 
   /**
-   * Add double [ ].
+   * Adds the given input to the current instance.
    *
-   * @param input the input
-   * @return the double [ ]
+   * @param input the input to add
+   * @return the resulting array
+   * @throws NullPointerException if the input is null
+   * @docgenVersion 9
    */
   @Nonnull
   public double[] add(@Nonnull final double[] input) {
@@ -156,9 +166,10 @@ public class ImgBandBiasLayer extends LayerBase {
   }
 
   /**
-   * Add weights.
+   * Adds the given weights to the bias.
    *
-   * @param f the f
+   * @param f the given weights
+   * @docgenVersion 9
    */
   public void addWeights(@Nonnull DoubleSupplier f) {
     Util.add(f, getBias());
@@ -174,10 +185,12 @@ public class ImgBandBiasLayer extends LayerBase {
   }
 
   /**
-   * Eval result.
+   * Evaluates the given input.
    *
-   * @param input the input
-   * @return the result
+   * @param input the input to evaluate
+   * @return the result of the evaluation
+   * @throws NullPointerException if the input is null
+   * @docgenVersion 9
    */
   @Nonnull
   public Result eval(@Nonnull final Result input) {
@@ -198,9 +211,12 @@ public class ImgBandBiasLayer extends LayerBase {
   }
 
   /**
-   * Set.
+   * Sets the bias of the neuron.
    *
-   * @param ds the ds
+   * @param ds the new bias
+   * @throws NullPointerException     if ds is null
+   * @throws IllegalArgumentException if ds is not finite
+   * @docgenVersion 9
    */
   public void set(@Nonnull double[] ds) {
     @Nullable final double[] bias = getBias();
@@ -219,15 +235,21 @@ public class ImgBandBiasLayer extends LayerBase {
   }
 
   /**
-   * Set.
+   * Sets the given {@link Tensor} as this {@link Tensor}'s data.
    *
-   * @param tensor the tensor
+   * @param tensor The {@link Tensor} to set as this {@link Tensor}'s data
+   * @docgenVersion 9
    */
   public void set(@Nonnull Tensor tensor) {
     set(tensor.getData());
     tensor.freeRef();
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();
@@ -262,6 +284,16 @@ public class ImgBandBiasLayer extends LayerBase {
     return tensorArray;
   }
 
+  /**
+   * The Accumulator class represents an accumulator, which is used to accumulate bias values.
+   *
+   * @param bias        The bias values to accumulate.
+   * @param id          The unique identifier for this accumulator.
+   * @param frozen      Whether or not this accumulator is frozen.
+   * @param accumulator The Result.Accumulator object for this accumulator.
+   * @param alive       Whether or not this accumulator is alive.
+   * @docgenVersion 9
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private final double[] bias;
@@ -319,6 +351,11 @@ public class ImgBandBiasLayer extends LayerBase {
       }
     }
 
+    /**
+     * Frees resources used by this object.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

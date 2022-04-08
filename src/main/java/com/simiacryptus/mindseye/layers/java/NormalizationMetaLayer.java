@@ -29,7 +29,12 @@ import javax.annotation.Nonnull;
 import java.util.Map;
 
 /**
- * The type Normalization meta layer.
+ * This class is responsible for the NormalizationMetaLayer.
+ *
+ * @author Author Name
+ * @version 1.0
+ * @docgenVersion 9
+ * @since 1.0
  */
 @SuppressWarnings("serial")
 public class NormalizationMetaLayer extends PipelineNetwork {
@@ -62,11 +67,12 @@ public class NormalizationMetaLayer extends PipelineNetwork {
   }
 
   /**
-   * From json normalization meta layer.
+   * Creates a new NormalizationMetaLayer from the given JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the normalization meta layer
+   * @param json The JSON object to use.
+   * @param rs   A map of character sequences to byte arrays.
+   * @return The new NormalizationMetaLayer.
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -74,6 +80,11 @@ public class NormalizationMetaLayer extends PipelineNetwork {
     return new NormalizationMetaLayer(json, rs);
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();

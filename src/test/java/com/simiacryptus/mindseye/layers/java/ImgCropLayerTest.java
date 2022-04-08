@@ -26,7 +26,9 @@ import org.junit.jupiter.api.Disabled;
 import javax.annotation.Nonnull;
 
 /**
- * The type Img crop layer test.
+ * Test class for ImgCropLayer
+ *
+ * @docgenVersion 9
  */
 public abstract class ImgCropLayerTest extends LayerTestBase {
 
@@ -55,7 +57,9 @@ public abstract class ImgCropLayerTest extends LayerTestBase {
   }
 
   /**
-   * The type Basic.
+   * The Basic class is a class that contains the most basic information.
+   *
+   * @docgenVersion 9
    */
   public static class Basic extends ImgCropLayerTest {
 

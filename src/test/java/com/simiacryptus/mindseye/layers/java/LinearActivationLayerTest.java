@@ -25,7 +25,9 @@ import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 import javax.annotation.Nonnull;
 
 /**
- * The type Linear activation layer test.
+ * This class tests the LinearActivationLayer class.
+ *
+ * @docgenVersion 9
  */
 public abstract class LinearActivationLayerTest extends ActivationLayerTestBase {
   /**
@@ -36,7 +38,9 @@ public abstract class LinearActivationLayerTest extends ActivationLayerTestBase 
   }
 
   /**
-   * The type Basic.
+   * The Basic class is a class that contains basic information.
+   *
+   * @docgenVersion 9
    */
   public static class Basic extends LinearActivationLayerTest {
 

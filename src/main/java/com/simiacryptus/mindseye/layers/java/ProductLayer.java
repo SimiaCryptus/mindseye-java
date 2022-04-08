@@ -38,7 +38,10 @@ import java.util.function.IntFunction;
 import static com.simiacryptus.mindseye.lang.Result.anyAlive;
 
 /**
- * The type Product layer.
+ * The ProductLayer class is a class that contains a logger.
+ * The logger is used to log messages for the ProductLayer class.
+ *
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class ProductLayer extends LayerBase {
@@ -62,11 +65,12 @@ public class ProductLayer extends LayerBase {
   }
 
   /**
-   * From json product layer.
+   * Creates a new ProductLayer from a JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the product layer
+   * @param json The JSON object to create the ProductLayer from.
+   * @param rs   A map of character sequences to byte arrays.
+   * @return The new ProductLayer.
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -114,6 +118,11 @@ public class ProductLayer extends LayerBase {
     return RefArrays.asList();
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();
@@ -147,6 +156,14 @@ public class ProductLayer extends LayerBase {
     return new TensorArray(outputA);
   }
 
+  /**
+   * The Accumulator class is used to sum the results of an array of objects.
+   *
+   * @author Your Name
+   * @version 1.0
+   * @docgenVersion 9
+   * @since 1.0
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private final double[] sum_A;
@@ -198,6 +215,11 @@ public class ProductLayer extends LayerBase {
         buffer.freeRef();
     }
 
+    /**
+     * Frees resources used by this object.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

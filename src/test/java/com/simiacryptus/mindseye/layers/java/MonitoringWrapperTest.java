@@ -26,7 +26,11 @@ import com.simiacryptus.mindseye.test.LayerTestBase;
 import javax.annotation.Nonnull;
 
 /**
- * The type Monitoring wrapper test.
+ * MonitoringWrapperTest class
+ * <p>
+ * This class is used to test the MonitoringWrapper class
+ *
+ * @docgenVersion 9
  */
 public abstract class MonitoringWrapperTest extends LayerTestBase {
 
@@ -43,7 +47,9 @@ public abstract class MonitoringWrapperTest extends LayerTestBase {
   }
 
   /**
-   * The type Basic.
+   * The Basic class is a class that contains the most basic information.
+   *
+   * @docgenVersion 9
    */
   public static class Basic extends MonitoringWrapperTest {
 

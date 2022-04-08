@@ -26,7 +26,11 @@ import org.junit.jupiter.api.Disabled;
 import javax.annotation.Nonnull;
 
 /**
- * The type Binary noise layer test.
+ * BinaryNoiseLayerTest class
+ * <p>
+ * This class tests the BinaryNoiseLayer class
+ *
+ * @docgenVersion 9
  */
 public abstract class BinaryNoiseLayerTest extends LayerTestBase {
 
@@ -55,7 +59,9 @@ public abstract class BinaryNoiseLayerTest extends LayerTestBase {
   }
 
   /**
-   * The type Basic.
+   * The Basic class is a class that contains the most basic information.
+   *
+   * @docgenVersion 9
    */
   public static class Basic extends BinaryNoiseLayerTest {
 

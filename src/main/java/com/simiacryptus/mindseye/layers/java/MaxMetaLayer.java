@@ -37,7 +37,10 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 /**
- * The type Max meta layer.
+ * The MaxMetaLayer class is a utility class that contains a logger.
+ * The logger is used for logging purposes.
+ *
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class MaxMetaLayer extends LayerBase {
@@ -61,11 +64,12 @@ public class MaxMetaLayer extends LayerBase {
   }
 
   /**
-   * From json max meta layer.
+   * Returns a new {@link MaxMetaLayer} from the given JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the max meta layer
+   * @param json the JSON object to parse
+   * @param rs   the resource map
+   * @return a new {@link MaxMetaLayer}
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -115,6 +119,11 @@ public class MaxMetaLayer extends LayerBase {
     return RefArrays.asList();
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();
@@ -141,6 +150,13 @@ public class MaxMetaLayer extends LayerBase {
     return tensorArray;
   }
 
+  /**
+   * The Accumulator class is used to hold information about an input Tensor, the number of items in the Tensor,
+   * an array of indices, and a Result.Accumulator object. This class also has a boolean value to keep track of
+   * whether or not it is still alive.
+   *
+   * @docgenVersion 9
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private final Tensor input0Tensor;
@@ -189,6 +205,11 @@ public class MaxMetaLayer extends LayerBase {
         buffer.freeRef();
     }
 
+    /**
+     * Frees any resources used by this object.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

@@ -26,7 +26,9 @@ import javax.annotation.Nonnull;
 import java.util.Map;
 
 /**
- * The type Sq activation layer.
+ * This class represents a SqActivationLayer.
+ *
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public final class SqActivationLayer extends SimpleActivationLayer<SqActivationLayer> {
@@ -52,11 +54,10 @@ public final class SqActivationLayer extends SimpleActivationLayer<SqActivationL
   }
 
   /**
-   * From json sq activation layer.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the sq activation layer
+   * @param json The JSON object to use to create the SqActivationLayer
+   * @param rs   A map of character sequences to byte arrays
+   * @return A new SqActivationLayer
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -70,6 +71,11 @@ public final class SqActivationLayer extends SimpleActivationLayer<SqActivationL
     return super.getJsonStub();
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();

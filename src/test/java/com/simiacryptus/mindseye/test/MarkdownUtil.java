@@ -46,7 +46,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * The type Markdown util.
+ * This class is responsible for providing utility methods related to Markdown.
+ *
+ * @docgenVersion 9
  */
 public class MarkdownUtil {
   /**
@@ -55,7 +57,10 @@ public class MarkdownUtil {
   protected static final Logger logger = LoggerFactory.getLogger(MarkdownUtil.class);
 
   /**
-   * Fix hugo markdown.
+   * @Test public void fixHugoMarkdown();
+   * <p>
+   * This test will check to see if the markdown file is correctly formatted for Hugo.
+   * @docgenVersion 9
    */
   @Test
   public void fixHugoMarkdown() {
@@ -114,12 +119,10 @@ public class MarkdownUtil {
   }
 
   /**
-   * Replace all string.
-   *
-   * @param data      the data
-   * @param downloads the downloads
-   * @param base      the base
-   * @return the string
+   * @Nullable public String replaceAll(String data, HashMap<String, File> downloads, Path base);
+   * <p>
+   * Replaces all instances of a string with a given replacement.
+   * @docgenVersion 9
    */
   @Nullable
   public String replaceAll(String data, HashMap<String, File> downloads, Path base) {
@@ -135,11 +138,10 @@ public class MarkdownUtil {
   }
 
   /**
-   * Download all hash map.
-   *
-   * @param imageDir the image dir
-   * @param data     the data
-   * @return the hash map
+   * @param imageDir the directory to download images to
+   * @param data     the data to download
+   * @return a map of the downloaded files
+   * @docgenVersion 9
    */
   @NotNull
   public HashMap<String, File> downloadAll(File imageDir, String data) {
@@ -159,10 +161,11 @@ public class MarkdownUtil {
   }
 
   /**
-   * All image elements hash map.
+   * Returns a HashMap of all image elements in the given data.
    *
-   * @param data the data
-   * @return the hash map
+   * @param data the data to be parsed
+   * @return a HashMap of all image elements in the given data
+   * @docgenVersion 9
    */
   @NotNull
   public HashMap<String, String> allImageElements(String data) {
@@ -178,10 +181,11 @@ public class MarkdownUtil {
   }
 
   /**
-   * Gets header json.
+   * Returns a JSON object containing the header information for the given data.
    *
-   * @param data the data
-   * @return the header json
+   * @param data The data to get the header information for.
+   * @return A JSON object containing the header information for the given data.
+   * @docgenVersion 9
    */
   public JsonObject getHeaderJson(String data) {
     Pattern compile = Pattern.compile("^\\{.*?\\}\\s*\r?\n", Pattern.DOTALL);
@@ -192,11 +196,12 @@ public class MarkdownUtil {
   }
 
   /**
-   * Sets header json.
+   * Sets the header of the JSON object to the specified data.
    *
-   * @param data      the data
-   * @param newHeader the new header
-   * @return the header json
+   * @param data      The data to set the header to.
+   * @param newHeader The JSON object to set the header of.
+   * @return The header that was set.
+   * @docgenVersion 9
    */
   public String setHeaderJson(String data, JsonObject newHeader) {
     Pattern compile = Pattern.compile("^(\\{.*\\})\n", Pattern.DOTALL);
@@ -207,12 +212,13 @@ public class MarkdownUtil {
   }
 
   /**
-   * Download file.
+   * Downloads a file from the given URL and saves it to the given directory.
    *
-   * @param url      the url
-   * @param imageDir the image dir
-   * @return the file
-   * @throws IOException the io exception
+   * @param url      the URL to download the file from
+   * @param imageDir the directory to save the downloaded file to
+   * @return the downloaded file, or null if the download failed
+   * @throws IOException if there was an error downloading the file
+   * @docgenVersion 9
    */
   @Nullable
   public File download(String url, File imageDir) throws IOException {

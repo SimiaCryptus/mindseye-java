@@ -37,7 +37,9 @@ import java.util.function.Consumer;
 import java.util.function.IntFunction;
 
 /**
- * The type Img band select layer.
+ * This class is responsible for selecting the bands to be used in an image.
+ *
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class ImgBandSelectLayer extends LayerBase {
@@ -69,11 +71,12 @@ public class ImgBandSelectLayer extends LayerBase {
   }
 
   /**
-   * From json img band select layer.
+   * Creates a new {@link ImgBandSelectLayer} from the given JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the img band select layer
+   * @param json the JSON object to create the layer from
+   * @param rs   the map of raw data sources
+   * @return the new {@link ImgBandSelectLayer}
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -114,6 +117,11 @@ public class ImgBandSelectLayer extends LayerBase {
     return new RefArrayList<>();
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();
@@ -130,16 +138,22 @@ public class ImgBandSelectLayer extends LayerBase {
   private TensorArray fwd(TensorList batch, int[] inputDims) {
     @Nonnull final Tensor outputDims = new Tensor(inputDims[0], inputDims[1], bands.length);
     return new TensorArray(RefIntStream.range(0, batch.length()).parallel().mapToObj(RefUtil
-        .wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-          Tensor tensor = batch.get(dataIndex);
-          return outputDims.mapCoords(RefUtil.wrapInterface(c -> {
-            int[] coords = c.getCoords();
-            return tensor.get(coords[0], coords[1], bands[coords[2]]);
-          }, batch.addRef(), tensor));
-        }, outputDims, batch))
+            .wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+              Tensor tensor = batch.get(dataIndex);
+              return outputDims.mapCoords(RefUtil.wrapInterface(c -> {
+                int[] coords = c.getCoords();
+                return tensor.get(coords[0], coords[1], bands[coords[2]]);
+              }, batch.addRef(), tensor));
+            }, outputDims, batch))
         .toArray(Tensor[]::new));
   }
 
+  /**
+   * The Accumulator class is used to hold input dimensions, bands, and an accumulator.
+   * This class also has a boolean to check if it is alive.
+   *
+   * @docgenVersion 9
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private final int[] inputDims;
@@ -184,6 +198,11 @@ public class ImgBandSelectLayer extends LayerBase {
       }
     }
 
+    /**
+     * Frees resources used by this object.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

@@ -35,7 +35,9 @@ import java.util.UUID;
 import java.util.function.IntFunction;
 
 /**
- * The type Nth power activation layer.
+ * This class represents an activation layer that uses the nth power function.
+ *
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public final class NthPowerActivationLayer extends LayerBase {
@@ -68,29 +70,32 @@ public final class NthPowerActivationLayer extends LayerBase {
   }
 
   /**
-   * Gets power.
+   * Returns the power.
    *
    * @return the power
+   * @docgenVersion 9
    */
   public double getPower() {
     return power;
   }
 
   /**
-   * Sets power.
+   * Sets the power of the object.
    *
-   * @param power the power
+   * @param power The power to set.
+   * @docgenVersion 9
    */
   public void setPower(double power) {
     this.power = power;
   }
 
   /**
-   * From json nth power activation layer.
+   * Returns a new {@link NthPowerActivationLayer} from a JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the nth power activation layer
+   * @param json the JSON object to use
+   * @param rs   the map of character sequences to byte arrays
+   * @return a new {@link NthPowerActivationLayer}
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -187,6 +192,11 @@ public final class NthPowerActivationLayer extends LayerBase {
     return RefArrays.asList();
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();
@@ -228,6 +238,15 @@ public final class NthPowerActivationLayer extends LayerBase {
         }, inData)).toArray(Tensor[]::new));
   }
 
+  /**
+   * The Accumulator class represents an object that can accumulate input gradients and item counts.
+   *
+   * @param inputGradientA An array of input gradients.
+   * @param itemCnt        The number of items.
+   * @param accumulator    The accumulator.
+   * @param alive          A boolean value indicating whether the object is alive.
+   * @docgenVersion 9
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private final Tensor[] inputGradientA;
@@ -276,6 +295,11 @@ public final class NthPowerActivationLayer extends LayerBase {
       }
     }
 
+    /**
+     * Frees resources used by this object.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

@@ -28,7 +28,12 @@ import org.junit.jupiter.api.AfterEach;
 import javax.annotation.Nonnull;
 
 /**
- * The type Fully connected reference layer test.
+ * Test class for the {@link FullyConnectedReferenceLayer} class.
+ *
+ * @param outputDims the dimensions of the layer's output
+ * @param inputDims  the dimensions of the layer's input
+ * @param layer      the layer to be tested
+ * @docgenVersion 9
  */
 public abstract class FullyConnectedReferenceLayerTest extends LayerTestBase {
   @Nonnull
@@ -69,7 +74,10 @@ public abstract class FullyConnectedReferenceLayerTest extends LayerTestBase {
   }
 
   /**
-   * Cleanup.
+   * This method is called after each test is run.
+   *
+   * @MustCall This method must be called.
+   * @docgenVersion 9
    */
   @AfterEach
   @MustCall
@@ -79,7 +87,9 @@ public abstract class FullyConnectedReferenceLayerTest extends LayerTestBase {
   }
 
   /**
-   * The type Basic.
+   * The Basic class is a class that contains basic information.
+   *
+   * @docgenVersion 9
    */
   public static class Basic extends FullyConnectedReferenceLayerTest {
     /**
@@ -92,7 +102,11 @@ public abstract class FullyConnectedReferenceLayerTest extends LayerTestBase {
   }
 
   /**
-   * The type Image.
+   * The Image class represents an image.
+   *
+   * @author John Doe
+   * @version 1.0
+   * @docgenVersion 9
    */
   public static class Image extends FullyConnectedReferenceLayerTest {
     /**

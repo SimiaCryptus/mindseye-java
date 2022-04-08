@@ -37,7 +37,10 @@ import java.util.function.Function;
 import java.util.function.IntFunction;
 
 /**
- * The type Scale meta layer.
+ * The ScaleMetaLayer class is a utility class that is used to scale
+ * a metamodel layer.
+ *
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class ScaleMetaLayer extends LayerBase {
@@ -61,11 +64,11 @@ public class ScaleMetaLayer extends LayerBase {
   }
 
   /**
-   * From json scale meta layer.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the scale meta layer
+   * @param json the JSON object to convert
+   * @param rs   the resource map
+   * @return the new ScaleMetaLayer
+   * @throws NullPointerException if json is null
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -105,6 +108,11 @@ public class ScaleMetaLayer extends LayerBase {
     return RefArrays.asList();
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();
@@ -128,6 +136,18 @@ public class ScaleMetaLayer extends LayerBase {
         }, scale, data0)).toArray(Tensor[]::new));
   }
 
+  /**
+   * The Accumulator class is used to accumulate tensors.
+   *
+   * @param scale        The scale of the tensor.
+   * @param dimensions   The dimensions of the tensor.
+   * @param itemCnt      The number of items in the tensor.
+   * @param accumulator0 The first accumulator.
+   * @param alive0       Whether or not the first accumulator is alive.
+   * @param alive1       Whether or not the second accumulator is alive.
+   * @param accumulator1 The second accumulator.
+   * @docgenVersion 9
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private final Tensor scale;
@@ -199,6 +219,12 @@ public class ScaleMetaLayer extends LayerBase {
       }
     }
 
+    /**
+     * Frees resources used by this object.
+     * This method is called by the garbage collector.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

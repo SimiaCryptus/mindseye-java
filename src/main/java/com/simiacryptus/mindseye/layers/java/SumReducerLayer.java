@@ -38,7 +38,9 @@ import java.util.function.IntFunction;
 import static com.simiacryptus.mindseye.lang.Result.anyAlive;
 
 /**
- * The type Sum reducer layer.
+ * This class is responsible for reducing the values in a dataset by summing them up.
+ *
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class SumReducerLayer extends LayerBase {
@@ -62,11 +64,12 @@ public class SumReducerLayer extends LayerBase {
   }
 
   /**
-   * From json sum reducer layer.
+   * Creates a new {@link SumReducerLayer} from a JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the sum reducer layer
+   * @param json the JSON object to use for creating the layer
+   * @param rs   a map of character sequences to byte arrays
+   * @return a new {@link SumReducerLayer}
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -98,6 +101,11 @@ public class SumReducerLayer extends LayerBase {
     return RefArrays.asList();
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();
@@ -131,6 +139,11 @@ public class SumReducerLayer extends LayerBase {
         .toArray(Tensor[]::new));
   }
 
+  /**
+   * The Accumulator class is used to store an array of Result objects.
+   *
+   * @docgenVersion 9
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private final Result[] inObj;
@@ -176,6 +189,11 @@ public class SumReducerLayer extends LayerBase {
         buffer.freeRef();
     }
 
+    /**
+     * Frees resources used by this object.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

@@ -24,14 +24,21 @@ import com.simiacryptus.aws.exe.EC2NotebookRunner;
 import com.simiacryptus.util.test.MacroTestRunner;
 
 /**
- * The type Remote tests java.
+ * This class contains all the tests for the Remote Java class.
+ *
+ * @docgenVersion 9
  */
 public class RemoteTests_Java {
 
   /**
-   * The entry point of application.
+   * Main method for launching the EC2NotebookRunner.
    *
-   * @param args the input arguments
+   * @param nodeSettings   The settings for the EC2 node.
+   * @param amiAmazonLinux The Amazon Linux AMI to use.
+   * @param xmx8g          The maximum heap size for the JVM.
+   * @param testRepo       The location of the test repository.
+   * @param log            A log for recording output.
+   * @docgenVersion 9
    */
   public static void main(String[] args) {
     EC2NotebookRunner.launch(

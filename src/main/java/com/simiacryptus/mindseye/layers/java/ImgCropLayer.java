@@ -36,7 +36,11 @@ import java.util.function.Consumer;
 import java.util.function.IntFunction;
 
 /**
- * The type Img crop layer.
+ * This class represents an image crop layer.
+ *
+ * @param sizeX The width of the crop layer.
+ * @param sizeY The height of the crop layer.
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class ImgCropLayer extends LayerBase {
@@ -68,10 +72,11 @@ public class ImgCropLayer extends LayerBase {
   }
 
   /**
-   * Copy.
+   * Copies the data from the input tensor to the output tensor.
    *
-   * @param inputData  the input data
-   * @param outputData the output data
+   * @param inputData  the input tensor
+   * @param outputData the output tensor
+   * @docgenVersion 9
    */
   public static void copy(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData) {
     @Nonnull final int[] inDim = inputData.getDimensions();
@@ -106,11 +111,10 @@ public class ImgCropLayer extends LayerBase {
   }
 
   /**
-   * From json img crop layer.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the img crop layer
+   * @param json the JSON object to create the layer from
+   * @param rs   the resources to use for the layer
+   * @return the new layer
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -148,6 +152,11 @@ public class ImgCropLayer extends LayerBase {
     return new RefArrayList<>();
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();
@@ -173,6 +182,14 @@ public class ImgCropLayer extends LayerBase {
         }, batch)).toArray(Tensor[]::new));
   }
 
+  /**
+   * The Accumulator class is used to track the results of an operation.
+   *
+   * @param inputDims   The dimensions of the input data.
+   * @param accumulator The accumulator to use.
+   * @param alive       A boolean value indicating whether the operation is still alive.
+   * @docgenVersion 9
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private final int[] inputDims;
@@ -212,6 +229,11 @@ public class ImgCropLayer extends LayerBase {
         buffer.freeRef();
     }
 
+    /**
+     * Frees resources used by this object.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

@@ -26,7 +26,9 @@ import org.junit.jupiter.api.Test;
 import javax.annotation.Nonnull;
 
 /**
- * The type Local tests java.
+ * This class contains all the local tests for the Java language.
+ *
+ * @docgenVersion 9
  */
 public class LocalTests_Java extends NotebookTestBase {
 
@@ -41,7 +43,10 @@ public class LocalTests_Java extends NotebookTestBase {
   }
 
   /**
-   * Main.
+   * @Test public void main() {
+   * new MacroTestRunner().runAll(getLog(), "com.simiacryptus.mindseye.layers");
+   * }
+   * @docgenVersion 9
    */
   @Test
   public void main() {

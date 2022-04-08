@@ -42,7 +42,12 @@ import java.util.function.IntFunction;
 import java.util.function.LongFunction;
 
 /**
- * The type Stochastic sampling subnet layer.
+ * Class StochasticSamplingSubnetLayer
+ * <p>
+ * This class is a stochastic sampling subnet layer that contains a subnetwork.
+ * It has a seed that is used to generate random numbers.
+ *
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class StochasticSamplingSubnetLayer extends LayerBase implements StochasticComponent {
@@ -82,9 +87,10 @@ public class StochasticSamplingSubnetLayer extends LayerBase implements Stochast
   }
 
   /**
-   * Get seeds long [ ].
+   * Returns an array of longs that are the seeds for the random number generator.
    *
-   * @return the long [ ]
+   * @return an array of longs that are the seeds for the random number generator
+   * @docgenVersion 9
    */
   public long[] getSeeds() {
     Random random = new Random(seed);
@@ -98,11 +104,12 @@ public class StochasticSamplingSubnetLayer extends LayerBase implements Stochast
   }
 
   /**
-   * From json stochastic sampling subnet layer.
+   * Creates a new {@link StochasticSamplingSubnetLayer} from the given JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the stochastic sampling subnet layer
+   * @param json the JSON object to create the layer from
+   * @param rs   the map of character sequences to byte arrays
+   * @return the new {@link StochasticSamplingSubnetLayer}
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -111,10 +118,11 @@ public class StochasticSamplingSubnetLayer extends LayerBase implements Stochast
   }
 
   /**
-   * Average result.
+   * Calculates the average of an array of Results.
    *
-   * @param samples the samples
-   * @return the result
+   * @param samples the array of Results
+   * @return the average of the Results, or null if the array is empty
+   * @docgenVersion 9
    */
   @Nullable
   public static Result average(@Nonnull final Result[] samples) {
@@ -133,6 +141,10 @@ public class StochasticSamplingSubnetLayer extends LayerBase implements Stochast
     return result;
   }
 
+  /**
+   * @Nullable public Result eval(@Nonnull final Result... inObj);
+   * @docgenVersion 9
+   */
   @Nullable
   public Result eval(@Nonnull final Result... inObj) {
     if (0 == seed) {
@@ -151,9 +163,10 @@ public class StochasticSamplingSubnetLayer extends LayerBase implements Stochast
   }
 
   /**
-   * Shuffle subnet.
+   * This method shuffles the subnet using the provided seed.
    *
-   * @param seed the seed
+   * @param seed The seed to use for shuffling
+   * @docgenVersion 9
    */
   public void shuffleSubnet(long seed) {
     if (subnetwork instanceof DAGNetwork) {
@@ -201,6 +214,11 @@ public class StochasticSamplingSubnetLayer extends LayerBase implements Stochast
     seed = 0;
   }
 
+  /**
+   * Frees this object and its resources.
+   *
+   * @docgenVersion 9
+   */
   public void _free() {
     if (null != subnetwork)
       subnetwork.freeRef();

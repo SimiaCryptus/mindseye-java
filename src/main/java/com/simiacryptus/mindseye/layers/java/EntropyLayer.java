@@ -26,7 +26,10 @@ import javax.annotation.Nonnull;
 import java.util.Map;
 
 /**
- * The type Entropy layer.
+ * The EntropyLayer class is used to
+ *
+ * @author
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class EntropyLayer extends SimpleActivationLayer<EntropyLayer> {
@@ -48,11 +51,12 @@ public class EntropyLayer extends SimpleActivationLayer<EntropyLayer> {
   }
 
   /**
-   * From json entropy layer.
+   * Creates an EntropyLayer from a JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the entropy layer
+   * @param json the JSON object to create the layer from
+   * @param rs   the map of resources
+   * @return the newly created EntropyLayer
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -66,6 +70,11 @@ public class EntropyLayer extends SimpleActivationLayer<EntropyLayer> {
     return super.getJsonStub();
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();

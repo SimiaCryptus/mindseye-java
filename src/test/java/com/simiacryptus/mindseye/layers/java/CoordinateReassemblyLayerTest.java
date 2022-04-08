@@ -27,7 +27,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * The type Img band bias layer test.
+ * This class tests the CoordinateReassemblyLayer class.
+ *
+ * @docgenVersion 9
  */
 public abstract class CoordinateReassemblyLayerTest extends LayerTestBase {
 
@@ -57,7 +59,9 @@ public abstract class CoordinateReassemblyLayerTest extends LayerTestBase {
   }
 
   /**
-   * The type Basic.
+   * The Basic class is a class that contains the most basic information.
+   *
+   * @docgenVersion 9
    */
   public static class Basic extends CoordinateReassemblyLayerTest {
 
@@ -78,7 +82,9 @@ public abstract class CoordinateReassemblyLayerTest extends LayerTestBase {
   }
 
   /**
-   * The type Basic.
+   * This class ignores input colors.
+   *
+   * @docgenVersion 9
    */
   public static class IgnoreInputColors extends CoordinateReassemblyLayerTest {
 
@@ -87,7 +93,7 @@ public abstract class CoordinateReassemblyLayerTest extends LayerTestBase {
     public Layer getLayer() {
       PipelineNetwork network = new PipelineNetwork();
       network.add(new CoordinateDisassemblyLayer(false)).freeRef();
-      network.add(new FullyConnectedLayer(new int[] {1,1,2}, new int[] {1,1,3})).freeRef();
+      network.add(new FullyConnectedLayer(new int[]{1, 1, 2}, new int[]{1, 1, 3})).freeRef();
       network.add(new CoordinateAssemblyLayer(false), network.getHead(), network.getInput(0)).freeRef();
       return network;
     }

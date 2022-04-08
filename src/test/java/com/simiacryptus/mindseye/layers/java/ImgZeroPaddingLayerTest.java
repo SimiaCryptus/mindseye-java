@@ -26,7 +26,9 @@ import org.junit.jupiter.api.Disabled;
 import javax.annotation.Nonnull;
 
 /**
- * The type Img zero padding layer test.
+ * Test class for the ImgZeroPaddingLayer class.
+ *
+ * @docgenVersion 9
  */
 public abstract class ImgZeroPaddingLayerTest extends LayerTestBase {
 
@@ -55,7 +57,9 @@ public abstract class ImgZeroPaddingLayerTest extends LayerTestBase {
   }
 
   /**
-   * The type Basic.
+   * The Basic class is a class that contains the most basic information.
+   *
+   * @docgenVersion 9
    */
   public static class Basic extends ImgZeroPaddingLayerTest {
 

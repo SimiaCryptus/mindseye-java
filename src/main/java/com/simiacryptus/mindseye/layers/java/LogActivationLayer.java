@@ -26,7 +26,9 @@ import javax.annotation.Nonnull;
 import java.util.Map;
 
 /**
- * The type Log activation layer.
+ * This class represents a log activation layer.
+ *
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public final class LogActivationLayer extends SimpleActivationLayer<LogActivationLayer> {
@@ -47,11 +49,10 @@ public final class LogActivationLayer extends SimpleActivationLayer<LogActivatio
   }
 
   /**
-   * From json log activation layer.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the log activation layer
+   * @param json The JSON object to use for creating the {@link LogActivationLayer}.
+   * @param rs   A map of character sequences to byte arrays.
+   * @return A new {@link LogActivationLayer} using the given JSON object.
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -65,6 +66,11 @@ public final class LogActivationLayer extends SimpleActivationLayer<LogActivatio
     return super.getJsonStub();
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();

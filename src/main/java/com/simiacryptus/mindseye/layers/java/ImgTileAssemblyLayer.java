@@ -38,7 +38,15 @@ import java.util.function.Consumer;
 import java.util.function.IntFunction;
 
 /**
- * The type Img tile assembly layer.
+ * This class is responsible for creating an image tile assembly layer.
+ *
+ * @param columns  the number of columns in the layer
+ * @param rows     the number of rows in the layer
+ * @param paddingX the number of pixels to pad the x-axis
+ * @param paddingY the number of pixels to pad the y-axis
+ * @param offsetX  the number of pixels to offset the x-axis
+ * @param offsetY  the number of pixels to offset the y-axis
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class ImgTileAssemblyLayer extends LayerBase {
@@ -78,89 +86,92 @@ public class ImgTileAssemblyLayer extends LayerBase {
   }
 
   /**
-   * Gets offset x.
+   * Returns the offsetX.
    *
-   * @return the offset x
+   * @return the offsetX.
+   * @docgenVersion 9
    */
   public int getOffsetX() {
     return offsetX;
   }
 
   /**
-   * Sets offset x.
+   * Sets the x offset.
    *
-   * @param offsetX the offset x
+   * @param offsetX the x offset
+   * @docgenVersion 9
    */
   public void setOffsetX(int offsetX) {
     this.offsetX = offsetX;
   }
 
   /**
-   * Gets offset y.
+   * Returns the offset on the y-axis.
    *
-   * @return the offset y
+   * @return the offset on the y-axis
+   * @docgenVersion 9
    */
   public int getOffsetY() {
     return offsetY;
   }
 
   /**
-   * Sets offset y.
+   * Sets the offset on the y-axis.
    *
-   * @param offsetY the offset y
+   * @param offsetY the offset on the y-axis
+   * @docgenVersion 9
    */
   public void setOffsetY(int offsetY) {
     this.offsetY = offsetY;
   }
 
   /**
-   * Gets padding x.
+   * Returns the value of the x-axis padding.
    *
-   * @return the padding x
+   * @return the value of the x-axis padding
+   * @docgenVersion 9
    */
   public int getPaddingX() {
     return paddingX;
   }
 
   /**
-   * Sets padding x.
+   * Sets the padding for the x-axis.
    *
-   * @param paddingX the padding x
+   * @param paddingX the padding for the x-axis
+   * @docgenVersion 9
    */
   public void setPaddingX(int paddingX) {
     this.paddingX = paddingX;
   }
 
   /**
-   * Gets padding y.
+   * Returns the padding in the Y direction.
    *
-   * @return the padding y
+   * @return the padding in the Y direction
+   * @docgenVersion 9
    */
   public int getPaddingY() {
     return paddingY;
   }
 
   /**
-   * Sets padding y.
+   * Sets the padding on the Y axis.
    *
-   * @param paddingY the padding y
+   * @param paddingY the padding on the Y axis
+   * @docgenVersion 9
    */
   public void setPaddingY(int paddingY) {
     this.paddingY = paddingY;
   }
 
   /**
-   * Copy.
+   * Copies the inputData to the outputData, with an offset of (offsetX, offsetY),
+   * and optionally with padding of (paddingX, paddingY). If toroidal is true,
+   * the copy is done in a "toroidal" fashion, i.e. with wraparound. The rowF and
+   * colF parameters are used to specify the row and column fractions, respectively.
    *
-   * @param inputData  the input data
-   * @param outputData the output data
-   * @param offsetX    the offset x
-   * @param offsetY    the offset y
-   * @param paddingX   the padding x
-   * @param paddingY   the padding y
-   * @param toroidal   the toroidal
-   * @param rowF       the row f
-   * @param colF       the col f
+   * @docgenVersion 9
    */
   public static void copy(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData, final int offsetX,
                           final int offsetY, final int paddingX, final int paddingY, final boolean toroidal, final double rowF,
@@ -224,11 +235,12 @@ public class ImgTileAssemblyLayer extends LayerBase {
   }
 
   /**
-   * From json img tile assembly layer.
+   * Returns a new {@link ImgTileAssemblyLayer} from the given JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the img tile assembly layer
+   * @param json the JSON object to parse
+   * @param rs   the map of character sequences to byte arrays
+   * @return a new {@link ImgTileAssemblyLayer}
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -269,6 +281,11 @@ public class ImgTileAssemblyLayer extends LayerBase {
     return new RefArrayList<>();
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();
@@ -348,6 +365,14 @@ public class ImgTileAssemblyLayer extends LayerBase {
     return new int[]{totalWidth + getPaddingX(), totalHeight + getPaddingY(), bands};
   }
 
+  /**
+   * The Accumulator class is used to store an array of Result objects, as well as
+   * other data related to the results.
+   *
+   * @author Your Name
+   * @version 1.0
+   * @docgenVersion 9
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private final Result[] inObj;
@@ -425,6 +450,11 @@ public class ImgTileAssemblyLayer extends LayerBase {
         buffer.freeRef();
     }
 
+    /**
+     * Frees resources used by this object.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

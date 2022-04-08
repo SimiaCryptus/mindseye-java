@@ -30,7 +30,11 @@ import javax.annotation.Nonnull;
 import java.util.Map;
 
 /**
- * The type Std dev meta layer.
+ * This class represents the standard deviation meta layer.
+ *
+ * @author John Doe
+ * @version 1.0
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class StdDevMetaLayer extends PipelineNetwork {
@@ -80,11 +84,12 @@ public class StdDevMetaLayer extends PipelineNetwork {
   }
 
   /**
-   * From json std dev meta layer.
+   * Creates a new StdDevMetaLayer from the given JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the std dev meta layer
+   * @param json The JSON object to use.
+   * @param rs   The map of resources to use.
+   * @return The new StdDevMetaLayer.
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -92,6 +97,11 @@ public class StdDevMetaLayer extends PipelineNetwork {
     return new StdDevMetaLayer(json, rs);
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();

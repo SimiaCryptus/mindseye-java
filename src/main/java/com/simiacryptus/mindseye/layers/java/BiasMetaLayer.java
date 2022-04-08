@@ -36,7 +36,9 @@ import java.util.UUID;
 import java.util.function.IntFunction;
 
 /**
- * The type Bias meta layer.
+ * This class is responsible for creating a bias meta layer.
+ *
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class BiasMetaLayer extends LayerBase {
@@ -60,11 +62,12 @@ public class BiasMetaLayer extends LayerBase {
   }
 
   /**
-   * From json bias meta layer.
+   * Creates a new {@link BiasMetaLayer} from the given JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the bias meta layer
+   * @param json the JSON object to use
+   * @param rs   the map of character sequences to byte arrays
+   * @return the new {@link BiasMetaLayer}
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -100,6 +103,11 @@ public class BiasMetaLayer extends LayerBase {
     return RefArrays.asList();
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();
@@ -130,6 +138,13 @@ public class BiasMetaLayer extends LayerBase {
         .toArray(Tensor[]::new));
   }
 
+  /**
+   * The Accumulator class is used to accumulate tensors.
+   *
+   * @author John Doe
+   * @version 1.0
+   * @docgenVersion 9
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private final Tensor tensor0;
@@ -190,6 +205,11 @@ public class BiasMetaLayer extends LayerBase {
         buffer.freeRef();
     }
 
+    /**
+     * Frees resources used by this object.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

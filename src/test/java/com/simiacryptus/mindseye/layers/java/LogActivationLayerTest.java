@@ -26,7 +26,9 @@ import com.simiacryptus.mindseye.test.unit.SingleDerivativeTester;
 import javax.annotation.Nonnull;
 
 /**
- * The type Log activation layer test.
+ * This class tests the LogActivationLayer class.
+ *
+ * @docgenVersion 9
  */
 public abstract class LogActivationLayerTest extends ActivationLayerTestBase {
   /**
@@ -42,7 +44,9 @@ public abstract class LogActivationLayerTest extends ActivationLayerTestBase {
   }
 
   /**
-   * The type Basic.
+   * The Basic class is a class that contains the most basic information.
+   *
+   * @docgenVersion 9
    */
   public static class Basic extends LogActivationLayerTest {
 

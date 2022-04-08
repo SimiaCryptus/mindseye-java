@@ -38,7 +38,10 @@ import java.util.UUID;
 import java.util.function.IntFunction;
 
 /**
- * The type L 1 normalization layer.
+ * The L1NormalizationLayer class is a Java class that contains a logger and a double variable.
+ * The double variable, maxInput, is set to 50.
+ *
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class L1NormalizationLayer extends LayerBase {
@@ -66,11 +69,12 @@ public class L1NormalizationLayer extends LayerBase {
   }
 
   /**
-   * From json l 1 normalization layer.
+   * Creates a new {@link L1NormalizationLayer} from a JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the l 1 normalization layer
+   * @param json the JSON object to use for creating the layer
+   * @param rs   a map of character sequences to byte arrays
+   * @return a new {@link L1NormalizationLayer}
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -103,6 +107,11 @@ public class L1NormalizationLayer extends LayerBase {
     return RefArrays.asList();
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();
@@ -131,6 +140,14 @@ public class L1NormalizationLayer extends LayerBase {
         }, inData)).toArray(Tensor[]::new));
   }
 
+  /**
+   * The Accumulator class is used to accumulate the results of a TensorList.
+   *
+   * @author Author Name
+   * @version 1.0
+   * @docgenVersion 9
+   * @since 1.0
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private final TensorList inData;
@@ -189,6 +206,11 @@ public class L1NormalizationLayer extends LayerBase {
         buffer.freeRef();
     }
 
+    /**
+     * Frees resources.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

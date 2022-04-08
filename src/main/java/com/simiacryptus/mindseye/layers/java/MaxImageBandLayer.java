@@ -34,7 +34,9 @@ import java.util.UUID;
 import java.util.function.IntFunction;
 
 /**
- * The type Max image band layer.
+ * The MaxImageBandLayer class is used to log information about the maximum image band.
+ *
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class MaxImageBandLayer extends LayerBase {
@@ -59,11 +61,12 @@ public class MaxImageBandLayer extends LayerBase {
   }
 
   /**
-   * From json max image band layer.
+   * Creates a new {@link MaxImageBandLayer} from the given JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the max image band layer
+   * @param json the JSON object to create the layer from
+   * @param rs   the map of resources to use for this layer
+   * @return the new layer
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -111,6 +114,11 @@ public class MaxImageBandLayer extends LayerBase {
     return RefArrays.asList();
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();
@@ -140,7 +148,11 @@ public class MaxImageBandLayer extends LayerBase {
   }
 
   /**
-   * The type Calc regions parameter.
+   * This class represents the parameters for the calculation of regions.
+   *
+   * @param inputDims  the input dimensions
+   * @param kernelDims the kernel dimensions
+   * @docgenVersion 9
    */
   public static class CalcRegionsParameter {
     /**
@@ -191,6 +203,13 @@ public class MaxImageBandLayer extends LayerBase {
     }
   }
 
+  /**
+   * The Accumulator class is used to compute the maximum value of a given input tensor.
+   *
+   * @author John Doe
+   * @version 1.0
+   * @docgenVersion 9
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private final TensorList inputData;
@@ -240,6 +259,11 @@ public class MaxImageBandLayer extends LayerBase {
         buffer.freeRef();
     }
 
+    /**
+     * Frees resources.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

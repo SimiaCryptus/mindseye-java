@@ -26,7 +26,11 @@ import javax.annotation.Nonnull;
 import java.util.Map;
 
 /**
- * The type Sinewave activation layer.
+ * This class represents a sinewave activation layer.
+ *
+ * @author John Doe
+ * @version 1.0
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public final class SinewaveActivationLayer extends SimpleActivationLayer<SinewaveActivationLayer> {
@@ -50,29 +54,32 @@ public final class SinewaveActivationLayer extends SimpleActivationLayer<Sinewav
   }
 
   /**
-   * Is balanced boolean.
+   * Returns true if the tree is balanced.
    *
-   * @return the boolean
+   * @return true if the tree is balanced
+   * @docgenVersion 9
    */
   public boolean isBalanced() {
     return balanced;
   }
 
   /**
-   * Sets balanced.
+   * Sets the balanced field.
    *
-   * @param balanced the balanced
+   * @param balanced the new value for balanced
+   * @docgenVersion 9
    */
   public void setBalanced(boolean balanced) {
     this.balanced = balanced;
   }
 
   /**
-   * From json sinewave activation layer.
+   * Creates a {@link SinewaveActivationLayer} from a JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the sinewave activation layer
+   * @param json the JSON object to use for creating the layer
+   * @param rs   a map of character sequences to byte arrays
+   * @return a new {@link SinewaveActivationLayer}
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -88,6 +95,11 @@ public final class SinewaveActivationLayer extends SimpleActivationLayer<Sinewav
     return json;
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();

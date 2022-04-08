@@ -34,8 +34,12 @@ import java.util.UUID;
 import java.util.function.IntFunction;
 
 /**
- * Reshapes an Image by coding non-overlapping pixel regions to be stored as additional bands.
- * At 2x2, for example, an image will be rearranged so the output is half width and half height, but 4x the color channels
+ * This class represents a layer that reshapes images.
+ *
+ * @param expand      A boolean value that determines whether the image will be expanded.
+ * @param kernelSizeX An integer value that represents the size of the kernel in the x direction.
+ * @param kernelSizeY An integer value that represents the size of the kernel in the y direction.
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class ImgReshapeLayer extends LayerBase {
@@ -71,11 +75,12 @@ public class ImgReshapeLayer extends LayerBase {
   }
 
   /**
-   * Copy condense tensor.
+   * Copies and condenses the input data into the output data.
    *
-   * @param inputData  the input data
-   * @param outputData the output data
-   * @return the tensor
+   * @param inputData  the input data to copy and condense
+   * @param outputData the output data to copy the input data into
+   * @return the output data
+   * @docgenVersion 9
    */
   @Nonnull
   public static Tensor copyCondense(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData) {
@@ -108,11 +113,13 @@ public class ImgReshapeLayer extends LayerBase {
   }
 
   /**
-   * Copy expand tensor.
+   * Copies the input data to the output data, expanding the output data if necessary.
    *
    * @param inputData  the input data
    * @param outputData the output data
-   * @return the tensor
+   * @return the output data
+   * @throws NullPointerException if either inputData or outputData is null
+   * @docgenVersion 9
    */
   @Nonnull
   public static Tensor copyExpand(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData) {
@@ -144,11 +151,12 @@ public class ImgReshapeLayer extends LayerBase {
   }
 
   /**
-   * From json img reshape layer.
+   * Creates a new {@link ImgReshapeLayer} from a JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the img reshape layer
+   * @param json the JSON object to use for creating the layer
+   * @param rs   the map of character sequences to byte arrays
+   * @return a new {@link ImgReshapeLayer}
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -177,10 +185,11 @@ public class ImgReshapeLayer extends LayerBase {
   }
 
   /**
-   * Gets output dims.
+   * Returns the output dimensions for the given input dimensions.
    *
-   * @param inputDims the input dims
-   * @return the output dims
+   * @param inputDims the input dimensions
+   * @return the output dimensions
+   * @docgenVersion 9
    */
   @NotNull
   public Tensor getOutputDims(int[] inputDims) {
@@ -209,6 +218,11 @@ public class ImgReshapeLayer extends LayerBase {
     return new RefArrayList<>();
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();
@@ -233,6 +247,11 @@ public class ImgReshapeLayer extends LayerBase {
         }, outputDims, batch)).toArray(Tensor[]::new));
   }
 
+  /**
+   * The Accumulator class is used to hold input dimensions and expand them if necessary. It also contains a Result.Accumulator object and a boolean value to determine if the Accumulator is alive.
+   *
+   * @docgenVersion 9
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private final int[] inputDims;
@@ -273,6 +292,11 @@ public class ImgReshapeLayer extends LayerBase {
       }
     }
 
+    /**
+     * Frees resources used by this object.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

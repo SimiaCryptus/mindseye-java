@@ -25,7 +25,9 @@ import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 import javax.annotation.Nonnull;
 
 /**
- * The type Sq activation layer test.
+ * This class tests the SqActivationLayer class.
+ *
+ * @docgenVersion 9
  */
 public abstract class SqActivationLayerTest extends ActivationLayerTestBase {
   /**
@@ -42,7 +44,9 @@ public abstract class SqActivationLayerTest extends ActivationLayerTestBase {
   }
 
   /**
-   * The type Basic.
+   * The Basic class is a class that contains the most basic information.
+   *
+   * @docgenVersion 9
    */
   public static class Basic extends SqActivationLayerTest {
 

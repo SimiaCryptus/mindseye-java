@@ -25,7 +25,9 @@ import com.simiacryptus.mindseye.test.LayerTestBase;
 import javax.annotation.Nonnull;
 
 /**
- * The type Dropout noise layer test.
+ * This class tests the DropoutNoiseLayer class.
+ *
+ * @docgenVersion 9
  */
 public abstract class DropoutNoiseLayerTest extends LayerTestBase {
 
@@ -42,7 +44,9 @@ public abstract class DropoutNoiseLayerTest extends LayerTestBase {
   }
 
   /**
-   * The type Basic.
+   * The Basic class is a class that contains basic information.
+   *
+   * @docgenVersion 9
    */
   public static class Basic extends DropoutNoiseLayerTest {
 

@@ -25,7 +25,9 @@ import com.simiacryptus.mindseye.test.LayerTestBase;
 import javax.annotation.Nonnull;
 
 /**
- * The type Avg reducer layer test.
+ * This class tests the AvgReducerLayer class.
+ *
+ * @docgenVersion 9
  */
 public abstract class AvgReducerLayerTest extends LayerTestBase {
 
@@ -48,7 +50,9 @@ public abstract class AvgReducerLayerTest extends LayerTestBase {
   }
 
   /**
-   * The type Basic.
+   * The Basic class is a class that contains basic information.
+   *
+   * @docgenVersion 9
    */
   public static class Basic extends AvgMetaLayerTest {
 

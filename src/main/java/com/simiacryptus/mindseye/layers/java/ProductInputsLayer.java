@@ -37,7 +37,10 @@ import java.util.function.IntFunction;
 import static com.simiacryptus.mindseye.lang.Result.anyAlive;
 
 /**
- * The type Product inputs layer.
+ * The ProductInputsLayer class is responsible for handling input from the user
+ * regarding products.
+ *
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class ProductInputsLayer extends LayerBase {
@@ -58,11 +61,12 @@ public class ProductInputsLayer extends LayerBase {
   }
 
   /**
-   * From json product inputs layer.
+   * Creates a new ProductInputsLayer from the given JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the product inputs layer
+   * @param json The JSON object to create the ProductInputsLayer from.
+   * @param rs   A map of character sequences to byte arrays.
+   * @return The new ProductInputsLayer.
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -111,6 +115,11 @@ public class ProductInputsLayer extends LayerBase {
     return RefArrays.asList();
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();
@@ -138,6 +147,11 @@ public class ProductInputsLayer extends LayerBase {
     }));
   }
 
+  /**
+   * The Accumulator class is used to store an array of Result objects.
+   *
+   * @docgenVersion 9
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private final Result[] inObj;
@@ -205,6 +219,11 @@ public class ProductInputsLayer extends LayerBase {
         buffer.freeRef();
     }
 
+    /**
+     * Frees resources used by this object.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

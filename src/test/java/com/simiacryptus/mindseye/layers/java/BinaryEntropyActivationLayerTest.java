@@ -26,7 +26,11 @@ import com.simiacryptus.ref.wrappers.RefIntStream;
 import javax.annotation.Nonnull;
 
 /**
- * The type Binary entropy activation layer test.
+ * BinaryEntropyActivationLayerTest class
+ * <p>
+ * Basic Test class
+ *
+ * @docgenVersion 9
  */
 public abstract class BinaryEntropyActivationLayerTest extends ActivationLayerTestBase {
   /**

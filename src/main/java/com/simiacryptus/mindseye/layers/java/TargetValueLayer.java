@@ -35,7 +35,11 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * The type Target value layer.
+ * This class represents a layer in a directed acyclic graph (DAG) that contains a head node and a target node.
+ *
+ * @author
+ * @docgenVersion 9
+ * @since
  */
 @SuppressWarnings("serial")
 public class TargetValueLayer extends DAGNetwork {
@@ -76,9 +80,10 @@ public class TargetValueLayer extends DAGNetwork {
   }
 
   /**
-   * Sets target.
+   * Sets the target.
    *
    * @param value the value
+   * @docgenVersion 9
    */
   public void setTarget(double[] value) {
     assert target != null;
@@ -89,11 +94,10 @@ public class TargetValueLayer extends DAGNetwork {
   }
 
   /**
-   * From json layer.
-   *
-   * @param inner the inner
-   * @param rs    the rs
-   * @return the layer
+   * @param inner The JSON object to be parsed.
+   * @param rs    A map of resources.
+   * @return A new {@link TargetValueLayer} object.
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -110,6 +114,11 @@ public class TargetValueLayer extends DAGNetwork {
     return json;
   }
 
+  /**
+   * Frees resources associated with this object.
+   *
+   * @docgenVersion 9
+   */
   public void _free() {
     if (null != target)
       target.freeRef();

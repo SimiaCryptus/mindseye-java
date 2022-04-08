@@ -32,7 +32,9 @@ import javax.annotation.Nonnull;
 import java.util.Map;
 
 /**
- * The type Assert dimensions layer.
+ * A class to assert the dimensions of a layer.
+ *
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class AssertDimensionsLayer extends LayerBase {
@@ -66,11 +68,12 @@ public class AssertDimensionsLayer extends LayerBase {
   }
 
   /**
-   * From json assert dimensions layer.
+   * Creates an AssertDimensionsLayer from a JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the assert dimensions layer
+   * @param json The JSON object to create the layer from.
+   * @param rs   A map of character sequences to byte arrays.
+   * @return The newly created AssertDimensionsLayer.
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -120,6 +123,11 @@ public class AssertDimensionsLayer extends LayerBase {
     return RefArrays.asList();
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();

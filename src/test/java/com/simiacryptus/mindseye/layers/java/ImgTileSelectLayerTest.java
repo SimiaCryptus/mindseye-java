@@ -26,7 +26,9 @@ import org.junit.jupiter.api.Disabled;
 import javax.annotation.Nonnull;
 
 /**
- * The type Img tile select layer test.
+ * Test class for ImgTileSelectLayer
+ *
+ * @docgenVersion 9
  */
 public abstract class ImgTileSelectLayerTest extends LayerTestBase {
 
@@ -55,7 +57,9 @@ public abstract class ImgTileSelectLayerTest extends LayerTestBase {
   }
 
   /**
-   * The type Basic.
+   * The Basic class is a class that contains the most basic information.
+   *
+   * @docgenVersion 9
    */
   public static class Basic extends ImgTileSelectLayerTest {
 

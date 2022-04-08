@@ -25,7 +25,9 @@ import com.simiacryptus.mindseye.test.LayerTestBase;
 import javax.annotation.Nonnull;
 
 /**
- * The type Img pixel softmax layer test.
+ * Test class for ImgPixelSoftmaxLayer.
+ *
+ * @docgenVersion 9
  */
 public abstract class ImgPixelSoftmaxLayerTest extends LayerTestBase {
 
@@ -42,7 +44,9 @@ public abstract class ImgPixelSoftmaxLayerTest extends LayerTestBase {
   }
 
   /**
-   * The type Basic.
+   * The Basic class is a class that contains basic information.
+   *
+   * @docgenVersion 9
    */
   public static class Basic extends ImgPixelSoftmaxLayerTest {
 

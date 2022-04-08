@@ -27,7 +27,9 @@ import com.simiacryptus.util.Util;
 import javax.annotation.Nonnull;
 
 /**
- * The type Entropy loss layer test.
+ * Test class for the EntropyLossLayer class.
+ *
+ * @docgenVersion 9
  */
 public abstract class EntropyLossLayerTest extends LayerTestBase {
 
@@ -54,7 +56,9 @@ public abstract class EntropyLossLayerTest extends LayerTestBase {
   }
 
   /**
-   * The type Basic.
+   * The Basic class is a class that contains the most basic information.
+   *
+   * @docgenVersion 9
    */
   public static class Basic extends EntropyLossLayerTest {
 

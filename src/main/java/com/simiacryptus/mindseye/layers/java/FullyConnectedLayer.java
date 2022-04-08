@@ -43,7 +43,12 @@ import java.util.function.*;
 import java.util.stream.Stream;
 
 /**
- * The type Fully connected layer.
+ * This class represents a fully connected layer.
+ *
+ * @param inputDims  the input dimensions
+ * @param outputDims the output dimensions
+ * @param weights    the weights
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class FullyConnectedLayer extends LayerBase {
@@ -106,9 +111,11 @@ public class FullyConnectedLayer extends LayerBase {
   }
 
   /**
-   * Gets transpose.
+   * Returns the transpose of this layer.
    *
-   * @return the transpose
+   * @return the transpose of this layer
+   * @throws RuntimeException if not implemented
+   * @docgenVersion 9
    */
   @Nonnull
   public Layer getTranspose() {
@@ -116,9 +123,8 @@ public class FullyConnectedLayer extends LayerBase {
   }
 
   /**
-   * The Weights.
-   *
-   * @return the weights
+   * @return the weights, or null if they have not been set
+   * @docgenVersion 9
    */
   @Nullable
   public Tensor getWeights() {
@@ -126,9 +132,10 @@ public class FullyConnectedLayer extends LayerBase {
   }
 
   /**
-   * Sets by coord.
+   * Sets the weights of this layer using the given function. The function is applied to each coordinate of the weight tensor.
    *
-   * @param f the f
+   * @param f the function to apply to each coordinate
+   * @docgenVersion 9
    */
   public void setByCoord(@Nonnull ToDoubleFunction<Coordinate> f) {
     Tensor weights = getWeights();
@@ -140,9 +147,12 @@ public class FullyConnectedLayer extends LayerBase {
   }
 
   /**
-   * Sets by coord.
+   * Sets the value of this coordinate by using a function that takes in
+   * two coordinates and outputs a double.
    *
-   * @param f the f
+   * @param f the function to use
+   * @throws NullPointerException if f is null
+   * @docgenVersion 9
    */
   public void setByCoord(@Nonnull final ToDoubleBiFunction<Coordinate, Coordinate> f) {
     assert inputDims != null;
@@ -162,9 +172,10 @@ public class FullyConnectedLayer extends LayerBase {
   }
 
   /**
-   * Sets weights log.
+   * Sets the weightsLog.
    *
-   * @param value the value
+   * @param value the new weightsLog
+   * @docgenVersion 9
    */
   public void setWeightsLog(double value) {
     Tensor temp_15_0016 = getWeights();
@@ -178,11 +189,12 @@ public class FullyConnectedLayer extends LayerBase {
   }
 
   /**
-   * Cross multiply.
+   * Cross multiplies two arrays and stores the result in a third array.
    *
-   * @param rows   the rows
-   * @param cols   the cols
-   * @param matrix the matrix
+   * @param rows   the array of row values
+   * @param cols   the array of column values
+   * @param matrix the array to store the cross multiplication results
+   * @docgenVersion 9
    */
   public static void crossMultiply(@Nonnull final double[] rows, @Nonnull final double[] cols, final double[] matrix) {
     int i = 0;
@@ -194,11 +206,12 @@ public class FullyConnectedLayer extends LayerBase {
   }
 
   /**
-   * Cross multiply t.
+   * Multiplies two arrays element-wise and stores the result in a third array.
    *
-   * @param rows   the rows
-   * @param cols   the cols
-   * @param matrix the matrix
+   * @param rows   the first array to multiply
+   * @param cols   the second array to multiply
+   * @param matrix the array to store the multiplication result
+   * @docgenVersion 9
    */
   public static void crossMultiplyT(@Nonnull final double[] rows, @Nonnull final double[] cols, final double[] matrix) {
     int i = 0;
@@ -210,11 +223,12 @@ public class FullyConnectedLayer extends LayerBase {
   }
 
   /**
-   * From json fully connected layer.
+   * Creates a new {@link FullyConnectedLayer} from a JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the fully connected layer
+   * @param json the JSON object to use for creating the layer
+   * @param rs   a map of character sequences to byte arrays
+   * @return a new {@link FullyConnectedLayer}
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -223,11 +237,12 @@ public class FullyConnectedLayer extends LayerBase {
   }
 
   /**
-   * Multiply.
+   * Multiplies a matrix by a vector.
    *
-   * @param matrix the matrix
-   * @param in     the in
-   * @param out    the out
+   * @param matrix The matrix to multiply.
+   * @param in     The vector to multiply.
+   * @param out    The vector to store the result.
+   * @docgenVersion 9
    */
   public static void multiply(final double[] matrix, @Nonnull final double[] in, @Nonnull final double[] out) {
     @Nonnull final DoubleMatrix matrixObj = new DoubleMatrix(out.length, in.length, matrix);
@@ -235,11 +250,12 @@ public class FullyConnectedLayer extends LayerBase {
   }
 
   /**
-   * Multiply t.
+   * Multiplies the matrix by the vector.
    *
-   * @param matrix the matrix
-   * @param in     the in
-   * @param out    the out
+   * @param matrix the matrix to multiply
+   * @param in     the vector to multiply
+   * @param out    the vector to store the result in
+   * @docgenVersion 9
    */
   public static void multiplyT(final double[] matrix, @Nonnull final double[] in, @Nonnull final double[] out) {
     @Nonnull
@@ -250,10 +266,11 @@ public class FullyConnectedLayer extends LayerBase {
   }
 
   /**
-   * Transpose double matrix.
+   * Returns the transpose of the given matrix.
    *
-   * @param doubleMatrix the double matrix
-   * @return the double matrix
+   * @param doubleMatrix the matrix to transpose
+   * @return the transpose of the given matrix
+   * @docgenVersion 9
    */
   @Nonnull
   public static DoubleMatrix transpose(@Nonnull final DoubleMatrix doubleMatrix) {
@@ -304,9 +321,10 @@ public class FullyConnectedLayer extends LayerBase {
   }
 
   /**
-   * Set.
+   * Sets the weights of this layer using the given {@link DoubleSupplier}.
    *
-   * @param f the f
+   * @param f the {@link DoubleSupplier} to use for setting weights
+   * @docgenVersion 9
    */
   public void set(@Nonnull DoubleSupplier f) {
     Tensor weights = getWeights();
@@ -316,9 +334,10 @@ public class FullyConnectedLayer extends LayerBase {
   }
 
   /**
-   * Set.
+   * Sets the weights of this layer using the given function.
    *
-   * @param f the f
+   * @param f the function to use for setting weights
+   * @docgenVersion 9
    */
   public void set(@Nonnull IntToDoubleFunction f) {
     Tensor weights = getWeights();
@@ -328,11 +347,12 @@ public class FullyConnectedLayer extends LayerBase {
   }
 
   /**
-   * Init spacial.
+   * Initializes the spacial parameters for the simulation.
    *
-   * @param radius    the radius
-   * @param stiffness the stiffness
-   * @param peak      the peak
+   * @param radius    the radius of the spacial area
+   * @param stiffness the stiffness of the spacial area
+   * @param peak      the peak value of the spacial area
+   * @docgenVersion 9
    */
   public void initSpacial(final double radius, final double stiffness, final double peak) {
     setByCoord((@Nonnull final Coordinate in, @Nonnull final Coordinate out) -> {
@@ -350,9 +370,10 @@ public class FullyConnectedLayer extends LayerBase {
   }
 
   /**
-   * Set.
+   * Sets the weights of this layer.
    *
-   * @param data the data
+   * @param data The weights to set.
+   * @docgenVersion 9
    */
   public void set(double[] data) {
     Tensor weights = getWeights();
@@ -362,9 +383,10 @@ public class FullyConnectedLayer extends LayerBase {
   }
 
   /**
-   * Set.
+   * Sets the weights of this layer.
    *
-   * @param data the data
+   * @param data The weights to set.
+   * @docgenVersion 9
    */
   public void set(@Nonnull Tensor data) {
     Tensor weights = getWeights();
@@ -374,9 +396,10 @@ public class FullyConnectedLayer extends LayerBase {
   }
 
   /**
-   * Scale.
+   * Scales the weights of this layer by the specified value.
    *
-   * @param value the value
+   * @param value the value to scale the weights by
+   * @docgenVersion 9
    */
   public void scale(double value) {
     Tensor weights = getWeights();
@@ -396,9 +419,10 @@ public class FullyConnectedLayer extends LayerBase {
   }
 
   /**
-   * Randomize.
+   * Randomizes the weights of the layer with a given amplitude.
    *
    * @param amplitude the amplitude
+   * @docgenVersion 9
    */
   public void randomize(double amplitude) {
     Tensor weights = getWeights();
@@ -407,6 +431,11 @@ public class FullyConnectedLayer extends LayerBase {
     weights.freeRef();
   }
 
+  /**
+   * Frees resources used by this object.
+   *
+   * @docgenVersion 9
+   */
   public void _free() {
     if (null != weights)
       weights.freeRef();
@@ -440,6 +469,19 @@ public class FullyConnectedLayer extends LayerBase {
     return tensorArray;
   }
 
+  /**
+   * The Accumulator class is used to accumulate the input data.
+   *
+   * @param indata      The input data to be accumulated.
+   * @param frozen      Whether or not the input data is frozen.
+   * @param inputDims   The input dimensions of the data.
+   * @param outputDims  The output dimensions of the data.
+   * @param id          The id of the data.
+   * @param weights     The weights of the data.
+   * @param accumulator The accumulator of the data.
+   * @param alive       Whether or not the data is alive.
+   * @docgenVersion 9
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private final TensorList indata;
@@ -481,21 +523,21 @@ public class FullyConnectedLayer extends LayerBase {
             weights.getData());
         final int threads = 4;
         Optional<Tensor> temp_15_0018 = RefIntStream.range(0, threads).parallel().mapToObj(x -> x).flatMap(
-            RefUtil.wrapInterface((Function<? super Integer, ? extends Stream<? extends Tensor>>) thread -> {
-              return RefIntStream.range(0, indata.length()).filter(i -> thread == i % threads)
-                  .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
-                    assert inputDims != null;
-                    @Nonnull final Tensor weightDelta = new Tensor(Tensor.length(inputDims),
-                        Tensor.length(outputDims));
-                    Tensor deltaTensor = delta.get(dataIndex);
-                    Tensor inputTensor = indata.get(dataIndex);
-                    FullyConnectedLayer.crossMultiplyT(deltaTensor.getData(), inputTensor.getData(),
-                        weightDelta.getData());
-                    inputTensor.freeRef();
-                    deltaTensor.freeRef();
-                    return weightDelta;
-                  }, indata.addRef(), delta.addRef()));
-            }, indata.addRef(), delta.addRef()))
+                RefUtil.wrapInterface((Function<? super Integer, ? extends Stream<? extends Tensor>>) thread -> {
+                  return RefIntStream.range(0, indata.length()).filter(i -> thread == i % threads)
+                      .mapToObj(RefUtil.wrapInterface((IntFunction<? extends Tensor>) dataIndex -> {
+                        assert inputDims != null;
+                        @Nonnull final Tensor weightDelta = new Tensor(Tensor.length(inputDims),
+                            Tensor.length(outputDims));
+                        Tensor deltaTensor = delta.get(dataIndex);
+                        Tensor inputTensor = indata.get(dataIndex);
+                        FullyConnectedLayer.crossMultiplyT(deltaTensor.getData(), inputTensor.getData(),
+                            weightDelta.getData());
+                        inputTensor.freeRef();
+                        deltaTensor.freeRef();
+                        return weightDelta;
+                      }, indata.addRef(), delta.addRef()));
+                }, indata.addRef(), delta.addRef()))
             .reduce((a, b) -> {
               return Tensor.add(a, b);
             });
@@ -528,6 +570,11 @@ public class FullyConnectedLayer extends LayerBase {
       buffer.freeRef();
     }
 
+    /**
+     * Frees any resources used by this object.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

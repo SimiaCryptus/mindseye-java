@@ -25,11 +25,15 @@ import com.simiacryptus.mindseye.test.LayerTestBase;
 import javax.annotation.Nonnull;
 
 /**
- * The type Sign reducer layer test.
+ * Test class for SignReducerLayer.
+ *
+ * @docgenVersion 9
  */
 public class SignReducerLayerTest {
   /**
-   * The type Normal.
+   * This class represents a Normal object.
+   *
+   * @docgenVersion 9
    */
   public static class Normal extends LayerTestBase {
 
@@ -48,7 +52,9 @@ public class SignReducerLayerTest {
   }
 
   /**
-   * The type Basic.
+   * The Basic class is a class that contains the most basic information.
+   *
+   * @docgenVersion 9
    */
   public static class Basic extends SignReducerLayerTest {
   }

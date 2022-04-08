@@ -25,7 +25,9 @@ import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 import javax.annotation.Nonnull;
 
 /**
- * The type Max dropout noise layer test.
+ * Test class for MaxDropoutNoiseLayer.
+ *
+ * @docgenVersion 9
  */
 public abstract class MaxDropoutNoiseLayerTest extends ActivationLayerTestBase {
   /**
@@ -48,7 +50,9 @@ public abstract class MaxDropoutNoiseLayerTest extends ActivationLayerTestBase {
   }
 
   /**
-   * The type Basic.
+   * The Basic class is a class that contains the most basic information.
+   *
+   * @docgenVersion 9
    */
   public static class Basic extends MaxDropoutNoiseLayerTest {
 

@@ -32,7 +32,10 @@ import java.util.UUID;
 import java.util.function.IntFunction;
 
 /**
- * The type Photo unpooling layer.
+ * The PhotoUnpoolingLayer class contains methods for unpooling
+ * photos.
+ *
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class PhotoUnpoolingLayer extends LayerBase {
@@ -54,12 +57,13 @@ public class PhotoUnpoolingLayer extends LayerBase {
   }
 
   /**
-   * Copy condense tensor.
+   * Copies and condenses a tensor.
    *
-   * @param inputData     the input data
-   * @param outputData    the output data
-   * @param referenceData the reference data
-   * @return the tensor
+   * @param inputData     the tensor to copy and condense
+   * @param outputData    the tensor to store the result in
+   * @param referenceData the tensor to condense against
+   * @return the condensed tensor
+   * @docgenVersion 9
    */
   @Nonnull
   public static Tensor copyCondense(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData,
@@ -106,12 +110,13 @@ public class PhotoUnpoolingLayer extends LayerBase {
   }
 
   /**
-   * Copy expand tensor.
+   * Copies the input data to the output data, expanding the output data to match the reference data if necessary.
    *
-   * @param inputData     the input data
-   * @param outputData    the output data
-   * @param referenceData the reference data
-   * @return the tensor
+   * @param inputData     the input data to copy
+   * @param outputData    the output data to copy to
+   * @param referenceData the reference data to expand to
+   * @return the output data
+   * @docgenVersion 9
    */
   @Nonnull
   public static Tensor copyExpand(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData,
@@ -156,11 +161,10 @@ public class PhotoUnpoolingLayer extends LayerBase {
   }
 
   /**
-   * From json photo unpooling layer.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the photo unpooling layer
+   * @param json The JSON object to use to create the {@link PhotoUnpoolingLayer}.
+   * @param rs   A map of character sequences to byte arrays.
+   * @return A new {@link PhotoUnpoolingLayer} created from the JSON object.
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -197,6 +201,11 @@ public class PhotoUnpoolingLayer extends LayerBase {
     return new RefArrayList<>();
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();
@@ -225,6 +234,13 @@ public class PhotoUnpoolingLayer extends LayerBase {
         .toArray(Tensor[]::new));
   }
 
+  /**
+   * The Accumulator class is used to store a reference batch of Tensors and accumulate results from a number of Result objects.
+   *
+   * @author John Doe
+   * @version 1.0
+   * @docgenVersion 9
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private final TensorList referencebatch;
@@ -272,6 +288,11 @@ public class PhotoUnpoolingLayer extends LayerBase {
         buffer.freeRef();
     }
 
+    /**
+     * Frees resources used by this object.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       accumulator.freeRef();

@@ -35,7 +35,10 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 /**
- * The type Sum meta layer.
+ * This class is responsible for summing the meta layer.
+ *
+ * @author John Doe
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class SumMetaLayer extends LayerBase {
@@ -67,29 +70,32 @@ public class SumMetaLayer extends LayerBase {
   }
 
   /**
-   * Gets min batches.
+   * Returns the minimum number of batches.
    *
-   * @return the min batches
+   * @return the minimum number of batches
+   * @docgenVersion 9
    */
   public int getMinBatches() {
     return minBatches;
   }
 
   /**
-   * Sets min batches.
+   * Sets the minimum number of batches.
    *
-   * @param minBatches the min batches
+   * @param minBatches the minimum number of batches
+   * @docgenVersion 9
    */
   public void setMinBatches(int minBatches) {
     this.minBatches = minBatches;
   }
 
   /**
-   * From json sum meta layer.
+   * Creates a new {@link SumMetaLayer} from the given JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the sum meta layer
+   * @param json the JSON object to create the {@link SumMetaLayer} from
+   * @param rs   the map of resources to use
+   * @return the new {@link SumMetaLayer}
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -147,6 +153,11 @@ public class SumMetaLayer extends LayerBase {
     return RefArrays.asList();
   }
 
+  /**
+   * Frees the last result.
+   *
+   * @docgenVersion 9
+   */
   public void _free() {
     if (null != lastResult)
       lastResult.freeRef();
@@ -161,6 +172,13 @@ public class SumMetaLayer extends LayerBase {
     return (SumMetaLayer) super.addRef();
   }
 
+  /**
+   * The Accumulator class is used to hold information about an accumulator.
+   *
+   * @author Your Name
+   * @version 1.0
+   * @docgenVersion 9
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private final int itemCnt;
@@ -204,6 +222,11 @@ public class SumMetaLayer extends LayerBase {
         buffer.freeRef();
     }
 
+    /**
+     * Frees resources used by this object.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

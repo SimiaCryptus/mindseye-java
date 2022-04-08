@@ -26,7 +26,9 @@ import com.simiacryptus.mindseye.test.unit.TrainingTester;
 import javax.annotation.Nonnull;
 
 /**
- * The type Product inputs layer test.
+ * Test class for the ProductInputsLayer class.
+ *
+ * @docgenVersion 9
  */
 public abstract class ProductInputsLayerTest extends LayerTestBase {
   @Nonnull
@@ -43,7 +45,9 @@ public abstract class ProductInputsLayerTest extends LayerTestBase {
   }
 
   /**
-   * The type N 1 test.
+   * This is the N1Test class.
+   *
+   * @docgenVersion 9
    */
   public static class N1Test extends ProductInputsLayerTest {
 
@@ -56,7 +60,9 @@ public abstract class ProductInputsLayerTest extends LayerTestBase {
   }
 
   /**
-   * The type Nnn test.
+   * This is the NNNTest class.
+   *
+   * @docgenVersion 9
    */
   public static class NNNTest extends ProductInputsLayerTest {
 
@@ -69,7 +75,9 @@ public abstract class ProductInputsLayerTest extends LayerTestBase {
   }
 
   /**
-   * The type Nn test.
+   * This class is a test for the neural network.
+   *
+   * @docgenVersion 9
    */
   public static class NNTest extends ProductInputsLayerTest {
 

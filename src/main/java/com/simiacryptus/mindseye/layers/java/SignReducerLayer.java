@@ -32,7 +32,13 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * The type Sign reducer layer.
+ * This class represents a SignReducerLayer, which is a type of DAGNode.
+ * This class is used to reduce the number of signs in a DAG.
+ *
+ * @author John Doe
+ * @version 1.0
+ * @docgenVersion 9
+ * @since 1.0
  */
 @SuppressWarnings("serial")
 public class SignReducerLayer extends DAGNetwork {
@@ -86,11 +92,12 @@ public class SignReducerLayer extends DAGNetwork {
   }
 
   /**
-   * From json layer.
+   * Creates a SignReducerLayer from a JsonObject.
    *
-   * @param inner the inner
-   * @param rs    the rs
-   * @return the layer
+   * @param inner The JsonObject to create the layer from.
+   * @param rs    A map of character sequences to byte arrays.
+   * @return The created SignReducerLayer.
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -98,6 +105,11 @@ public class SignReducerLayer extends DAGNetwork {
     return new SignReducerLayer(inner, rs);
   }
 
+  /**
+   * Frees the memory associated with this object.
+   *
+   * @docgenVersion 9
+   */
   public void _free() {
     if (null != head)
       head.freeRef();

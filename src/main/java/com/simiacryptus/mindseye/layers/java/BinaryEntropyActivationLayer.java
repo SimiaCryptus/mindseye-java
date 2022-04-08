@@ -26,7 +26,9 @@ import javax.annotation.Nonnull;
 import java.util.Map;
 
 /**
- * The type Binary entropy activation layer.
+ * This class represents a binary entropy activation layer.
+ *
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public final class BinaryEntropyActivationLayer extends SimpleActivationLayer<BinaryEntropyActivationLayer> {
@@ -47,11 +49,12 @@ public final class BinaryEntropyActivationLayer extends SimpleActivationLayer<Bi
   }
 
   /**
-   * From json binary entropy activation layer.
+   * Creates a {@link BinaryEntropyActivationLayer} from a JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the binary entropy activation layer
+   * @param json the JSON object to use
+   * @param rs   the map of character sequences to byte arrays
+   * @return the created {@link BinaryEntropyActivationLayer}
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -65,6 +68,11 @@ public final class BinaryEntropyActivationLayer extends SimpleActivationLayer<Bi
     return super.getJsonStub();
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();

@@ -36,7 +36,12 @@ import java.util.UUID;
 import java.util.function.IntFunction;
 
 /**
- * The type Img pixel gate layer.
+ * ImgPixelGateLayer class
+ *
+ * @author Author Name
+ * @version 1.0
+ * @docgenVersion 9
+ * @since 1.0
  */
 @SuppressWarnings("serial")
 public class ImgPixelGateLayer extends LayerBase {
@@ -61,11 +66,10 @@ public class ImgPixelGateLayer extends LayerBase {
   }
 
   /**
-   * From json img pixel gate layer.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the img pixel gate layer
+   * @param json the JSON object to use for creating the {@link ImgPixelGateLayer}
+   * @param rs   the map of resources to use
+   * @return a new {@link ImgPixelGateLayer}
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -83,11 +87,11 @@ public class ImgPixelGateLayer extends LayerBase {
   }
 
   /**
-   * Eval result.
-   *
-   * @param input the input
-   * @param gate  the gate
-   * @return the result
+   * @param input the input to the evaluation
+   * @param gate  the gate to use in the evaluation
+   * @return the result of the evaluation
+   * @throws NullPointerException if either input or gate is null
+   * @docgenVersion 9
    */
   @Nonnull
   public Result eval(@Nonnull final Result input, @Nonnull final Result gate) {
@@ -115,6 +119,11 @@ public class ImgPixelGateLayer extends LayerBase {
     return RefArrays.asList();
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();
@@ -144,6 +153,13 @@ public class ImgPixelGateLayer extends LayerBase {
         .toArray(Tensor[]::new));
   }
 
+  /**
+   * The Accumulator class is used to accumulate gate and input data.
+   *
+   * @author John Doe
+   * @version 1.0
+   * @docgenVersion 9
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private final TensorList gateData;
@@ -229,6 +245,11 @@ public class ImgPixelGateLayer extends LayerBase {
         buffer.freeRef();
     }
 
+    /**
+     * Frees resources used by this object.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

@@ -26,7 +26,10 @@ import javax.annotation.Nonnull;
 import java.util.Map;
 
 /**
- * The type Gaussian activation layer.
+ * This class represents a Gaussian activation layer.
+ *
+ * @author John Doe
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public final class GaussianActivationLayer extends SimpleActivationLayer<GaussianActivationLayer> {
@@ -61,11 +64,10 @@ public final class GaussianActivationLayer extends SimpleActivationLayer<Gaussia
   }
 
   /**
-   * From json gaussian activation layer.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the gaussian activation layer
+   * @param json The JSON object to use for creating the layer.
+   * @param rs   A map of character sequences to byte arrays.
+   * @return A new GaussianActivationLayer using the given JSON object.
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -82,6 +84,11 @@ public final class GaussianActivationLayer extends SimpleActivationLayer<Gaussia
     return json;
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();

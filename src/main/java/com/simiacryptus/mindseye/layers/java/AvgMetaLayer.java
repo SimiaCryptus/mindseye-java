@@ -37,7 +37,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.ToDoubleFunction;
 
 /**
- * The type Avg meta layer.
+ * The AvgMetaLayer class is used to ...
+ *
+ * @author Author Name
+ * @version 1.0
+ * @docgenVersion 9
+ * @since 1.0
  */
 @SuppressWarnings("serial")
 public class AvgMetaLayer extends LayerBase {
@@ -72,29 +77,32 @@ public class AvgMetaLayer extends LayerBase {
   }
 
   /**
-   * Gets min batch count.
+   * Returns the minimum number of batches needed to process the data.
    *
-   * @return the min batch count
+   * @return the minimum number of batches needed to process the data
+   * @docgenVersion 9
    */
   public int getMinBatchCount() {
     return minBatchCount;
   }
 
   /**
-   * Sets min batch count.
+   * Sets the minimum number of batches.
    *
-   * @param minBatchCount the min batch count
+   * @param minBatchCount the minimum number of batches
+   * @docgenVersion 9
    */
   public void setMinBatchCount(int minBatchCount) {
     this.minBatchCount = minBatchCount;
   }
 
   /**
-   * From json avg meta layer.
+   * Creates an AvgMetaLayer from a JsonObject.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the avg meta layer
+   * @param json The JsonObject to create the AvgMetaLayer from.
+   * @param rs   A map of CharSequences to byte arrays.
+   * @return The new AvgMetaLayer.
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -121,12 +129,11 @@ public class AvgMetaLayer extends LayerBase {
   }
 
   /**
-   * Fwd tensor.
-   *
    * @param inputData the input data
-   * @param itemCnt   the item cnt
-   * @param passback  the passback
-   * @return the tensor
+   * @param itemCnt   the number of items
+   * @param passback  an AtomicBoolean that is set to true if the passback is successful
+   * @return a Tensor, or null if the passback fails
+   * @docgenVersion 9
    */
   @org.jetbrains.annotations.Nullable
   public Tensor fwd(TensorList inputData, int itemCnt, AtomicBoolean passback) {
@@ -156,7 +163,9 @@ public class AvgMetaLayer extends LayerBase {
   }
 
   /**
-   * Clear last result.
+   * Clears the last result.
+   *
+   * @docgenVersion 9
    */
   @RefIgnore
   public void clearLastResult() {
@@ -183,6 +192,11 @@ public class AvgMetaLayer extends LayerBase {
     return RefArrays.asList();
   }
 
+  /**
+   * Frees resources used by this object.
+   *
+   * @docgenVersion 9
+   */
   public void _free() {
     if (null != lastResult) {
       lastResult.freeRef();
@@ -198,6 +212,14 @@ public class AvgMetaLayer extends LayerBase {
     return (AvgMetaLayer) super.addRef();
   }
 
+  /**
+   * The Accumulator class is used to hold a tensor and an accumulator.
+   *
+   * @author John Doe
+   * @version 1.0
+   * @docgenVersion 9
+   * @since 1.0
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private final Tensor tensor;
@@ -248,6 +270,11 @@ public class AvgMetaLayer extends LayerBase {
         buffer.freeRef();
     }
 
+    /**
+     * Frees resources used by this object.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

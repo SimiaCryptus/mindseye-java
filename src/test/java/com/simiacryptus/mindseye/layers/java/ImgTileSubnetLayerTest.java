@@ -25,7 +25,9 @@ import com.simiacryptus.mindseye.test.LayerTestBase;
 import javax.annotation.Nonnull;
 
 /**
- * The type Img tile subnet layer test.
+ * Test class for ImgTileSubnetLayer.
+ *
+ * @docgenVersion 9
  */
 public abstract class ImgTileSubnetLayerTest extends LayerTestBase {
 
@@ -36,7 +38,9 @@ public abstract class ImgTileSubnetLayerTest extends LayerTestBase {
   }
 
   /**
-   * The type Basic.
+   * The Basic class is a class that contains the most basic information.
+   *
+   * @docgenVersion 9
    */
   public static class Basic extends ImgTileSubnetLayerTest {
 
@@ -51,7 +55,9 @@ public abstract class ImgTileSubnetLayerTest extends LayerTestBase {
   }
 
   /**
-   * The type Overlapping.
+   * This class represents the concept of two objects overlapping.
+   *
+   * @docgenVersion 9
    */
   public static class Overlapping extends ImgTileSubnetLayerTest {
 

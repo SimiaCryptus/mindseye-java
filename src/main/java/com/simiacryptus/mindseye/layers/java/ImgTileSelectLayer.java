@@ -35,7 +35,14 @@ import java.util.function.Consumer;
 import java.util.function.IntFunction;
 
 /**
- * The type Img tile select layer.
+ * A class for selecting an image tile.
+ *
+ * @param toroidal  whether or not the selection is toroidal
+ * @param sizeX     the size of the selection in the x direction
+ * @param sizeY     the size of the selection in the y direction
+ * @param positionX the x position of the selection
+ * @param positionY the y position of the selection
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class ImgTileSelectLayer extends LayerBase {
@@ -93,13 +100,10 @@ public class ImgTileSelectLayer extends LayerBase {
   }
 
   /**
-   * Copy.
+   * Copies the inputData to the outputData, starting at the position (posX, posY).
+   * If toroidal is true, the copy will be done in a toroidal fashion.
    *
-   * @param inputData  the input data
-   * @param outputData the output data
-   * @param posX       the pos x
-   * @param posY       the pos y
-   * @param toroidal   the toroidal
+   * @docgenVersion 9
    */
   public static void copy(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData, final int posX,
                           final int posY, final boolean toroidal) {
@@ -139,11 +143,10 @@ public class ImgTileSelectLayer extends LayerBase {
   }
 
   /**
-   * From json img tile select layer.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the img tile select layer
+   * @param json the JSON object to create the layer from
+   * @param rs   the map of character sequences to byte arrays
+   * @return the new image tile selection layer
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -152,17 +155,16 @@ public class ImgTileSelectLayer extends LayerBase {
   }
 
   /**
-   * To tiles tensor [ ].
-   *
-   * @param log     the log
-   * @param canvas  the canvas
-   * @param width   the width
-   * @param height  the height
-   * @param strideX the stride x
-   * @param strideY the stride y
-   * @param offsetX the offset x
-   * @param offsetY the offset y
-   * @return the tensor [ ]
+   * @param log     the log to use
+   * @param canvas  the canvas to tile
+   * @param width   the width of each tile
+   * @param height  the height of each tile
+   * @param strideX the horizontal stride between tiles
+   * @param strideY the vertical stride between tiles
+   * @param offsetX the horizontal offset of the first tile
+   * @param offsetY the vertical offset of the first tile
+   * @return an array of tiles
+   * @docgenVersion 9
    */
   @Nonnull
   public static Tensor[] toTiles(@Nonnull final NotebookOutput log, @Nonnull final Tensor canvas, final int width, final int height,
@@ -193,17 +195,18 @@ public class ImgTileSelectLayer extends LayerBase {
   }
 
   /**
-   * Tile selectors img tile select layer [ ].
+   * Returns an array of ImgTileSelectLayer objects.
    *
-   * @param log     the log
-   * @param canvas  the canvas
+   * @param log     the notebook output
+   * @param canvas  the tensor
    * @param width   the width
    * @param height  the height
-   * @param strideX the stride x
-   * @param strideY the stride y
-   * @param offsetX the offset x
-   * @param offsetY the offset y
-   * @return the img tile select layer [ ]
+   * @param strideX the x stride
+   * @param strideY the y stride
+   * @param offsetX the x offset
+   * @param offsetY the y offset
+   * @return an array of ImgTileSelectLayer objects
+   * @docgenVersion 9
    */
   @Nonnull
   public static ImgTileSelectLayer[] tileSelectors(@Nonnull final NotebookOutput log, @Nonnull final Tensor canvas, final int width,
@@ -247,12 +250,13 @@ public class ImgTileSelectLayer extends LayerBase {
   }
 
   /**
-   * Get view dimensions int [ ].
+   * Returns the dimensions of the view.
    *
    * @param sourceDimensions      the source dimensions
    * @param destinationDimensions the destination dimensions
    * @param offset                the offset
-   * @return the int [ ]
+   * @return the view dimensions
+   * @docgenVersion 9
    */
   @Nonnull
   public int[] getViewDimensions(int[] sourceDimensions, int[] destinationDimensions, int[] offset) {
@@ -280,6 +284,11 @@ public class ImgTileSelectLayer extends LayerBase {
     return new RefArrayList<>();
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();
@@ -305,6 +314,17 @@ public class ImgTileSelectLayer extends LayerBase {
         }, batch)).toArray(Tensor[]::new));
   }
 
+  /**
+   * The Accumulator class is used to track the position of an object in an array.
+   *
+   * @param inputDims   The dimensions of the array.
+   * @param positionX   The x-coordinate of the object's position.
+   * @param positionY   The y-coordinate of the object's position.
+   * @param toroidal    A boolean value indicating whether the array is toroidal (wraps around) or not.
+   * @param accumulator An Accumulator object used to track the object's position.
+   * @param alive       A boolean value indicating whether the object is still alive.
+   * @docgenVersion 9
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private final int[] inputDims;
@@ -354,6 +374,11 @@ public class ImgTileSelectLayer extends LayerBase {
         buffer.freeRef();
     }
 
+    /**
+     * Frees resources used by this object.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

@@ -34,7 +34,12 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * The type Reshape layer.
+ * This class represents a ReshapeLayer.
+ *
+ * @author AuthorName
+ * @version 1.0
+ * @docgenVersion 9
+ * @since 1.0
  */
 @SuppressWarnings("serial")
 public class ReshapeLayer extends LayerBase {
@@ -69,11 +74,12 @@ public class ReshapeLayer extends LayerBase {
   }
 
   /**
-   * From json reshape layer.
+   * Creates a new {@link ReshapeLayer} from a JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the reshape layer
+   * @param json the JSON object to use for creating the layer
+   * @param rs   a map of character sequences to byte arrays
+   * @return a new {@link ReshapeLayer}
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -112,6 +118,11 @@ public class ReshapeLayer extends LayerBase {
     return RefArrays.asList();
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();
@@ -124,6 +135,11 @@ public class ReshapeLayer extends LayerBase {
     return (ReshapeLayer) super.addRef();
   }
 
+  /**
+   * The Accumulator class is used to hold an array of input dimensions and a Result.Accumulator object.
+   *
+   * @docgenVersion 9
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private final int[] inputDims;
@@ -145,6 +161,11 @@ public class ReshapeLayer extends LayerBase {
       this.accumulator.accept(buffer, new ReshapedTensorList(delta, inputDims));
     }
 
+    /**
+     * Frees resources used by this object.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

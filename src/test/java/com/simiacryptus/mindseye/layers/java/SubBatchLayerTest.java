@@ -29,7 +29,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * The type Sub batch layer test.
+ * Class SubBatchLayerTest
+ *
+ * @author Author
+ * @version 1.0
+ * @docgenVersion 9
+ * @since 1.0
  */
 public class SubBatchLayerTest extends LayerTestBase {
 
@@ -57,7 +62,10 @@ public class SubBatchLayerTest extends LayerTestBase {
   }
 
   /**
-   * Cleanup.
+   * This method is called after each test is run.
+   *
+   * @MustCall This method must be called in order for the test to run properly.
+   * @docgenVersion 9
    */
   @AfterEach
   @MustCall

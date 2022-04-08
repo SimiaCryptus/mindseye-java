@@ -37,7 +37,12 @@ import java.util.UUID;
 import java.util.function.IntFunction;
 
 /**
- * The type Entropy loss layer.
+ * This class represents an entropy loss layer.
+ *
+ * @author Author Name
+ * @version 1.0
+ * @docgenVersion 9
+ * @since 1.0
  */
 @SuppressWarnings("serial")
 public class EntropyLossLayer extends LayerBase {
@@ -61,11 +66,12 @@ public class EntropyLossLayer extends LayerBase {
   }
 
   /**
-   * From json entropy loss layer.
+   * Creates an EntropyLossLayer from a JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the entropy loss layer
+   * @param json The JSON object to use.
+   * @param rs   A map of character sequences to byte arrays.
+   * @return The new EntropyLossLayer.
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -104,6 +110,11 @@ public class EntropyLossLayer extends LayerBase {
     return RefArrays.asList();
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();
@@ -164,6 +175,19 @@ public class EntropyLossLayer extends LayerBase {
         }, indata, inObj, gradient)).toArray(Tensor[]::new));
   }
 
+  /**
+   * The Accumulator class is used to calculate the gradient of a function.
+   *
+   * @param indata       The data to be used in the calculation.
+   * @param gradient     The gradient of the function.
+   * @param max_prob     The maximum probability.
+   * @param zero_tol     The zero tolerance.
+   * @param accumulator1 The first accumulator.
+   * @param accumulator0 The second accumulator.
+   * @param alive0       A boolean value indicating whether the first accumulator is alive.
+   * @param alive1       A boolean value indicating whether the second accumulator is alive.
+   * @docgenVersion 9
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private final TensorList indata;
@@ -246,6 +270,14 @@ public class EntropyLossLayer extends LayerBase {
         buffer.freeRef();
     }
 
+    /**
+     * Frees resources used by this object.
+     * This method overrides the {@link #_free()} method in the {@linkplain Layer superclass}
+     * and also frees resources used by this object's {@linkplain #accumulator0}, {@linkplain #accumulator1},
+     * {@linkplain #indata}, and {@linkplain #gradient} fields.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

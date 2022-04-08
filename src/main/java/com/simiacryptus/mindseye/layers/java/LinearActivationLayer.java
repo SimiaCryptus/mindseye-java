@@ -37,7 +37,11 @@ import java.util.UUID;
 import java.util.function.IntFunction;
 
 /**
- * The type Linear activation layer.
+ * This class represents a linear activation layer.
+ *
+ * @author John Doe
+ * @docgenVersion 9
+ * @since 1.0
  */
 @SuppressWarnings("serial")
 public class LinearActivationLayer extends LayerBase {
@@ -88,9 +92,10 @@ public class LinearActivationLayer extends LayerBase {
   }
 
   /**
-   * Gets bias.
+   * Returns the bias of the neuron.
    *
-   * @return the bias
+   * @return the bias of the neuron
+   * @docgenVersion 9
    */
   public double getBias() {
     assert weights != null;
@@ -98,9 +103,11 @@ public class LinearActivationLayer extends LayerBase {
   }
 
   /**
-   * Sets bias.
+   * Sets the bias for the perceptron.
    *
-   * @param bias the bias
+   * @param bias the new bias
+   * @throws IllegalArgumentException if the bias is not finite
+   * @docgenVersion 9
    */
   public void setBias(double bias) {
     if (!Double.isFinite(bias))
@@ -124,9 +131,10 @@ public class LinearActivationLayer extends LayerBase {
   }
 
   /**
-   * Gets scale.
+   * Returns the scale.
    *
    * @return the scale
+   * @docgenVersion 9
    */
   public double getScale() {
     assert weights != null;
@@ -134,9 +142,11 @@ public class LinearActivationLayer extends LayerBase {
   }
 
   /**
-   * Sets scale.
+   * Sets the scale.
    *
    * @param scale the scale
+   * @throws IllegalArgumentException if the scale is not finite
+   * @docgenVersion 9
    */
   public void setScale(double scale) {
     if (!Double.isFinite(scale))
@@ -146,11 +156,12 @@ public class LinearActivationLayer extends LayerBase {
   }
 
   /**
-   * From json linear activation layer.
+   * Creates a new {@link LinearActivationLayer} from a JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the linear activation layer
+   * @param json the JSON object to use
+   * @param rs   the map of character sequences to byte arrays
+   * @return the new {@link LinearActivationLayer}
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -187,6 +198,11 @@ public class LinearActivationLayer extends LayerBase {
     return RefArrays.asList(weights.getData());
   }
 
+  /**
+   * Frees resources used by this object.
+   *
+   * @docgenVersion 9
+   */
   public void _free() {
     if (null != weights)
       weights.freeRef();
@@ -218,6 +234,17 @@ public class LinearActivationLayer extends LayerBase {
         }, inData)).toArray(Tensor[]::new));
   }
 
+  /**
+   * The Accumulator class represents an accumulator, which is used to accumulate the results of a computation.
+   *
+   * @param inData      The input data to be accumulated.
+   * @param weights     The weights to be used in the accumulation.
+   * @param id          The unique identifier of the accumulator.
+   * @param frozen      Whether or not the accumulator is frozen.
+   * @param accumulator The Result.Accumulator object used to accumulate the results.
+   * @param alive       Whether or not the accumulator is alive.
+   * @docgenVersion 9
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private final TensorList inData;
@@ -290,6 +317,11 @@ public class LinearActivationLayer extends LayerBase {
       buffer.freeRef();
     }
 
+    /**
+     * Frees resources used by this object.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

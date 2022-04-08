@@ -29,7 +29,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * The type Fully connected layer test.
+ * This class tests the FullyConnectedLayer class.
+ *
+ * @docgenVersion 9
  */
 public abstract class FullyConnectedLayerTest extends LayerTestBase {
 
@@ -72,7 +74,10 @@ public abstract class FullyConnectedLayerTest extends LayerTestBase {
   }
 
   /**
-   * Cleanup.
+   * This method is called after each test is run.
+   *
+   * @MustCall This method must be called.
+   * @docgenVersion 9
    */
   @AfterEach
   @MustCall
@@ -82,7 +87,9 @@ public abstract class FullyConnectedLayerTest extends LayerTestBase {
   }
 
   /**
-   * The type Basic.
+   * The Basic class is a class that contains the most basic information.
+   *
+   * @docgenVersion 9
    */
   public static class Basic extends FullyConnectedLayerTest {
     /**

@@ -26,7 +26,11 @@ import org.junit.jupiter.api.Disabled;
 import javax.annotation.Nonnull;
 
 /**
- * The type Scale meta layer test.
+ * ScaleMetaLayerTest class
+ * <p>
+ * This class is used to test the ScaleMetaLayer class
+ *
+ * @docgenVersion 9
  */
 public abstract class ScaleMetaLayerTest extends LayerTestBase {
 
@@ -55,7 +59,9 @@ public abstract class ScaleMetaLayerTest extends LayerTestBase {
   }
 
   /**
-   * The type Basic.
+   * The Basic class is a class that contains the most basic information.
+   *
+   * @docgenVersion 9
    */
   public static class Basic extends ScaleMetaLayerTest {
 

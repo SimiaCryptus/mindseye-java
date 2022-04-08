@@ -39,7 +39,12 @@ import java.util.function.IntFunction;
 import java.util.function.IntToDoubleFunction;
 
 /**
- * The type Gaussian noise layer.
+ * This class represents a Gaussian noise layer.
+ *
+ * @author Author Name
+ * @version 1.0
+ * @docgenVersion 9
+ * @since 1.0
  */
 @SuppressWarnings("serial")
 public class GaussianNoiseLayer extends LayerBase implements StochasticComponent {
@@ -79,29 +84,32 @@ public class GaussianNoiseLayer extends LayerBase implements StochasticComponent
   }
 
   /**
-   * Gets value.
+   * Returns the value of this object.
    *
-   * @return the value
+   * @return the value of this object
+   * @docgenVersion 9
    */
   public double getValue() {
     return value;
   }
 
   /**
-   * Sets value.
+   * Sets the value of this object to the specified double.
    *
-   * @param value the value
+   * @param value the new value of this object
+   * @docgenVersion 9
    */
   public void setValue(double value) {
     this.value = value;
   }
 
   /**
-   * From json gaussian noise layer.
+   * Creates a {@link GaussianNoiseLayer} from a JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the gaussian noise layer
+   * @param json the JSON object to use
+   * @param rs   the resources to use
+   * @return the {@link GaussianNoiseLayer}
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -134,7 +142,9 @@ public class GaussianNoiseLayer extends LayerBase implements StochasticComponent
   }
 
   /**
-   * Shuffle.
+   * This method shuffles the Gaussian Noise Layer.
+   *
+   * @docgenVersion 9
    */
   public void shuffle() {
     shuffle(GaussianNoiseLayer.random.get().nextLong());
@@ -156,6 +166,11 @@ public class GaussianNoiseLayer extends LayerBase implements StochasticComponent
     this.seed = 0;
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();
@@ -184,6 +199,12 @@ public class GaussianNoiseLayer extends LayerBase implements StochasticComponent
         }, inputData)).toArray(Tensor[]::new));
   }
 
+  /**
+   * The Accumulator class is used to store the dimensions of an array and the accumulator for a result.
+   * It also has a boolean value to keep track of whether it is alive or not.
+   *
+   * @docgenVersion 9
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private final int[] dimensions;
@@ -222,6 +243,11 @@ public class GaussianNoiseLayer extends LayerBase implements StochasticComponent
       }
     }
 
+    /**
+     * Frees resources used by this object.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

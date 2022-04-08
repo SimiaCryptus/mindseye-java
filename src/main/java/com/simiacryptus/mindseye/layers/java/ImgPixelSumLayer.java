@@ -35,7 +35,9 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * The type Img pixel sum layer.
+ * This class is responsible for summing the pixels in an image.
+ *
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class ImgPixelSumLayer extends LayerBase {
@@ -60,11 +62,12 @@ public class ImgPixelSumLayer extends LayerBase {
   }
 
   /**
-   * From json img pixel sum layer.
+   * Returns a new {@link ImgPixelSumLayer} from a JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the img pixel sum layer
+   * @param json the JSON object to parse
+   * @param rs   the resources to load
+   * @return a new {@link ImgPixelSumLayer}
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -82,10 +85,12 @@ public class ImgPixelSumLayer extends LayerBase {
   }
 
   /**
-   * Eval result.
+   * Evaluates the given input.
    *
-   * @param input the input
-   * @return the result
+   * @param input the input to evaluate
+   * @return the result of the evaluation
+   * @throws NullPointerException if the input is null
+   * @docgenVersion 9
    */
   @Nonnull
   public Result eval(@Nonnull final Result input) {
@@ -111,6 +116,11 @@ public class ImgPixelSumLayer extends LayerBase {
     return RefArrays.asList();
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();
@@ -139,6 +149,14 @@ public class ImgPixelSumLayer extends LayerBase {
     return tensorArray;
   }
 
+  /**
+   * The Accumulator class is used to track the results of an operation.
+   *
+   * @param inputDims   The dimensions of the input data.
+   * @param accumulator The accumulator to use.
+   * @param alive       A boolean value indicating whether the operation is still alive.
+   * @docgenVersion 9
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private final int[] inputDims;
@@ -182,6 +200,11 @@ public class ImgPixelSumLayer extends LayerBase {
         buffer.freeRef();
     }
 
+    /**
+     * Frees resources used by this object.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

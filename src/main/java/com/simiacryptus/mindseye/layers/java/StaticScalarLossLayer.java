@@ -36,7 +36,11 @@ import java.util.UUID;
 import java.util.function.IntFunction;
 
 /**
- * The type Static scalar loss layer.
+ * A class that represents a static scalar loss layer.
+ *
+ * @author John Doe
+ * @docgenVersion 9
+ * @since 1.0
  */
 @SuppressWarnings("serial")
 public class StaticScalarLossLayer extends LayerBase {
@@ -61,29 +65,32 @@ public class StaticScalarLossLayer extends LayerBase {
   }
 
   /**
-   * Gets target.
+   * Returns the target value.
    *
-   * @return the target
+   * @return the target value
+   * @docgenVersion 9
    */
   public double getTarget() {
     return target;
   }
 
   /**
-   * Sets target.
+   * Sets the target value.
    *
-   * @param target the target
+   * @param target the target value
+   * @docgenVersion 9
    */
   public void setTarget(double target) {
     this.target = target;
   }
 
   /**
-   * From json static scalar loss layer.
+   * Creates a new {@link StaticScalarLossLayer} from a JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the static scalar loss layer
+   * @param json the JSON object to use
+   * @param rs   the map of character sequences to byte arrays
+   * @return the new {@link StaticScalarLossLayer}
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -120,6 +127,11 @@ public class StaticScalarLossLayer extends LayerBase {
     return RefArrays.asList();
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();
@@ -143,6 +155,15 @@ public class StaticScalarLossLayer extends LayerBase {
         }, indata)).toArray(Tensor[]::new));
   }
 
+  /**
+   * The Accumulator class is used to accumulate data from a TensorList.
+   *
+   * @param indata      The data to be accumulated.
+   * @param target      The target value to accumulate to.
+   * @param accumulator The accumulator to use.
+   * @param alive       Whether or not the accumulator is alive.
+   * @docgenVersion 9
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private final TensorList indata;
@@ -188,6 +209,11 @@ public class StaticScalarLossLayer extends LayerBase {
         buffer.freeRef();
     }
 
+    /**
+     * Frees resources used by this object.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

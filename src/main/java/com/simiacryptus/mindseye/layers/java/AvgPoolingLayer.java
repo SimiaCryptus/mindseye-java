@@ -37,7 +37,11 @@ import java.util.UUID;
 import java.util.function.IntFunction;
 
 /**
- * The type Avg pooling layer.
+ * The AvgPoolingLayer class contains a static, final RefConcurrentHashMap field called indexMapCache,
+ * as well as an unused, private static final Logger field called log. This class also contains a private
+ * int[] field called kernelDims.
+ *
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class AvgPoolingLayer extends LayerBase {
@@ -80,11 +84,10 @@ public class AvgPoolingLayer extends LayerBase {
   }
 
   /**
-   * From json avg pooling layer.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the avg pooling layer
+   * @param json The JSON object to deserialize
+   * @param rs   A map of character sequences to byte arrays
+   * @return A new AvgPoolingLayer
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -172,6 +175,11 @@ public class AvgPoolingLayer extends LayerBase {
     return RefArrays.asList();
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();
@@ -206,7 +214,11 @@ public class AvgPoolingLayer extends LayerBase {
   }
 
   /**
-   * The type Index map key.
+   * This class represents a key for an index map.
+   *
+   * @param kernel The Kernel.
+   * @param output The Output.
+   * @docgenVersion 9
    */
   public static final class IndexMapKey {
     /**
@@ -272,6 +284,16 @@ public class AvgPoolingLayer extends LayerBase {
     }
   }
 
+  /**
+   * The Accumulator class is used to track the results of a kernel operation.
+   *
+   * @param RefMap<Coordinate, RefList<int[]>> coordMap A map of Coordinates to integer arrays.
+   * @param int[]              inputDims The dimensions of the input array.
+   * @param int                kernelSize The size of the kernel.
+   * @param Result.Accumulator accumulator An accumulator for tracking the results of the kernel operation.
+   * @param boolean            alive A flag to track whether the Accumulator is still needed.
+   * @docgenVersion 9
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private final RefMap<Coordinate, RefList<int[]>> coordMap;
@@ -324,6 +346,11 @@ public class AvgPoolingLayer extends LayerBase {
         buffer.freeRef();
     }
 
+    /**
+     * Frees resources used by this object.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

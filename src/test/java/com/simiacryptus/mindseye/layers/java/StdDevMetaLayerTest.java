@@ -25,7 +25,9 @@ import com.simiacryptus.mindseye.layers.MetaLayerTestBase;
 import javax.annotation.Nonnull;
 
 /**
- * The type Std dev meta layer test.
+ * This class tests the StdDevMetaLayer class.
+ *
+ * @docgenVersion 9
  */
 public abstract class StdDevMetaLayerTest extends MetaLayerTestBase {
   /**
@@ -61,7 +63,9 @@ public abstract class StdDevMetaLayerTest extends MetaLayerTestBase {
   }
 
   /**
-   * The type Basic.
+   * The Basic class is a class that contains the most basic information.
+   *
+   * @docgenVersion 9
    */
   public static class Basic extends StdDevMetaLayerTest {
 

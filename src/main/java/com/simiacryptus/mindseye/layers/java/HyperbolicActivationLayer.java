@@ -36,7 +36,11 @@ import java.util.UUID;
 import java.util.function.IntFunction;
 
 /**
- * The type Hyperbolic activation layer.
+ * This class represents a hyperbolic activation layer.
+ *
+ * @author John Doe
+ * @version 1.0
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class HyperbolicActivationLayer extends LayerBase {
@@ -70,9 +74,10 @@ public class HyperbolicActivationLayer extends LayerBase {
   }
 
   /**
-   * Gets scale l.
+   * Returns the scaleL.
    *
-   * @return the scale l
+   * @return the scaleL
+   * @docgenVersion 9
    */
   public double getScaleL() {
     assert weights != null;
@@ -80,9 +85,10 @@ public class HyperbolicActivationLayer extends LayerBase {
   }
 
   /**
-   * Gets scale r.
+   * Returns the scaleR.
    *
-   * @return the scale r
+   * @return the scaleR
+   * @docgenVersion 9
    */
   public double getScaleR() {
     assert weights != null;
@@ -90,9 +96,10 @@ public class HyperbolicActivationLayer extends LayerBase {
   }
 
   /**
-   * Sets scale.
+   * Sets the scale of the weights.
    *
-   * @param scale the scale
+   * @param scale the new scale of the weights
+   * @docgenVersion 9
    */
   public void setScale(double scale) {
     assert weights != null;
@@ -101,11 +108,12 @@ public class HyperbolicActivationLayer extends LayerBase {
   }
 
   /**
-   * From json hyperbolic activation layer.
+   * Creates a new {@link HyperbolicActivationLayer} from a JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the hyperbolic activation layer
+   * @param json the JSON object to use for creating the layer
+   * @param rs   the map of character sequences to byte arrays
+   * @return the new {@link HyperbolicActivationLayer}
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -139,21 +147,27 @@ public class HyperbolicActivationLayer extends LayerBase {
   }
 
   /**
-   * Sets mode asymetric.
+   * Sets the mode to asymetric.
+   *
+   * @docgenVersion 9
    */
   public void setModeAsymetric() {
     negativeMode = 0;
   }
 
   /**
-   * Sets mode even.
+   * Sets the mode to even.
+   *
+   * @docgenVersion 9
    */
   public void setModeEven() {
     negativeMode = 1;
   }
 
   /**
-   * Sets mode odd.
+   * Sets the mode to odd.
+   *
+   * @docgenVersion 9
    */
   public void setModeOdd() {
     negativeMode = -1;
@@ -166,6 +180,11 @@ public class HyperbolicActivationLayer extends LayerBase {
     return RefArrays.asList(weights.getData());
   }
 
+  /**
+   * Frees resources used by this object.
+   *
+   * @docgenVersion 9
+   */
   public void _free() {
     if (null != weights)
       weights.freeRef();
@@ -196,6 +215,19 @@ public class HyperbolicActivationLayer extends LayerBase {
         }, indata)).toArray(Tensor[]::new));
   }
 
+  /**
+   * The Accumulator class represents an accumulator, which is used to accumulate the gradient of a loss function with respect to the weights of a neural network.
+   * <p>
+   * An Accumulator is created with a TensorList, which is the list of inputs to the neural network. The Accumulator is then frozen, so that it cannot be modified.
+   * <p>
+   * The Accumulator has an id, which is used to identify it, and a weights Tensor, which represents the weights of the neural network.
+   * <p>
+   * The Accumulator also has a Result.Accumulator, which is used to accumulate the gradient of the loss function with respect to the weights of the neural network.
+   * <p>
+   * The Accumulator is alive if it has not been disposed.*
+   *
+   * @docgenVersion 9
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private final TensorList indata;
@@ -289,6 +321,11 @@ public class HyperbolicActivationLayer extends LayerBase {
       }
     }
 
+    /**
+     * Frees resources.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

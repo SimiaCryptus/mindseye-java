@@ -42,7 +42,12 @@ import java.util.function.DoubleSupplier;
 import java.util.function.IntToDoubleFunction;
 
 /**
- * The type Img band scale layer.
+ * Class ImgBandScaleLayer
+ *
+ * @author null
+ * @version 1.0
+ * @docgenVersion 9
+ * @since 1.0
  */
 @SuppressWarnings("serial")
 public class ImgBandScaleLayer extends LayerBase {
@@ -81,9 +86,9 @@ public class ImgBandScaleLayer extends LayerBase {
   }
 
   /**
-   * Get weights double [ ].
-   *
-   * @return the double [ ]
+   * @return the weights, or null if not available
+   * @throws IllegalStateException if the weights are not finite
+   * @docgenVersion 9
    */
   @Nullable
   public double[] getWeights() {
@@ -95,9 +100,12 @@ public class ImgBandScaleLayer extends LayerBase {
   }
 
   /**
-   * Sets weights.
+   * Sets the weights of this node using the given function.
    *
-   * @param f the f
+   * @param f the function to use for setting weights
+   * @throws NullPointerException     if the given function is null
+   * @throws IllegalArgumentException if the given function produces non-finite values
+   * @docgenVersion 9
    */
   public void setWeights(@Nonnull IntToDoubleFunction f) {
     @Nullable final double[] bias = getWeights();
@@ -109,11 +117,10 @@ public class ImgBandScaleLayer extends LayerBase {
   }
 
   /**
-   * From json img band scale layer.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the img band scale layer
+   * @param json the JSON object to create the layer from
+   * @param rs   the map of resources to use for this layer
+   * @return the new layer
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -122,9 +129,11 @@ public class ImgBandScaleLayer extends LayerBase {
   }
 
   /**
-   * Add weights.
+   * Adds the given weights to the current weights.
    *
-   * @param f the f
+   * @param f the weights to add
+   * @throws NullPointerException if f is null
+   * @docgenVersion 9
    */
   public void addWeights(@Nonnull DoubleSupplier f) {
     Util.add(f, getWeights());
@@ -140,10 +149,12 @@ public class ImgBandScaleLayer extends LayerBase {
   }
 
   /**
-   * Eval result.
+   * Evaluates the given input.
    *
-   * @param input the input
-   * @return the result
+   * @param input the input to evaluate
+   * @return the result of the evaluation
+   * @throws NullPointerException if the input is null
+   * @docgenVersion 9
    */
   @Nonnull
   public Result eval(@Nonnull final Result input) {
@@ -165,9 +176,11 @@ public class ImgBandScaleLayer extends LayerBase {
   }
 
   /**
-   * Set.
+   * Sets the bias of the neuron.
    *
-   * @param ds the ds
+   * @param ds the array of doubles to set as the bias
+   * @throws IllegalArgumentException if the array is null
+   * @docgenVersion 9
    */
   public void set(@Nonnull double[] ds) {
     @Nullable final double[] bias = getWeights();
@@ -185,6 +198,11 @@ public class ImgBandScaleLayer extends LayerBase {
     return RefArrays.asList(getWeights());
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();
@@ -218,6 +236,17 @@ public class ImgBandScaleLayer extends LayerBase {
     return tensorArray;
   }
 
+  /**
+   * The Accumulator class represents an accumulator for a TensorList.
+   *
+   * @param inData      The TensorList to accumulate.
+   * @param weights     The weights to use for the accumulation.
+   * @param id          The UUID of the Accumulator.
+   * @param frozen      Whether or not the Accumulator is frozen.
+   * @param accumulator The Result.Accumulator for the Accumulator.
+   * @param alive       Whether or not the Accumulator is alive.
+   * @docgenVersion 9
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private final TensorList inData;
@@ -287,6 +316,11 @@ public class ImgBandScaleLayer extends LayerBase {
       buffer.freeRef();
     }
 
+    /**
+     * Frees resources.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

@@ -59,7 +59,9 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
- * The type Build and release.
+ * The BuildAndRelease class contains a static XPath variable that can be used to instantiate new XPath objects.
+ *
+ * @docgenVersion 9
  */
 public class BuildAndRelease extends NotebookTestBase {
 
@@ -76,10 +78,11 @@ public class BuildAndRelease extends NotebookTestBase {
   }
 
   /**
-   * Update po ms.
+   * Updates the POMs in the given root directory.
    *
-   * @param root the root
-   * @param fn   the fn
+   * @param root the root directory
+   * @param fn   the function to apply to each POM
+   * @docgenVersion 9
    */
   public static void updatePOMs(File root, BiConsumer<File, Document> fn) {
     try {
@@ -104,34 +107,37 @@ public class BuildAndRelease extends NotebookTestBase {
   }
 
   /**
-   * Open document.
+   * Open a pom file.
    *
-   * @param pomFile the pom file
-   * @return the document
-   * @throws SAXException                 the sax exception
-   * @throws IOException                  the io exception
-   * @throws ParserConfigurationException the parser configuration exception
+   * @param pomFile the pom file to open
+   * @return the document representing the pom file
+   * @throws SAXException                 if there is a problem parsing the pom file
+   * @throws IOException                  if there is a problem reading the pom file
+   * @throws ParserConfigurationException if there is a problem configuring the parser
+   * @docgenVersion 9
    */
   public static Document open(File pomFile) throws SAXException, IOException, ParserConfigurationException {
     return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(pomFile);
   }
 
   /**
-   * Backup.
+   * This method backs up a file by copying it to a file with the same name plus the ".bak" extension.
    *
-   * @param pomFile the pom file
-   * @throws IOException the io exception
+   * @param pomFile the file to back up
+   * @throws IOException if there is an error copying the file
+   * @docgenVersion 9
    */
   public static void backup(File pomFile) throws IOException {
     FileUtils.copyFile(pomFile, new File(pomFile.toString() + ".bak"));
   }
 
   /**
-   * Edit.
+   * Edits the given XML document to match the given version.
    *
-   * @param version the version
-   * @param xmlDoc  the xml doc
-   * @throws XPathExpressionException the x path expression exception
+   * @param version The version to match.
+   * @param xmlDoc  The XML document to edit.
+   * @throws XPathExpressionException If an error occurs while editing the document.
+   * @docgenVersion 9
    */
   public static void edit(String version, Document xmlDoc) throws XPathExpressionException {
     XPath xPath = XPathFactory.newInstance().newXPath();
@@ -154,11 +160,10 @@ public class BuildAndRelease extends NotebookTestBase {
   }
 
   /**
-   * Write.
-   *
-   * @param pomFile the pom file
-   * @param xmlDoc  the xml doc
-   * @throws TransformerException the transformer exception
+   * @param pomFile
+   * @param xmlDoc
+   * @throws TransformerException
+   * @docgenVersion 9
    */
   public static void write(File pomFile, Document xmlDoc) throws TransformerException {
     Transformer transformer = TransformerFactory.newInstance().newTransformer();
@@ -172,12 +177,13 @@ public class BuildAndRelease extends NotebookTestBase {
   }
 
   /**
-   * To string string.
+   * Returns a string representation of an XML document.
    *
-   * @param xmlDoc the xml doc
-   * @return the string
-   * @throws TransformerException         the transformer exception
-   * @throws UnsupportedEncodingException the unsupported encoding exception
+   * @param xmlDoc the XML document to convert to a string
+   * @return a string representation of the XML document
+   * @throws TransformerException         if an error occurs during conversion
+   * @throws UnsupportedEncodingException if the document uses an unsupported encoding
+   * @docgenVersion 9
    */
   public static String toString(Node xmlDoc) throws TransformerException, UnsupportedEncodingException {
     Transformer transformer = TransformerFactory.newInstance().newTransformer();
@@ -193,23 +199,25 @@ public class BuildAndRelease extends NotebookTestBase {
   }
 
   /**
-   * Build.
-   * @param log            the log
-   * @param timeout        the timeout
-   * @param bash           the bash
-   * @param git            the git
-   * @param maven          the maven
+   * Build the project using the given tools.
+   *
+   * @param log            the log to use
+   * @param timeout        the timeout in milliseconds
+   * @param bash           the path to the bash executable
+   * @param git            the path to the git executable
+   * @param maven          the path to the maven executable
    * @param buildDirectory the build directory
-   * @param clean          the clean
-   * @param release        the release
-   * @param site           the site
-   * @param push
-   * @param installTools   the install tools
-   * @param siteHome       the site home
-   * @param branch
-   * @param merge
-   * @param oldVersion
+   * @param clean          whether to clean the build directory before building
+   * @param release        whether to do a release build
+   * @param site           whether to generate a site
+   * @param push           whether to push changes to the remote repository
+   * @param installTools   whether to install build tools
+   * @param siteHome       the directory to use for the generated site
+   * @param branch         the branch to build
+   * @param merge          the branch to merge with
+   * @param oldVersion     the old version
    * @param newVersion     the new version
+   * @docgenVersion 9
    */
   public static void build(NotebookOutput log, long timeout, String bash, String git, String maven, String buildDirectory, boolean clean, boolean release, boolean site, boolean push, boolean installTools, String siteHome, String branch, String merge, String oldVersion, String newVersion) {
     String mainProject = "all-projects";
@@ -245,9 +253,9 @@ public class BuildAndRelease extends NotebookTestBase {
               new String[]{git, "pull", "origin", branch},
               new String[]{git, "submodule", "update", "--init"}
           );
-          if(null != merge && !merge.isEmpty()) {
+          if (null != merge && !merge.isEmpty()) {
             commands(sub, timeout, mainBuildDirectory,
-                    new String[]{"./gitall.sh", "merge", merge}
+                new String[]{"./gitall.sh", "merge", merge}
             );
           }
           return null;
@@ -256,14 +264,14 @@ public class BuildAndRelease extends NotebookTestBase {
       HashMap<File, String> previousData = log.subreport("Updating Version to " + newVersion, sub -> {
         return newVersion.equals(oldVersion) ? null : setVersion(sub, mainBuildDirectory, newVersion, oldVersion, siteHome);
       });
-      if(push) {
+      if (push) {
         log.subreport("Git Push", sub -> {
           commands(sub, timeout, mainBuildDirectory,
-                  new String[]{"./commit.sh", "Release " + newVersion},
-                  new String[]{"./gitall.sh", "tag", newVersion},
-                  new String[]{git, "push", newVersion},
-                  new String[]{"./gitall.sh", "push", branch},
-                  new String[]{git, "push", branch}
+              new String[]{"./commit.sh", "Release " + newVersion},
+              new String[]{"./gitall.sh", "tag", newVersion},
+              new String[]{git, "push", newVersion},
+              new String[]{"./gitall.sh", "push", branch},
+              new String[]{git, "push", branch}
           );
           return null;
         });
@@ -308,7 +316,7 @@ public class BuildAndRelease extends NotebookTestBase {
             new String[]{bash, maven, "clean", "package", "install", "-fae", profile, "-DskipTests"}
         );
       }
-      if(null != previousData) log.subreport("Revert Version Changes", sub -> {
+      if (null != previousData) log.subreport("Revert Version Changes", sub -> {
         revert(sub, mainBuildDirectory, previousData);
         return null;
       });
@@ -325,11 +333,12 @@ public class BuildAndRelease extends NotebookTestBase {
   }
 
   /**
-   * Revert.
+   * Reverts the given log to the state it was in when the given build directory was last built.
    *
-   * @param log            the log
-   * @param buildDirectory the build directory
-   * @param previousData   the previous data
+   * @param log            the log to revert
+   * @param buildDirectory the build directory to revert to
+   * @param previousData   a map of files to their data at the time of the build
+   * @docgenVersion 9
    */
   public static void revert(NotebookOutput log, String buildDirectory, HashMap<File, String> previousData) {
     for (File file : FileUtils.listFiles(new File(buildDirectory), new String[]{"xml"}, true)) {
@@ -349,14 +358,15 @@ public class BuildAndRelease extends NotebookTestBase {
   }
 
   /**
-   * Sets version.
+   * Sets the version of the site.
    *
-   * @param log            the log
-   * @param buildDirectory the build directory
+   * @param log            the log to write to
+   * @param buildDirectory the directory to build in
    * @param newVersion     the new version
    * @param oldVersion     the old version
-   * @param siteHome       the site home
-   * @return the version
+   * @param siteHome       the home directory of the site
+   * @return a map of files to their new versions
+   * @docgenVersion 9
    */
   @NotNull
   public static HashMap<File, String> setVersion(NotebookOutput log, String buildDirectory, final String newVersion, final String oldVersion, String siteHome) {
@@ -382,12 +392,11 @@ public class BuildAndRelease extends NotebookTestBase {
   }
 
   /**
-   * Commands.
-   *
-   * @param log            the log
-   * @param timeout        the timeout
+   * @param log            the log to write to
+   * @param timeout        the timeout in milliseconds
    * @param buildDirectory the build directory
-   * @param commands       the commands
+   * @param commands       the commands to run
+   * @docgenVersion 9
    */
   public static void commands(NotebookOutput log, long timeout, String buildDirectory, String[]... commands) {
     new File(buildDirectory).mkdirs();
@@ -398,12 +407,11 @@ public class BuildAndRelease extends NotebookTestBase {
   }
 
   /**
-   * Run.
-   *
-   * @param log            the log
-   * @param timeout        the timeout
+   * @param log            the log to write to
+   * @param timeout        the timeout in milliseconds
    * @param buildDirectory the build directory
-   * @param command        the command
+   * @param command        the command to run
+   * @docgenVersion 9
    */
   public static void run(NotebookOutput log, long timeout, String buildDirectory, String[] command) {
     try {
@@ -419,13 +427,14 @@ public class BuildAndRelease extends NotebookTestBase {
   }
 
   /**
-   * Run process.
+   * Runs a process with a given timeout.
    *
-   * @param processBuilder the process builder
-   * @param timeout        the timeout
-   * @return the process
-   * @throws IOException          the io exception
-   * @throws InterruptedException the interrupted exception
+   * @param processBuilder the process to run
+   * @param timeout        the timeout in milliseconds
+   * @return the running process
+   * @throws IOException          if an I/O error occurs
+   * @throws InterruptedException if the process is interrupted
+   * @docgenVersion 9
    */
   public static Process run(ProcessBuilder processBuilder, long timeout) throws IOException, InterruptedException {
     Process process = processBuilder.start();
@@ -444,11 +453,12 @@ public class BuildAndRelease extends NotebookTestBase {
   }
 
   /**
-   * Gets or create.
+   * Returns the node with the given name, or creates a new node with that name if one does not exist.
    *
-   * @param node  the node
-   * @param names the names
-   * @return the or create
+   * @param node  the starting node
+   * @param names the names of the nodes to find or create
+   * @return the node with the given name
+   * @docgenVersion 9
    */
   public static Node getOrCreate(Node node, String... names) {
     String name = names[0];
@@ -467,11 +477,12 @@ public class BuildAndRelease extends NotebookTestBase {
   }
 
   /**
-   * Get node.
+   * Returns the node with the given name.
    *
-   * @param node  the node
-   * @param names the names
-   * @return the node
+   * @param node  the node to search
+   * @param names the name of the node to find
+   * @return the node with the given name
+   * @docgenVersion 9
    */
   public static Node get(Node node, String... names) {
     String name = names[0];
@@ -487,7 +498,9 @@ public class BuildAndRelease extends NotebookTestBase {
   }
 
   /**
-   * Local build.
+   * Test to see if the build is local.
+   *
+   * @docgenVersion 9
    */
   @Test
   public void localBuild() {
@@ -509,7 +522,10 @@ public class BuildAndRelease extends NotebookTestBase {
   }
 
   /**
-   * Update POMs.
+   * @Test public void updatePOMs();
+   * <p>
+   * This method will update the POMs for the project.
+   * @docgenVersion 9
    */
   @Test
   public void updatePOMs() {
@@ -605,11 +621,12 @@ public class BuildAndRelease extends NotebookTestBase {
   }
 
   /**
-   * Gets text.
+   * Returns the text content of the node with the given group ID.
    *
-   * @param x1      the x 1
-   * @param groupId the group id
-   * @return the text
+   * @param x1      the node to get the text content from
+   * @param groupId the group ID of the node
+   * @return the text content of the node, or an empty string if the node does not exist
+   * @docgenVersion 9
    */
   public String getText(Node x1, String groupId) {
     Node node = get(x1, groupId);
@@ -618,7 +635,10 @@ public class BuildAndRelease extends NotebookTestBase {
   }
 
   /**
-   * Standard site xml.
+   * @Test public void standardSiteXML();
+   * <p>
+   * This test will check that the standardSite.xml file is valid.
+   * @docgenVersion 9
    */
   @Test
   public void standardSiteXML() {

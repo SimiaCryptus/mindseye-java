@@ -38,7 +38,10 @@ import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 
 /**
- * Converts a SINGLE input image Tensor into a TensorList of pixels, including coordinate and color values
+ * CoordinateAssemblyLayer class.
+ *
+ * @author Author
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class CoordinateAssemblyLayer extends LayerBase {
@@ -67,11 +70,12 @@ public class CoordinateAssemblyLayer extends LayerBase {
   }
 
   /**
-   * From json img band bias layer.
+   * Creates a new CoordinateAssemblyLayer from the given JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the img band bias layer
+   * @param json the JSON object to create the layer from
+   * @param rs   the map of resources to use
+   * @return the new CoordinateAssemblyLayer
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -89,17 +93,18 @@ public class CoordinateAssemblyLayer extends LayerBase {
   }
 
   /**
-   * Eval result.
-   *
-   * @param input the input
-   * @return the result
+   * @param input      the input to be evaluated
+   * @param inputModel the input model to be used
+   * @return the result of the evaluation
+   * @throws NullPointerException if either input or inputModel is null
+   * @docgenVersion 9
    */
   @Nonnull
   public Result eval(@Nonnull final Result input, @Nonnull final Result inputModel) {
     try {
       TensorList inputData = input.getData();
       int[] dimensions = Result.getDimensions(inputModel.addRef());
-      if((dimensions[0] * dimensions[1]) != inputData.length()) {
+      if ((dimensions[0] * dimensions[1]) != inputData.length()) {
         log.info(String.format("Mismatching data length: %d != %d", Arrays.toString(dimensions), inputData.length()));
       }
       TensorArray data = fwd(dimensions, inputData);
@@ -127,6 +132,11 @@ public class CoordinateAssemblyLayer extends LayerBase {
     return RefList.empty();
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();
@@ -145,7 +155,7 @@ public class CoordinateAssemblyLayer extends LayerBase {
     try {
       // Use modulus below to help standardized unit tests function
       int coordOffset = discardCoordinates ? 2 : 0;
-      Tensor tensor = new Tensor(IntStream.range(0, dimensions[2]).mapToObj(x->x)
+      Tensor tensor = new Tensor(IntStream.range(0, dimensions[2]).mapToObj(x -> x)
           .flatMapToDouble(z -> DoubleStream.of(coordImage.coordStream(false).mapToDouble(c ->
               inputData.get(c.getIndex() % inputData.length(), coordOffset + z)).toArray())).toArray(), dimensions);
 
@@ -156,6 +166,18 @@ public class CoordinateAssemblyLayer extends LayerBase {
     }
   }
 
+  /**
+   * The Accumulator class is used to hold data about an accumulator.
+   *
+   * @param dimensions         An array of integers representing the dimensions of the accumulator.
+   * @param inputDataLength    An integer representing the length of the input data.
+   * @param accumulator2       A Result.Accumulator representing the second accumulator.
+   * @param alive2             A boolean representing whether or not the second accumulator is alive.
+   * @param discardCoordinates A boolean representing whether or not to discard coordinates.
+   * @param accumulator1       A Result.Accumulator representing the first accumulator.
+   * @param alive1             A boolean representing whether or not the first accumulator is alive.
+   * @docgenVersion 9
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private final int[] dimensions;
@@ -168,10 +190,11 @@ public class CoordinateAssemblyLayer extends LayerBase {
 
     /**
      * Instantiates a new Accumulator.
-     *  @param dimensions         input resolution
-     * @param accumulator1 the accumulator
-     * @param alive1       the alive
-     * @param inputDataLength   Helper parameter to track number of input pixels; used for workaround to help standard unit test function
+     *
+     * @param dimensions      input resolution
+     * @param accumulator1    the accumulator
+     * @param alive1          the alive
+     * @param inputDataLength Helper parameter to track number of input pixels; used for workaround to help standard unit test function
      */
     public Accumulator(int[] dimensions, Result.Accumulator accumulator1, boolean alive1, Result.Accumulator accumulator2, boolean alive2, int inputDataLength, boolean discardCoordinates) {
       this.dimensions = dimensions;
@@ -192,7 +215,7 @@ public class CoordinateAssemblyLayer extends LayerBase {
               Tensor tensor = new Tensor(1, 1, (discardCoordinates ? 2 : 0) + dimensions[2]);
               try {
                 return tensor.mapIndex((v, i) -> {
-                  if(discardCoordinates) {
+                  if (discardCoordinates) {
                     if (i == 0) {
                       return 0;
                     } else if (i == 1) {
@@ -208,13 +231,13 @@ public class CoordinateAssemblyLayer extends LayerBase {
                 tensor.freeRef();
               }
             })).toArray(Tensor[]::new);
-        if(this.inputDataLength != pixels.length) {
+        if (this.inputDataLength != pixels.length) {
           log.info(String.format("Correcting mismatching data length: %d != %d", inputDataLength, pixels.length));
           pixels = RefArrays.copyOfRange(pixels, 0, this.inputDataLength);
         }
         image.freeRef();
         data.freeRef();
-        if(alive2) {
+        if (alive2) {
           Tensor nullPassbackImage = new Tensor(dimensions);
           nullPassbackImage.fill(0.0);
           accumulator2.accept(buffer.addRef(), new TensorArray(nullPassbackImage));
@@ -222,7 +245,7 @@ public class CoordinateAssemblyLayer extends LayerBase {
         accumulator1.accept(buffer, new TensorArray(pixels));
       } else {
         data.freeRef();
-        if(alive2) {
+        if (alive2) {
           accumulator2.accept(buffer, new TensorArray(new Tensor(dimensions)));
         } else {
           buffer.freeRef();
@@ -230,6 +253,11 @@ public class CoordinateAssemblyLayer extends LayerBase {
       }
     }
 
+    /**
+     * Frees resources used by this object.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

@@ -26,7 +26,9 @@ import org.junit.jupiter.api.Disabled;
 import javax.annotation.Nonnull;
 
 /**
- * The type Sum meta layer test.
+ * This class tests the SumMetaLayer class.
+ *
+ * @docgenVersion 9
  */
 public abstract class SumMetaLayerTest extends MetaLayerTestBase {
   /**
@@ -71,7 +73,9 @@ public abstract class SumMetaLayerTest extends MetaLayerTestBase {
   }
 
   /**
-   * The type Basic.
+   * The Basic class is a class that contains the most basic information.
+   *
+   * @docgenVersion 9
    */
   public static class Basic extends SumMetaLayerTest {
 

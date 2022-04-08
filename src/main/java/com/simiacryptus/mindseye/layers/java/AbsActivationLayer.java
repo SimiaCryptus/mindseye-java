@@ -26,7 +26,9 @@ import javax.annotation.Nonnull;
 import java.util.Map;
 
 /**
- * The type Abs activation layer.
+ * This class represents an activation layer in a neural network.
+ *
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public final class AbsActivationLayer extends SimpleActivationLayer<AbsActivationLayer> {
@@ -47,11 +49,12 @@ public final class AbsActivationLayer extends SimpleActivationLayer<AbsActivatio
   }
 
   /**
-   * From json abs activation layer.
+   * Returns an {@link AbsActivationLayer} from a JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the abs activation layer
+   * @param json the JSON object to parse
+   * @param rs   a map of character sequences to byte arrays
+   * @return the {@link AbsActivationLayer} object
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -59,17 +62,34 @@ public final class AbsActivationLayer extends SimpleActivationLayer<AbsActivatio
     return new AbsActivationLayer(json);
   }
 
+  /**
+   * @param resources      the resources to be used
+   * @param dataSerializer the dataSerializer to be used
+   * @return a JSON object
+   * @docgenVersion 9
+   */
   @Nonnull
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
     return super.getJsonStub();
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();
   }
 
+  /**
+   * Adds a reference to this object.
+   *
+   * @return A reference to this object.
+   * @docgenVersion 9
+   */
   @Nonnull
   public @Override
   @SuppressWarnings("unused")
@@ -77,6 +97,15 @@ public final class AbsActivationLayer extends SimpleActivationLayer<AbsActivatio
     return (AbsActivationLayer) super.addRef();
   }
 
+  /**
+   * Evaluates the function and its derivative at the argument x.
+   *
+   * @param x       the argument
+   * @param results an array where the function value and derivative value are stored
+   * @throws IllegalArgumentException if x is not finite
+   * @throws IllegalArgumentException if results is not a 2-element array
+   * @docgenVersion 9
+   */
   @Override
   protected final void eval(final double x, final double[] results) {
     final double minDeriv = 0;

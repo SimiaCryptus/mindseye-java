@@ -34,7 +34,10 @@ import java.util.UUID;
 import java.util.function.IntFunction;
 
 /**
- * The type Sub batch layer.
+ * The SubBatchLayer class represents a layer in a neural network that
+ * consists of a number of sub-batches.
+ *
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class SubBatchLayer extends WrapperLayer {
@@ -64,11 +67,12 @@ public class SubBatchLayer extends WrapperLayer {
   }
 
   /**
-   * From json sub batch layer.
+   * Creates a new SubBatchLayer from the given JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the sub batch layer
+   * @param json The JSON object to create the SubBatchLayer from.
+   * @param rs   A map containing the character sequences and byte arrays.
+   * @return The newly created SubBatchLayer.
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -77,11 +81,11 @@ public class SubBatchLayer extends WrapperLayer {
   }
 
   /**
-   * Wrap sub batch layer.
+   * Returns a new SubBatchLayer that wraps the specified layer.
    *
-   * @param <T>   the type parameter
-   * @param layer the layer
-   * @return the sub batch layer
+   * @param layer the layer to wrap
+   * @return a new SubBatchLayer
+   * @docgenVersion 9
    */
   @Nonnull
   public static <T extends Layer> SubBatchLayer wrap(@Nullable T layer) {
@@ -128,6 +132,11 @@ public class SubBatchLayer extends WrapperLayer {
     return new Result(resultData, new MainAccumulator(batchResults, passbackBuffer, inputs));
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();
@@ -140,6 +149,11 @@ public class SubBatchLayer extends WrapperLayer {
     return (SubBatchLayer) super.addRef();
   }
 
+  /**
+   * This class represents a SubAccumulator, which is used to store tensors and batch indices.
+   *
+   * @docgenVersion 9
+   */
   private static class SubAccumulator extends Result.Accumulator {
 
     private final Tensor[] tensors;
@@ -164,6 +178,11 @@ public class SubBatchLayer extends WrapperLayer {
       deltaSignal.freeRef();
     }
 
+    /**
+     * Frees resources.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();
@@ -171,6 +190,14 @@ public class SubBatchLayer extends WrapperLayer {
     }
   }
 
+  /**
+   * The MainAccumulator class is used to store the results of a batch of computations,
+   * as well as the intermediate results that are passed back between passes.
+   * It has fields for storing the results of the computations,
+   * as well as the inputs to those computations.
+   *
+   * @docgenVersion 9
+   */
   private static class MainAccumulator extends Result.Accumulator {
 
     private final Result[] batchResults;
@@ -219,6 +246,11 @@ public class SubBatchLayer extends WrapperLayer {
         deltaBuffer.freeRef();
     }
 
+    /**
+     * Frees resources.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

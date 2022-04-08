@@ -33,7 +33,12 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * The type Cross dot meta layer.
+ * This class represents a CrossDotMetaLayer.
+ *
+ * @author Author Name
+ * @version 1.0
+ * @docgenVersion 9
+ * @since 1.0
  */
 @SuppressWarnings("serial")
 public class CrossDotMetaLayer extends LayerBase {
@@ -57,11 +62,12 @@ public class CrossDotMetaLayer extends LayerBase {
   }
 
   /**
-   * From json cross dot meta layer.
+   * Creates a new CrossDotMetaLayer from the given JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the cross dot meta layer
+   * @param json The JSON object to create the CrossDotMetaLayer from.
+   * @param rs   A map of character sequences to byte arrays.
+   * @return The new CrossDotMetaLayer.
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -112,6 +118,11 @@ public class CrossDotMetaLayer extends LayerBase {
     return RefArrays.asList();
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();
@@ -124,6 +135,16 @@ public class CrossDotMetaLayer extends LayerBase {
     return (CrossDotMetaLayer) super.addRef();
   }
 
+  /**
+   * The Accumulator class is used to accumulate the results of a computation.
+   *
+   * @param indata      The data to be accumulated.
+   * @param itemCnt     The number of items to be accumulated.
+   * @param dim         The dimension of the data.
+   * @param accumulator The accumulator object.
+   * @param alive       A boolean value indicating whether the accumulator is alive.
+   * @docgenVersion 9
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private final TensorList indata;
@@ -183,6 +204,11 @@ public class CrossDotMetaLayer extends LayerBase {
         buffer.freeRef();
     }
 
+    /**
+     * Frees resources used by this object.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

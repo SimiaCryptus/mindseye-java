@@ -25,7 +25,9 @@ import com.simiacryptus.mindseye.test.LayerTestBase;
 import javax.annotation.Nonnull;
 
 /**
- * The type Tensor concat layer test.
+ * Test class for the TensorConcatLayer class.
+ *
+ * @docgenVersion 9
  */
 public abstract class TensorConcatLayerTest extends LayerTestBase {
 
@@ -42,7 +44,9 @@ public abstract class TensorConcatLayerTest extends LayerTestBase {
   }
 
   /**
-   * The type Basic.
+   * The Basic class is a class that contains the most basic information.
+   *
+   * @docgenVersion 9
    */
   public static class Basic extends TensorConcatLayerTest {
 

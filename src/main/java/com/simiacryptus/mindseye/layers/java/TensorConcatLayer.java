@@ -39,7 +39,11 @@ import java.util.UUID;
 import static com.simiacryptus.mindseye.lang.Result.anyAlive;
 
 /**
- * The type Tensor concat layer.
+ * A TensorConcatLayer is a class that concatenates tensors.
+ *
+ * @author John Doe
+ * @version 1.0
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class TensorConcatLayer extends LayerBase {
@@ -68,29 +72,32 @@ public class TensorConcatLayer extends LayerBase {
   }
 
   /**
-   * Gets max bands.
+   * Returns the maximum number of bands.
    *
-   * @return the max bands
+   * @return the maximum number of bands
+   * @docgenVersion 9
    */
   public int getMaxBands() {
     return maxBands;
   }
 
   /**
-   * Sets max bands.
+   * Sets the maximum number of bands.
    *
-   * @param maxBands the max bands
+   * @param maxBands the maximum number of bands
+   * @docgenVersion 9
    */
   public void setMaxBands(int maxBands) {
     this.maxBands = maxBands;
   }
 
   /**
-   * From json tensor concat layer.
+   * Creates a new {@link TensorConcatLayer} from a JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the tensor concat layer
+   * @param json the JSON object to use
+   * @param rs   the resources to use
+   * @return a new {@link TensorConcatLayer}
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -132,6 +139,11 @@ public class TensorConcatLayer extends LayerBase {
     return RefArrays.asList();
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();
@@ -177,6 +189,13 @@ public class TensorConcatLayer extends LayerBase {
     return tensorArray;
   }
 
+  /**
+   * The Accumulator class is used to track the number of batches and results in an array.
+   *
+   * @param numBatches The number of batches in the array.
+   * @param inObj      The array of results.
+   * @docgenVersion 9
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private final int numBatches;
@@ -259,6 +278,11 @@ public class TensorConcatLayer extends LayerBase {
       RefUtil.freeRef(splitData);
     }
 
+    /**
+     * Frees resources used by this object.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

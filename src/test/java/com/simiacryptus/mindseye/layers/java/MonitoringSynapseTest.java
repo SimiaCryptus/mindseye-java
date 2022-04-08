@@ -25,7 +25,9 @@ import com.simiacryptus.mindseye.test.LayerTestBase;
 import javax.annotation.Nonnull;
 
 /**
- * The type Monitoring synapse test.
+ * MonitoringSynapseTest is a class that tests the MonitoringSynapse class.
+ *
+ * @docgenVersion 9
  */
 public abstract class MonitoringSynapseTest extends LayerTestBase {
 
@@ -42,7 +44,9 @@ public abstract class MonitoringSynapseTest extends LayerTestBase {
   }
 
   /**
-   * The type Basic.
+   * The Basic class is a class that contains the most basic information.
+   *
+   * @docgenVersion 9
    */
   public static class Basic extends MonitoringSynapseTest {
 

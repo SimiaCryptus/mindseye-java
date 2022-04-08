@@ -34,7 +34,11 @@ import java.util.UUID;
 import java.util.function.IntFunction;
 
 /**
- * The type Unpooling layer.
+ * This class represents an unpooling layer.
+ *
+ * @param sizeX The size in the x dimension.
+ * @param sizeY The size in the y dimension.
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class UnpoolingLayer extends LayerBase {
@@ -66,11 +70,12 @@ public class UnpoolingLayer extends LayerBase {
   }
 
   /**
-   * Copy condense tensor.
+   * Copies and condenses the input data into the output data.
    *
-   * @param inputData  the input data
-   * @param outputData the output data
-   * @return the tensor
+   * @param inputData  the input data to copy and condense
+   * @param outputData the output data to copy the input data into
+   * @return the output data
+   * @docgenVersion 9
    */
   @Nonnull
   public static Tensor copyCondense(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData) {
@@ -107,11 +112,13 @@ public class UnpoolingLayer extends LayerBase {
   }
 
   /**
-   * Copy expand tensor.
+   * Copies the input data to the output data, expanding the output data if necessary.
    *
    * @param inputData  the input data
    * @param outputData the output data
-   * @return the tensor
+   * @return the output data
+   * @throws NullPointerException if either inputData or outputData is null
+   * @docgenVersion 9
    */
   @Nonnull
   public static Tensor copyExpand(@Nonnull final Tensor inputData, @Nonnull final Tensor outputData) {
@@ -146,11 +153,12 @@ public class UnpoolingLayer extends LayerBase {
   }
 
   /**
-   * From json unpooling layer.
+   * Creates a new {@link UnpoolingLayer} from a JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the unpooling layer
+   * @param json the JSON object to use for creating the layer
+   * @param rs   a map of character sequences to byte arrays
+   * @return a new {@link UnpoolingLayer}
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -189,6 +197,11 @@ public class UnpoolingLayer extends LayerBase {
     return new RefArrayList<>();
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();
@@ -218,6 +231,12 @@ public class UnpoolingLayer extends LayerBase {
     return data;
   }
 
+  /**
+   * The Accumulator class is used to track the input dimensions and the accumulator result.
+   * It also has a boolean value to track whether it is alive or not.
+   *
+   * @docgenVersion 9
+   */
   private static class Accumulator extends Result.Accumulator {
     private final int[] inputDims;
     private Result.Accumulator accumulator;
@@ -255,6 +274,11 @@ public class UnpoolingLayer extends LayerBase {
         buffer.freeRef();
     }
 
+    /**
+     * Frees resources used by this object.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

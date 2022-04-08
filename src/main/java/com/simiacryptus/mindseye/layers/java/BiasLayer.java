@@ -40,7 +40,11 @@ import java.util.function.DoubleSupplier;
 import java.util.function.IntToDoubleFunction;
 
 /**
- * The type Bias layer.
+ * The BiasLayer class represents a bias in a neural network.
+ *
+ * @author John Doe
+ * @version 1.0
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class BiasLayer extends LayerBase {
@@ -82,9 +86,10 @@ public class BiasLayer extends LayerBase {
   }
 
   /**
-   * Sets weights.
+   * Sets the weights of the bias.
    *
-   * @param f the f
+   * @param f the function that sets the weights
+   * @docgenVersion 9
    */
   public void setWeights(@Nonnull IntToDoubleFunction f) {
     assert this.bias != null;
@@ -95,9 +100,10 @@ public class BiasLayer extends LayerBase {
   }
 
   /**
-   * Sets weights log.
+   * Sets the weights of the logarithm.
    *
-   * @param value the value
+   * @param value the value to set the weights to
+   * @docgenVersion 9
    */
   public void setWeightsLog(double value) {
     assert this.bias != null;
@@ -108,11 +114,12 @@ public class BiasLayer extends LayerBase {
   }
 
   /**
-   * From json bias layer.
+   * Creates a new {@link BiasLayer} from a JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the bias layer
+   * @param json the JSON object to use
+   * @param rs   the map of character sequences to byte arrays
+   * @return the new {@link BiasLayer}
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -122,10 +129,12 @@ public class BiasLayer extends LayerBase {
 
 
   /**
-   * Add double [ ].
+   * Adds the given input to the current instance.
    *
-   * @param input the input
-   * @return the double [ ]
+   * @param input the input to add
+   * @return the resulting array
+   * @throws NullPointerException if the input is null
+   * @docgenVersion 9
    */
   public double[] add(@Nonnull final double[] input) {
     final double[] array = RecycleBin.DOUBLES.obtain(input.length);
@@ -144,9 +153,11 @@ public class BiasLayer extends LayerBase {
   }
 
   /**
-   * Add weights.
+   * Adds the given weights to the bias.
    *
-   * @param f the f
+   * @param f the given weights
+   * @throws NullPointerException if the bias is null
+   * @docgenVersion 9
    */
   public void addWeights(@Nonnull DoubleSupplier f) {
     assert this.bias != null;
@@ -167,10 +178,11 @@ public class BiasLayer extends LayerBase {
   }
 
   /**
-   * First tensor list.
+   * Returns the first element of the given array, or an empty array if the given array is empty.
    *
-   * @param inObj the in obj
-   * @return the tensor list
+   * @param inObj the array from which the first element is to be returned
+   * @return the first element of the given array, or an empty array if the given array is empty
+   * @docgenVersion 9
    */
   @NotNull
   public TensorList first(@Nonnull Result[] inObj) {
@@ -195,9 +207,10 @@ public class BiasLayer extends LayerBase {
   }
 
   /**
-   * Set.
+   * Sets the bias.
    *
-   * @param ds the ds
+   * @param ds the new bias
+   * @docgenVersion 9
    */
   public void set(@Nonnull double[] ds) {
     assert this.bias != null;
@@ -215,9 +228,10 @@ public class BiasLayer extends LayerBase {
   }
 
   /**
-   * Set.
+   * Sets the bias.
    *
    * @param tensor the tensor
+   * @docgenVersion 9
    */
   public void set(@Nonnull Tensor tensor) {
     assert this.bias != null;
@@ -229,6 +243,11 @@ public class BiasLayer extends LayerBase {
     tensor.freeRef();
   }
 
+  /**
+   * Frees the resources used by this object.
+   *
+   * @docgenVersion 9
+   */
   public void _free() {
     if (null != bias)
       bias.freeRef();
@@ -255,6 +274,21 @@ public class BiasLayer extends LayerBase {
     }
   }
 
+  /**
+   * The Accumulator class represents an accumulator, which is used to accumulate the results of a computation.
+   * <p>
+   * An Accumulator is frozen if it is no longer able to accumulate results.
+   * <p>
+   * The bias of an Accumulator is a Tensor that represents the bias of the Accumulator.
+   * <p>
+   * The id of an Accumulator is a UUID that is used to identify the Accumulator.
+   * <p>
+   * The accumulator of an Accumulator is a Result.Accumulator that is used to accumulate the results of a computation.
+   * <p>
+   * An Accumulator is alive if it is still able to accumulate results.*
+   *
+   * @docgenVersion 9
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private boolean frozen;
@@ -308,6 +342,11 @@ public class BiasLayer extends LayerBase {
       buffer.freeRef();
     }
 
+    /**
+     * Frees resources used by this object.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

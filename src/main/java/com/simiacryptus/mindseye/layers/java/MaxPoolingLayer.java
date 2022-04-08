@@ -40,7 +40,11 @@ import java.util.UUID;
 import java.util.function.*;
 
 /**
- * The type Max pooling layer.
+ * Class MaxPoolingLayer
+ * A class that contains a static cache of a function that calculates regions.
+ * It also contains an unused static Logger and an instance variable for kernel dimensions.
+ *
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class MaxPoolingLayer extends LayerBase {
@@ -80,11 +84,12 @@ public class MaxPoolingLayer extends LayerBase {
   }
 
   /**
-   * From json max pooling layer.
+   * Creates a new {@link MaxPoolingLayer} from a JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the max pooling layer
+   * @param json the JSON object to use for creating the layer
+   * @param rs   the map of character sequences to byte arrays
+   * @return the new layer
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -152,6 +157,11 @@ public class MaxPoolingLayer extends LayerBase {
     return RefArrays.asList();
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();
@@ -202,7 +212,11 @@ public class MaxPoolingLayer extends LayerBase {
   }
 
   /**
-   * The type Calc regions parameter.
+   * This class represents the parameters for the calculation of regions.
+   *
+   * @param inputDims  the input dimensions
+   * @param kernelDims the kernel dimensions
+   * @docgenVersion 9
    */
   public static class CalcRegionsParameter {
     /**
@@ -253,6 +267,13 @@ public class MaxPoolingLayer extends LayerBase {
     }
   }
 
+  /**
+   * The Accumulator class is used to hold input dimensions and gradient maps.
+   * It also contains a Result.Accumulator object and a boolean value to
+   * determine if it is alive.
+   *
+   * @docgenVersion 9
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private final int[] inputDims;
@@ -298,6 +319,11 @@ public class MaxPoolingLayer extends LayerBase {
       }
     }
 
+    /**
+     * Frees resources used by this object.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

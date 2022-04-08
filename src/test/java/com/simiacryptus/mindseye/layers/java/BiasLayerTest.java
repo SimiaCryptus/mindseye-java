@@ -25,7 +25,11 @@ import com.simiacryptus.mindseye.test.LayerTestBase;
 import javax.annotation.Nonnull;
 
 /**
- * The type Bias layer test.
+ * A test class for the bias layer.
+ *
+ * @author John Doe
+ * @version 1.0
+ * @docgenVersion 9
  */
 public abstract class BiasLayerTest extends LayerTestBase {
 
@@ -57,7 +61,9 @@ public abstract class BiasLayerTest extends LayerTestBase {
   }
 
   /**
-   * The type Basic.
+   * The Basic class is a class that contains the most basic information.
+   *
+   * @docgenVersion 9
    */
   public static class Basic extends BiasLayerTest {
     /**
@@ -70,7 +76,10 @@ public abstract class BiasLayerTest extends LayerTestBase {
   }
 
   /**
-   * The type Reducing.
+   * The Reducing class contains methods for reducing
+   * fractions.
+   *
+   * @docgenVersion 9
    */
   public static class Reducing extends BiasLayerTest {
 

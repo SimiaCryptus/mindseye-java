@@ -26,7 +26,9 @@ import org.junit.jupiter.api.Disabled;
 import javax.annotation.Nonnull;
 
 /**
- * The type Normalization meta layer test.
+ * This class tests the NormalizationMetaLayer class.
+ *
+ * @docgenVersion 9
  */
 public abstract class NormalizationMetaLayerTest extends MetaLayerTestBase {
 
@@ -61,7 +63,9 @@ public abstract class NormalizationMetaLayerTest extends MetaLayerTestBase {
   }
 
   /**
-   * The type Basic.
+   * The Basic class is a superclass for all other classes.
+   *
+   * @docgenVersion 9
    */
   public static class Basic extends NormalizationMetaLayerTest {
 

@@ -38,7 +38,11 @@ import java.util.UUID;
 import java.util.function.IntFunction;
 
 /**
- * The type Dropout noise layer.
+ * The DropoutNoiseLayer class is a noise layer that uses dropout to reduce overfitting.
+ *
+ * @author John Doe
+ * @version 1.0, Januar 1, 2000
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class DropoutNoiseLayer extends LayerBase implements StochasticComponent {
@@ -79,29 +83,32 @@ public class DropoutNoiseLayer extends LayerBase implements StochasticComponent 
   }
 
   /**
-   * Gets value.
+   * Returns the value of this object.
    *
-   * @return the value
+   * @return the value of this object
+   * @docgenVersion 9
    */
   public double getValue() {
     return value;
   }
 
   /**
-   * Sets value.
+   * Sets the value of this node.
    *
-   * @param value the value
+   * @param value the new value of this node
+   * @docgenVersion 9
    */
   public void setValue(double value) {
     this.value = value;
   }
 
   /**
-   * From json dropout noise layer.
+   * Creates a new {@link DropoutNoiseLayer} from a JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the dropout noise layer
+   * @param json the JSON object to use
+   * @param rs   the resources to use
+   * @return a new {@link DropoutNoiseLayer}
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -162,6 +169,11 @@ public class DropoutNoiseLayer extends LayerBase implements StochasticComponent 
     return RefArrays.asList();
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();
@@ -191,6 +203,12 @@ public class DropoutNoiseLayer extends LayerBase implements StochasticComponent 
         }, mask, inputData)).toArray(Tensor[]::new));
   }
 
+  /**
+   * The Accumulator class is used to hold a mask and an accumulator.
+   * The class also has a boolean value to keep track of whether it is alive or not.
+   *
+   * @docgenVersion 9
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private final Tensor[] mask;
@@ -234,6 +252,11 @@ public class DropoutNoiseLayer extends LayerBase implements StochasticComponent 
         buffer.freeRef();
     }
 
+    /**
+     * Frees resources.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

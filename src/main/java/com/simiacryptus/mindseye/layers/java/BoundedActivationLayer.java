@@ -26,7 +26,11 @@ import javax.annotation.Nonnull;
 import java.util.Map;
 
 /**
- * The type Bounded activation layer.
+ * This class represents a bounded activation layer.
+ *
+ * @author John Doe
+ * @version 1.0
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class BoundedActivationLayer extends SimpleActivationLayer<BoundedActivationLayer> {
@@ -37,7 +41,7 @@ public class BoundedActivationLayer extends SimpleActivationLayer<BoundedActivat
   /**
    * Instantiates a new Bounded activation layer.
    */
-   public BoundedActivationLayer() {
+  public BoundedActivationLayer() {
     super();
   }
 
@@ -51,47 +55,52 @@ public class BoundedActivationLayer extends SimpleActivationLayer<BoundedActivat
   }
 
   /**
-   * Gets max value.
+   * Returns the max value.
    *
    * @return the max value
+   * @docgenVersion 9
    */
   public double getMaxValue() {
     return maxValue;
   }
 
   /**
-   * Sets max value.
+   * Sets the maximum value for the range.
    *
-   * @param maxValue the max value
+   * @param maxValue the maximum value for the range
+   * @docgenVersion 9
    */
   public void setMaxValue(double maxValue) {
     this.maxValue = maxValue;
   }
 
   /**
-   * Gets min value.
+   * Returns the minimum value of the data set.
    *
-   * @return the min value
+   * @return the minimum value of the data set
+   * @docgenVersion 9
    */
   public double getMinValue() {
     return minValue;
   }
 
   /**
-   * Sets min value.
+   * Sets the minimum value for the range.
    *
-   * @param minValue the min value
+   * @param minValue the minimum value for the range
+   * @docgenVersion 9
    */
   public void setMinValue(double minValue) {
     this.minValue = minValue;
   }
 
   /**
-   * From json bounded activation layer.
+   * Creates a {@link BoundedActivationLayer} from a JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the bounded activation layer
+   * @param json the JSON object to use
+   * @param rs   the map of character sequences to byte arrays
+   * @return the created {@link BoundedActivationLayer}
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -109,6 +118,11 @@ public class BoundedActivationLayer extends SimpleActivationLayer<BoundedActivat
     return json;
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();

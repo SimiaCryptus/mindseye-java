@@ -26,7 +26,10 @@ import javax.annotation.Nonnull;
 import java.util.Map;
 
 /**
- * The type Sigmoid activation layer.
+ * This class implements a sigmoid activation layer for a neural network.
+ *
+ * @author YOUR NAME HERE
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public final class SigmoidActivationLayer extends SimpleActivationLayer<SigmoidActivationLayer> {
@@ -54,29 +57,32 @@ public final class SigmoidActivationLayer extends SimpleActivationLayer<SigmoidA
   }
 
   /**
-   * Is balanced boolean.
+   * Returns true if the tree is balanced.
    *
-   * @return the boolean
+   * @return true if the tree is balanced
+   * @docgenVersion 9
    */
   public boolean isBalanced() {
     return balanced;
   }
 
   /**
-   * Sets balanced.
+   * Sets the balanced field.
    *
-   * @param balanced the balanced
+   * @param balanced the new value for balanced
+   * @docgenVersion 9
    */
   public void setBalanced(boolean balanced) {
     this.balanced = balanced;
   }
 
   /**
-   * From json sigmoid activation layer.
+   * Creates a SigmoidActivationLayer from a JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the sigmoid activation layer
+   * @param json The JSON object to use.
+   * @param rs   A map of character sequences to byte arrays.
+   * @return A SigmoidActivationLayer created from the JSON object.
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -92,6 +98,11 @@ public final class SigmoidActivationLayer extends SimpleActivationLayer<SigmoidA
     return json;
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();

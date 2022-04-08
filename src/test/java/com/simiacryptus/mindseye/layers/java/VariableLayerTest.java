@@ -25,7 +25,9 @@ import com.simiacryptus.mindseye.test.LayerTestBase;
 import javax.annotation.Nonnull;
 
 /**
- * The type Variable layer test.
+ * This class tests the VariableLayer class.
+ *
+ * @docgenVersion 9
  */
 public abstract class VariableLayerTest extends LayerTestBase {
 
@@ -45,7 +47,9 @@ public abstract class VariableLayerTest extends LayerTestBase {
   }
 
   /**
-   * The type Basic.
+   * The Basic class is a class that contains the most basic information.
+   *
+   * @docgenVersion 9
    */
   public static class Basic extends VariableLayerTest {
 

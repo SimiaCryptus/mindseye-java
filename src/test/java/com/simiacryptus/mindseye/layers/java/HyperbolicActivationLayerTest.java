@@ -30,7 +30,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * The type Hyperbolic activation layer test.
+ * This class tests the hyperbolic activation layer.
+ *
+ * @docgenVersion 9
  */
 public abstract class HyperbolicActivationLayerTest extends ActivationLayerTestBase {
   /**
@@ -57,7 +59,9 @@ public abstract class HyperbolicActivationLayerTest extends ActivationLayerTestB
   }
 
   /**
-   * The type Basic.
+   * The Basic class is a class that contains the most basic information.
+   *
+   * @docgenVersion 9
    */
   public static class Basic extends HyperbolicActivationLayerTest {
 

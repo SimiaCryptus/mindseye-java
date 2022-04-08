@@ -25,7 +25,9 @@ import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 import javax.annotation.Nonnull;
 
 /**
- * The type Bounded activation layer test.
+ * Test class for the {@link BoundedActivationLayer} class.
+ *
+ * @docgenVersion 9
  */
 public abstract class BoundedActivationLayerTest extends ActivationLayerTestBase {
   /**
@@ -42,7 +44,9 @@ public abstract class BoundedActivationLayerTest extends ActivationLayerTestBase
   }
 
   /**
-   * The type Basic.
+   * The Basic class is a class that contains basic information.
+   *
+   * @docgenVersion 9
    */
   public static class Basic extends BoundedActivationLayerTest {
 

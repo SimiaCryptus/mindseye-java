@@ -25,12 +25,16 @@ import com.simiacryptus.mindseye.test.LayerTestBase;
 import javax.annotation.Nonnull;
 
 /**
- * The type Img reshape layer test.
+ * Test class for ImgReshapeLayer
+ *
+ * @docgenVersion 9
  */
 public abstract class ImgReshapeLayerTest extends LayerTestBase {
 
   /**
-   * The type Expand.
+   * The Expand class is used to ...
+   *
+   * @docgenVersion 9
    */
   public static class Expand extends ImgReshapeLayerTest {
 
@@ -49,7 +53,9 @@ public abstract class ImgReshapeLayerTest extends LayerTestBase {
   }
 
   /**
-   * The type Contract.
+   * The Contract class represents a contract between two parties.
+   *
+   * @docgenVersion 9
    */
   public static class Contract extends ImgReshapeLayerTest {
 

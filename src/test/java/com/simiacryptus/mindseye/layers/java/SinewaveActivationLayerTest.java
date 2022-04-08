@@ -25,7 +25,9 @@ import com.simiacryptus.mindseye.layers.ActivationLayerTestBase;
 import javax.annotation.Nonnull;
 
 /**
- * The type Sinewave activation layer test.
+ * Test class for the sinewave activation layer.
+ *
+ * @docgenVersion 9
  */
 public abstract class SinewaveActivationLayerTest extends ActivationLayerTestBase {
   /**
@@ -42,7 +44,9 @@ public abstract class SinewaveActivationLayerTest extends ActivationLayerTestBas
   }
 
   /**
-   * The type Basic.
+   * The Basic class is a class that contains basic information.
+   *
+   * @docgenVersion 9
    */
   public static class Basic extends SinewaveActivationLayerTest {
 

@@ -28,7 +28,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * The type Reshape layer test.
+ * This class tests the ReshapeLayer class.
+ *
+ * @docgenVersion 9
  */
 public abstract class ReshapeLayerTest extends LayerTestBase {
 
@@ -59,7 +61,9 @@ public abstract class ReshapeLayerTest extends LayerTestBase {
   }
 
   /**
-   * The type Basic.
+   * The Basic class is a class that contains the most basic information.
+   *
+   * @docgenVersion 9
    */
   public static class Basic extends ReshapeLayerTest {
     /**
@@ -72,7 +76,9 @@ public abstract class ReshapeLayerTest extends LayerTestBase {
   }
 
   /**
-   * The type Basic 1.
+   * This class is called Basic1.
+   *
+   * @docgenVersion 9
    */
   public static class Basic1 extends ReshapeLayerTest {
     /**
@@ -85,7 +91,11 @@ public abstract class ReshapeLayerTest extends LayerTestBase {
   }
 
   /**
-   * The type Big 0.
+   * The Big0 class represents a big number.
+   *
+   * @author John Doe
+   * @version 1.0, Januaray 1, 2000
+   * @docgenVersion 9
    */
   public static class Big0 extends Big {
     /**
@@ -98,7 +108,9 @@ public abstract class ReshapeLayerTest extends LayerTestBase {
   }
 
   /**
-   * The type Big 1.
+   * This class represents a big number.
+   *
+   * @docgenVersion 9
    */
   public static class Big1 extends Big {
     /**
@@ -110,7 +122,10 @@ public abstract class ReshapeLayerTest extends LayerTestBase {
   }
 
   /**
-   * The type Big 2.
+   * The Big2 class is a representation of a card game.
+   *
+   * @author
+   * @docgenVersion 9
    */
   public static class Big2 extends Big {
     /**
@@ -123,7 +138,9 @@ public abstract class ReshapeLayerTest extends LayerTestBase {
   }
 
   /**
-   * The type Big.
+   * This class represents a big object.
+   *
+   * @docgenVersion 9
    */
   public abstract static class Big extends ReshapeLayerTest {
 

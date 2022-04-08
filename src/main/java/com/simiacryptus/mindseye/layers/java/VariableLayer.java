@@ -28,7 +28,9 @@ import javax.annotation.Nonnull;
 import java.util.Map;
 
 /**
- * The type Variable layer.
+ * The VariableLayer class is used to manage variables.
+ *
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class VariableLayer extends WrapperLayer {
@@ -58,11 +60,12 @@ public class VariableLayer extends WrapperLayer {
   }
 
   /**
-   * From json variable layer.
+   * Creates a new VariableLayer from the given JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the variable layer
+   * @param json The JSON object to use.
+   * @param rs   The map of character sequences to byte arrays.
+   * @return The new VariableLayer.
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -70,6 +73,11 @@ public class VariableLayer extends WrapperLayer {
     return new VariableLayer(json, rs);
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();

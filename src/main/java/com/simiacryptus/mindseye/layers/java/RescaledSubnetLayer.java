@@ -37,7 +37,10 @@ import java.util.Map;
 import java.util.function.IntFunction;
 
 /**
- * The type Rescaled subnet layer.
+ * A layer that contains a subnetwork, which may be null,
+ * and is rescaled by a specified amount.
+ *
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class RescaledSubnetLayer extends LayerBase {
@@ -71,11 +74,12 @@ public class RescaledSubnetLayer extends LayerBase {
   }
 
   /**
-   * From json rescaled subnet layer.
+   * Returns a new {@link RescaledSubnetLayer} from the given JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the rescaled subnet layer
+   * @param json the JSON object to create the layer from
+   * @param rs   the map of character sequences to byte arrays
+   * @return a new {@link RescaledSubnetLayer}
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -118,6 +122,11 @@ public class RescaledSubnetLayer extends LayerBase {
     return new RefArrayList<>();
   }
 
+  /**
+   * Frees this object and its resources.
+   *
+   * @docgenVersion 9
+   */
   public void _free() {
     if (null != subnetwork)
       subnetwork.freeRef();

@@ -25,7 +25,9 @@ import com.simiacryptus.mindseye.layers.MetaLayerTestBase;
 import javax.annotation.Nonnull;
 
 /**
- * The type Auto entropy layer test.
+ * This class tests the AutoEntropyLayer class.
+ *
+ * @docgenVersion 9
  */
 public abstract class AutoEntropyLayerTest extends MetaLayerTestBase {
 
@@ -56,7 +58,9 @@ public abstract class AutoEntropyLayerTest extends MetaLayerTestBase {
   }
 
   /**
-   * The type Basic.
+   * The Basic class is a class that contains the most basic information.
+   *
+   * @docgenVersion 9
    */
   public static class Basic extends AutoEntropyLayerTest {
 

@@ -25,16 +25,28 @@ import com.simiacryptus.mindseye.test.LayerTestBase;
 import javax.annotation.Nonnull;
 
 /**
- * The type Assert dimensions layer test.
+ * This class tests the functionality of the AssertDimensionsLayer class.
+ *
+ * @docgenVersion 9
  */
 public abstract class AssertDimensionsLayerTest extends LayerTestBase {
 
+  /**
+   * @return a new AssertDimensionsLayer with dimensions 2x2
+   * @docgenVersion 9
+   */
   @Nonnull
   @Override
   public Layer getLayer() {
     return new AssertDimensionsLayer(2, 2);
   }
 
+  /**
+   * Returns a 2D array of dimensions 2x2.
+   *
+   * @return the 2D array of dimensions 2x2
+   * @docgenVersion 9
+   */
   @Nonnull
   @Override
   public int[][] getSmallDims() {
@@ -42,7 +54,9 @@ public abstract class AssertDimensionsLayerTest extends LayerTestBase {
   }
 
   /**
-   * The type Basic.
+   * The Basic class is a class that contains the most basic information.
+   *
+   * @docgenVersion 9
    */
   public static class Basic extends AssertDimensionsLayerTest {
 

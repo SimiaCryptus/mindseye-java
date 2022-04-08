@@ -36,7 +36,9 @@ import java.util.UUID;
 import java.util.function.IntFunction;
 
 /**
- * The type Avg reducer layer.
+ * A layer that reduces the input by taking the average.
+ *
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class AvgReducerLayer extends LayerBase {
@@ -60,11 +62,12 @@ public class AvgReducerLayer extends LayerBase {
   }
 
   /**
-   * From json avg reducer layer.
+   * Returns a new {@link AvgReducerLayer} from a JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the avg reducer layer
+   * @param json the JSON object to parse
+   * @param rs   the map of character sequences to byte arrays
+   * @return a new {@link AvgReducerLayer}
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -96,6 +99,11 @@ public class AvgReducerLayer extends LayerBase {
     return RefArrays.asList();
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();
@@ -130,6 +138,11 @@ public class AvgReducerLayer extends LayerBase {
     return tensorArray;
   }
 
+  /**
+   * The Accumulator class is used to store an array of Result objects.
+   *
+   * @docgenVersion 9
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private final Result[] inObj;
@@ -174,6 +187,11 @@ public class AvgReducerLayer extends LayerBase {
         buffer.freeRef();
     }
 
+    /**
+     * Frees resources used by this object.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

@@ -38,7 +38,13 @@ import java.util.function.Function;
 import java.util.function.IntFunction;
 
 /**
- * The type Max dropout noise layer.
+ * Class MaxDropoutNoiseLayer
+ * A noise layer that drops out cells with a maximum dropout rate.
+ *
+ * @param kernelSize        The size of the kernel
+ * @param getCellMap_cached A function that gets the cell map
+ * @author SuppressWarnings
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class MaxDropoutNoiseLayer extends LayerBase {
@@ -77,11 +83,12 @@ public class MaxDropoutNoiseLayer extends LayerBase {
   }
 
   /**
-   * From json max dropout noise layer.
+   * Creates a MaxDropoutNoiseLayer from a JsonObject.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the max dropout noise layer
+   * @param json The JsonObject to use.
+   * @param rs   A map of character sequences to byte arrays.
+   * @return A MaxDropoutNoiseLayer created from the given JsonObject.
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -119,6 +126,11 @@ public class MaxDropoutNoiseLayer extends LayerBase {
     return RefArrays.asList();
   }
 
+  /**
+   * Frees resources used by this object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     RefUtil.freeRef(getCellMap_cached);
@@ -197,6 +209,14 @@ public class MaxDropoutNoiseLayer extends LayerBase {
     return temp_42_0004;
   }
 
+  /**
+   * The Accumulator class is used to store data for later use.
+   *
+   * @author John Doe
+   * @version 1.0
+   * @docgenVersion 9
+   * @since 1.0
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private final Tensor[] mask;
@@ -246,6 +266,11 @@ public class MaxDropoutNoiseLayer extends LayerBase {
       }
     }
 
+    /**
+     * Frees resources.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

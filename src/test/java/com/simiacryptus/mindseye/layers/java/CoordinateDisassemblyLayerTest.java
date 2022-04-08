@@ -26,7 +26,9 @@ import com.simiacryptus.mindseye.test.unit.BatchingTester;
 import javax.annotation.Nonnull;
 
 /**
- * The type Img band bias layer test.
+ * This class tests the CoordinateDisassemblyLayer class.
+ *
+ * @docgenVersion 9
  */
 public abstract class CoordinateDisassemblyLayerTest extends LayerTestBase {
 
@@ -63,7 +65,9 @@ public abstract class CoordinateDisassemblyLayerTest extends LayerTestBase {
   }
 
   /**
-   * The type Basic.
+   * The Basic class is a class that contains the most basic information.
+   *
+   * @docgenVersion 9
    */
   public static class Basic extends CoordinateDisassemblyLayerTest {
 

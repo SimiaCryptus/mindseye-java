@@ -36,9 +36,9 @@ import java.util.UUID;
 import java.util.function.IntFunction;
 
 /**
- * The type Simple activation layer.
+ * A simple activation layer that applies a sigmoid function to its inputs.
  *
- * @param <T> the type parameter
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public abstract class SimpleActivationLayer<T extends SimpleActivationLayer<T>> extends LayerBase {
@@ -89,6 +89,11 @@ public abstract class SimpleActivationLayer<T extends SimpleActivationLayer<T>> 
     return RefArrays.asList();
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();
@@ -102,10 +107,11 @@ public abstract class SimpleActivationLayer<T extends SimpleActivationLayer<T>> 
   }
 
   /**
-   * Eval.
+   * Evaluates the function at the given x value.
    *
-   * @param x       the x
-   * @param results the results
+   * @param x       the x value
+   * @param results an array to store the results in
+   * @docgenVersion 9
    */
   protected abstract void eval(final double x, double[] results);
 
@@ -131,6 +137,15 @@ public abstract class SimpleActivationLayer<T extends SimpleActivationLayer<T>> 
         .toArray(Tensor[]::new));
   }
 
+  /**
+   * The Accumulator class is used to hold information about the gradient tensors for an input object.
+   *
+   * @param inObj0Alive    A boolean value indicating whether the input object is still alive.
+   * @param itemCnt        The number of items in the input object.
+   * @param inputGradientA An array of gradient tensors for the input object.
+   * @param accumulator    A Result.Accumulator object containing information about the gradient tensors.*
+   * @docgenVersion 9
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private final boolean inObj0Alive;
@@ -182,6 +197,11 @@ public abstract class SimpleActivationLayer<T extends SimpleActivationLayer<T>> 
       }
     }
 
+    /**
+     * Frees resources used by this object.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

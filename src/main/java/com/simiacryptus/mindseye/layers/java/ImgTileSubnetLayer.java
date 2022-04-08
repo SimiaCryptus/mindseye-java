@@ -33,7 +33,13 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * The type Img tile subnet layer.
+ * This class represents an image tile subnetwork layer.
+ *
+ * @param height  The height of the layer.
+ * @param width   The width of the layer.
+ * @param strideX The stride in the x direction.
+ * @param strideY The stride in the y direction.
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class ImgTileSubnetLayer extends WrapperLayer {
@@ -88,11 +94,12 @@ public class ImgTileSubnetLayer extends WrapperLayer {
   }
 
   /**
-   * From json img tile subnet layer.
+   * Creates an ImgTileSubnetLayer from a JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the img tile subnet layer
+   * @param json The JSON object to create the ImgTileSubnetLayer from.
+   * @param rs   A map containing the raw data for each tile.
+   * @return The new ImgTileSubnetLayer.
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -166,6 +173,11 @@ public class ImgTileSubnetLayer extends WrapperLayer {
     return new RefArrayList<>();
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();
@@ -178,6 +190,17 @@ public class ImgTileSubnetLayer extends WrapperLayer {
     return (ImgTileSubnetLayer) super.addRef();
   }
 
+  /**
+   * The TileAccumulator class is used to manage the accumulation of results from multiple threads.
+   *
+   * @param passback    A list of tensors to be passed back to the main thread.
+   * @param finalIndex  The final index of the accumulation.
+   * @param passbacks   The number of passbacks remaining.
+   * @param rows        The number of rows in the accumulation.
+   * @param cols        The number of columns in the accumulation.
+   * @param accumulator The accumulator object.
+   * @docgenVersion 9
+   */
   private static class TileAccumulator extends Result.Accumulator {
 
     private final RefArrayList<TensorList> passback;
@@ -224,6 +247,12 @@ public class ImgTileSubnetLayer extends WrapperLayer {
       }
     }
 
+    /**
+     * Frees resources used by this object.
+     *
+     * @docgenVersion 9
+     * @see super._free()
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

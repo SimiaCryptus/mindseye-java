@@ -26,7 +26,9 @@ import org.junit.jupiter.api.Disabled;
 import javax.annotation.Nonnull;
 
 /**
- * The type Img view layer test.
+ * This class tests the AffineImgViewLayer class.
+ *
+ * @docgenVersion 9
  */
 public abstract class AffineImgViewLayerTest extends LayerTestBase {
 
@@ -49,7 +51,9 @@ public abstract class AffineImgViewLayerTest extends LayerTestBase {
   }
 
   /**
-   * The type Basic.
+   * The Basic class is a class that contains basic information.
+   *
+   * @docgenVersion 9
    */
   public static class Basic extends AffineImgViewLayerTest {
 
@@ -62,7 +66,9 @@ public abstract class AffineImgViewLayerTest extends LayerTestBase {
   }
 
   /**
-   * The type Rotated.
+   * This class represents a rotated object.
+   *
+   * @docgenVersion 9
    */
   public static class Rotated extends AffineImgViewLayerTest {
 
@@ -77,7 +83,9 @@ public abstract class AffineImgViewLayerTest extends LayerTestBase {
   }
 
   /**
-   * The type Rotated channels.
+   * This class represents a rotated channels.
+   *
+   * @docgenVersion 9
    */
   public static class RotatedChannels extends AffineImgViewLayerTest {
 

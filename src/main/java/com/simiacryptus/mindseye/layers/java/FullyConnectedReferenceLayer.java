@@ -39,7 +39,13 @@ import java.util.UUID;
 import java.util.function.*;
 
 /**
- * The type Fully connected reference layer.
+ * This class represents a fully connected reference layer.
+ *
+ * @param inputDims  the input dimensions
+ * @param outputDims the output dimensions
+ * @param weights    the weights
+ * @author John Doe
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class FullyConnectedReferenceLayer extends LayerBase {
@@ -105,9 +111,8 @@ public class FullyConnectedReferenceLayer extends LayerBase {
   }
 
   /**
-   * Gets weights.
-   *
-   * @return the weights
+   * @return the weights, or null if they have not been set
+   * @docgenVersion 9
    */
   @Nullable
   public Tensor getWeights() {
@@ -115,9 +120,10 @@ public class FullyConnectedReferenceLayer extends LayerBase {
   }
 
   /**
-   * Sets by coord.
+   * Sets the weights of the map by iterating through each coordinate and applying the given function.
    *
-   * @param f the f
+   * @param f the function to apply to each coordinate
+   * @docgenVersion 9
    */
   public void setByCoord(@Nonnull ToDoubleFunction<Coordinate> f) {
     assert weights != null;
@@ -127,9 +133,12 @@ public class FullyConnectedReferenceLayer extends LayerBase {
   }
 
   /**
-   * Sets by coord.
+   * Sets the value of this coordinate by using a function that takes in
+   * two coordinates and outputs a double.
    *
-   * @param f the f
+   * @param f the function to use
+   * @throws NullPointerException if f is null
+   * @docgenVersion 9
    */
   public void setByCoord(@Nonnull ToDoubleBiFunction<Coordinate, Coordinate> f) {
     assert inputDims != null;
@@ -147,9 +156,10 @@ public class FullyConnectedReferenceLayer extends LayerBase {
   }
 
   /**
-   * Sets weights log.
+   * Sets the weights of the log to the given value.
    *
-   * @param value the value
+   * @param value the value to set the weights to
+   * @docgenVersion 9
    */
   public void setWeightsLog(double value) {
     assert weights != null;
@@ -159,11 +169,12 @@ public class FullyConnectedReferenceLayer extends LayerBase {
   }
 
   /**
-   * From json fully connected reference layer.
+   * Creates a new {@link FullyConnectedReferenceLayer} from the given JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the fully connected reference layer
+   * @param json the JSON object to create the layer from
+   * @param rs   the map of character sequences to byte arrays
+   * @return the newly created layer
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -204,9 +215,10 @@ public class FullyConnectedReferenceLayer extends LayerBase {
   }
 
   /**
-   * Set.
+   * Sets the value of each element in the array to the result of the given DoubleSupplier.
    *
-   * @param f the f
+   * @param f the DoubleSupplier used to set the value of each element
+   * @docgenVersion 9
    */
   public void set(@Nonnull final DoubleSupplier f) {
     assert weights != null;
@@ -214,9 +226,10 @@ public class FullyConnectedReferenceLayer extends LayerBase {
   }
 
   /**
-   * Set.
+   * Sets the weights of the perceptron using the given function.
    *
-   * @param f the f
+   * @param f the function to use for setting the weights
+   * @docgenVersion 9
    */
   public void set(@Nonnull IntToDoubleFunction f) {
     assert weights != null;
@@ -224,9 +237,10 @@ public class FullyConnectedReferenceLayer extends LayerBase {
   }
 
   /**
-   * Set.
+   * Sets the weights of the perceptron.
    *
-   * @param data the data
+   * @param data the new weights of the perceptron
+   * @docgenVersion 9
    */
   public void set(double[] data) {
     assert weights != null;
@@ -234,9 +248,10 @@ public class FullyConnectedReferenceLayer extends LayerBase {
   }
 
   /**
-   * Set.
+   * Sets the weights of the layer to the given data.
    *
-   * @param data the data
+   * @param data the new weights for the layer
+   * @docgenVersion 9
    */
   public void set(@Nonnull Tensor data) {
     assert weights != null;
@@ -253,6 +268,11 @@ public class FullyConnectedReferenceLayer extends LayerBase {
     return temp_02_0011;
   }
 
+  /**
+   * Frees resources used by this object.
+   *
+   * @docgenVersion 9
+   */
   public void _free() {
     if (null != weights)
       weights.freeRef();
@@ -287,6 +307,18 @@ public class FullyConnectedReferenceLayer extends LayerBase {
         }, indata)).toArray(Tensor[]::new));
   }
 
+  /**
+   * The Accumulator class is used to accumulate the input data and weights.
+   *
+   * @param indata      The input data to be accumulated.
+   * @param weights     The weights to be accumulated.
+   * @param id          The id of the Accumulator.
+   * @param frozen      Whether the Accumulator is frozen.
+   * @param inputDims   The input dimensions of the Accumulator.
+   * @param accumulator The accumulator of the Accumulator.
+   * @param alive       Whether the Accumulator is alive.
+   * @docgenVersion 9
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private final TensorList indata;
@@ -373,6 +405,11 @@ public class FullyConnectedReferenceLayer extends LayerBase {
       buffer.freeRef();
     }
 
+    /**
+     * Frees resources used by this object.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();

@@ -37,7 +37,11 @@ import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 
 /**
- * Converts a SINGLE input image Tensor into a TensorList of pixels, including coordinate and color values
+ * This class is responsible for disassembling coordinates.
+ *
+ * @author John Doe
+ * @version 1.0
+ * @docgenVersion 9
  */
 @SuppressWarnings("serial")
 public class CoordinateDisassemblyLayer extends LayerBase {
@@ -83,11 +87,12 @@ public class CoordinateDisassemblyLayer extends LayerBase {
   }
 
   /**
-   * From json img band bias layer.
+   * Creates a new CoordinateDisassemblyLayer from a JSON object.
    *
-   * @param json the json
-   * @param rs   the rs
-   * @return the img band bias layer
+   * @param json The JSON object to create the layer from.
+   * @param rs   A map of character sequences to byte arrays.
+   * @return The new CoordinateDisassemblyLayer.
+   * @docgenVersion 9
    */
   @Nonnull
   @SuppressWarnings("unused")
@@ -105,10 +110,12 @@ public class CoordinateDisassemblyLayer extends LayerBase {
   }
 
   /**
-   * Eval result.
+   * Evaluates the given input.
    *
-   * @param input the input
-   * @return the result
+   * @param input the input to evaluate
+   * @return the result of the evaluation
+   * @throws NullPointerException if the input is null
+   * @docgenVersion 9
    */
   @Nonnull
   public Result eval(@Nonnull final Result input) {
@@ -144,6 +151,11 @@ public class CoordinateDisassemblyLayer extends LayerBase {
     return RefList.empty();
   }
 
+  /**
+   * This method frees the object.
+   *
+   * @docgenVersion 9
+   */
   public @SuppressWarnings("unused")
   void _free() {
     super._free();
@@ -171,7 +183,7 @@ public class CoordinateDisassemblyLayer extends LayerBase {
       }
       Tensor[] pixels = RefIntStream.range(0, dimensions[1]).mapToObj(x -> x).flatMap(y ->
           RefIntStream.range(0, dimensions[0]).mapToObj(x -> {
-            Tensor tensor = new Tensor(new int[] {1, 1, outputColors ? (2 + dimensions[2]) : 2});
+            Tensor tensor = new Tensor(new int[]{1, 1, outputColors ? (2 + dimensions[2]) : 2});
             try {
               Tensor tensor1 = tensor.mapIndex((v, i) -> {
                 double v1;
@@ -195,38 +207,95 @@ public class CoordinateDisassemblyLayer extends LayerBase {
     }
   }
 
+  /**
+   * Returns the minimum x value of the rectangle.
+   *
+   * @return the minimum x value of the rectangle
+   * @docgenVersion 9
+   */
   public double getMinX() {
     return minX;
   }
 
+  /**
+   * Sets the minimum x value.
+   *
+   * @param minX the minimum x value
+   * @docgenVersion 9
+   */
   public void setMinX(double minX) {
     this.minX = minX;
   }
 
+  /**
+   * Returns the minimum Y value of the graph.
+   *
+   * @return the minimum Y value of the graph
+   * @docgenVersion 9
+   */
   public double getMinY() {
     return minY;
   }
 
+  /**
+   * Sets the minimum Y value.
+   *
+   * @param minY the minimum Y value
+   * @docgenVersion 9
+   */
   public void setMinY(double minY) {
     this.minY = minY;
   }
 
+  /**
+   * Returns the maximum x value of the graph.
+   *
+   * @return the maximum x value of the graph
+   * @docgenVersion 9
+   */
   public double getMaxX() {
     return maxX;
   }
 
+  /**
+   * Sets the maximum x value.
+   *
+   * @param maxX the maximum x value
+   * @docgenVersion 9
+   */
   public void setMaxX(double maxX) {
     this.maxX = maxX;
   }
 
+  /**
+   * Returns the maximum Y value of the graph.
+   *
+   * @return the maximum Y value of the graph
+   * @docgenVersion 9
+   */
   public double getMaxY() {
     return maxY;
   }
 
+  /**
+   * Sets the maximum Y value.
+   *
+   * @param maxY the maximum Y value
+   * @docgenVersion 9
+   */
   public void setMaxY(double maxY) {
     this.maxY = maxY;
   }
 
+  /**
+   * The Accumulator class is used to hold information about the dimensions of an image,
+   * whether or not it outputs colors, and the accumulator itself.
+   *
+   * @author Your Name
+   * @version 1.0
+   * @docgenVersion 9
+   * @since 1.0
+   */
   private static class Accumulator extends Result.Accumulator {
 
     private final int[] dimensions;
@@ -237,7 +306,7 @@ public class CoordinateDisassemblyLayer extends LayerBase {
     /**
      * Instantiates a new Accumulator.
      *
-     * @param dimensions         input resolution
+     * @param dimensions  input resolution
      * @param accumulator the accumulator
      * @param alive       the alive
      */
@@ -254,8 +323,8 @@ public class CoordinateDisassemblyLayer extends LayerBase {
         Tensor coordImage = new Tensor(this.dimensions[0], this.dimensions[1]);
         int coordOffset = outputColors ? 2 : 0;
         Tensor tensor;
-        if(outputColors) {
-          tensor = new Tensor(IntStream.range(0, this.dimensions[2]).mapToObj(x->x)
+        if (outputColors) {
+          tensor = new Tensor(IntStream.range(0, this.dimensions[2]).mapToObj(x -> x)
               .flatMapToDouble(z -> DoubleStream.of(coordImage.coordStream(false).mapToDouble(c ->
                   data.get(c.getIndex(), coordOffset + z)).toArray())).toArray(), this.dimensions);
         } else {
@@ -271,6 +340,11 @@ public class CoordinateDisassemblyLayer extends LayerBase {
       }
     }
 
+    /**
+     * Frees resources used by this object.
+     *
+     * @docgenVersion 9
+     */
     public @SuppressWarnings("unused")
     void _free() {
       super._free();
